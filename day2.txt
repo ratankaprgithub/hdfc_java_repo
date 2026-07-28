@@ -1,0 +1,2697 @@
+
+
+
+********************************************************************
+
+Types variables inside a java class:
+------------------------------
+
+1. local variables: defined inside any methods. JVM will allocate memory of these local variables inside the Stack Area.
+
+2. Instance variables/non-static variables: These variables belongs to Object and it will be allocated inside the Heap Area at time of Object creation.
+
+--The non-static variables are the Object level variables, and each object has their own copy of the non-static variables.
+
+3. static /class level variables: JVM will allocate these variables inside the method area at time of loading a .class file along with class level metadata. at this time only these variables will be initialized.
+
+Note: Static variables belongs to the class and it is sharable among multiple objects.
+
+ 
+
+
+
+
+
+Basic Rule of Computer Execution:
+
+--The CPU can execute only those instructions and data which are present in RAM.
+
+Hard Disk -> Permanent storage
+
+RAM -> Temporary working memory
+
+CPU -> Executes data present in RAM only
+
+--If something is not in RAM, CPU cannot execute it.
+
+
+Static Loading vs Dynamic Loading:
+====================================
+
+Static Loading (Example: C Language):
+------------------------------------
+
+--A block of code would be loaded into the RAM before it is executed, after being loaded into the RAM it may or may not get executed.
+
+--In static loading, the entire application is loaded into RAM (actual memory is allocated) before execution starts.
+
+--Memory is allocated for the whole program, regardless of whether all parts are executed or not.
+
+
+
+
+Example:
+
+app1.c
+-------
+
+c program:{
+
+1000 variable
+10000 methods/function
+
+}
+
+
+--When app1.c runs, the entire executable is loaded into RAM.
+
+--Execution happens line by line, but memory allocation is already done.
+
+--This approach is commonly seen in procedural languages like C.
+
+
+
+Dynamic Loading:
+----------------
+
+
+--A block of code would be loaded into the RAM (actual memory allocation is happen) only when it is required to be executed.
+
+--Java follows dynamic class loading and dynamic memory allocation.
+
+
+
+Example: Java application
+
+Demo.java:
+
+class Demo{
+
+1000 variables
+
+10000 methods/function
+
+}
+
+
+
+Demo.java -----> compile(java compiler)----->Demo.class---while executing,
+
+--First of all the JVM program will be loaded into the RAM.
+
+--Now JVM will load the .class file metadata(structure of the class) into the Method Area (by the ClassLoaded subsystem).
+
+--After this JVM will load (allocate the memory) only for the required part of the program, for the remaining parts the actual memory allocation will not happen(not loaded).
+
+--Whenever it is required, at that time we can allocate the memory for the other part of the program dynamically and execute them.
+
+--Here the required parts are static members.
+
+--Generally there are 2 categories of members of a Java class
+
+1. variables
+2. methods
+
+
+--we can categorise these members into furthur 2 categories:
+
+1. static members
+2. non-static members
+ 
+--After counting the members inside a class, we need to identify the types of the members (i.e static or non-static)
+
+--The members where 'static' keyword is applied is known as static member and for which it is not applied is known as non-static.
+
+--While executing a Java application, all the static members will be loaded into the RAM (actual memory is allocated) and they will be available to the CPU , where as for the non-static the actual memory allocation will not happen.
+
+--After loading all the static members, JVM searches the main method among these static members.
+
+public static void main(String[] args)
+
+--Since the main method is a static member, and it is already loaded(memory is allocated), it is available to the CPU, and JVM will starts the execution of a Java program from the first line of the main method.
+ 
+
+
+Java Program Execution Flow:
+============================
+
+Step 1: JVM Loading
+
+--When a Java program is executed, first the JVM is loaded into RAM.
+
+
+Step 2: Class Loading
+
+--The ClassLoader subsystem loads the .class file.
+
+--The following class metadata is stored in the Method Area:
+
+-Class structure (blueprint)
+
+	-Method bytecode
+
+	-Static variables
+
+	-Static methods
+
+	-Runtime Constant Pool: The Runtime Constant Pool stores constant values and symbolic references required during program execution.
+
+Step 3: Static Member Initialization
+
+--Static variables are allocated memory and initialized.
+
+--Static methods become available to the CPU.
+
+Step 4: Main Method Execution
+
+--JVM searches for:
+
+public static void main(String[] args)
+
+
+--Since main() is static, it is already loaded.
+
+--Program execution starts from the first line of main().
+
+
+
+
+--To access the non-static members in main method, we need to allocate the memory (load) the non-static members by creating object of that class.
+
+Requirement of creating an object: 
+
+--To allocate the memory of the non-static members (load) into the RAM dynamically we need to create instance/object of that class.
+
+
+
+
+Ex:
+
+Demo.java:
+-------------
+
+package com.masai;
+
+public class Demo {
+	
+	//instance variable
+	int i=100;
+	
+	//static or class variable
+	static  int j =200;
+	
+	//non-static
+	void fun1() {
+	
+		System.out.println("inside fun1 of Demo");
+		//10000
+	}
+	
+	static void fun2() {
+		System.out.println("inside fun2 of Demo");
+		
+	}
+	
+
+	public static void main(String[] args) {
+		 
+		//local variable
+		//int x= 10;
+		
+		//System.out.println(j);
+		
+		System.out.println("inside main");
+		
+		//creating object of a class
+		//instantiating a class
+		Demo d1 = new Demo();
+		
+		System.out.println(d1);
+		
+		System.out.println(d1.i);
+		
+		d1.fun1();
+		
+		//fun1();
+		
+		//fun2();
+		 
+		 
+	}
+
+}
+
+
+
+functionality of 'new' operator:
+================================
+
+1. Whenever the Jvm encounters 'new' operator, it will reserve a memeory space inside the Heap area.
+
+2. inside that memory space, it will load all the non-static members of that class.
+
+***while loading the non-static methods, it will load only the method name/signature and its address, it will not load method body, method body will be loaded at run time when we call that method.
+
+***while loading the non-static variables, inside that reserved memory space (Heap area), if variable are not initialized then the JVM will provide the default value to those non-static variables.
+
+Note: default value will not be given to the local variables, we can not use uninitialized local variable in our application, it will raise an compilation error.
+
+
+Note: we can create multiple objects for a perticular class,and modification done in one object will not reflect to another object.
+
+
+***Technically, an object of a class is a memory space inside the Heap Area where non-static elements are loaded.
+
+
+Demo d1 = ?
+
+
+--for a class ref variable 3 possible values are there:
+
+1. its own class object.
+
+Demo d1 = new Demo();
+
+2. its child class object:-
+
+Demo d1 = new DemoChild(); // it is possible only if DemoChild class is the child class of Demo class.
+
+--this concept is also known as super class reference and child class object.
+
+3. default value for any ref variable. i.e null.
+
+Demo d1 = null;
+
+
+
+JVM Memory Areas (Simplified View):
+-------------------------------------
+
+--JVM manages RAM by dividing it into logical memory areas:
+
+1. Method Area
+
+Class structure
+
+Static variables
+
+Static methods
+
+Method bytecode
+
+2. Heap Area
+
+Objects
+
+Instance variables
+
+3. Stack Area	
+
+Method calls
+
+Local variables
+
+References
+
+--All these areas are inside RAM.
+
+
+
+
+
+example:
+
+Demo.java:
+----------------
+
+package com.masai;
+
+public class Demo {
+	
+	//instance variable
+	 int i;
+	
+	//static or class variable
+	static  int j =200;
+	
+	//non-static
+	 void fun1() {
+	
+		System.out.println("inside fun1 of Demo");
+		//10000
+	}
+	
+	static void fun2() {
+		System.out.println("inside fun2 of Demo");
+		
+	}
+	
+
+	public static void main(String[] args) {
+		 
+		
+		
+		Demo d1 = new Demo();//here d1 is a reference variable, d1 is pointing to the Demo class obj.
+		
+		d1.i=100;
+		
+		System.out.println(d1.i);//100
+		
+		Demo d2 = d1;
+		
+		System.out.println(d2.i); //100
+		
+	}
+
+}
+
+
+
+Note: one object(memory space) can be refered by multiple variables simulteniously, but one variable can not refer multiple object simulteniously.
+
+
+--The object which is not referenced by any reference variable will be treated as garbage, and in Java there is a seperate thread running continuously, called Garbage collector, the duty of this garbage collector is to clean that un-referenced object and free the RAM.
+
+
+--If any one variable holding the address of any object then that object is not treated as garbage.
+
+
+--from the null, if we try to access any value(non-static) or call any method(non-static), then we will get a runtime exception called NullPointerException.
+
+
+
+example:
+
+
+		Demo d1 = new Demo();//here d1 is a reference variable, d1 is pointing to the Demo class obj.
+		
+		d1.i=100;
+		
+		Demo d2 = d1;
+		
+		d1= null;
+		
+		System.out.println(d2.i);//100
+		
+		// till this line no any obj is eligible for GC.
+		
+		
+--primitive variables having their seperate copies:
+
+ex:
+
+		int x = 10;
+		
+		int y =x;
+		
+		System.out.println(x); // 10
+		System.out.println(y); //10
+		
+		x = 200;
+				
+		System.out.println(x); // 200
+		System.out.println(y); // 10
+
+
+--Where as object if reassigned to difference variables then all variables will points to the same copy.
+
+ex2:
+
+		Demo d1 = new Demo();
+		
+		Demo d2 = d1;
+		
+		System.out.println(d1.i); //0
+		System.out.println(d2.i); //0
+		
+		d1.i=500;
+		
+		System.out.println(d1.i); //500
+		System.out.println(d2.i); //500
+
+
+ex3 :
+
+		Demo d1 = new Demo();
+		d1.fun1();
+	
+		//another approach of calling a method	
+		new  Demo().fun1();
+		
+		d1.fun1();
+		
+		d1.fun1();
+		
+		System.out.println(d1.i);
+
+
+State of an object:  The data present inside the object at that instance of time is known(what an object knows) as state of the object.
+
+Behaviour of an object: functionality that are applicable to that object (what an object can do) is known as behaviour of an object.
+
+Example:
+
+
+
+Song.java:
+------------
+
+package com.masai;
+
+public class Song {
+	
+	String artist;
+	String title;
+	
+	void play() {
+		
+		System.out.println(artist+" is singing "+title);
+	}
+	
+	
+	public static void main(String[] args) {
+		
+		Song track1 = new Song();
+		track1.artist="Lata";
+		track1.title="Wande Matram";
+		
+		track1.play();
+		
+		Song track2 = new Song();
+		track2.artist="Sukhwindar";
+		track2.title="Jai Ho";
+		
+		track2.play();
+				
+	}
+
+}
+
+
+Example2:
+
+
+Student.java:
+--------------
+
+package com.masai;
+
+public class Student {
+	
+	int roll;
+	String name;
+	double marks;
+	
+	static String collageName;
+	
+	void displayDetails() {
+		
+		System.out.println("Roll is : "+roll);
+		System.out.println("Name is : "+name);
+		System.out.println("Marks is : "+marks);
+		System.out.println("Collage Name is: "+collageName);
+		
+		System.out.println("========================");
+	}
+	
+	
+	public static void main(String[] args) {
+		
+		
+		collageName = "chitkara";
+		
+		Student student1 = new Student();
+		student1.roll= 10;
+		student1.name= "Raj";
+		student1.marks = 780.00;
+		
+		Student student2 = new Student();
+		student2.roll= 20;
+		student2.name= "Simran";
+		student2.marks = 880.00;
+		
+		student1.displayDetails();
+		student2.displayDetails();
+		
+		
+	}
+
+}
+
+
+Note: static member are available to the non-static as well as static members, becasue memory is already allocated for the static members.
+
+--same copy of the static variables are sharable among all the objects.
+
+--where as to access non-static members inside the static area we need to create object of that class.
+
+
+
+
+
+*****************************************************************************
+
+
+
+Demo.java:
+---------------
+
+package com.masai;
+
+public class Demo {
+	
+	int x = 100;
+	
+	Demo d1 = new Demo();
+	
+	//A a1 = new A();
+
+	public static void main(String[] args) {
+		 
+		Demo d1 = new Demo();
+		
+		
+		
+	}
+
+}
+
+
+
+
+
+
+--the above application will throw a runtime exception called StackOverFlowError.
+
+Demo.java:
+------------
+
+package com.masai;
+
+public class Demo {
+	
+	int x = 100;
+	
+	Demo d1;
+	
+	//A a1 = new A();
+
+	public static void main(String[] args) {
+		 
+		Demo d1 = new Demo();
+		
+		System.out.println(d1.d1);//null
+		
+		d1.d1=new Demo();
+		
+		System.out.println(d1.d1.x);
+				
+	}
+
+}
+
+
+
+
+************************************************************************************
+
+
+
+Example2:
+
+
+Demo.java:
+---------------
+
+package com.masai;
+
+public class Demo {
+	
+	int x = 100;
+	static int j =200;
+
+	void fun1(){
+
+		System.out.println("inside fun1 of Demo");
+	}
+
+
+	static void fun2(){
+
+		System.out.println("inside static fun2 of Demo");
+	}
+
+	public static void main(String[] args) {
+		 
+		Demo d1 = new Demo();
+		
+
+		System.out.println(d1.i); 
+		d1.fun1();
+
+
+		d1 = null;
+
+		//d1.fun1(); //NullPointerException
+
+		d1.fun2();// 
+		
+		
+	}
+
+}
+
+
+
+Note: at comiple time the call d1.fun2() will be resolve as Demo.fun2();
+
+
+
+
+
+
+
+
+
+
+
+
+Call by value and Call by refference:
+---------------------------------------
+
+
+--Java passes a copy of the reference, not the object itself.
+
+--Original reference is copied
+
+--Both references point to the same object
+
+--Object changes are visible.
+
+
+
+
+Java behavior:
+
+Primitive: value copy passed
+
+Object: reference value copy passed
+
+
+
+--Java is strictly pass-by-value not passed by reference; even object references are passed by value.
+
+
+
+Example:
+
+
+Demo.java:
+----------
+
+package com.hdfc;
+public class Demo{
+
+
+	static void change(int x)
+
+		x = 50;
+
+	}
+
+
+	public static void main(String[] args){
+
+		int a = 10;
+
+		change(a);
+
+		System.out.println(a);
+
+	}
+
+
+}
+
+
+Here:
+
+--Method receives a copy of a.
+
+--Original value remains unchanged.
+
+
+
+Example2:
+
+
+Student.java:
+-------------
+
+public class Student {
+    int marks = 100;
+    String name = "Raj";
+}
+
+
+
+Demo.java:
+----------
+
+public class Demo {
+
+    static void change(Student s) {
+        s.marks = 50;
+    }
+
+    public static void main(String[] args) {
+        Student st = new Student();
+        change(st);
+        System.out.println(st.marks);
+    }
+}
+
+
+
+Note: Reference itself cannot be changed
+
+
+ static void change(Student s) {
+	s = new Student(); //new object
+        s.marks = 50;
+    }
+
+
+
+
+Activity1: Pridict the output:
+----------
+
+
+class Demo {
+
+    static void change(int x) {
+        x = x + 10;
+    }
+
+    public static void main(String[] args) {
+
+        int a = 5;
+
+        change(a);
+
+        System.out.println(a);
+
+    }
+}
+
+
+
+
+
+Activity2: Pridict the output:
+----------
+
+class Student {
+
+    int marks;
+}
+
+
+class Demo {
+
+    static void addMarks(Student s) {
+
+        s.marks += 10;
+
+    }
+
+    public static void main(String[] args) {
+
+        Student st = new Student();
+        st.marks = 40;
+
+        addMarks(st);
+
+        System.out.println(st.marks);
+    }
+}
+
+
+Activity3: Pridict the output:
+----------
+
+class Box {
+
+    int value = 10;
+}
+
+public class Demo {
+
+    static void modify(Box b) {
+        b.value = 20;
+    }
+
+    static void change(Box b) {
+        b = new Box();
+        b.value = 50;
+    }
+
+    public static void main(String[] args) {
+        Box obj = new Box();
+
+        modify(obj);
+        System.out.println("After modify: " + obj.value); //
+
+        change(obj);
+        System.out.println("After change: " + obj.value);
+    }
+}
+
+
+
+Modify the above code so output becomes:
+
+After change: 50
+
+
+
+Call by Reference in C++:
+========================
+
+
+--In C++, we can pass variables by reference, meaning the method receives the original variable, not a copy.
+
+--So, changes inside the function directly affect the original variable.
+
+
+Example:
+
+#include <iostream>
+using namespace std;
+
+void change(int &x) {   // reference parameter
+    x = 50;
+}
+
+int main() {
+    int a = 10;
+    
+    change(a);
+    
+    cout << a;
+
+    return 0;
+}
+
+
+Output: 50
+
+
+&x means reference to original variable.
+
+No copy is created.
+
+Function works on the original variable(same memory address).
+
+
+
+Swaping 2 Student in C++:
+=========================
+
+#include <iostream>
+using namespace std;
+
+class Student {
+
+public:
+    string name;
+
+};
+
+void swapStudents(Student* &s1, Student* &s2) {
+    Student* temp = s1;
+    s1 = s2;
+    s2 = temp;
+}
+
+int main() {
+
+    Student* st1 = new Student();
+    st1->name = "Rahul";
+
+    Student* st2 = new Student();
+    st2->name = "Amit";
+
+    swapStudents(st1, st2);
+
+    cout <<"st1 name : "  <<st1->name << endl;
+    cout <<"st2 name : " <<st2->name << endl;
+}
+
+
+
+Swaping 2 Student in Java:
+===========================
+
+class Student {
+    String name;
+}
+
+class Test {
+
+    static void swap(Student s1, Student s2) {
+
+        Student temp = s1;
+        s1 = s2;
+        s2 = temp;
+
+    }
+
+    public static void main(String[] args) {
+
+        Student st1 = new Student();
+        st1.name = "Rahul";
+
+        Student st2 = new Student();
+        st2.name = "Amit";
+
+        swap(st1, st2);
+
+        System.out.println(st1.name);//
+        System.out.println(st2.name);
+    }
+}
+
+
+
+Student Task: swap the both student names
+
+
+
+Swap Something in Java? Swap object data instead  of object itself:
+
+Example:
+
+static void swap(Student s1, Student s2) {
+    String temp = s1.name;
+    s1.name = s2.name;
+    s2.name = temp;
+}
+
+
+
+
+Activity4: Pridict the output:
+------------------------------
+
+
+class Student {
+    String name;
+}
+
+class Test {
+
+    static void swap(Student s1, Student s2) {
+        s1.name = "Changed Rahul";
+        s2 = new Student();
+        s2.name = "New Student";
+    }
+
+    public static void main(String[] args) {
+
+        Student st1 = new Student();
+        st1.name = "Rahul";
+
+        Student st2 = new Student();
+        st2.name = "Amit";
+
+        swap(st1, st2);
+
+        System.out.println(st1.name);
+        System.out.println(st2.name);
+    }
+}
+
+
+***************************************************************************************
+
+
+
+// 1. println(); // it will print the line break
+// 2. println(primitives) //it will print the value
+// 3.*** println(Object) // it will print the address
+// 4. println(String) // it will print the string
+// 5. println(char[]) 
+
+
+
+
+
+Which method will be called:-
+----------------------------
+
+Example1:
+
+class Test {
+
+    void show(String s) {
+        System.out.println("String");
+    }
+
+    void show(Object o) {
+        System.out.println("Object");
+    }
+
+    public static void main(String args[]){
+	Test t = new Test();
+ 	t.show(null);
+    }	
+
+}
+
+
+Note:-In method overloading, the compiler always chooses the MOST SPECIFIC method(Nearest one).
+
+
+Example2:
+
+class Test {
+    void show(String s) {
+        System.out.println("String");
+    }
+
+    void show(Integer i) {
+        System.out.println("Integer");
+    }
+    public static void main(String args[]){
+	Test t = new Test();
+ 	t.show(null);
+    }
+
+}
+
+
+
+Activity5: 
+----------
+
+--Create a class EmployeeSalary with overloaded calculateSalary() methods:
+
+	a. calculateSalary(int basicSalary)
+		* Returns basic salary
+
+	b. calculateSalary(int basicSalary, int bonus)
+		* Returns salary + bonus
+
+	c. calculateSalary(int basicSalary, int bonus, int taxPercentage)
+		* Returns final salary after tax deduction on your basic salary
+			(tax = (basicSalary * taxPercentage) / 100;)
+
+
+
+
+
+CLA example:
+-------------
+
+Demo.java:
+----------
+
+
+class Demo{
+
+
+	public static void main(String[] args){
+	
+		if(args.length == 2){
+			
+			String num1 = args[0];
+			String num2 = args[1];
+
+			int n1= Integer.parseInt(num1);
+			int n2= Integer.parseInt(num2);
+
+			int result = n1+n2;
+
+			System.out.println("Result is: "+result);
+
+
+		}
+		else{
+			System.out.println("Please pass 2 numbers");
+		}
+
+
+		
+	}
+
+}
+
+
+********************************************************************
+
+
+Constructor in java:
+====================
+
+A constructor in Java is a special non-static method that is executed automatically when an object is created.
+
+
+example:
+
+Demo d1= new Demo();
+
+--the meaning of the above statement is "creating a Demo class obj by calling /executing zero argument constructor of Demo class".
+
+
+
+When we compile a .java file:
+------------------------------
+
+--The Java compiler checks whether a constructor is present.
+
+--If a constructor is already written, it is copied to the .class file.
+
+--If no constructor is written, the compiler automatically provides a default constructor.
+
+ex:
+
+
+class Demo{
+
+}
+
+
+
+                       java compiler
+Demo.java ------------------------------> Demo.class
+
+
+
+
+
+Note: - we can have a .java file for a class without a constructor, but we can't have a .class file for a class without a constructor.
+
+--default constrcutor given by the java compiler will always "public" and "zero argument" and it is empty body.
+
+example: compiler given default constructor
+
+public Demo(){
+//super();
+}
+
+--strikly speaking , it is not a empty body , there is one hidden statement("super();") is there inside the default constructor as a first statement.which will call the parent class constructor.
+
+
+Important Note:
+---------------
+
+--An object is not completely created until the constructor execution finishes.
+
+--So, constructor execution is mandatory for object creation.
+
+
+
+
+Difference between a method and a constructor:
+-----------------------------------------------
+
+
+
+| Normal Method                     | Constructor                     |
+| --------------------------------- | ------------------------------- |
+| Method name can be anything       | Name must be same as class name |
+| Must have return type (even void) | No return type                  |
+| Can be static                     | Cannot be static                |
+| Can be called multiple times      | Called only once per object     |
+| Can be abstract or final          | Cannot be abstract or final     |
+
+
+
+
+Similarities: Method & Constructor
+-----------------------------------
+
+1. Access modifiers(like public, private,..) are application for both.
+ 
+2. Both are the code block, we can write multiple executable statements.
+
+3. As we can overload a method, we can overload a constructor also. and all the static polymorphism rules are applicable with the constructor overloading.
+
+
+
+
+constructor overloading:
+====================
+
+--Multiple constructors with different parameter lists.
+
+example:
+
+Demo.java:-
+---------------
+package com.masai;
+
+public class Demo {
+
+	int x = 10;
+	int y;
+
+	void fun1() {
+		System.out.println("inside fun1 of Demo");
+	}
+
+	
+	Demo(){
+		System.out.println("inside Demo()....");
+	}
+	
+	Demo(int i){
+		System.out.println("inside Demo(int )....");
+		System.out.println(i);
+	}
+	
+	
+	
+	public static void main(String[] args) {
+
+		Demo d1 = new Demo();
+		Demo d2 = new Demo(10);
+		//Demo d2 = new Demo("hello");//CE
+		
+
+	}
+
+}
+
+
+
+
+--If a class has 4 constructors, objects can be created in 4 different ways.
+
+
+
+
+this keyword:
+=============
+
+--it will represent the current class object.
+
+--there are mainly 3 uses of 'this' keyword:
+
+1. to represent the current class object.
+
+2. to differentiates the instance variable and the local variable
+
+3. to call a constructor of a class from the another constructor of the same class.
+
+
+
+Example:
+
+Demo.java:
+--------------
+
+package com.masai;
+
+public class Demo {
+
+	int x = 10; //instance variable
+
+	
+	void fun1() {
+
+		int x=400;//local variable
+
+		System.out.println("inside fun1 of Demo");
+		System.out.println(x);//local variable
+		System.out.println(this.x); // instance variable
+		
+		System.out.println(this);//current object on which fun1 is called
+		
+		
+	}
+	
+	
+	public static void main(String[] args) {
+
+		Demo d1= new Demo();
+		System.out.println(d1);
+		d1.fun1();
+
+	}
+
+}
+
+
+***Note: 'this' keyword we can not use inside static area.
+
+
+Example:
+
+
+Demo.java:-
+--------------
+
+package com.masai;
+
+public class Demo {
+
+	int x = 10;
+
+	public static void main(String[] args) {
+
+		int x=200;
+		
+		System.out.println(this.x); //ERROR
+		
+		
+	}
+}
+
+
+
+
+
+Calling Constructor Explicitly:
+-------------------------------
+
+
+
+Note: constructor will be called automatically whenever we create obj of a cass, but we can also call a constructor explicitly.
+
+--if we want to call a constructor, then that call must be from the another constructor of the same class (by using 'this(); ') or from the constructor of child class (by using 'super();' )
+
+Rule:
+
+--that call of the constructor must be the first statement inside a constructor.
+
+example:
+
+
+Demo.java:-
+----------------
+package com.masai;
+
+public class Demo {
+
+	
+	Demo(){
+		this(10);
+		System.out.println("inside Demo()....");
+	}
+	
+	Demo(int i){
+		this("hello");
+		System.out.println("inside Demo(int )....");
+		System.out.println(i);
+	}
+	
+	Demo(String s){
+		
+		System.out.println("inside Demo(String )....");
+		System.out.println(s);
+	}
+	
+		
+	
+	public static void main(String[] args) {
+
+		Demo d1=new Demo();
+
+	}
+
+}
+
+
+Constructor are used for basically for 2 purpose:
+-------------------------------------------------
+
+1. If we want to execute some statement at the time of our object creation, then we can keep those statements inside the constructor.
+
+2. To initialize the instance variable (initialize an object).
+
+
+
+Note: Constructor concept is very much related with the Inheritance concept in Java.
+
+
+
+
+example:
+
+Student.java:
+----------------
+
+package com.masai;
+
+public class Student {
+	
+	int roll;
+	String name;
+	int marks;
+	
+	
+	//zero argument constructor
+	Student(){
+		
+	}
+	
+	//parameterized constructor
+	Student(int roll, String name, int marks){
+		this.roll=roll;
+		this.name=name;
+		this.marks=marks;
+	}
+	
+	
+	
+	public void showDetails() {
+		
+		System.out.println("Roll is :"+roll);
+		System.out.println("Name is :"+name);
+		System.out.println("Marks is :"+marks);
+	}
+
+}
+
+
+
+Demo.java:
+--------------
+
+package com.masai;
+
+public class Demo {
+
+
+	public static void main(String[] args) {
+
+		Student s1= new Student(10,"Ram",780);
+		
+		Student s2=new Student();
+		s2.roll=100;
+		s2.name="Ravi";
+		s2.marks=900;
+		
+		
+		s1.showDetails();
+		s2.showDetails();
+		
+		
+	}
+
+}
+
+
+Pure encapsulation:
+===================
+
+--For a class in Java we call it as 100% encapsulated class if we: 
+
+
+--Make variables private
+
+--Access them using public getters and setters
+
+--Do not expose data directly.
+
+
+
+
+Java Bean class:
+================
+
+
+--It is a reusable, universal component which should have following properties:
+
+1. This class should be "public"
+
+2. Variables/fields should be "private"
+
+3. For each variable/field there should be corresponding public getter and setter methods.
+
+4. This class must have zero argument constructor/default constructor
+
+5. This class may have parameterized constructor. (optional)
+
+
+
+Example:
+
+
+Student.java:  as a Bean class
+----------------
+
+package com.masai;
+
+public class Student {
+	
+	private int roll;
+	private String name;
+	private int marks;
+	
+
+	public Student() {
+		
+	}
+
+
+	public Student(int roll, String name, int marks) {
+		this.roll = roll;
+		this.name = name;
+		this.marks = marks;
+	}
+	
+	
+	
+	public int getRoll() {
+		return roll;
+	}
+	public void setRoll(int roll) {
+		this.roll = roll;
+	}
+	
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public int getMarks() {
+		return marks;
+	}
+	
+	public void setMarks(int marks) {
+		this.marks = marks;
+	}
+
+}
+
+Demo.java:
+---------------
+
+package com.masai;
+
+public class Demo {
+
+
+	public static void main(String[] args) {
+
+		
+		Student s1= new Student(10, "Ram", 780);
+		
+		Student s2= new Student();
+		s2.setRoll(20);
+		s2.setName("Ramesh");
+		s2.setMarks(780);
+		
+		System.out.println("Roll is :"+s1.getRoll());
+		System.out.println("Name is :"+s1.getName());
+		System.out.println("Marks is :"+s1.getMarks());
+		
+		System.out.println("=============================");
+		
+		System.out.println("Roll is :"+s2.getRoll());
+		System.out.println("Name is :"+s2.getName());
+		System.out.println("Marks is :"+s2.getMarks());
+		
+		
+	}
+
+}
+
+
+Student practice questions:
+--------------------------
+
+Activity 1. 
+
+Create a Java Bean class Employee with:
+
+id
+
+name
+
+salary
+
+void displayDetails()
+
+
+--Create 2 objects of the Employee class inside the main method of Demo class
+
+--first object using zero argument constructor and set the properties using setter methods.
+
+--second object using parameterized constructor.
+
+--call the displayDetails() method on both the object to display the details of both employees.
+
+
+
+
+
+
+making the constructor as private:
+==================================
+
+
+A.java:
+-------
+
+package com.hdfc;
+
+public class A {
+	
+	int i = 10;
+	
+	
+	private A() {
+		System.out.println("A Object is created...");
+	}
+	
+	
+	 void funA() {
+		System.out.println("inside funA of A");
+	}
+	
+	
+	static A getAObject() {
+		 
+//		 A obj = new A();
+//		 return obj;
+		 
+		 return new A();
+		 
+	 }
+
+}
+
+
+
+Demo.java:
+----------
+
+package com.hdfc;
+
+public class Demo {
+	
+	
+	public static void main(String[] args) {
+		
+		A a1=  A.getAObject();
+
+		a1.funA();
+		
+	}
+
+}
+
+
+
+
+
+Example:
+
+
+Vehicle Class with Constructor Chaining:
+
+
+Vehicle.java:
+-------------
+
+
+class Vehicle {
+
+    private String brand;
+    private String model;
+    private int year;
+    private String registrationNumber;
+
+    // Constructor 4: initializes all fields
+    Vehicle(String brand, String model, int year, String registrationNumber) {
+        this.brand = brand;
+        this.model = model;
+        this.year = year;
+        this.registrationNumber = registrationNumber;
+    }
+
+    // Constructor 3: brand + model
+    Vehicle(String brand, String model) {
+        this(brand, model, 2023, "Not-Assigned");
+    }
+
+    // Constructor 2: brand only
+    Vehicle(String brand) {
+        this(brand, "Unknown-model");
+    }
+
+    // Constructor 1: default constructor
+    Vehicle() {
+        this("Unknown-brand");
+    }
+
+    // Method to display vehicle information
+    void displayInfo() {
+        System.out.println("Brand: " + brand);
+        System.out.println("Model: " + model);
+        System.out.println("Year: " + year);
+        System.out.println("Registration: " + registrationNumber);
+        System.out.println("---------------------------");
+    }
+
+    public static void main(String[] args) {
+
+        // Object using default constructor
+        Vehicle v1 = new Vehicle();
+
+        // Object using brand constructor
+        Vehicle v2 = new Vehicle("Toyota");
+
+        // Object using full constructor
+        Vehicle v3 = new Vehicle("Honda", "City", 2022, "PB10AB1234");
+
+        v1.displayInfo();
+        v2.displayInfo();
+        v3.displayInfo();
+    }
+}
+
+
+
+Pridict the Output 1:
+
+
+class Vehicle {
+
+    String brand;
+
+    Vehicle() {
+        this("BMW");
+        System.out.println("Default constructor");
+    }
+
+    Vehicle(String brand) {
+        this.brand = brand;
+        System.out.println("Brand constructor");
+    }
+
+    public static void main(String[] args) {
+        Vehicle v = new Vehicle();
+    }
+}
+
+
+
+
+Pridict the Output 2:
+
+
+class Vehicle {
+
+    Vehicle() {
+        System.out.println("Default");
+        this("Audi");
+    }
+
+    Vehicle(String brand) {
+        System.out.println(brand);
+    }
+}
+
+
+
+Pridict the Output 3:
+
+
+class Vehicle {
+
+    Vehicle() {
+        this("Tesla");
+        System.out.println("A");
+    }
+
+    Vehicle(String brand) {
+        System.out.println("B");
+    }
+
+    public static void main(String[] args) {
+        new Vehicle();
+    }
+}
+
+
+
+Pridict the Output 3:
+
+
+class Vehicle {
+    String brand = "Default";
+
+    Vehicle(String brand) {
+        brand = brand;
+    }
+
+    void show() {
+        System.out.println(brand);
+    }
+
+    public static void main(String[] args) {
+        Vehicle v = new Vehicle("Honda");
+        v.show();
+    }
+}
+
+
+
+
+Taking Input from the User in Java
+==================================
+
+
+In Java desktop applications, user input can be taken in three main ways:
+
+
+1. Command Line Arguments (CLA)
+
+2. BufferedReader class
+
+3. Scanner class (introduced in Java 1.5)
+
+
+Important points:
+------------------
+
+--Using CLA and BufferedReader, input is taken only in String form.
+
+
+
+Example: Using BufferedReader:
+-------------------------------
+
+Demo.java:
+---------
+
+package com.hdfc;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Demo {
+	
+	
+	public static void main(String[] args) throws IOException {
+		
+		
+//		InputStreamReader isr = new InputStreamReader(System.in);
+//		BufferedReader br = new BufferedReader(isr);
+		
+		
+		
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		
+		
+		System.out.println("Enter Number 1: ");
+		String num1= br.readLine();
+		
+		
+		System.out.println("Enter Number 2: ");
+		String num2= br.readLine();
+		
+		
+		int n1= Integer.parseInt(num1);
+		int n2= Integer.parseInt(num2);
+		
+		int result = n1+n2;
+		
+		System.out.println("Result is: "+result);
+				
+	}
+
+}
+
+
+
+--Using Scanner, input can be taken in almost all primitive data types.
+
+--Scanner belongs to the package called "java.util":
+
+So, in order to use this Scanner class we need to this class inside our application
+
+	import java.util.Scanner;
+
+
+Creating Scanner Object:
+-------------------------
+
+
+// Creating a Scanner object by providing an input source to its constructor.
+// The Scanner constructor accepts different input sources such as
+// an InputStream (keyboard input), a File, or other readable sources.
+
+Scanner sc = new Scanner(System.in);  // System.in represents standard input (keyboard).
+
+
+--A Scanner object is created by passing an input source to its constructor.
+
+The input source can be:
+
+--System.in (keyboard input)
+
+--A file object
+
+--Any InputStream object
+
+--A string or readable source
+
+--The "System.in" represents the standard input stream, usually connected to the keyboard.
+
+
+
+
+Scanner provides multiple methods to read different data types.
+
+| Method        | Description                    |
+| ------------- | ------------------------------ |
+| nextInt()     | Reads integer                  |
+| nextFloat()   | Reads float                    |
+| nextLong()    | Reads long                     |
+| nextBoolean() | Reads boolean                  |
+| next()        | Reads next token (single word) |
+| nextLine()    | Reads entire line              |
+
+
+Important Difference:
+
+
+next() reads only one word (token).
+nextLine() reads the entire line, including spaces.
+
+
+
+Example 1: Reading One Number:
+------------------------------
+
+Demo.java:
+----------
+
+import java.util.Scanner;
+
+public class Demo {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Enter a number:");
+        int num = sc.nextInt();
+
+        System.out.println("Number is: " + num);
+    }
+}
+
+
+
+
+Example 2: Multiple Inputs
+--------------------------
+
+Scanner sc = new Scanner(System.in);
+
+System.out.println("Enter roll:");
+int roll = sc.nextInt();
+
+System.out.println("Enter marks:");
+int marks = sc.nextInt();
+
+System.out.println("Roll: " + roll);
+System.out.println("Marks: " + marks);
+
+
+
+Problem: next() vs nextLine()
+-----------------------------
+
+--> next(), nextInt(), nextFloat(), .. reads the token
+
+--> nextLine() reads the entire line...
+
+
+
+
+
+
+Scanner sc = new Scanner(System.in);
+
+System.out.println("Enter roll:");
+int roll = sc.nextInt();
+
+System.out.println("Enter name:");
+String name = sc.next();
+
+System.out.println("Enter marks:");
+int marks = sc.nextInt();
+
+
+Input:
+
+10
+Ram Kumar Singh
+20
+
+
+Problem:
+
+--next() reads only Ram.
+
+--Remaining text causes incorrect input behavior.
+
+
+Why It Happens?
+
+--After reading the token (Ram), remaining token will be in buffer.
+
+--and for the marks, (nextInt()) consume the next token (Kumar) and it will cause the InputMismatchException
+
+
+
+explanation: next();
+
+Enter roll 
+10  "/n" 
+Enter name:
+Ram  Kumar singh  "/n"  // here kumar is consumed as next token for the marks value
+Enter Marks
+20  "/n"
+
+
+
+If we use the nextLine() instead if next():
+
+
+then the output will be:
+
+Enter roll:
+10 
+Enter name:
+Enter marks:
+
+
+
+
+
+
+explanation: nextLine();
+
+Enter roll 
+10  "/n" 
+Enter name:   // here sc.nextLine() will consume the above "/n" 
+Enter Marks
+20  "/n"
+
+
+
+Solutions to next() and nextLine() Problem:
+-------------------------------------------
+
+--To solve the above problem we have following solutions:
+
+
+
+1. Never use nextLine()  always read the token by using next(); 
+
+--With this we can not read full name (space sepetated name).
+
+2. always use nextLine(); //even to read the primitives also.
+
+ex:
+		Scanner sc= new Scanner(System.in);
+		
+		System.out.println("Enter a roll :");
+		int roll= Integer.parseInt(sc.nextLine());
+		
+		
+		System.out.println("Enter Name :");
+		String name= sc.nextLine();
+		
+		
+		System.out.println("Enter marks :");
+		int marks= Integer.parseInt(sc.nextLine());
+		
+		
+		System.out.println("The Roll is :"+roll);
+		System.out.println("The Name is :"+name);
+		System.out.println("The Marks is :"+marks);
+
+3. if we need to use nextLine() , then use it at begining.
+ex:
+
+		Scanner sc= new Scanner(System.in);
+		
+		System.out.println("Enter Name :");
+		String name= sc.nextLine();
+		
+		
+		System.out.println("Enter a roll :");
+		int roll= sc.nextInt();
+		
+		
+		System.out.println("Enter marks :");
+		int marks= sc.nextInt();
+		
+		
+		System.out.println("The Roll is :"+roll);
+		System.out.println("The Name is :"+name);
+		System.out.println("The Marks is :"+marks);
+		
+ 		
+
+4. call the blank nextLine() after reading the token to consume the buffered charecter "/n".
+
+		Scanner sc= new Scanner(System.in);
+		
+		
+		System.out.println("Enter a roll :");
+		int roll= sc.nextInt();  
+		
+		sc.nextLine();
+		
+
+		System.out.println("Enter Name :");
+		String name= sc.nextLine();
+		
+		
+		System.out.println("Enter marks :");
+		int marks= sc.nextInt();
+		
+		
+		System.out.println("The Roll is :"+roll);
+		System.out.println("The Name is :"+name);
+		System.out.println("The Marks is :"+marks);
+		
+		
+
+
+
+Student Activity:
+-----------------
+
+Create a Bean class called Product with the following properties:
+
+
+productId
+productName
+price
+quantity
+
+
+--take the input from the user to create and initialize the Product object and print their details till the user opted out.
+
+
+
+
+
+
+
+
+
+Product.java:
+-------------
+
+package com.hdfc;
+
+public class Product {
+
+	private int productId;
+	private String productName;
+	private double price;
+	private int quantity;
+
+	public Product() {
+
+	}
+
+	public Product(int productId, String productName, double price, int quantity) {
+		this.productId = productId;
+		this.productName = productName;
+		this.price = price;
+		this.quantity = quantity;
+	}
+
+	public int getProductId() {
+		return productId;
+	}
+
+	public void setProductId(int productId) {
+		this.productId = productId;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
+}
+
+
+Demo.java:
+----------
+
+package com.hdfc;
+
+import java.util.Scanner;
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+		Scanner sc = new Scanner(System.in);
+
+		int count = 1;
+
+		while (true) {
+
+			System.out.println("Enter Details of Product " + (count++));
+
+			System.out.println("Enter Product Id");
+			int productId = sc.nextInt();
+
+			System.out.println("Enter Product Name");
+			String productName = sc.next();
+
+			System.out.println("Enter Price");
+			int price = sc.nextInt();
+
+			System.out.println("Enter Quantity");
+			int quantity = sc.nextInt();
+
+			Product product = new Product(productId, productName, price, quantity);
+
+			System.out.println("ProductId :" + product.getProductId());
+			System.out.println("ProductName :" + product.getProductName());
+			System.out.println("Price :" + product.getPrice());
+			System.out.println("Quantity:  :" + product.getQuantity());
+
+			System.out.println("==============================");
+
+			System.out.println("Want More (yes/no) ?");
+			String choice = sc.next();
+
+			if (choice.equals("no"))
+				break;
+
+		}
+
+	}
+}
+
+
+
+Reading the data in the form of matrix:
+--------------------------------------
+
+
+
+		Scanner sc= new Scanner(System.in);
+		
+		System.out.println("Enter numbers in 3*3 matrix");
+		
+		 int n1= sc.nextInt();
+		 int n2= sc.nextInt();
+		 int n3= sc.nextInt();
+		
+		 sc.nextLine();
+		 
+		 int n4= sc.nextInt();
+		 int n5= sc.nextInt();
+		 int n6= sc.nextInt();
+		 
+		 
+		 System.out.println(n1+" "+n2+" "+n3);
+		 System.out.println(n4+" "+n5+" "+n6);
+		 
+
+
+
+Closing the Scanner:
+-------------------
+
+sc.close();
+
+
+--It is not strictly mandatory, but it is recommended to close a Scanner object when you are done using it.
+
+
+Scanner uses system resources like:
+
+--Input streams
+
+--Files
+
+--Memory buffers
+
+Closing Scanner will:
+
+--Frees resources
+
+--Prevents memory/resource leaks
+
+--Is good programming practice
+
+
+
+Scanner sc = new Scanner(System.in);
+
+sc.close();
+
+
+--Closing Scanner connected to System.in also closes System.in, preventing further keyboard input in the program.
+
+sc.close()  =>  System.in.close()
+
+
+Example:
+
+
+import java.util.Scanner;
+
+public class Demo {
+
+    public static void main(String[] args) {
+
+        Scanner sc1 = new Scanner(System.in);
+        System.out.println("Enter number:");
+        int x = sc1.nextInt();
+
+        sc1.close();  // closes System.in
+
+        Scanner sc2 = new Scanner(System.in);
+        System.out.println("Enter another number:");
+        int y = sc2.nextInt();  // ERROR or no input
+
+        System.out.println(x + y);
+    }
+}
+
+
+--Second input fails because System.in is already closed.
+
+Note: System.in is a global system resource, not easily reopened by Java once closed.
+
+
+Best Practice:
+
+For keyboard input: 
+
+--Do not close early.
+
+--Let program end naturally.
+
+--Often avoided in small programs:
+
+
+For file input: 
+
+--Always close.
+
+
+
+
+
+Scanner Class – hasNext() Methods:
+----------------------------------
+
+--When using the Scanner class, programs may crash if input is not available or is in the wrong format.
+
+--To avoid this, Scanner provides hasNextXXX() methods.
+
+
+boolean hasNextXXX();
+
+--hasNextXXX() methods check whether input of a specific type is available before reading it.
+
+--Returns true if there is more input; otherwise, false. 
+
+--It is used to avoid runtime errors when input is missing or unexpected. 
+
+--Commonly used in loops when reading multiple inputs from a user or a file. 
+
+
+Types of hasNext() Methods:
+--------------------------
+
+
+hasNext(): Checks if any token is available. 
+
+hasNextInt(): Checks if the next token can be parsed as an int. 
+
+hasNextDouble(): Checks if the next token can be parsed as a double. 
+ 
+hasNextBoolean(): Checks if the next token can be parsed as a boolean. 
+ 
+hasNextLine(): Checks if another line of input is available.
+ 
+
+
+
+Example:
+
+Without checking:
+
+int num = sc.nextInt();  // may crash if input is not integer
+
+
+Safer way:
+
+if (sc.hasNextInt()) {
+    int num = sc.nextInt();
+}
+
+
+
+Example1: Checking Integer Input
+
+
+import java.util.Scanner;
+
+class Demo {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Enter a number:");
+
+        if (sc.hasNextInt()) {
+            int num = sc.nextInt();
+            System.out.println("Number: " + num);
+        } else {
+            System.out.println("Invalid input!");
+        }
+    }
+}
+
+
+
+Input: 10 => Valid
+Input: abc => Invalid
+
+
+
+
+
+Example2: Using hasNext() to read words until input ends 
+--------
+
+import java.util.Scanner; 
+ 
+public class Demo {
+ 
+    public static void main(String[] args) { 
+
+        Scanner sc = new Scanner(System.in); 
+        System.out.println("Enter words (type 'exit' to stop):"); 
+ 
+        while (sc.hasNext()) { // Check if there is another token 
+
+            String word = sc.next(); 
+
+            if (word.equals("exit")) { 
+                break; 
+            } 
+
+            System.out.println("You typed: " + word); 
+        } 
+ 	
+	System.out.println("Bye"); 
+ 
+        sc.close(); 
+    } 
+} 
+
+
+
+Example3: Using hasNextInt() to safely read integers
+
+
+Scanner sc = new Scanner(System.in); 
+System.out.println("Enter numbers (type a non-number to stop):"); 
+ 
+while (sc.hasNextInt()) { // Only true if next input is an integer 
+    int num = sc.nextInt(); 
+    System.out.println("You entered: " + num); 
+} 
+ 
+System.out.println("Non-integer input detected, stopping."); 
+
+
+
+Example4: Using hasNextLine() to read lines safely 
+
+
+Scanner sc = new Scanner(System.in); 
+
+System.out.println("Enter multiple lines (type 'quit' to stop):"); 
+ 
+while (sc.hasNextLine()) {
+ 
+    String line = sc.nextLine(); 
+    if (line.equals("quit"))  
+	break; 
+ 
+    System.out.println("Line: " + line); 
+} 
+
+
+
+
+Example5: Reading a text file using Scanner class:
+
+
+Demo.java:
+----------
+
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+public class Demo {
+
+	public static void main(String[] args) throws Exception {
+        
+		Scanner sc= new Scanner(new File("E:\\hdfc_sem4_Java_Repo\\Class_notes_part1.txt"));
+		
+		
+		while(sc.hasNextLine()) {
+			
+			String line = sc.nextLine();
+			
+			System.out.println(line);
+		}
+		
+		System.out.println("Done....");
+		
+		sc.close();
+	
+		
+	}
+}
+
+
+
+Example6: Reading from the String
+
+
+String input = "101 Ram 85";
+
+Scanner sc = new Scanner(input);
+
+int roll = sc.nextInt();
+String name = sc.next();
+int marks = sc.nextInt();
+
+System.out.println(roll);
+System.out.println(name);
+System.out.println(marks);
+
+
+
+
+Changing Token Delimiter:
+-------------------------
+
+
+--Scanner allows custom delimiter.
+
+
+Example:
+
+String data = "10,20,30";
+
+Scanner sc = new Scanner(data);
+sc.useDelimiter(",");
+
+while (sc.hasNextInt()) {
+    System.out.println(sc.nextInt());
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
