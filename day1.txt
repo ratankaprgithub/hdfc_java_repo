@@ -944,3 +944,19 @@ com.hdfc.Demo
 
 
 
+class Assignment:
+====================
+
+	// 1.  get the sum of total digit in a number
+        
+        // 2. reverse a given number without using a predefined method.
+        
+        // 3. count all the even and odd number inside the given number
+        // int x = 12345  = odd = 3 even = 2
+        
+        // 4. write a program to accept empid, empname, salary from the user 
+        // and print those details in descriptive way till the user opted out.
+        
+
+
+
