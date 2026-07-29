@@ -488,6 +488,39 @@ public class Song {
 }
 
 
+
+
+1. static members of a class is sharable among multuple objects of the same class.
+
+2. static members can be accessed by following 3 ways:
+
+
+1. directly without any reff : within the same class
+
+2. using the object of that class.
+
+3. using the class name (Best way to access the static members)
+
+
+
+
+class System{
+
+
+public static PrintStream out = new PrintStream();
+
+}
+
+
+
+
+
+
+
+
+
+
+
 Example2:
 
 
@@ -664,6 +697,200 @@ public class Demo {
 
 
 Note: at comiple time the call d1.fun2() will be resolve as Demo.fun2();
+
+
+without method chaining:
+------------------------
+
+Calculator.java:
+----------------
+
+package com.masai;
+
+public class Calculator {
+
+    private int data=0;
+
+    public void add(int num){
+        this.data+=num;
+    }
+
+    public void substract(int num){
+        this.data-=num;
+    }
+
+    public void multiply(int num){
+        this.data*=num;
+    }
+
+    public void divide(int num){
+
+        if(num == 0){
+            System.out.println("Can not divide with zero");
+        }else{
+            this.data/=num;
+        }
+
+    }
+
+    public void reminder(int num){
+
+        if(num == 0){
+            System.out.println("Can not get reminder with zero");
+        }else{
+            this.data%=num;
+        }
+
+    }
+
+    public int getResult(){
+        return data;
+    }
+
+
+}
+
+
+Demo.java:
+---------
+
+package com.masai;
+
+public class Demo {
+
+
+
+    public static void main(String[] args) {
+
+
+        Calculator cal = new Calculator();
+        cal.add(10);
+        cal.add(50);
+        cal.add(10);
+        cal.substract(5);
+
+        System.out.println("Result is: "+cal.getResult());
+
+
+
+         }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+method chaining:
+===============
+
+Calculator.java:
+----------------
+
+
+
+
+package com.masai;
+
+public class Calculator {
+
+    private int data=0;
+
+    public Calculator add(int num){
+        this.data+=num;
+        return this;
+    }
+
+    public Calculator substract(int num){
+        this.data-=num;
+        return this;
+    }
+
+    public Calculator multiply(int num){
+        this.data*=num;
+        return this;
+
+    }
+
+    public Calculator divide(int num){
+
+        if(num == 0){
+            System.out.println("Can not divide with zero");
+        }else{
+            this.data/=num;
+        }
+            return this;
+    }
+
+    public Calculator reminder(int num){
+
+        if(num == 0){
+            System.out.println("Can not get reminder with zero");
+        }else{
+            this.data%=num;
+        }
+
+        return this;
+    }
+
+    public int getResult(){
+        return data;
+    }
+
+
+}
+
+
+Demo.java:
+---------
+
+package com.masai;
+
+public class Demo {
+
+
+
+    public static void main(String[] args) {
+
+
+      int result= new Calculator().add(10).add(20).add(10).substract(5).getResult();
+
+
+
+        System.out.println(result);
+
+
+         }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -874,80 +1101,6 @@ Modify the above code so output becomes:
 
 After change: 50
 
-
-
-Call by Reference in C++:
-========================
-
-
---In C++, we can pass variables by reference, meaning the method receives the original variable, not a copy.
-
---So, changes inside the function directly affect the original variable.
-
-
-Example:
-
-#include <iostream>
-using namespace std;
-
-void change(int &x) {   // reference parameter
-    x = 50;
-}
-
-int main() {
-    int a = 10;
-    
-    change(a);
-    
-    cout << a;
-
-    return 0;
-}
-
-
-Output: 50
-
-
-&x means reference to original variable.
-
-No copy is created.
-
-Function works on the original variable(same memory address).
-
-
-
-Swaping 2 Student in C++:
-=========================
-
-#include <iostream>
-using namespace std;
-
-class Student {
-
-public:
-    string name;
-
-};
-
-void swapStudents(Student* &s1, Student* &s2) {
-    Student* temp = s1;
-    s1 = s2;
-    s2 = temp;
-}
-
-int main() {
-
-    Student* st1 = new Student();
-    st1->name = "Rahul";
-
-    Student* st2 = new Student();
-    st2->name = "Amit";
-
-    swapStudents(st1, st2);
-
-    cout <<"st1 name : "  <<st1->name << endl;
-    cout <<"st2 name : " <<st2->name << endl;
-}
 
 
 
