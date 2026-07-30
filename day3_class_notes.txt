@@ -1,0 +1,5293 @@
+Array in Java:
+==============
+
+--An array is used to store multiple values of the same data type in a single variable.
+
+Example:
+
+
+int[] arr = new int[5]; //5 int variable is created with thier default value as an array obj.
+
+
+
+--The above created array is capable of storing 5 integers.
+
+
+--In Java, arrays are treated as objects.
+
+--Array object is created in heap memory
+
+--Array variable is a reference variable
+
+--Array class is automatically created by JVM (It is a special type of class)
+
+--Inside an object there is a non-static variable is availabe called "length" which represents the size of that array.
+
+	public final int length
+
+
+Example:
+
+
+int[] arr = new int[5];
+
+System.out.println(arr); // [I@...
+
+System.out.println(arr[0]); // 0
+System.out.println(arr[3]); // 0
+System.out.println(arr.length); // 5
+System.out.println(arr[6]); // ArrayIndexOutOfBoundsException
+
+
+
+
+
+Assigning Values to Array:
+-------------------------
+
+int[] arr = new int[5];
+
+arr[0] = 10;
+arr[1] = 20;
+arr[4] = 40;
+
+
+Looping Through Array:
+----------------------
+
+--Using normal for loop
+
+for(int i = 0; i < arr.length; i++) {
+    System.out.println(arr[i]);
+}
+
+
+--Using enhanced for loop:
+
+for(int value : arr) {
+    System.out.println(value);
+}
+
+
+
+
+
+another syntax of an array:
+===========================
+
+--Array Initialization Shortcut
+
+int[] arr = {10,20,30,40,50};
+
+
+Important Difference:
+--------------------
+
+int[] arr1;
+arr1 = new int[5];    // valid
+
+int[] arr2;
+arr2 = {10,20,30};    // invalid
+
+
+
+Correct Way:
+
+arr2 = new int[]{10,20,30};
+
+
+
+
+Variables Created in Array:
+----------------------------
+
+
+int[] arr = new int[3];
+
+
+Creates:
+
+1. arr (reference variable)
+
+2. arr[0] (int variable)
+
+3. arr[1] (int variable)
+
+4. arr[2] (int variable)
+
+Total = 4 variables
+
+
+
+
+Array of Objects:
+=================
+
+--Array can store objects also.
+
+
+Example:
+
+
+A.java:
+-------
+
+public class A{
+
+
+	int i =10;
+
+	void funA(){
+
+		System.out.println("inside funA of A class");
+	}
+
+
+}
+
+
+
+Demo.java:
+---------
+
+
+	A[] arr = new A[3];
+
+
+--Here we have not created any object of A class, instead we have created the array object of A type.
+
+--basically we have created the 3 variables of A class 
+		
+//A a1, a2, a3;
+		
+1.arr --ref variable of array type object
+2.arr[0] -- ref variable A type with default value = null
+3.arr[1] -- ref variable A type with default value = null
+4.arr[2] -- ref variable A type with default value = null
+
+
+
+
+
+Example: Assigning the above array elements 
+
+
+	
+		A[] arr = new A[3];
+		
+		arr[0] = new A();
+		arr[1] = new A();
+		arr[2] = new A();
+		
+		for(A a1:arr) {
+			a1.funA();
+		}
+		
+		//shortcut approach		
+		A[] arr = {new A(),new A(), new A(),new A()};
+		
+		for(A a1:arr) {
+			
+			a1.funA();
+		}
+		
+
+
+
+
+String Array Example:
+---------------------
+
+	String[] cities = {"Delhi","Pune","Mumbai"};
+
+	for(String city : cities){
+    	
+		System.out.println(city.toUpperCase());
+	}
+
+
+
+
+Array as Method Parameter:
+--------------------------
+
+
+Demo.java:
+----------
+
+
+package com.masai;
+
+public class Demo {
+	
+	
+	void fun1(int[] arr) {
+		
+		System.out.println("inside fun1 of Demo");
+
+		if(arr != null){
+
+        		for(int i : arr){
+            			System.out.println(i);
+			}
+    		}else{
+
+			System.out.println("Supplied Array is null");
+		}
+	}
+	
+
+	public static void main(String[] args) {
+	
+		Demo d1= new Demo();
+		
+		//here we can pass 2 possible value
+		//1. null default value for any ref variable
+		//2. int array object, (loaded or without loaded)
+		
+		//d1.fun1(null);
+		
+		// int arr[] = new int[3];
+		//d1.fun1(arr);
+
+		int arr[] = {10,20,30};
+
+		d1.fun1(arr);
+		
+		
+	}
+
+}
+
+
+
+
+Activity1: implement the following method
+
+
+
+int getTotalMarks(int[] marks)
+
+
+
+Solution:
+
+package com.chitkara;
+
+import java.util.Scanner;
+
+public class Demo {
+	
+	
+	int getTotalMarks(int[] marks) {
+		
+		int totalMarks = 0;
+		
+		for(int i=0;i<marks.length;i++) {
+			
+			totalMarks += marks[i];
+		}
+		
+		return totalMarks;
+		
+	}
+	
+	
+
+	public static void main(String[] args) {
+
+		Scanner sc = new Scanner(System.in);
+		
+		
+		System.out.println("How many marks ?");
+		int numOfMarks=   sc.nextInt();
+		
+		
+		int[] marks = new int[numOfMarks];
+		
+		
+		for(int i=0;i<marks.length;i++) {
+			System.out.println("Enter marks"+ (i+1));
+			marks[i]= sc.nextInt();
+		}
+		
+		
+		int result= new Demo().getTotalMarks(marks);
+		
+		System.out.println("Total Marks is: "+result);
+		
+		
+	}
+
+}
+
+
+
+Activity2: Create a program to store and display details of multiple students using array of objects.
+
+Requirements:
+
+Step 1: Create a Student Bean Class with the following properties
+
+roll (int)
+
+name (String)
+
+marks (double)
+
+
+
+Step 2: Implement the following method inside the Demo class:
+
+	void getStudentsDetails(Student[] students)
+
+
+This method should:
+
+--Accept an array of Student objects
+
+--Display details of each student
+
+
+Step 3: Inside main() method of the Demo class
+
+--Ask user for number of students.
+
+--Create Student array of that size.
+
+--Take input from user to initialize each student.
+
+--Call getStudentsDetails() method to display data.
+
+
+
+
+Solution:
+
+
+Student.java: Student Bean class
+-------------
+
+package com.chitkara;
+
+public class Student {
+
+	private int roll;
+	private String name;
+	private double marks;
+
+	// zero arg constructor
+	public Student() {
+
+	}
+
+	 // Parameterized constructor
+	public Student(int roll, String name, double marks) {
+		this.roll = roll;
+		this.name = name;
+		this.marks = marks;
+	}
+
+	public int getRoll() {
+		return roll;
+	}
+
+	public void setRoll(int roll) {
+		this.roll = roll;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public double getMarks() {
+		return marks;
+	}
+
+	public void setMarks(double marks) {
+		this.marks = marks;
+	}
+
+}
+
+
+
+
+
+
+Demo.java:
+----------
+
+
+package com.chitkara;
+
+import java.util.Scanner;
+
+public class Demo {
+	
+	
+	void getStudentsDetails(Student[] students) {
+	
+		if(students != null) {
+		
+		System.out.println("Student Details");
+		System.out.println("===============");
+		
+			for(Student student:students) {
+				
+				System.out.println("Roll is :"+student.getRoll());
+				System.out.println("Name is :"+student.getName());
+				System.out.println("Marks is :"+student.getMarks());
+				
+				System.out.println("------------------------------");
+			}
+			
+			
+		}else{
+			System.out.println("Student array is null!");
+		}		
+	}
+	
+
+	public static void main(String[] args) {
+	
+		Demo d1= new Demo();
+		
+		Scanner sc= new Scanner(System.in);
+		
+		System.out.println("How many Student ?");
+		int num= sc.nextInt();
+		
+		Student[] students = new Student[num];//3
+		
+		
+		for(int i=0;i<students.length;i++) {
+			
+			System.out.println("Enter Details of Student "+(i+1));
+			
+			System.out.println("Enter roll:");
+			int roll= sc.nextInt();
+			
+			System.out.println("Enter Name");
+			String name= sc.next();
+			
+			System.out.println("Enter Marks");
+			double marks= sc.nextDouble();
+			
+			//students[i]= new Student(roll, name, marks);
+			students[i] = new Student();
+			students[i].setRoll(roll);
+			students[i].setName(name);
+			students[i].setMarks(marks);
+			
+		}
+		
+		
+		
+		d1.getStudentsDetails(students);
+		
+		
+	}
+
+}
+
+
+
+
+
+Activity 3: 
+
+
+From the above student array:
+
+1. Print highest marks student
+
+
+Student getHeighestMarksStudent(Student[] students);
+
+
+2. Print average marks
+
+
+double getAvgMarks(Student[] students);
+
+
+
+inside the following method of the Demo class:
+
+
+void calculateStatistics(Student[] students)
+
+
+
+
+
+
+
+
+
+
+
+Solution:
+
+
+void calculateStatistics(Student[] students) {
+
+    if (students == null || students.length == 0) {
+        System.out.println("No student data available.");
+        return;
+    }
+
+    double total = 0;
+    Student topper = students[0];
+
+    for (Student s : students) {
+        total += s.getMarks();
+
+        if (s.getMarks() > topper.getMarks()) {
+            topper = s;
+        }
+    }
+
+    double average = total / students.length;
+
+    System.out.println("Average Marks: " + average);
+
+    System.out.println("Highest Marks Student:");
+    System.out.println("Roll: " + topper.getRoll());
+    System.out.println("Name: " + topper.getName());
+    System.out.println("Marks: " + topper.getMarks());
+}
+
+
+
+
+
+Activity 4: Search a student using roll number.
+
+--Implement the following method inside the Demo class:
+
+
+void searchStudent(Student[] students, int roll)
+
+
+
+
+
+Solution:
+
+
+void searchStudent(Student[] students, int roll) {
+
+    boolean found = false;
+
+    for (Student s : students) {
+        if (s.getRoll() == roll) {
+            System.out.println("Student Found:");
+            System.out.println("Name: " + s.getName());
+            System.out.println("Marks: " + s.getMarks());
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) {
+        System.out.println("Student not found.");
+    }
+}
+
+
+
+Call from main of Demo class:
+------------------------------
+
+
+System.out.print("Enter roll number to search: ");
+int r = sc.nextInt();
+d1.searchStudent(students, r);
+
+
+
+
+Array as return type:
+=======================
+
+
+--In Java, a method can return an array just like it returns any other object.
+
+Since arrays are objects in Java, a method can return:
+
+--an array of primitive types
+
+--an array of objects
+
+
+This is useful when:
+
+--Multiple values must be returned
+
+--Data is fetched from database or file
+
+--A list of objects needs to be sent back to caller
+
+Example:
+
+--A method returns multiple Student objects after login validation.
+
+
+
+Activity 5:
+
+
+--Implement the following method inside the Demo class that returns an array of Student objects after validating login credentials.
+
+
+Student[] getStudents(String username, String password)
+
+
+If credentials are valid: (username= "admin" and password = "12345")
+
+--Create and return Student array with size 3 (with initialized student object with dummy value).
+
+--Otherwise return null.
+
+In main method:
+
+--Take the username and password from the user
+
+--Call method
+
+--Display student details if data returned.
+
+
+
+Solution:
+
+
+Demo.java
+---------
+
+
+package com.chitkara;
+
+import java.util.Scanner;
+
+public class Demo {
+
+    Student[] getStudents(String username, String password) {
+
+        if (username.equals("admin") && password.equals("123")) {
+
+	//we can connect with DB and get multiple Student object from the DB and return them in the form an array.
+
+            Student[] students = new Student[3];
+
+            students[0] = new Student(10, "N1", 780);
+            students[1] = new Student(12, "N2", 680);
+            students[2] = new Student(14, "N3", 880);
+
+            return students;
+        }
+
+        return null;
+    }
+
+    public static void main(String[] args) {
+
+        Demo d1 = new Demo();
+
+        Scanner sc = new Scanner(System.in);
+        
+        
+        System.out.println("Enter username: ");
+        String username= sc.next();
+        
+        System.out.println("Enter password: ");
+        String password= sc.next();
+        
+        
+        
+        Student[] students = d1.getStudents(username, password);
+
+        if (students != null) {
+
+            for (Student student : students) {
+                System.out.println("Roll : " + student.getRoll());
+                System.out.println("Name : " + student.getName());
+                System.out.println("Marks: " + student.getMarks());
+                System.out.println("----------------------");
+            }
+
+        } else {
+            System.out.println("Invalid username or password.");
+        }
+    }
+}
+
+
+
+
+
+2d Array:
+========
+
+--In Java multi-dimentional array is treated as array of array.
+
+
+
+Example:
+
+int[][] arr = new int[3][2];
+
+
+Meaning:
+
+3 rows
+
+2 columns
+
+
+
+		System.out.println(arr);//[[I@
+		
+		System.out.println(arr.length);//3
+
+		System.out.println(arr[0]);//[I@3432432
+		
+		System.out.println(arr[0].length); 
+
+		System.out.println(arr[0][1]);//0
+
+
+
+
+Filling and printing 2D array:
+------------------------------
+
+Example:
+
+
+Demo.java
+---------
+
+
+
+package com.chitkara;
+
+public class Demo {
+		
+	public static void main(String[] args) {
+	
+		
+		int[][] arr= new int[4][4];
+		
+		for(int i=0;i<arr.length;i++) {
+			
+			for(int j=0;j<arr[i].length;j++) {
+				
+				arr[i][j]=j;
+				
+			}	
+		}
+		
+		
+		for(int[] ar:arr) {
+			
+			for(int i:ar) {
+				System.out.print(i+" ");
+			}
+			System.out.println();
+		}
+		
+		
+		
+		
+	}
+
+}
+
+
+
+Row-wise Sum:
+-------------
+
+
+for(int i=0;i<arr.length;i++){
+
+    int sum = 0;
+
+    for(int j=0;j<arr[i].length;j++){
+        sum += arr[i][j];
+    }
+
+    System.out.println("Row Sum = "+sum);
+}
+
+
+
+Column-wise Sum:
+----------------
+
+for(int j=0;j<arr[0].length;j++){
+
+    int sum = 0;
+
+    for(int i=0;i<arr.length;i++){
+        sum += arr[i][j];
+    }
+
+    System.out.println("Column Sum = "+sum);
+}
+
+
+
+
+
+
+Printing Diagonal Elements:
+----------------------------
+
+
+for(int i=0;i<arr.length;i++){
+    System.out.println(arr[i][i]);
+}
+
+
+
+
+Jagged Array:
+============
+
+
+A Jagged Array is a multi-dimensional array where each row can have different number of columns.
+
+In simple terms:
+Each row can store a different number of elements.
+
+
+Example:
+
+Classroom Seating arrangement:
+
+Row1: 3 students
+Row2: 5 students
+Row3: 2 students
+
+
+
+
+
+
+Why Jagged Array?
+-----------------
+
+
+Used when data size is not uniform, for example:
+
+--Students having different numbers of subjects
+
+--Employees having different projects
+
+--Monthly sales with varying days
+
+--Different course modules
+
+
+Using a normal 2D array wastes space whereas Jagged arrays fit perfectly.
+
+
+Important Concept
+------------------
+
+
+--In Java, a 2D array is actually an array of arrays.
+
+--So each row can be created with different sizes.
+
+Syntax:
+
+int[][] arr = new int[3][];
+
+Here:
+
+Total rows = 3
+
+Column sizes not defined yet
+
+
+Assign Different Column Sizes
+
+
+int[][] arr = new int[3][];
+
+arr[0] = new int[2];
+arr[1] = new int[4];
+arr[2] = new int[3];
+
+
+
+Example Program
+----------------
+
+public class Demo {
+    public static void main(String[] args) {
+
+        int[][] arr = new int[3][];
+		
+		
+		arr[0] = new int[] {10,20};
+		arr[1] = new int[] {50,60,70,80};
+		
+		arr[2] = new int[3];
+		arr[2][0] = 30;
+		arr[2][1] = 90;
+		arr[2][2] = 100;
+		
+		for(int i=0;i<arr.length;i++) {
+			
+			for(int j=0;j<arr[i].length;j++) {
+				
+				System.out.print(arr[i][j]+" ");
+			}
+			
+			System.out.println();
+			
+		}
+	}
+}
+
+
+
+
+
+
+
+Activity 6 — Jagged Array
+=============================
+
+Problem Statement
+
+--Create a program using a jagged array to store marks of students where each student has different number of subjects.
+
+Requirements
+
+--Ask user for number of students.
+
+--Ask subject count for each student.
+
+--Store marks accordingly.
+
+--Display marks of each student.
+
+
+Solution:
+
+
+Demo.java
+----------
+
+
+package com.chitkara;
+
+import java.util.Scanner;
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+		Scanner sc = new Scanner(System.in);
+		
+		
+		System.out.println("Enter number of students");
+		int studentCount= sc.nextInt();
+		
+		
+		int[][] marks = new int[studentCount][];
+		
+		
+		//for each student
+		
+		for(int i=0;i<studentCount;i++) {
+			
+			System.out.println("Enter number of subject for the student "+(i+1)+" :");
+			
+			int subjectCount= sc.nextInt();
+			
+			marks[i] = new int[subjectCount];
+			
+			System.out.println("Enter marks of student "+(i+1));
+			
+			for(int j=0;j<subjectCount;j++) {
+				
+				System.out.println("Enter marks for the subject: "+(j+1));
+				marks[i][j]= sc.nextInt();
+				
+			}	
+		}
+		
+		
+		System.out.println("Student Marks");
+		
+		
+		for(int i=0;i<marks.length;i++) {
+			
+			System.out.println("Student "+(i+1));
+			
+			for(int j=0;j<marks[i].length;j++) {
+				
+				
+				System.out.println(marks[i][j]+" ");
+			}
+			
+			System.out.println();
+			
+			
+		}
+		
+		sc.close();
+		
+	}
+
+}
+
+
+
+
+
+Utility Classes in java:
+========================
+
+
+A Utility Class is a class that:
+
+--Contains only static methods and static variables
+
+--Is not meant to be instantiated
+
+--Provides common reusable operations
+
+--Helps avoid rewriting common logic
+
+
+Some utility classes:
+--------------------
+
+
+1. Arrays
+2. Math
+3. Collections
+
+
+
+--Most of the utility classes belong to "java.util" package.
+
+
+Arrays class:
+=============
+
+---To use its methods, we must import:
+
+import java.util.Arrays;
+
+
+Some of the important method of the Arrays class:
+-------------------------------------------------
+
+1. Arrays.toString(arr);
+
+
+--Converts an array to a readable string.
+
+
+Without toString()
+
+int[] a = {1, 2, 3};
+System.out.println(a); // Prints memory reference
+
+With toString()
+
+System.out.println(Arrays.toString(a));
+
+Output:
+[1, 2, 3]
+
+--Best for printing arrays
+
+
+
+2. Arrays.sort(arr)
+
+
+--Sorts the array in ascending order.
+
+Example:
+
+int[] numbers = {5, 2, 8, 1};
+
+Arrays.sort(numbers);
+
+System.out.println(Arrays.toString(numbers));
+
+
+
+--It uses Dual-Pivot QuickSort internally
+ 
+--Modifies original array
+
+
+Sorting in decending order:
+
+
+ 	 int[] arr = {5, 1, 9, 3, 7};
+
+        // Step 1: Sort in ascending order
+        Arrays.sort(arr);
+
+        // Step 2: Reverse array
+        int start = 0;
+        int end = arr.length - 1;
+
+        while (start < end) {
+            int temp = arr[start];
+            arr[start] = arr[end];
+            arr[end] = temp;
+
+            start++;
+            end--;
+        }
+
+        // Step 3: Print result
+        System.out.println(Arrays.toString(arr));
+
+
+
+
+3. Arrays.equals(arr1, arr2)
+
+
+--This method returns boolean
+
+--It checks whether two arrays are equal (same size & same elements).
+
+
+int[] a = {1, 2, 3};
+int[] b = {1, 2, 3};
+
+
+System.out.println(Arrays.equals(a, b)); //true
+
+
+4. Arrays.fill()
+
+--It fills the entire array with a single value.
+
+
+int[] arr = new int[5];
+Arrays.fill(arr, 10);
+System.out.println(Arrays.toString(arr)); //[10, 10, 10, 10, 10]
+
+
+--It is useful for initialization the array elements
+
+
+5. Arrays.copyOf()
+
+
+--It creates a new copy of an array.
+
+int[] original = {1, 2, 3};
+
+int[] copy = Arrays.copyOf(original, original.length);
+
+System.out.println(Arrays.toString(copy));
+
+
+Note: Changes to the copy won’t affect the original
+
+
+6. Arrays.copyOfRange()
+
+--It copies a portion of an array.
+
+int[] a = {10, 20, 30, 40, 50};
+
+int[] part = Arrays.copyOfRange(a, 1, 4); // 1 index included and index 4 excluded
+
+System.out.println(Arrays.toString(part)); // [20, 30, 40]
+
+
+
+7. Arrays.deepToString() (For 2D Arrays)
+
+--It prints multi-dimensional arrays.
+
+--Best for 2D & Jagged Arrays
+
+
+int[][] matrix = {
+    {1, 2},
+    {3, 4}
+};
+
+
+System.out.println(Arrays.deepToString(matrix)); //[[1, 2], [3, 4]]
+
+
+8. Arrays.deepEquals()
+
+--It compares 2D arrays element by element.
+
+int[][] a = {{1, 2}, {3, 4}};
+
+int[][] b = {{1, 2}, {3, 4}};
+
+System.out.println(Arrays.deepEquals(a, b)); //true
+
+
+9. Arrays.binarySearch()
+
+--It searches element in a sorted array.
+
+--If the key is not available then it returns the negative number.
+
+int[] arr = {1, 3, 5, 7};
+
+int index = Arrays.binarySearch(arr, 5);
+
+if(index >= 0)
+	System.out.println(index);// 2
+else
+	System.out.println("Not Found");
+
+
+
+
+Math class:
+===========
+
+--The Math class in Java provides methods for performing basic and advanced mathematical operations.
+
+--This class belongs to "java.lang" package.
+
+--Since java.lang is automatically imported, no import statement is required.
+
+
+Some of the useful methods of the Math class:
+---------------------------------------------
+
+
+1. sqrt(-):
+
+--Returns square root.
+
+System.out.println(Math.sqrt(25)); //5.0
+
+
+2. pow():
+
+--Calculates power.
+
+System.out.println(Math.pow(2, 3)); // 8.0
+
+
+3. abs():
+
+--Removes negative sign.
+
+System.out.println(Math.abs(-10)); //10
+
+
+4. max():
+
+--Returns the max of 2 numbers
+
+System.out.println(Math.max(10, 20)); //20
+
+
+5. min():
+
+
+--Returns the min of 2 numbers
+
+System.out.println(Math.max(10, 20)); //10
+
+
+6. random():
+
+--It returns value between: 0.0 <= value < 1.0
+
+System.out.println(Math.random()); //0.2813857465352656
+
+
+Example: Random number in range 1 to 10
+
+
+Formula: 
+
+(int)(Math.random() * range) + min
+
+int num = (int)(Math.random() * 10) + 1;
+
+System.out.println(num);
+
+
+Example: OTP generation in range 1000 to 9999
+
+
+int otp = (int)(Math.random() * 9000) + 1000;
+
+System.out.println("OTP: " + otp);
+
+
+//range = max-min+1
+//9999 - 1000 + 1 = 9000 numbers
+
+
+7. ceil():
+
+--It round up the decimal point
+
+System.out.println(Math.ceil(3.2)); // 4.0
+
+
+
+8. floor():
+
+--It round down the decimal point
+
+System.out.println(Math.floor(3.9)); //3.0
+
+
+9. round():
+
+--It rounds to nearest integer.
+
+System.out.println(Math.round(3.6));//4
+
+
+
+10. cbrt(): Cube root
+
+--It returns the cube root of a number
+
+System.out.println(Math.cbrt(27)); //3
+
+
+11. log():
+
+--It return the natural log, not base 10
+
+log​(x) base e
+
+where e ≈ 2.71828 (Euler's number).
+
+System.out.println(Math.log(10)); //2.302585092994046
+
+
+
+12. log10()
+
+--log base 10
+
+System.out.println(Math.log10(10)); //1.0
+
+
+Example: log base 2 of 8
+
+double result = Math.log(8) / Math.log(2);
+
+System.out.println(result); //3.0
+
+
+
+13. Math Constants PI
+
+System.out.println(Math.PI); //3.141592653589793
+
+
+
+
+
+
+
+Inheritance in Java:
+=====================
+
+
+--Inheritance is a mechanism in Java where one class acquires the properties and behaviors of another class.
+
+In simple words:
+
+--Getting properties and methods of one class into another class.
+
+Example
+
+--If Dog is an Animal, then Dog inherits properties of Animal.--with the help of inheritance we achieve IS-A realtionship
+
+
+
+Advantages of Inheritance:
+--------------------------
+
+1. Code reusability
+
+2. Runtime polymorphism
+
+3. Better code organization
+
+4. Easier maintenance
+
+
+
+Relationships in Java:
+----------------------
+
+--In Java, there are 2 types of relationships exists:
+
+1. Has-A (Assosication)
+	--Composistion (Strong Has-A)
+	--Aggregation (Weak Has-A)
+
+
+
+
+Has-A relationship  example:
+
+class A {
+
+B b1 = new B();
+
+}
+
+
+Here A class contains the object of another class B
+
+
+2. Is-A relationship: (Inheritance)
+
+
+--lets assume we need to develop a forest project, in which we need to create some class like:
+
+Dog	Cat 	Tiger	Lion ,20 
+
+
+and all classes should have following methods:
+
+
+sleep() //1000
+walk() //5000
+eat() //6000
+makeNoise()
+
+
+
+--In this situation, we need to repeat the above methods inside the multiple classes, to avoid this situations we can make use of Inheritance concept in Java.
+
+--in which we can create a Parent class called Animal and keep all the common functionalities inside this class:
+
+--And then all the above classes can extends the Animal class, and become the child class of this Animal class, later on any of the above classes can override the makeNoise method, and define its own functionlities also.
+
+
+--we can put one more category inside this Inherince hirarchey, like one as WildAnimal and another as DomesticAnimal also.
+
+
+
+Type of inheritance:
+=================
+
+Note: At class level java supports only multilevel inheritance(single, hirarical).where as with the help of interface we can achieve multiple inheritance.
+
+
+Basic Inheritance Example
+-----------------------
+
+//Parent Class
+
+A.java:
+-------
+
+package com.chitkara
+public class A {
+
+    int i = 10;
+
+    void funA() {
+        System.out.println("inside funA of A");
+
+    }
+}
+
+
+//Child Class
+
+Demo.java:
+---------
+
+public class Demo extends A {
+
+    int x = 100;
+
+    void funX() {
+        System.out.println("inside funX of Demo");
+    }
+
+    public static void main(String[] args) {
+
+        Demo d1 = new Demo();
+
+        System.out.println(d1.x);
+        d1.funX();
+
+        System.out.println(d1.i);
+        d1.funA();
+
+    }
+}
+
+
+
+Child class object can access:
+
+--its own properties
+
+--parent class properties.
+
+
+
+
+Concept:
+--------
+
+
+--Here A class will become parent/super/base class and the Demo class will become child class/ subclass/derived class.
+
+--From the object of child class we can refer to the properties of the parent class also.
+
+
+With respect to the diagram:
+
+
+1. Object of the super class is created first completly, before object of the child class created completly.
+
+2.super class obj will be created from the constructor of the subclass.(by using  super(); )
+
+public Demo(){
+super(); // create the parent class object by executing parent class constructor.
+
+}
+
+
+3. super class object will be created in association with the subclass object.
+
+4. java.lang.Object class is the super most class of any java class.
+
+
+Note: meaning of  super(); is to  create the parent class object by executing parent class zero arguement constructor.
+
+
+
+
+Note: if inside the parent class we have only parameterized constructor then inside the child class we need to call that parent class constructor explicitly by supplying appropriate argument ex: super(10);
+otherwise our inheritance will fail.. here we can not depend upon  default constructor of the child class, we need to keep constructor inside the child class explicitly and from there need to call parent class constrcutor,
+
+
+
+
+example:
+
+A.java:
+---------
+
+package com.chitkara;
+
+public class A {
+	
+	int i=10;
+	
+	A(int i){
+		System.out.println("inside A constructor");	
+		
+	}
+	
+	void funA() {
+		
+		System.out.println("inside funA of A");
+	}
+
+}
+
+Demo.java:
+---------------
+
+package com.masai;
+
+public class Demo extends A{
+		
+	int x=100;
+	
+	
+	Demo(){
+		super(10);
+		System.out.println("inside Demo constructor");
+	}
+	
+	void funX() {
+		
+		System.out.println("inside funX of Demo");
+	}
+
+	
+	public static void main(String[] args) {
+			
+		Demo d1 = new Demo();
+		
+		System.out.println(d1.x);
+		d1.funX();
+		
+		System.out.println(d1.i);
+		d1.funA();
+		
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Super class refference and child class object:
+==============================================
+
+--according to this rule, we can assign any child class object to its parent class reference variable.
+
+A a1 = new A();
+A a1 = null;
+A a1 = new Demo(); // this is possible only if Demo class is the child class of A
+
+
+
+A.java:
+
+funA()
+funB()
+
+
+Demo.java extends A
+
+funA(); //overriden
+funX(); // child specific method
+
+
+
+Note: if a super class ref pointing to the child class object, then with that obj we can refer only members of the parent class and, if that method is overriden inside the child class then child class method will gets the priority. but with the super class reference we can not call the child class specific functionality. will get a CE.
+
+
+example:
+
+A.java:
+-----------
+
+package com.masai;
+
+public class A {
+	
+	int i=10;
+	
+	void funA() {
+		
+		System.out.println("inside funA of A");
+	}
+	
+	void funB() {
+		System.out.println("inside funB of A");
+	}
+	
+
+}
+
+
+
+Demo.java:
+--------------
+
+package com.masai;
+
+public class Demo extends A{
+		
+	int x=100;
+	
+
+	@Override
+	void funA() {
+		
+		System.out.println("inside funA of Demo");
+	}
+	
+
+	void funX() {
+		
+		System.out.println("inside funX of Demo");
+	}
+	
+	
+	public static void main(String[] args) {
+			
+//		Demo d1 = new Demo();
+//
+//		d1.funB();
+//		d1.funA();//Demo
+//		d1.funX();
+
+		
+		//A a1 = new A();
+		
+		//a1.funA(); // A 
+		//a1.funX(); //CE
+		
+		
+		A a1 = new Demo();
+		
+		a1.funA();  
+		a1.funB();
+		
+		//a1.funX(); //CE 
+		
+
+
+
+	}
+
+}
+
+
+Note: in order to call the child class specific functionality from the parent class object, we need to downcast the super class ref to the appropriate child class object.
+
+
+ex:
+	//upcasting
+	A a1= new Demo();
+
+	//downcasting
+	Demo d1= (Demo)a1;
+
+	d1.funX();
+	
+ //object downcasting this is possible only when super class ref points to the child class object
+//if A a1 = new A() and then we try to downcast then we will get a runtime exception called ClassCastException
+
+
+
+
+
+
+
+LgOldTv.java:
+----------------
+
+package com.masai;
+
+public class LgOldTv {
+	
+	
+	public void start() {
+		System.out.println("Tv Starting");
+	}
+	
+	public void increaseVolume() {
+		System.out.println("volume increased..");
+	}
+	
+	public void changeChannel() {
+		
+		System.out.println("Channel changed in Old Way...");
+	}
+}
+
+
+LgSmartTv.java:
+----------------------
+
+package com.masai;
+
+public class LgSmartTv extends LgOldTv {
+	
+	@Override
+	public void changeChannel() {
+		
+		System.out.println("Channel Changed in smart way..");
+	}
+	
+	
+	public void playGame() {
+		
+		System.out.println("Game Starts...");
+	}
+
+}
+
+Demo.java:
+--------------
+
+package com.masai;
+
+public class Demo {
+			
+	
+	public static void main(String[] args) {
+			
+//		LgOldTv remote = new LgOldTv();
+//		
+//		remote.start();
+//		remote.increaseVolume();
+//		remote.changeChannel(); // old way
+//		
+	
+//		LgSmartTv remote=new LgSmartTv();
+//	
+//		remote.start();
+//		remote.increaseVolume();
+//		remote.changeChannel();//smart way
+//		remote.playGame();
+
+		//upcasting
+		LgOldTv remote = new LgSmartTv();
+		
+		remote.start();
+		remote.increaseVolume();
+		remote.changeChannel();// smart way
+		
+		//LgSmartTv nRemote=new LgSmartTv();
+		
+		//object downcasting
+		LgSmartTv sRemote= (LgSmartTv)remote;
+		sRemote.playGame();
+			
+	}
+}
+
+
+
+Example2:
+
+
+
+Animal.java: parent class
+------------
+
+package com.chitkara;
+
+public class Animal {
+
+	
+	void makeNoise() {
+		System.out.println("Animal Making Noise");
+	}
+	
+	
+}
+
+
+Dog.java:
+--------
+
+package com.chitkara;
+
+public class Dog extends Animal{
+
+	
+	@Override
+	void makeNoise() {
+	
+		System.out.println("Dog Making noise Bow Bow:");
+		
+	}
+	
+	void shakeHands() {
+		System.out.println("Dog is shaking hands");
+	}
+	
+}
+
+
+
+Cat.java:
+---------
+
+package com.chitkara;
+
+public class Cat extends Animal{
+
+	
+	@Override
+	void makeNoise() {
+	
+		System.out.println("Cat Making Noise meow meow:");
+	}
+}
+
+
+
+Demo.java:
+----------
+package com.chitkara;
+
+public class Demo {
+
+	void handleAnimal(Animal animal) {
+
+		if (animal != null) {
+
+			animal.makeNoise();
+
+			if (animal instanceof Dog) {
+				Dog dog = (Dog) animal;
+				dog.shakeHands();
+			}
+
+		} else {
+
+			System.out.println("Animal is Null...");
+		}
+
+	}
+
+	public static void main(String[] args) {
+
+		Demo d1 = new Demo();
+
+		// d1.handleAnimal(null);
+
+		d1.handleAnimal(new Dog());
+		d1.handleAnimal(new Cat());
+
+	}
+
+}
+
+
+
+
+
+
+
+
+toString() method:
+================
+
+--this method belongs to Object class.
+
+Note: Object class methods are also called as universal method, we can call these methods on any class objects.
+
+public String toString();
+
+--if we call this method on any object then it will convert that object address into the String and return that String.
+
+--the above functionality is written inside the toString() method of the Object class.
+
+
+--toString() method internally called from the println() method.
+
+
+--println--- PrintStream 
+
+println(primitives){
+//print the content
+}
+
+println(){
+//extra line
+}
+
+println(String s){
+print the content of String
+}
+
+println(Object obj){
+
+ String s= obj.toString();
+
+	println(s);
+}
+
+
+**Note: if we print any class object reference then it should print the address of that object in the form of String , but if it is not printing the address, and it prints somting else
+(some message, some content) then, the meaning is, that class has overriden the toString() method from the object class.
+
+--toString() is called by the concept of dynamic polymorphism.
+
+--which method will be called decided at runtime. it is also known as late binding or Dynamic method dispatch.
+
+
+Student.java:
+----------------
+
+package com.masai;
+
+public class Student {
+	
+	private int roll;
+	private String name;
+	private int marks;
+	
+
+	public Student() {
+		
+	}
+
+
+	public Student(int roll, String name, int marks) {
+		super();
+		this.roll = roll;
+		this.name = name;
+		this.marks = marks;
+	}
+	
+	
+	
+	public int getRoll() {
+		return roll;
+	}
+	public void setRoll(int roll) {
+		this.roll = roll;
+	}
+	
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public int getMarks() {
+		return marks;
+	}
+	
+	public void setMarks(int marks) {
+		this.marks = marks;
+	}
+
+
+	@Override
+	public String toString() {
+		return "Student [roll=" + roll + ", name=" + name + ", marks=" + marks + "]";
+	}
+
+}
+
+
+
+
+
+
+
+
+
+example3:
+------------
+
+package com.masai;
+
+public class Demo {
+			
+	public Animal getAnimal(String type) {
+		
+		if(type.equals("Cat"))		
+			return new Cat();
+		else if(type.equals("Dog"))
+			return new Dog();
+		else
+			return null;
+	}
+	
+	public static void main(String[] args) {
+				
+		Demo d1 = new Demo();
+		
+		//Dog dog= d1.getAnimal("Dog"); //CE
+		
+		Animal animal= d1.getAnimal("Dog");
+		
+		animal.makeNoise();
+
+		Dog dog= (Dog)animal;
+
+		dog.shakeHands();
+	
+	}
+	
+}
+
+example4:
+-------------
+
+
+package com.masai;
+
+public class Demo {
+			
+	public Animal getAnimal(String type) {
+		
+		if(type.equals("Cat"))		
+			return new Cat();
+		else if(type.equals("Dog"))
+			return new Dog();
+		else
+			return null;
+	}
+	
+	public static void main(String[] args) {
+				
+		Demo d1 = new Demo();
+		
+		//Dog dog= d1.getAnimal("Dog"); //CE
+		
+		Animal animal= d1.getAnimal("Dog"); // if we pass Cat then ?
+		
+		animal.makeNoise();
+
+		//Dog dog= (Dog)animal; // ClassCastException 
+
+		if(animal instanceof Dog){
+
+			Dog dog= (Dog)animal;
+			dog.shakeHands();
+		}
+	
+
+		
+	
+	}
+	
+}
+
+
+
+final keyword:
+===========
+
+--in java  every keyword has some specific functionality, but there is a keyword whose functionality differs depending upon the situation where it is used i.e final keyword.
+
+1. if we define a variable as final, then we can not change its value elsewhere in program.
+
+Note: if we define any final variable as a instance variable then it should be initialized at the same place or from the contructor.
+
+ex:
+
+Demo.java:
+--------------
+
+public class Demo {
+			
+	
+	final int x=10;
+	
+	final int y;
+	
+	
+	Demo(int y){
+		this.y=y;
+	}
+
+	public static void main(String[] args) {
+			
+		Demo d1= new Demo(20);
+		
+	}	
+	
+}
+
+2. if we define a method as final then we can not override that method inside the child class.
+
+3.if we define a class as final then we can not extends/inherit that class.
+
+String class is a final class.
+
+
+Access modifiers:
+==============
+
+--it specifies the accessebility of a class or its members outside that class or package.
+
+we have 4 types of access modifiers:
+
+1.public  : accessebiltiy is global (other package or other classes also)
+
+2.default: it is similar to public as long as inside the same package, but outside the package it works as private
+
+3.protected: it is simillar to default, but outside the package we can access it by using inheritance.
+
+4.private : the accessebility is restricted to that class only.
+
+
+Note: A normal class/outer-class can only be either default or public but that class members (variables, methods, constructors, inner classes) can be private ,public, default, protected.
+
+Note: we can not apply access modifiers to the local variables.
+
+
+
+--default constructor given by java compiler is always public.
+
+--if we make constructor of a class a default then we can not create its object or extends this class outside that package.
+
+--if we make constructor of a class a private then we can not create its object or extends this class outide that class even in the same package also.
+
+
+
+
+Access Modifier Example: Difference between protected and default:
+==================================================================
+
+--"default" acts as public inside the same package but acts as private outside that package.
+
+--"protected" gives extra access to subclasses even in different packages.
+i.e protected members are accesable outside the package through the subclasses.
+
+Example:
+
+
+com.chitkara/Animal.java:
+-------------------------
+
+package com.chitkara;
+
+public class Animal {
+
+    int age = 5;          // default access
+    protected int weight = 20; // protected access
+
+}
+
+
+
+com.masai/Dog.java:
+-------------------
+
+package com.masai;
+
+import com.chitkara.Animal;
+
+public class Dog extends Animal {
+
+    void show() {
+        // System.out.println(age);   // ERROR (default not visible)
+        System.out.println(weight);   // Allowed (protected via inheritance)
+    }
+
+    public static void main(String[] args) {
+        Dog d = new Dog();
+        d.show();
+    }
+}
+
+
+
+default: Only inside same package
+protected:  Same package + child class outside package
+
+
+
+
+
+
+
+
+**************************************************************************************************************************
+
+
+Abstract class:
+=============
+
+
+abstract class
+abstract method
+
+
+
+
+--By using an Abstract class we acheive partial abstraction in java.
+
+
+
+Imagine you are developing a forest project with the following class:
+
+
+
+Dog	Cat	Tiger	Lion
+
+
+
+--And the following methods are common in all these classes:
+
+
+eat()
+sleep()
+walk()
+makeNoise()
+
+
+
+--So, here we can make use of the concept of Inheritance to reuse the same code inside all the clases
+--We can create a base/super class called Animal and keep all the common functionalities inside this base class
+
+eat()
+sleep()
+walk()
+makeNoise()
+
+
+--and extend this Animal class inside all the child classes.
+
+--This hirarechy can be further divided into one more category
+
+
+
+
+
+
+
+		abstract Animal
+
+
+DomesticAnimal		WildAnimal
+
+
+Dog	Cat		Tiger	Lion
+
+
+
+
+
+Dog extends Animal;
+
+
+Dog tommy = new Dog();
+
+Animal tommy = new Dog();
+
+Animal tommy = new Animal();
+
+
+
+
+
+
+
+
+
+
+Animal tommy = new Dog();
+
+Animal tommy = new Animal();//CE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Now think it like:
+
+
+Dog tommy = new Dog(); // OK
+
+Animal tommy = new Dog(); // OK
+
+Animal tommy = new Animal(); // ? 
+
+
+abstract method
+
+
+ 
+
+
+abstract class
+
+
+
+
+--In java, if we want to restrict the user, so that he can not instantiate or create object of a class directly then marks that class as abstract class.
+
+--if we make constructor as private then we can not create its object outside that class
+but inside the class we can create its object
+
+
+Note: an abstract class does not have any meaning, unless it is extended by the child class, and we are allowed to create only child class object.
+
+
+abstract Animal
+
+eat()
+sleep()
+walk()
+makeNoise()
+
+
+
+Dog	Cat	Tiger	Lion
+
+
+
+Dog tommy = new Dog();
+
+Animal tommy = new Dog();
+
+Animal tommy = new Animal(); //CE
+
+
+
+
+
+
+****************************************************************************************************************************
+
+
+
+
+
+there are 3 differences between a normal class and an abstract class:
+====================================================
+
+1. for an abstract class we can not create its object directly,(new keyword is not applicable)
+
+2.inside an abstract class, we **may have an abstract method also.(it is not mandatory)
+
+Note: we can have an empty abstract class also.
+
+3. final keyword is not applicable with the abstract class (final and abstract both are enimies)
+
+Note: apart from above 3 diff bt normal and abstract class, we can do all the  things with the abstract class whatever we can do with the normal class.
+
+Abstract Class Can Have:
+-----------------------
+
+--Like normal class, it can have:
+
+variables
+
+constructors
+
+concreate Methods
+
+abstract methods
+
+static members
+
+final methods
+
+
+
+
+abstract method:
+--------------------
+
+--method with body is also knwon as implemented method or concreate method
+
+--method without body is known as abstract method or unimplemented method. these types of methos should have abstract keyword.
+
+ex:
+
+public abstract void makeNoise();
+
+
+Note: - inside a normal class/concreate class, we can not have an abstract method.
+
+--if we want to place an abstract method inside our class then we need to mark that class also as an abstract class.
+
+
+***Note: an abstract method can not be static.
+
+
+
+
+ex:
+
+Animal.java:
+-----------
+
+abstract class Animal {
+    void eat() {
+        System.out.println("Animal eats");
+    }
+
+    void sleep() {
+        System.out.println("Animal sleeps");
+    }
+
+    abstract void makeNoise();
+}
+ 
+
+
+Dog.java: // child class
+---------
+
+class Dog extends Animal {
+
+    void makeNoise() {
+        System.out.println("Dog barks");
+
+    }
+}
+
+
+
+Uses:
+
+
+//Animal a = new Animal();// CE
+Animal a = new Dog();
+a.makeNoise();
+
+
+
+
+
+
+
+rule:
+***Note: if an abstract class having any abstract method then we must override that method inside  the child class otherwise we need to mark that child class also as an abstract class.
+
+
+A.java:
+-----------
+
+package com.masai;
+
+public abstract class A{
+	
+	
+	
+
+		//unimplemented method or abstract method
+		 public abstract void funAbs1();
+	 
+		//unimplemented method or abstract method
+		 public abstract void funAbs2();
+		
+		//unimplemented method or abstract method
+		 public abstract void funAbs3();
+		
+	
+	
+		//implemented method, inside child class we can not override this
+	 	final void funA() {
+		
+			System.out.println("inside funA of A");
+		}
+	
+
+}
+
+
+AChild.java:
+---------------
+
+
+package com.masai;
+
+public abstract class AChild extends A{
+
+	@Override
+	public void funAbs1() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void funAbs2() {
+		// TODO Auto-generated method stub
+		
+	}
+
+}
+
+
+AGrandChild.java:
+----------------------
+
+package com.masai;
+
+public class AGrandChild extends AChild{
+
+	@Override
+	public void funAbs3() {
+		// TODO Auto-generated method stub
+		
+	}
+
+}
+
+Normal class
+
+A a1 = ?  // 3 possible values
+
+A a1 = new A(); // same class obj
+A a1 = new AChild();//  child class obj
+A a1=null;
+
+
+Abstract class:
+
+Abs a1 =? // 2 possible values
+
+Abs a1 = new Abs();// CE
+Abs a1 = new AbsChild(); 
+Abs a1 = null;
+
+
+Abstract object created along with its child class object.
+
+
+example:
+
+A.java:
+-----------
+
+package com.masai;
+
+public abstract class A{
+	
+	
+	public A() {
+		System.out.println("inside constructor of A ");
+	}
+	
+
+	//unimplemented method or abstract method
+	 public abstract void funAbs1();
+	
+	
+	//implemented method
+	 void funA() {
+		
+		System.out.println("inside funA of A");
+	}
+	
+
+}
+
+
+
+
+AChild.java:
+--------------
+
+package com.masai;
+
+public class AChild extends A{
+
+	
+	public AChild() {
+		System.out.println("inside the constructor of AChild");
+	}
+	
+	
+	
+	@Override
+	public void funAbs1() {
+		
+		System.out.println("inside funAbs() of AChild");
+		
+	}
+}
+
+Demo.java:
+--------------
+
+package com.masai;
+
+public class Demo {
+	
+
+	public static void main(String[] args) {
+		
+		A a1 = new AChild();
+		
+		a1.funA();
+		a1.funAbs1();
+	
+	
+	}	
+
+}
+
+
+
+
+
+Student Task:
+=============
+
+1. Predict the output:
+
+abstract class A {
+    void show() {
+        System.out.println("A show");
+    }
+}
+
+
+
+class B extends A {
+
+}
+
+public class Demo {
+
+    public static void main(String[] args) {
+        A obj = new B();
+        obj.show();
+    }
+}
+
+
+
+
+2. Predict the output:
+
+
+abstract class A {
+    int x = 5;
+}
+
+class B extends A {
+    int x = 10;
+}
+
+public class Demo {
+    public static void main(String[] args) {
+        A obj = new B();
+        System.out.println(obj.x);
+    }
+}
+
+
+3. Predict the output:
+
+abstract class A {
+    abstract void show();
+}
+
+class B extends A {
+
+}
+
+public class Demo {
+
+public static void main(String[] args)
+{
+
+	A a1 = new B();
+}
+
+}
+
+
+
+
+4. Predict the output:
+
+
+abstract class A {
+    abstract void show();
+}
+
+class B extends A {
+    void show() {
+        System.out.println("B");
+    }
+}
+
+class C extends B {
+    void show() {
+        System.out.println("C");
+    }
+}
+
+public class Demo {
+    public static void main(String[] args) {
+        A obj = new C();
+        obj.show();
+    }
+}
+
+
+
+5. Predict the output:
+
+
+abstract class A {
+    final void show() {
+        System.out.println("A show");
+    }
+}
+
+class B extends A {}
+
+public class Demo {
+    public static void main(String[] args) {
+        A obj = new B();
+        obj.show();
+    }
+}
+
+
+
+Activity Question 1 — Shape Drawing System
+----------------------------------------
+
+
+Problem Statement:
+
+--A drawing application stores shape details in a parent class.
+
+Each shape has:
+
+--Shape name
+
+--Color
+
+These values must be initialized using the parent constructor.
+
+The application should also have a final method to display shape details which child classes cannot modify.
+
+Requirements
+
+--Create abstract class Shape.
+
+--Add protected variables:
+
+shapeName
+
+color
+
+--Initialize them via constructor.
+
+Create a final method showDetails().
+
+Create abstract method calculateArea().
+
+Create child classes:
+
+--Circle
+
+--Rectangle
+
+
+Solution:
+---------
+abstract class Shape {
+    protected String shapeName;
+    protected String color;
+
+    Shape(String shapeName, String color) {
+        this.shapeName = shapeName;
+        this.color = color;
+    }
+
+    final void showDetails() {
+        System.out.println("Shape: " + shapeName + ", Color: " + color);
+    }
+
+    abstract void calculateArea();
+}
+
+class Circle extends Shape {
+    double r;
+
+    Circle(String color, double r) {
+        super("Circle", color);
+        this.r = r;
+    }
+
+    void calculateArea() {
+        System.out.println("Area: " + (3.14 * r * r));
+    }
+}
+
+class Rectangle extends Shape {
+    int l, b;
+
+    Rectangle(String color, int l, int b) {
+        super("Rectangle", color);
+        this.l = l;
+        this.b = b;
+    }
+
+    void calculateArea() {
+        System.out.println("Area: " + (l * b));
+    }
+}
+
+public class Demo1 {
+    public static void main(String[] args) {
+
+        Shape s1 = new Circle("Red", 5);
+        Shape s2 = new Rectangle("Blue", 4, 6);
+
+        s1.showDetails();
+        s1.calculateArea();
+
+        System.out.println();
+
+        s2.showDetails();
+        s2.calculateArea();
+    }
+}
+
+
+Activity Question 2 — Employee Payroll System
+-------------------------------------------
+
+Problem Statement
+
+--Employee data is managed using an abstract parent class.
+
+--Each employee has:
+
+Name
+
+Employee ID
+
+A final method prints employee info, and child classes calculate salary differently.
+
+
+Requirements: 
+
+Create:
+
+Abstract class Employee
+
+Final method showInfo()
+
+Abstract method calculateSalary()
+
+Child classes: FullTimeEmployee, PartTimeEmployee
+
+
+Solution:
+---------
+
+abstract class Employee {
+    String name;
+    int id;
+
+    Employee(String name, int id) {
+        this.name = name;
+        this.id = id;
+    }
+
+    final void showInfo() {
+        System.out.println("Name: " + name + ", ID: " + id);
+    }
+
+    abstract void calculateSalary();
+}
+
+class FullTimeEmployee extends Employee {
+    FullTimeEmployee(String name, int id) {
+        super(name, id);
+    }
+
+    void calculateSalary() {
+        System.out.println("Salary: 50000");
+    }
+}
+
+class PartTimeEmployee extends Employee {
+    PartTimeEmployee(String name, int id) {
+        super(name, id);
+    }
+
+    void calculateSalary() {
+        System.out.println("Salary: 20000");
+    }
+}
+
+public class Demo2 {
+    public static void main(String[] args) {
+
+        Employee e1 = new FullTimeEmployee("Ravi", 101);
+        Employee e2 = new PartTimeEmployee("Anita", 102);
+
+        e1.showInfo();
+        e1.calculateSalary();
+
+        System.out.println();
+
+        e2.showInfo();
+        e2.calculateSalary();
+    }
+}
+
+
+
+
+Activity Question 3 — Bank Account System
+---------------------------------------
+
+Problem Statement
+
+--Bank accounts store account numbers using a constructor in parent class.
+
+Requirements:
+
+Create abstract class BankAccount.
+
+Store account number.
+
+Create abstract method withdraw().
+
+Create SavingsAccount and CurrentAccount.
+
+
+
+Solution:
+---------
+abstract class BankAccount {
+    String accNo;
+
+    BankAccount(String accNo) {
+        this.accNo = accNo;
+    }
+
+    abstract void withdraw();
+}
+
+class SavingsAccount extends BankAccount {
+    SavingsAccount(String accNo) {
+        super(accNo);
+    }
+
+    void withdraw() {
+        System.out.println(accNo + " Withdraw from Savings");
+    }
+}
+
+class CurrentAccount extends BankAccount {
+    CurrentAccount(String accNo) {
+        super(accNo);
+    }
+
+    void withdraw() {
+        System.out.println(accNo + " Withdraw from Current");
+    }
+}
+
+public class Demo3 {
+    public static void main(String[] args) {
+
+        BankAccount b1 = new SavingsAccount("ACC101");
+        BankAccount b2 = new CurrentAccount("ACC202");
+
+        b1.withdraw();
+        b2.withdraw();
+    }
+}
+
+
+
+
+
+
+
+Interface in Java:
+==================
+
+
+
+In Java there are 3 types of valid structures are available:
+
+1. Full implemented structure: Normal or concrete class
+
+2. Partially implemented structure: Abstract class
+
+3. Full unimplemented structure: interface // till Java 7
+
+
+
+
+from Java 8 onwards we can place method with body also inside an interface (default method or static method).
+where from Java 9 onwards we can place a private method also (with body) inside an interface.
+
+
+
+***Note: With the help of an interface we achive loose coupling in Java.
+
+--Class is a blueprint for an object, where as Interface is also like blueprint of the class.
+
+ 
+--Inside an interface if we place any method wituout body, that method will be public and abstract by default wheter we mention it or not.
+
+Example: 
+
+X.java:
+---------
+
+package com.chitkara;
+
+public interface X {
+	
+	public abstract void fun1();
+	
+	 void fun2();
+
+}
+
+class A{
+
+}
+
+		       default constructor	
+A.java ----------->compile ----------------> A.class
+
+X.java -------------> compiler --------------> X.class
+
+--constructor concept is not applicable with an interface.
+
+
+--As a class is extended by another class , an inteface need to be implemented by another class.
+
+
+rule:
+
+--If a class implements an interface , then that class has to override all the abstract method defined inside that interface otherwise we need to mark that implemented class as an abstract class.
+
+
+
+example;
+
+X.java:
+--------
+
+package com.chitkara;
+
+public interface X {
+	
+	 void fun1();
+	
+	 void fun2();
+
+}
+
+
+
+XImpl.java:
+---------------
+
+package com.chitkara;
+
+public class XImpl implements X{
+
+	@Override
+	public void fun1() {
+	
+		System.out.println("inside fun1 of XImpl");
+	}
+
+	@Override
+	public void fun2() {
+		System.out.println("inside fun2 of XImpl");
+	}
+	
+	
+	//specific method 
+	public void fun3() {
+		System.out.println("inside fun3 of XImpl");
+	}
+	
+
+}
+
+
+Note: we can not create object of an interface. but we can define a reference variable for an interface.
+
+X x1 = new X(); //CE
+
+X x1 = ?   // 2 possible value
+
+X x1 = new XImpl(); // any implemented class object
+
+X x1= null;
+
+
+Note: we can define variable of any 3 valid structure like (concrete class, abstract class or an interface) but the object should be created only for the concrete class.
+
+
+X x1= new XImpl();  // here also super class ref and sub class object rule is applicable .
+
+
+
+
+
+Demo.java:
+---------------
+package com.chitkara;
+
+public class Demo {
+	
+
+	public static void main(String[] args) {
+		
+		X x1= new XImpl();
+		
+		x1.fun1();
+		x1.fun2();
+		
+		//interface ref downcasted to implemented class obj.
+		XImpl xx= (XImpl)x1;
+		
+		xx.fun3();
+		
+		XImpl x2 = new XImpl();
+		x2.fun1();
+		x2.fun2();
+		x2.fun3();
+			
+	}	
+
+}
+
+
+
+
+--inside an interface, in addition to an abstract method, we can have variables also.
+
+--if we define any variable inside an interface , it will be by default "public static final" wheter we mention it or not.
+
+--that variable must be initialized at time of declaration.
+
+--variable defined inside an interface can be accessed by the implemented class object also.
+
+
+example:
+
+X.java:
+---------
+
+package com.masai;
+
+public interface X {
+	
+	 int i=100;
+	
+	 void fun1();
+	
+	 void fun2();
+
+}
+
+
+XImpl.java:
+---------------
+
+as previous
+
+Demo.java:
+---------------
+
+package com.masai;
+
+public class Demo {
+	
+
+	public static void main(String[] args) {
+		
+		X x1= new XImpl();
+		
+		x1.fun1();
+		x1.fun2();
+		
+		
+		
+		//interface ref downcasted to implemented class obj.
+		XImpl xx= (XImpl)x1;
+		
+		xx.fun3();
+		
+		System.out.println(xx.i);
+		System.out.println(x1.i);
+		System.out.println(X.i);
+		
+	}	
+}
+
+
+
+***Note: with the help of an interface also we achieve IS-A relationship.
+--implemented class object Is-A type of an interface.
+
+
+--interface can not extends another class and can not implement any interface also.
+****--but one interface can extends more than one interface simulteniously(multiple inheritance)
+
+Intr1.java(I)
+
+funA();
+funB();
+
+Intr2.java(I)
+
+funC()
+funD()
+
+
+interface Intr3 extends Intr1,Intr2{
+
+funX();
+funY();
+
+}
+
+
+class Demo implements Intr3{
+
+//it has to override all the methods of Intr1, Intr2 and Intr3 interfaces, otherwise
+Demo class has to be marked as abstract class.
+
+}
+
+
+
+Demo d1 = new Demo();
+
+d1.funA();
+d1.funB();
+d1.funC();
+d1.funD();
+d1.funX();
+d1.funY();
+
+
+Intr1 i1 = new Demo();
+
+i1.funA();
+i1.funB();
+
+Intr2 i2= new Demo();
+i2.funC();
+i2.funD();
+
+
+Intr3 i3 = new Demo();
+i3.funA();
+i3.funB();
+i3.funC();
+i3.funD();
+i3.funX();
+i3.funY();
+
+
+--from java 1.8 onwards some new feature introduced in interface.
+
+1.default method
+
+2.static method
+
+--both method should have a body.
+
+
+1.default method:
+----------------------
+
+-- we can define a default method with the body inside an interface.
+
+--this default method need not override inside the implementation classes.
+
+--if we want , we can override this default method inside any implementation classes.
+
+--these default method are bydefault inherited inside the implementation classes.
+
+--we can call these default method from any implementation class object.
+
+
+Hotel.java:
+-------------
+package com.masai;
+
+public interface Hotel  {
+	
+	public void chickenBiryani();
+	
+	public void masalaDosa();
+	
+	public default void iceCream() {
+	
+		System.out.println("iceCream from Hotel");
+	}
+	
+
+}
+
+
+TajHotel.java:
+------------------
+
+package com.masai;
+
+public class TajHotel implements Hotel{
+
+	@Override
+	public void chickenBiryani() {
+		System.out.println("ChickenBiryani from TajHotel");
+		
+	}
+
+	@Override
+	public void masalaDosa() {
+		System.out.println("Masala Dosa from TajHotel");
+	}
+	
+	//specific method of TajHotel class
+	public void paneerMasalaDosa() {
+		
+		System.out.println("paneer masala dosa from Taj Hotel");
+	}
+	
+	
+	@Override
+	public void iceCream() {
+		System.out.println("Ice cream from TajHotel");
+	}
+
+}
+
+RoadSideHotel.java:
+-----------------------------
+
+from previous example
+
+
+Demo.java:
+--------------
+
+package com.masai;
+
+public class Demo {
+	
+
+	public Hotel provideFood(int amount) {
+		
+		Hotel hotel= null;
+		
+		
+		if(amount > 500)
+			hotel = new TajHotel();
+		else if(amount > 200 && amount <=500)
+			hotel = new RoadSideHotel();
+		
+
+		return hotel;
+	}
+		
+	
+	public static void main(String[] args) {
+		
+			
+		Demo d1= new Demo();
+		
+		Hotel h= d1.provideFood(800);
+		
+		if(h != null) {
+			h.chickenBiryani();
+			h.masalaDosa();
+			h.iceCream();
+			
+			
+			if(h instanceof TajHotel) {
+				
+				TajHotel taj= (TajHotel)h;
+				taj.paneerMasalaDosa();
+			}
+			
+		}
+		else
+			System.out.println("Amount should be greater than 200");
+		
+			
+	}	
+
+}
+
+
+2.static method:
+--------------------
+
+--we can define a static method also inside an interface from java 1.8
+
+--this static method must have body.
+
+--static method of an inteface will not be inherited inside the implementation class object.
+--so we can not call this static method of an interface by using implementation class 
+object.
+
+**Note: we can call the static method of an interface only by using Interface name.
+we can not call static method of an interface even by using interface variable also.
+
+ 
+Note:- we can define same static method as static or non-static method inside the implementation class also.
+which is already defined statically inside the interface. (this concept is called as method hinding)
+
+
+Hotel.java:
+------------
+
+package com.masai;
+
+public interface Hotel  {
+	
+	public void chickenBiryani();
+	
+	public void masalaDosa();
+	
+	public default void iceCream() {
+	
+		System.out.println("iceCream from Hotel");
+	}
+	
+	public static void drinkingWater() {
+		
+		System.out.println("drinking water from Hotel");
+	}
+			
+	
+
+}
+
+
+
+Demo.java:
+----------------
+
+package com.masai;
+
+public class Demo {
+	
+
+	public Hotel provideFood(int amount) {
+		
+		Hotel hotel= null;
+		
+		
+		if(amount > 500)
+			hotel = new TajHotel();
+		else if(amount > 200 && amount <=500)
+			hotel = new RoadSideHotel();
+		
+
+		return hotel;
+	}
+		
+	
+	public static void main(String[] args) {
+		
+			
+		Demo d1= new Demo();
+		
+		Hotel h= d1.provideFood(800);
+		
+		if(h != null) {
+			h.chickenBiryani();
+			h.masalaDosa();
+			h.iceCream();
+			Hotel.drinkingWater();
+			//h.drinkingWater();  //CE
+			
+			if(h instanceof TajHotel) {
+				
+				TajHotel taj= (TajHotel)h;
+				taj.paneerMasalaDosa();
+			}
+			
+		}
+		else
+			System.out.println("Amount should be greater than 200");
+		
+			
+	}	
+
+}
+
+interface StudentService{
+
+
+public void registerStudent(Student student);
+
+public Student getStudentByRoll(int roll);
+
+public boolean updateStudent(Student student);
+
+}
+
+
+class StudentServiceImpl1 implements StudentService{
+
+public void registerStudent(Student student){
+
+//using JDBC approach
+}
+
+public Student getStudentByRoll(int roll){
+//using JDBC approach
+}
+
+public boolean updateStudent(Student student);
+//using JDBC approach
+}
+
+
+class StudentServiceImpl2 implements StudentService{
+
+public void registerStudent(Student student){
+
+//using ORM approach
+}
+
+public Student getStudentByRoll(int roll){
+//using ORM approach
+}
+
+public boolean updateStudent(Student student);
+//using ORM approach
+}
+
+
+
+
+@Autowire
+StudentService service;
+
+service.registerStudent(student);
+service.getStudentByRoll(10);
+service.updateStudent(student);
+
+ 
+
+example 2:
+
+
+interface X {
+
+void funX();
+
+}
+
+interface Y {
+
+void funY();
+
+}
+
+
+Note: one class can extends another class and implements multiple interfaces simulteniously.
+example
+
+class A extends B implements X,Y{
+
+
+}
+
+
+
+Note: we can have an empty interface also.
+
+public interface X{
+
+}
+
+
+--this type of empty interface is also known as tag or marker interface.
+
+--some of the predefined marker interfaces in Java are:
+
+java.io.Serializable
+java.lang.Cloanable
+
+--these kind of marker interfaces used to specify certain type of special behaviour of our object.
+
+class Student implements Serializable{
+
+}
+
+
+
+
+String class:
+==============
+
+Example: Checking a 2 string are anagram or not ?
+
+Demo.java
+---------
+
+import java.util.Arrays;
+
+public class Demo {
+
+    public static void main(String[] args) {
+
+        String s1 = "listen";
+        String s2 = "silent";
+
+        char[] a1 = s1.toLowerCase().toCharArray();
+        char[] a2 = s2.toLowerCase().toCharArray();
+
+        Arrays.sort(a1);
+        Arrays.sort(a2);
+
+        if(Arrays.equals(a1, a2))
+            System.out.println("Strings are Anagram");
+        else
+            System.out.println("Strings are NOT Anagram");
+    }
+}
+
+
+
+
+
+toCharArray	O(n)
+Sorting	O(n log n)
+Comparison	O(n)
+
+
+
+
+
+Example2: Without sorting...
+
+
+
+
+public class AnagramExample {
+
+    public static void main(String[] args) {
+
+        String s1 = "listen";
+        String s2 = "silent";
+
+        if(isAnagram(s1, s2))
+            System.out.println("Strings are Anagram");
+        else
+            System.out.println("Strings are NOT Anagram");
+    }
+
+    static boolean isAnagram(String s1, String s2){
+
+        if(s1.length() != s2.length())
+            return false;
+
+        int[] count = new int[256];
+
+        for(int i=0;i<s1.length();i++){
+            count[s1.charAt(i)]++;
+            count[s2.charAt(i)]--;
+        }
+
+        for(int x : count)
+            if(x != 0)
+                return false;
+
+        return true;
+    }
+}
+
+
+
+
+
+Length check	O(1)
+Loop over string	O(n)
+Second loop check	O(256)
+
+
+
+
+Example: Reversing a String without reverse() method
+
+
+Demo.java
+-----------
+
+package com.chitkara;
+
+public class Demo {
+	
+	
+	
+	public static String reverseString(String orignalString) {
+		
+		StringBuilder sb = new StringBuilder("");
+		
+ 		
+		
+		
+		char[] chr= orignalString.toCharArray();
+		
+		
+		for(int i= chr.length-1; i>=0; i--) {
+			
+			sb.append(chr[i]);
+		}
+		
+	
+		
+		return sb.toString();
+		
+	}
+	
+	
+
+	public static void main(String[] args) {
+		
+		
+		System.out.println(reverseString("welcome"));	
+		
+	}
+
+}
+
+
+Example: Difference betweeen concating a string using + and using the append() method of StringBuilder
+
+
+Demo.java:
+------------
+
+package com.chitkara;
+public class Demo {
+
+	public static void main(String[] args) {
+
+
+		long startTime = System.currentTimeMillis();
+
+		String str = "";
+
+		for (int i = 0; i < 100000; i++) {
+
+			str = str + "Java";
+
+		}
+
+		long endTime = System.currentTimeMillis();
+
+		System.out.println("String Time: " + (endTime - startTime) + " ms");
+
+
+
+		startTime = System.currentTimeMillis();
+
+
+
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < 100000; i++) {
+
+			sb.append("Java");
+
+		}
+
+		endTime = System.currentTimeMillis();
+
+		System.out.println("StringBuilder Time: " + (endTime - startTime) + " ms");
+
+	}
+
+}
+
+
+
+Example: Reversing each word in a String:
+
+
+	public String reverseEachWord(String s1) {
+
+		String[] words = s1.split(" ");
+
+	        StringBuilder result = new StringBuilder();
+
+	        for (String word : words) {
+
+	            StringBuilder sb = new StringBuilder(word);
+
+	            result.append(sb.reverse()).append(" ");
+	        }
+
+	        return result.toString().trim();
+		
+	}
+	
+
+Example: another way without using split() method
+
+
+public String reverseEachWord(String s1) {
+
+        StringBuilder word = new StringBuilder();
+        StringBuilder result = new StringBuilder();
+
+        for(int i = 0; i < s1.length(); i++)
+        {
+            char ch = s1.charAt(i);
+
+            if(ch != ' ')
+            {
+                word.append(ch);
+            }
+            else
+            {
+                result.append(word.reverse()).append(" ");
+                word.setLength(0);
+            }
+        }
+
+        result.append(word.reverse());
+
+        return result.toString();
+    }
+}
+
+
+
+
+
+
+********************************************************************************************
+
+Exception Handling in Java:
+===========================
+
+What is an Exception?
+
+--An Exception is an object created by the JVM that represents a runtime error (logical error) occurring during program execution.
+
+Definition
+
+--An exception is an unwanted or unexpected event that disrupts the normal flow of a program.
+
+
+
+there r two types of error in java
+
+1.syntax error:-improper environment and syntactical error.it results in compilation error.
+
+
+2.logical error (Abnormal condition):-sometime jvm would be unable to execute statements in the bytecode for some reasons this results in logical error.
+
+
+---whenever a logical error occurs program is terminated and control comes out of the program unconditionally without mentioning from which part of the program it has come out.
+
+ex:-
+class A{
+public static void main(String[] args) {
+	int i=100;
+	int j=0;
+	int x=i/j;
+	System.out.println(x);
+	System.out.println("End of the main");
+}
+}
+
+---the above program will be perfectly compliled,but while executing it jvm terminates the program abnormally.because....
+
+---there r some predefined classes in java whose objects r created by jvm whenever it encounters a logical errors.Names of such classes r found under the Exception class in API.
+
+--for each and every logical error(abnormal situation) there is a corresponding exception class in the java.lang package.
+
+---whenever jvm encounters a logical error,it creats an objects of the coresponding exception class and since this this object is not explicitly handled this object reaches back to the jvm ,jvm accept this object and terminets the program .
+
+--now if we r able to handle those exception class object,we can prevent the program from getting termineted abnormally.
+
+---thus concept of handling the exception class object and avoiding them from reaching back to the jvm is known as Exception Handling.
+
+
+
+--we can handle the exception class object by assigning them to the corresponding class refference..
+
+----we have two keyword try and catch to implement exception handling.
+
+--the try keyword recognizes the exception class objects created by jvm and it get holds those objects and transfer them to the catch block.
+--in catch block we should be able to assign those objects to the appropriate reff so that they will not reach to the jvm and therefore program would not be terminated.
+
+
+ex:-
+
+class A 
+{
+public static void main(String[] args) 
+{
+int i=100;
+int j=0;
+try{
+int x=i/j;
+System.out.println(x);
+System.out.println("inside try");
+}
+catch(ArithmeticException ae)
+{
+System.out.println(ae);
+//System.out.println("the value of j should not be 0");
+}
+}
+}
+
+---in this we we can use try and catch blocks in any part of the program.
+
+uses of Exception Handling:-
+----------------------------
+1.the main objective of exception handling is normal termination of the program.
+
+2.we can know in which part of the program the logical error has actually occured.
+
+3.we r not allowing the jvm to terminate the entire program. only the try block in which the error has occured would be terminated.
+
+Note:-
+
+
+1.once the control enters in the catch block it executes the statements in the catch block and moves further.it will not comeback to the try block again because of which the catch block was executed.
+
+2.if no exp class object is created in the try block control will never enter the catch block.
+
+3.every try block should be associated with atleast one catch block.
+
+4.a try block can have more than one catch block.
+
+
+ex:-
+
+
+package com.chitkara;
+
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+		System.out.println("Start of main....");
+
+		Scanner sc = new Scanner(System.in);
+		
+		try {
+			String s1 = null;
+
+			System.out.println("Enter number 1: ");
+			int num1 = sc.nextInt();
+
+			System.out.println("Enter number 2: ");
+			int num2 = sc.nextInt();
+
+			int result = num1 / num2;
+
+			if (result > 5) {
+				s1 = "Welcome";
+			}
+
+			System.out.println(s1.toUpperCase());
+
+		} catch (ArithmeticException ae) {
+			ae.printStackTrace();
+			System.out.println("num2 can't be zero");
+		} catch (InputMismatchException ime) {
+
+			System.out.println("Please pass the proper numbers(digit)");
+			ime.printStackTrace();
+		} catch (NullPointerException npe) {
+			System.out.println("result is not more than 5 so s1 is null");
+			npe.printStackTrace();
+		}
+
+		System.out.println("End of main...");
+	}
+
+}
+	
+---disadvantage of this approach:-
+
+--if statement in the try block r more that generate the exception class objects then we should have those many catch blocks which is not feasiable.
+
+--the user should have through knowledge regarding what statement is proven to generate what type of exception class object ,this would be very difficault.
+
+---to overcome the above disadv we have to define catch block in such a way that object of any exception class can be assigned to the refference defined in the catch block.
+
+Hence we define Exception class reff in the catch block .
+
+--Exception class is the super class of all the exception classes.
+
+                              Object
+                                |
+			     Throwable
+                                |
+                       -------------------------
+                       |                       |
+		     Error		     Exception
+						|
+					--------------------------------------------------------
+						|                 |     |         |      |      |
+					     RuntimeException    IOE   SQLE      CNFE    FNFE   IE
+                                                  |
+                                  ---------------------------------------------
+                                  |    |      |       |       |
+                                 AE    NPE   AIOBE   NFE     IME
+                                  
+
+
+IOE(IOException)
+SQLE(SQLException)
+CNFE(ClassNotFoundException)
+FNFE(FileNotFoundException)
+IE(InteruppetedException)
+
+AE (ArithmaticException)
+NPE (NullPointerException)
+AIOBE(ArrayIndexOutOfBoundException)
+NFE(NumberFormatException)
+IME(InputMismatchException)
+
+
+
+
+
+---We have five altogether five keywords in the concept of exception handling:-
+
+1.try 2.catch 3.throw 4.throws 5.finally
+
+
+
+--logiacal errors r of two types:-
+
+1.simple logical error:- 
+----------------------- 
+
+--there r some logical error which can be neglecting by the jvm such error r known as simple logical error 
+
+ex-
+
+int x=100/0 ,etc;
+
+--All the classes that represent simple logical error comes under Exception class.
+
+
+2.Serious logical error:-
+------------------------
+
+--Some logical error can not be neglected by the jvm such error is known as serious logical error.
+
+ex:-creation of an object of a class when there is no availabilty of memory space in the RAM.
+
+--All the classes that represent serious logiacal error r comes under Error class.
+
+
+Note:-in real time we r not permited to handle Error class object,they will be handled internally by the JVM,if we hanlde them then it means that we r not allowing object of Error class to reach jvm,in other word we r neglecting the serious logical error.which is highly dengerous.
+
+--JVM handles the Error class object by terminating the application.
+
+
+
+--try and catch block r designed in such a way that try block can transfer only object of Throwable class and its subclass simmilarly catch block can recieve only object of Throwable class and its subclass.
+
+---that's why we can't write catch(Object o){--}
+
+--we can use catch(Throwable t){---}
+
+--we know that throwable class is a super class of Error class also so by using catch(Throwable t){--} we r indirectly handling Error class objects also which would be very problematic.
+
+--we should handle only objects created because of simple logical error,we should not handle objects created bcoz of serious logiacal errors.
+
+--thats why we never use catch(Throwable t){--}
+
+--we always use catch(Exception ee){--}
+
+--whenever a try block has n number of catch blocks then if an exception object is created then the order of preference of the catch block is  the order in which they r present below  the try block.
+
+ex:-
+try{--}
+catch(Exception e)
+{
+s.o.p(e);
+}-----------------------------
+catch(AritmeticException e)|
+{			   |
+s.o.p(e);                  |
+}                          |  Unreachable Block.
+catch(NullPoinerException e)|
+{                           |
+s.o.p(e);                   |
+}                           |
+-----------------------------
+
+--- now  if an exception is raised in the try block,it will be transfered to the immidiate catch block, if that catch block is not capable of handling that exception then it is transfered to the next catch block and so on..
+
+---in the above program the very first catch block Exception  class reff is capable of recieving any exception class object.
+-thus remaining catch blocks r not going to get executed at any instance of time.
+such blocks which r not going to get executed at any instance of time r known as unreachable blocks.and unreachable blocks r not supported by java,hence whenever compiler finds any unreachable blocks in the program it gives a compilation error.
+
+note:-whenever we need to define multiple catch blocks and if catch(Exception e) is one among those then that catch block must be the last catch(Exception e) block.
+
+--Siblings can be in any order but parent must be at last..
+
+
+
+Checked and Unchecked Exceptions:
+================================
+
+
+---The next importent concept of exception handling is checked exception and unchecked exceptions.
+
+---as name shows checked and unchecked means checked or unchecked by the compiler at compile time.
+i.e for each and every statement which may generate an exception compiler will check whether we r handling the corresponding exception class object or not.
+
+---in the process of checking compiler will not bother even though we don't handle object of some exception classes
+
+---but there r some statement for which applying the concept of exception handling is mandatory at compilation time itself.if we do not handle them compiler compells us to handle them by generating a compilation error.
+
+--The exception class objects for which compiler forces us handle them r known as checked exception.
+ex-
+
+ClassNotFoundException,
+IOException,
+SQLException etc..
+
+
+---the exception class objects for which compiler does not forces us to handle them r known as unchecked exception.
+ex-
+
+AritmeticExp,
+ArrOBExcep,
+NullPException etc.
+
+Q/how can we find out which Exception comes under which category (chked or unchkd)
+
+--Any class which is the subclass of RuntimeException class is an Unchecked Exception and it gets the free pass from the compiler at compile time.
+
+---and those class which r not a subclass of RuntimeException class is  Checked exception and  we have to  handle these Exception class object otherwise we gets a compile time error itself.
+
+
+
+
+			Object
+			   |
+			Throwable
+			   |
+		-------------------------
+		|			|
+	      Error		    Exception
+					|----------------> SQLException, IOException, IneruptedException, FileNotFoundExcept
+				RuntimeException
+                                     |
+				   ArithmaticExcep, AIOBE, NPE, NFE, IME
+
+
+throws keyword:
+---------------
+
+Consider the following programs:
+
+
+class A {
+    void funA() {
+        System.out.println("Inside funA()");
+    }
+}
+
+
+class Test {
+
+    public void fun1(int i, int j) {
+        A a1 = null;
+
+        int x = i / j;
+
+        if (x > 10) {
+            a1 = new A();
+        }
+
+        a1.funA();   // possible problem here
+    }
+
+    public static void main(String[] args) {
+
+        Test t = new Test();
+        t.fun1(10, 2);
+
+        System.out.println("inside main()");
+    }
+}
+
+
+let us assume some programer has designed a class Test,inside that one method fun1() is there,and that method we r using in our class, now how can we know what type of exception object will be created because of the statement present in the fun1().
+
+---to solve this problem the developer himself will provide a facility i.e along with the fun defination, he will mention the type of the exception that might be raised inside the fun using the "throws" keyword.
+
+---throws is a keyword using which the enduser is informed that a particular method is proven to transfer exception class object to its calling place.
+
+or
+
+---throws keyword with a method signature indicates that one exception class obj may be generated inside that method and that obj is not handled inside that method...
+
+now caller of that method has the responsibility to handle that obj or caller can deligate that responsibility to its caller...and so on....  
+
+
+so-- 
+void fun1(int i,int j)throws ArithmaticException,NullPointerException{
+
+---
+
+}
+
+--since fun1() is throwing unchecked exception it is not mandatory to call fun1() inside try catch block from its calling place.
+--but if we use throws "Exception" then it is mandatory to call fun1() inside try-catch block from its calling place bcoz throws Exception indicates that fun1() can throw checked exception as well as unchecked exception.
+
+ex:-
+
+class B {
+
+    public void funA() throws ClassNotFoundException {
+
+        Class.forName("A");
+
+    }
+
+}
+
+
+---in the above program we have a statement inside funA() which is proven to generate a checked exception now if we do not want to handle it inside the fun then we need to mention throws <Exception> along with the fun signature but the condition is that at the calling place funA() has to be called within the try-catch block.
+
+note:-by seeing throws keyword along with the fun defination we can understand that the fun has the statement which r proven to generate the mentioned exception class object and they r not handled in the fun itself.
+
+Note:-even though throws is applicable with main() also it is highly recomended not to use throws with main().
+
+
+---even though a method is throwing more than one Exception, in order to call that method we can use only one catch block with Excption class reference.
+
+--but we will loose the chance of handling those many situations....one by one...
+
+
+
+
+
+throws keyword and constructor:-
+--------------------------------
+definetly we can use throws keyword constructor also bcoz constructor may have many number of statement which r proven to generate exception class object.
+
+ex:-
+class Test {
+
+    int z = 20;
+
+    Test() throws Exception {
+        int i = 10;
+        int j = 0;
+        int x = i / j;   // ArithmeticException
+    }
+
+    public static void main(String[] args) {
+
+        try {
+            Test t = new Test();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(t.z);   // Compile Time Error
+    }
+}
+
+
+method overriding rules wtih exception:-
+=========================================
+
+1.if the superclass method does not declares any exception:-
+
+
+
+if the superclass method does not declare an exception,subclass overridden method cannot declare the checked exception,but it can declare unchecked exception....
+
+
+2.if the superclass method declares an exception:-
+
+
+if the super class method deaclares an exception subclass overridden method can declare
+
+a.same exception
+
+b.child class of that exception class.
+
+c.no exception
+
+but it cannot declares super class of declared exception.....
+
+
+note:--even though if our super-class method declares with exception,we need not override that method with any exception.....
+but inorder to call child class overriden method with super class reff...we have to use try-catch....
+
+
+
+
+
+Handling the exception of super class constructor in their subclass.
+--------------------------------------------------------------------
+
+---we know that when a class extends another class and when we try to create object of subclass,first the object of superclass is created and then the subclass object is completly created.
+
+---now how to create the object of subclass when superclass constructor throws an Exception.
+
+ex:-
+class A {
+
+    int i = 10;
+
+    A() throws Exception {
+        System.out.println("inside A()");
+    }
+
+}
+
+class B extends A {
+
+    // B() throws Exception {
+    // }
+
+    public static void main(String[] args) {
+
+        try {
+            B b1 = new B();
+        }
+        catch (Exception ee) {
+            System.out.println(ee);
+        }
+
+    }
+}
+
+
+
+finally Keyword in Java
+======================
+
+
+The finally block is used with a try block to ensure that certain statements are always executed, whether an exception occurs or not.
+
+
+--The finally block contains statements that are guaranteed to execute after the execution of the try and catch blocks.
+
+
+
+
+Syntax:
+--------
+
+try {
+    // risky code
+}
+catch(Exception e) {
+    // exception handling
+}
+finally {
+    // cleanup code (always executes)
+}
+
+
+Need of the finally Block:
+-------------------------
+
+Sometimes some statements inside a try block must be executed compulsorily, regardless of whether an exception occurs or not.
+
+These statements are usually related to resource cleanup, such as:
+
+--Closing files
+
+--Closing database connections
+
+--Closing network connections
+
+--Releasing system resources
+
+
+Example Problem Without finally:
+-------------------------------
+
+try {
+    // get connection to printer
+    connectPrinter();
+
+    printDocument();
+
+    closeConnection();
+}
+catch(Exception e) {
+    System.out.println(e);
+}
+
+Problem:
+
+--Suppose an exception occurs during: printDocument();
+
+--Then the program immediately jumps to the catch block.
+
+Therefore:
+
+closeConnection(); will not execute.
+
+--The printer resource remains allocated but not released.
+
+--This leads to ineffective resource management.
+
+Possible Solution (Not Recommended):
+------------------------------------
+
+We may try writing the cleanup code outside the try-catch.
+
+try {
+    connectPrinter();
+    printDocument();
+}
+catch(Exception e) {
+    System.out.println(e);
+}
+
+closeConnection();
+
+Although this works, it is not recommended.
+
+
+Why This Approach is Not Recommended
+
+It breaks good coding principles.
+
+1. Integrity
+
+--All statements related to a specific task should remain within the same logical block.
+
+--Moving statements outside breaks the logical grouping of code.
+
+2. Modularity
+
+--The code becomes mixed with unrelated statements, making it difficult to understand and maintain.
+
+--There is no proper separation of logic.
+
+
+Correct Solution Using finally
+---------------------------
+
+try {
+    connectPrinter();
+    printDocument();
+}
+catch(Exception e) {
+    System.out.println(e);
+}
+finally {
+    closeConnection();
+}
+
+--Now the closeConnection() statement will always execute, whether an exception occurs or not.
+
+Important Notes:
+
+1. A try block can have: 
+
+--multiple catch blocks
+--only one finally block
+
+Example:
+
+try {
+
+}
+catch(IOException e) {
+
+}
+catch(ArithmeticException e) {
+
+}
+finally {
+
+}
+
+
+2. finally is optional
+
+--But if used, only one finally block is allowed.
+
+
+3. A try block can exist without a catch block, if it has a finally block.
+
+Example:
+
+try {
+    System.out.println("Hello");
+}
+finally {
+    System.out.println("Finally block");
+}
+
+Output
+
+Hello
+Finally block
+
+--However, this approach is generally not recommended, because exceptions remain unhandled.
+
+
+
+Real-Life Analogy: 
+----------------
+
+--Think of finally block as cleaning the room after work.
+
+Even if:
+
+--work finishes successfully
+
+--work fails due to some problem
+
+--You still clean the room before leaving.
+
+Common Uses of finally
+----------------------
+
+finally is commonly used for:
+
+--Closing files
+
+--Closing database connections
+
+--Releasing network sockets
+
+--Releasing locks
+
+Example:
+
+
+FileReader fr = null;
+
+try {
+    fr = new FileReader("data.txt");
+}
+catch(Exception e) {
+    System.out.println(e);
+}
+finally {
+    if(fr != null)
+        fr.close();
+}
+
+
+
+throw keyword in Java:
+======================
+
+--The throw keyword in Java is used to manually create and throw an exception from our program.
+
+--Normally, exceptions are created by JVM automatically, but sometimes we want to create our own exception based on some condition, in that case we use throw.
+
+Definition:
+
+--throw is used to explicitly throw an exception from a method or block of code.
+
+Syntax:
+-------
+
+	throw new ExceptionClass("Error message");
+
+Example:
+
+	throw new ArithmeticException("Number cannot be divided by zero");
+
+
+Example:
+
+
+
+class Test
+{
+
+	static void withdraw(int balance, int amount){
+    		
+		if(amount > balance){
+        		
+			throw new RuntimeException("Insufficient balance");
+    		
+		}
+
+    	System.out.println("Withdraw successful");
+
+}
+
+
+    public static void main(String args[])
+    {
+  
+	withdraw(10000,12000);
+  
+    }
+}
+
+Here,
+
+--JVM did not create exception. We manually created exception and propagating to the user using throw keyword.
+
+--Since we are throwing an unchecked exception, we need not intimate the caller using function signature, but if we throw a checked exception in that case we need to mention the caller also by using throws keyword with the method signature. and in order to call that method caller must either need to wrap that call inside the try and catch block or the caller can also delegate the exception handling duty to its caller using throws keyword.
+
+example:
+
+ 
+
+
+class Test
+{
+
+	static void withdraw(int balance, int amount) throws Exception{
+    		
+		if(amount > balance){
+        		
+			throw new Exception("Insufficient balance");
+    		
+		}
+
+    	System.out.println("Withdraw successful");
+
+}
+
+
+    public static void main(String args[])
+    {
+  	try{
+	
+		withdraw(10000,12000);
+
+  	}catch(Exception e){
+
+		e.printStackTrace();
+	}
+
+    }
+}
+
+
+
+Q/- Why use throw? Why not just use if–else and print message?"
+
+
+Ans/- 
+
+Yes, we can use if–else.
+But throw is used when the situation is not normal and we want to stop the program and inform the caller that something went wrong.
+
+So the difference is:
+
+if–else				throw Exception
+--------------------------------------------------
+
+Just prints message		Stops program
+
+Program continues		Program terminates
+
+Used for normal condition	Used for abnormal condition
+
+No error reporting		Error reporting mechanism
+
+
+Imagine a college admission system:
+
+If marks < cutoff : Show message:  Normal situation :  use if–else
+
+If documents are fake:  Stop admission process immediately : Abnormal situation : use Exception
+
+So:
+
+Normal problem : if–else
+Abnormal problem : Exception
+
+
+throw vs throws 
+--------------
+
+throw				throws
+
+Used to throw exception		Used to declare exception
+Used inside method		Used in method signature
+Followed by object		Followed by class name
+Example: throw new Exception()	Example: void m() throws Exception
+
+
+Short  Difference
+------------------
+
+You create problem: throw
+You inform others that problem may come: throws
+
+
+
+
+
+User-Defined exception:
+======================
+
+Introduction
+
+So far, we have used predefined exception classes such as:
+
+ArithmeticException
+
+NullPointerException
+
+ArrayIndexOutOfBoundsException
+
+IOException
+
+--The objects of these exceptions are created automatically by the JVM when a predefined logical error occurs.
+
+Example:
+
+int x = 10 / 0;
+
+JVM automatically creates:
+
+--ArithmeticException
+
+
+What is a User-Defined Exception?
+------------------------------
+
+--Sometimes the programmer wants to define their own logical rules.
+
+--If those rules are violated, we may want to generate our own exception.
+
+--These exceptions are called User-Defined Exceptions (Custom Exceptions).
+
+Definition
+
+--A user-defined exception is a custom exception class created by the programmer to represent application-specific errors.
+
+Example situations:
+
+Invalid age
+
+Insufficient balance
+
+Invalid password
+
+Invalid marks
+
+
+Important Point:
+---------------
+
+--A user-defined logical error is not considered an error by the JVM.
+
+--Therefore the programmer must explicitly create and throw the exception.
+
+
+Steps to Create a User-Defined Exception
+-------------------------------------
+
+Step 1
+
+--Create a class that extends Exception
+
+Step 2
+
+
+--Define a parameterrized constructor inside that class by taking String as an argument, and pass that String to its parent class constructor.
+
+//or
+
+--Override the toString() or getMessage() method
+
+
+
+Step 3
+
+--Create an object of that exception
+
+Step 4
+
+--Throw it using the throw keyword
+
+
+Example: Invalid Age Exception
+
+Step 1: Create Custom Exception Class
+
+class InvalidAgeException extends Exception {
+
+    InvalidAgeException(String msg) {
+        super(msg);
+    }
+
+}
+
+
+Step 2: Create a Class That Uses This Exception
+
+
+class Emp {
+
+    public int getPension(int age, int sal) throws InvalidAgeException {
+
+        int pen = 0;
+
+        if(age > 45 && age < 100) {
+            pen = (age * sal) / 100;
+        }
+        else {
+            InvalidAgeException ae = new InvalidAgeException();
+            throw ae;
+        }
+
+        return pen;
+    }
+
+}
+
+
+Step 3: Use the Method in main()
+
+class Test {
+
+    public static void main(String[] args) {
+
+        Emp e = new Emp();
+
+        try {
+            int p = e.getPension(30, 50000);
+            System.out.println("Pension = " + p);
+        }
+        catch(InvalidAgeException ex) {
+            System.out.println(ex);
+        }
+
+    }
+}
+
+
+
+
+Password checking example:
+-------------------------
+
+
+
+InvalidPasswordException.java:
+------------------------------
+
+class InvalidPasswordException extends Exception {
+    InvalidPasswordException(String message) {
+        super(message);
+    }
+}
+
+
+
+Demo.java:
+----------
+
+
+import java.util.Scanner;
+
+class Demo {
+
+    static void checkPassword(String password) throws InvalidPasswordException {
+        
+        if(password.length() < 8) {
+            throw new InvalidPasswordException("Password must contain at least 8 characters");
+        }
+
+        boolean hasDigit = false;
+
+        for(int i = 0; i < password.length(); i++) {
+            if(Character.isDigit(password.charAt(i))) {
+                hasDigit = true;
+                break;
+            }
+        }
+
+        if(!hasDigit) {
+            throw new InvalidPasswordException("Password must contain at least one digit");
+        }
+
+        System.out.println("Password is valid");
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter password: ");
+        String pwd = sc.nextLine();
+
+        try {
+            checkPassword(pwd);
+        } 
+        catch(InvalidPasswordException e) {
+            System.out.println("Exception: " + e.getMessage());
+        }
+    }
+}
+
+
+
+
+Constructor Throwing Checked Exception:
+------------------------------------
+
+
+Rule
+
+--If a constructor of a class declares a checked exception, then creating an object of that class must either:
+
+--handle the exception using try-catch, or
+
+--declare the exception using throws.
+
+--Because of this, we cannot directly create the object as an instance member of another class without handling the exception.
+
+Example
+
+class A {
+
+    A() throws Exception {
+        System.out.println("Constructor of A");
+    }
+
+}
+
+Now consider another class:
+
+class B {
+
+    A a1 = new A();   // Compile Time Error
+
+}
+
+
+Why Error?
+
+A() throws a checked exception, but instance variable initialization cannot handle the exception directly.
+
+Compiler error:
+
+Unhandled exception type Exception
+
+
+Correct Approach
+----------------
+
+Create the object inside the constructor of the class.
+
+class B {
+
+    A a1;
+
+    B() throws Exception {
+        a1 = new A();
+    }
+
+}
+
+Or handle it using try-catch.
+
+
+Java 7 Features:
+---------------
+
+1. Single Catch Block for Multiple Exceptions (Java 7 Feature)
+
+It allows one catch block to handle multiple exceptions.
+
+Syntax
+
+Exceptions are separated using the pipe symbol |.
+
+catch(ClassNotFoundException | IOException e) {
+    e.printStackTrace();
+}
+
+
+Example
+
+import java.io.*;
+
+class Demo {
+
+    public static void main(String[] args) {
+
+        try {
+
+            int x = 10 / 0;
+
+            Class.forName("Test");
+
+        }
+        catch(ArithmeticException | ClassNotFoundException e) {
+
+            System.out.println(e);
+
+        }
+
+    }
+
+}
+
+
+Important Point
+
+--In a multi-catch block, the exception variable becomes implicitly final.
+
+--So we cannot reassign it.
+
+Example (Not Allowed):
+
+catch(IOException | ClassNotFoundException e) {
+
+    e = new IOException();   // Compile-time error
+
+}
+
+
+Another Rule
+
+--We cannot catch exceptions from the same hierarchy together.(no parent-child relationships)
+
+Example (Invalid):
+
+catch(Exception | IOException e) {
+
+}
+
+
+IOException -> child of Exception
+
+So IOException is already covered by Exception, making the second one redundant.
+
+This produces a compile-time error.
+
+
+
+but this is possible:
+
+try {
+    // risky code
+}
+catch(SQLException | IOException e) {
+    System.out.println("Common Error handling for IOE and SQLE");
+}
+catch(Exception e) {
+    System.out.println("Other Error handling..");
+}
+
+
+
+2. Try-With-Resources
+
+
+--try-with-resources is a special try statement used to automatically close resources after execution.
+
+--A resource is an object that must be closed after use.
+
+Examples:
+
+File streams
+
+Database connections
+
+Network connections
+
+Scanner objects
+
+
+Syntax
+
+
+try(Resource resource = new Resource()) {
+
+    // code using resource
+
+}
+catch(Exception e) {
+
+}
+
+Java automatically calls: resource.close(); when execution finishes.
+
+
+Example:
+
+import java.io.*;
+
+class Demo {
+
+    public static void main(String[] args) {
+
+        try(FileInputStream fis = new FileInputStream("data.txt")) {
+
+            System.out.println("File opened");
+
+        }
+        catch(Exception e) {
+            System.out.println(e);
+        }
+
+    }
+
+}
+
+
+Requirement for Try-With-Resources:
+
+
+The object must implement: java.lang.AutoCloseable Interface.
+
+AutoCloseable Interface
+-----------------------
+
+It contains only one method:
+
+public void close() throws Exception;
+
+Any class implementing this interface can be used in try-with-resources.
+
+Example:
+
+
+FileInputStream
+
+BufferedReader
+
+Scanner
+
+Connection
+
+
