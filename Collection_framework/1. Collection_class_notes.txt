@@ -1,0 +1,3579 @@
+Collection Framework Class notes:
+==================================
+
+
+
+--As we know, Arrays are a fundamental data structure used to store multiple values of the same type in a single variable. 
+
+Key Characteristics of Arrays:
+
+1. Fixed size: Once declared, the size of an array cannot be increased or decreased later.
+2. Homogeneous data: Can store only elements of the same data type (with Object[] as a workaround for mixed types).
+3. Direct access using index.
+4. Only one built-in non-static variable: length.
+
+example:
+
+
+int[] arr = {10, 20, 30, 40, 50};
+
+
+
+
+Dynamic Array Program in Java:
+------------------------------
+
+Q/- What is Dynamic Array?
+
+Normal array:
+
+Fixed size
+Cannot grow
+
+Dynamic array:
+
+--Size increases automatically when array is full
+
+Example: ArrayList
+
+
+Creating a custom dynamic array class:
+--------------------------------------
+
+
+Concept:
+
+--When array becomes full, create a new bigger array:  copy old data then add new element
+
+
+1. Create array with capacity 2
+2. Add elements
+3. If array is full:
+      Create new array of double capacity
+      Copy old elements
+      Add new element
+
+
+Example: Creating custom dynamic array class
+
+
+MyDynamicArray.java:
+---------------------
+
+package com.hdfc;
+
+public class MyDynamicArray {
+
+    private int[] arr;
+    private int size;
+
+    public MyDynamicArray() {
+        arr = new int[5]; // initial capacity
+        size = 0;
+    }
+
+    public void add(int data) {
+
+        if (size == arr.length) {
+            System.out.println("Array is full, increasing capacity from " + arr.length + " to " + (arr.length * 2));
+
+	    // New array with double capacity
+            int[] newArr = new int[arr.length * 2];
+
+	    // copy the data
+            for (int i = 0; i < size; i++) {
+                newArr[i] = arr[i];
+            }
+
+	    //changing the reference
+            arr = newArr;
+        }
+
+	//adding the data
+        arr[size++] = data;
+    }
+
+    public void remove(int index) {
+
+        if (index >= size || index < 0) {
+            throw new IndexOutOfBoundsException("Index out of bound");
+        }
+
+        for (int i = index; i < size - 1; i++) {
+            arr[i] = arr[i + 1];
+        }
+
+        size--;
+    }
+
+    public int get(int index) {
+        if (index >= size || index < 0) {
+            throw new IndexOutOfBoundsException("Index out of bound");
+        }
+
+        return arr[index];
+    }
+
+    public int size() {
+        return size;
+    }
+
+    public int capacity() {
+        return arr.length;
+    }
+
+    public void clear() {
+        size = 0;
+    }
+
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    public void display() {
+        for (int i = 0; i < size; i++) {
+            System.out.print(arr[i] + " ");
+        }
+        System.out.println();
+    }
+}
+
+
+
+
+Java Collection framework:
+==========================
+
+Collection in Java:
+-------------------
+
+--If we want to represent a group of objects as a single unit, then we use Collection.
+
+Example:
+
+Group of Students
+Group of Employees
+Group of Products
+
+--So instead of handling objects one by one, we handle them as a single object (collection object).
+
+
+Q/- What is a Framework?
+
+--A Framework is a ready-made structure that helps developers build applications easily.
+
+Defination:
+
+--A framework is a ready-made, reusable, semi-implemented architecture that provides common functionality. Developers just plug in their specific code where needed.
+
+Real-life Example:
+
+Think of a car, the manufacturer provides the engine, chassis, wheels, and structure (framework). You only need to drive it (your business logic).
+
+
+So,
+
+Framework reduces developer work.
+
+
+--Before Collection Framework, Developers need to code Data Structures themselves like:
+
+Array
+Stack
+Queue
+Linked List
+Searching
+Sorting
+
+--The Collection Framework reduces developer effort by providing ready-made implementations of common data structures.
+
+
+
+
+Collection Framework:
+---------------------
+
+--Collection Framework contains classes and interfaces that help us store and manage a group of objects.
+
+--Each collection class is like a container or bag that can hold multiple objects.
+
+--It provides ready-made Data Structures.
+
+
+
+Array vs Collection:
+--------------------
+
+
+--We can group/hold/store multiple object as a single object by using array also.
+
+--in Java array is also one type of object
+
+Example:- Storing 5 student object as a single object:
+
+
+Student[] students = new Student[5]; 
+
+students[0] = new Student(10,"S1",780);
+students[1] = new Student(12,"S2",880);
+students[2] = new Student(13,"S3",680);
+students[3] = new Student(14,"S4",580);
+students[4] = new Student(15,"S5",680);
+
+
+--Here, One students(array object) storing multiple student object.
+
+
+Limitations of Array:
+---------------------
+
+1. Fixed Size: Cannot increase or decrease size dynamically.
+
+2. No Ready-made Methods:  We must write logic for insert, delete, search
+
+--array concept is not implemented based on readymade method support. For each and every requirement we need to write our own logic,
+even for printing the elements from an array we need to write for loop.
+
+--In each array object we have only one non-static variable i.e 'length'.
+
+
+3. Homogeneous Data: Only same type of elements.
+
+--This limitation we can overcome by taking Object class array.
+
+Example:
+
+Object[] objs= new Object[3];
+
+objs[0]=new Student();
+objs[1]=new Employee();
+objs[2]=new Product();
+
+--Still all elements are treated as a types of Object, we must downcast the object to call thier specific method.
+
+
+--To overcome the above limitation we need to use Collection framework.
+
+
+Features of Collection Framework:
+----------------------------------
+
+--Collections are growable in nature.
+
+--Collection can hold both homogeneous and heterogeneous type of element.
+
+--Every collection classes are implemented based on some standard data-structure, hence readymade method support is available for most of the requirements.
+
+--Collection does not support primitives, it only supports objects.
+
+
+Note: Almost all Collection classes are present in java.util package.
+
+
+
+
+The Collection Framework is broadly divided into two root-level categories:
+---------------------------------------------------------------------------
+
+
+Collection Framework
+        |
+   -------------------
+   |                 |
+Normal Collection    Map
+(Single Objects)   (Key-Value Pair)
+
+
+
+Note: Map does not extend Collection interface.
+
+
+| Section    | Description                   |
+| ---------- | ----------------------------- |
+| Collection | Works with individual objects |
+| Map        | Works with key-value pairs    |
+
+
+--First we will discuss about the Collection part then will discuss about the Map part later.
+
+
+Main Interfaces of Collection:
+-------------------------------
+
+
+List: --> When we need to arrange the elements in a sequence (index based manner) and duplicate elements are allowed.
+
+Set: --> When we need uniqueness (duplicate elements are not allowed)
+
+Queue: --> When we need to process elements in a specific order (FIFO by default). Supports priority-based processing.
+
+
+
+Collection Interface:
+----------------------
+
+--Collection is the root interface of Collection Framework (Except for Map).
+
+--It defines common methods that can be used with all collection classes.
+
+--There is no any concreate class which implemenets the Collection interface directly.
+
+
+
+
+
+Important Methods of Collection Interface:
+------------------------------------------
+
+
+
+1. int size();  // how many elements are there in that collection object.
+
+2. boolean isEmpty();
+
+3. boolean contains(Object obj);  //for searching any element.
+
+4. Iterator iterator(); // it is inherited from Iterable interface
+
+5. Object[] toArray();//to convert any collection object to normal array
+ 
+6. T[] toArray(T[]); //convert only limited size element to array
+
+7.  boolean add(Object obj); // it is a most commonly used method, to add any element insdie any type of collection.
+ 
+8. boolean remove(Object obj);
+
+9. boolean containsAll(Collection col);
+
+10. boolean addAll(Collection col); copy all the element from one collection to our collection object
+
+11. boolean removeAll(Collection col);
+
+12. boolean retainAll(Collection col); // except supplied collection elements all other will be removed.
+ 
+13. void clear(); // remove all the elements from the collection
+
+// these following 2 methods belongs to Object class 
+14. boolean equals(Object obj); //compare two collection object
+   
+15. int hashCode(); // return the hashCode of collection obj
+
+//these methods introduced in java 1.8 to perform functional programming.
+16. public boolean removeIf(java.util.function.Predicate<? super E>);
+  
+17. public java.util.Spliterator<E> spliterator();
+
+18. public java.util.stream.Stream<E> stream();
+
+19. public java.util.stream.Stream<E> parallelStream();
+
+
+
+Iterable interface: 
+-------------------
+
+--This interface introduced in java 1.5 and from java 1.5 onwards Collection interface extends this interface. it belogs to java.lang package.
+
+--this interface has only one abstract method:
+
+public abstract Iterator iterator();
+
+--the return type of this iterator() method is Iterator(I) interface,
+--this Iterator interface belongs to java.util package.
+
+--in addition to the one abstract method, this Iterable interface has 2 default method as well:
+
+  public void forEach(java.util.function.Consumer<? super T>);
+  public java.util.Spliterator<T> spliterator();
+
+
+
+List:
+=====
+
+--It is the child interface of Collection interface and declares the behaviour of a collection to preserve the sequence of an element.
+
+--Elements can inserted and accessed by thier position using zero based index.
+
+--Here insertion order will be preserved and duplicate elements are allowed.
+
+--In  addition to the Collection inteface methods ,List interface defines some of its own 
+methods also.
+
+
+public Object get(int index);
+
+public Object set(int index, Object newObject); it will return the overridden object
+
+public Object remove(int index); // will return the removed object.
+
+public int indexOf(Object obj); //Returns first occurrence index
+
+public int lastIndexOf(Object o);
+
+public List subList(int fromIndex, int toIndex)
+
+
+From Java 21: the following methods are added.
+
+public default void addFirst(Object obj); 
+
+public default void addLast(Object obj);
+  
+public default Object getFirst();
+  
+public default Object getLast();
+
+public default Object removeFirst();
+  
+public default Object removeLast();
+  
+public default List reversed();
+  
+public static List of(Object...);
+
+
+
+
+
+***Note: Collection f/w does not support primitives, it only supports objects.
+
+add(Object  obj);
+
+
+ArrayList:
+========
+
+--it is the implementation of the List interface.
+
+--it is basically a dynamic array (it dynamically increase the size).
+
+--ArrayList class is the best choice if our frequent operation is retrieval based on index.
+
+--duplicate are allowed.
+
+--null insertion is possible (multiple time also)
+
+
+example:
+
+
+ArrayList al=new ArrayList();
+
+System.out.println(al);//[]
+		
+
+Note: all the collection classes has overriden the toString() method internally. so they will print the elements inside that collection in [] square bracket.
+
+--all the collection classes are like a container or bag which holds multiple objects.
+
+
+--in the above statement we have created an empty ArrayList object with the default initial capacity 10.
+
+--once ArrayList reaches to its max capacity then a new ArrayList object will be created in the memory automatically with the new capacity using following formula:
+
+newCapacity = (currentCapacity * 3/2) +1;
+
+
+In Mordern Java:
+
+newCapacity = currentCapacity + (currentCapacity >> 1)
+
+--which is ~ 1.5x growth
+
+
+
+
+1. ArrayList al=new ArrayList(1000); // AL created with the initial capacity 1000;
+
+
+2. list.ensureCapacity(500);   
+
+--It increases the internal capacity to at least 500, but only if the current capacity is smaller than 500.
+
+--If current capacity is already ≥ 500, no effect (nothing happens).
+
+--If current capacity is smaller, it grows the array (usually to 1.5× or directly to 500, whichever is larger).
+
+
+3. list.trimToSize();   // reduces capacity to exactly current size (saves memory)
+
+
+
+
+Autoboxing and Autounboxing:
+==========================
+
+this concept comes in java 1.5 version
+
+
+boxing: converting primitives into the object(box) it is known as boxing and reverse 
+is called unboxing.
+
+--8 primitive datatype.
+
+--for each primitive data types we have corresponding wrapper classes are there.
+
+--int --- java.lang.Integer
+--byte --- java.lang.Byte
+--char ---> java.lang.Character
+--boolean --> java.lang.Boolean
+--
+--
+
+
+--before java 1.5 inorder to add the primitives in the collection we need to wrap that primitives to their corresponding wrapper class object.
+
+int i=10;
+
+Integer i1= Integer.valueOf(i); //boxing
+
+int x=  i1.intValue(); //unboxing
+
+
+from java 1.5 onwords  we have a concept called autoboxing and autounboxing
+
+int i =10;
+
+Integer i1 = i;  //autoboxing
+
+int x=i1; // autounboxing
+
+
+example:
+
+
+
+		ArrayList al=new ArrayList();
+		
+		
+		
+		al.add("delhi");
+		al.add("mumbai");
+		al.add("chennai");
+		al.add("kolkata");
+		al.add(new A());
+		al.add(new Student(10, "Amit", 780));
+		al.add(null);
+		al.add(null);
+		al.add("delhi");
+		al.add(10);  // Integer 
+		al.add(true); //Boolean
+		al.add(10.55); //Double
+		
+		
+		
+		System.out.println(al);
+		System.out.println(al.size());
+		
+		
+		
+//		Object obj= al.get(1);
+//		String city= (String)obj;
+		
+		int x= (Integer)al.get(9);
+		
+		
+		System.out.println(x);
+		
+
+
+--In the above application our ArrayList object is not a type safe Collection object.
+
+--If our collection is not type safe collection then we can add any type of object at any position inside our collection.
+
+--Here while getting the elements from the type unsafe collection every time we need to downcast the element, which is not feasible. there might be a chance of ClassCastException.
+
+--So in realtime, our collection should be type safe collection.
+
+--Type-safe collection means restricting the collection to hold only one type of object using Generics.
+
+
+Creating type-save collection:
+------------------------------
+
+ArrayList<String> al=new ArrayList<String>();
+
+or we can skip right side type in diomond operator.
+
+ArrayList<String> al=new ArrayList<>();
+
+
+--Now our ArrayList is type safe collection.
+
+
+
+
+Benefit of type safe collection:
+-------------------------------------
+
+1. If we try to add any other type of element then compiler will stop at compile time.
+
+2. We will get rid of downcasting problem. 
+
+
+ArrayList<Object> al=new ArrayList<>();
+
+
+--Taking the type of Object is similar to creating type-unsafe collection.
+
+
+
+
+Example
+--------
+
+package com.hdfc;
+
+import java.util.ArrayList;
+
+public class Demo {
+
+	public static void main(String[] args) {
+		
+		ArrayList<String> al=new ArrayList<>();
+		
+		
+		
+		al.add("delhi");
+		al.add("mumbai");
+		al.add("chennai");
+		al.add("kolkata");
+		al.add("delhi");
+		al.add(10);
+		al.add(null);
+		
+		
+		
+		String s= al.get(2);
+		
+		System.out.println(s.toUpperCase());
+		
+
+	}
+
+}
+
+
+--the above type safe collection concept is called Genrics concept.
+
+--Generics concept also introduced in java 1.5 version
+
+//ArrayList class pseudo code before generics
+
+package java.util;
+public class ArrayList implements List{
+
+public boolean add(Object obj){
+	//adding the object to the ArrayList.
+}
+
+public Object get(int index){
+	//it will return the obj to the specified index in the form of Object class
+}
+
+//remaining methods.
+
+
+}
+
+
+//ArrayList class psudo code after generics, Java 1.5 onwards
+
+package java.util;
+public class ArrayList<T> implements List{
+
+public boolean add(T t){
+	//adding the object t to the ArrayList.
+}
+
+public T get(int index){
+	//it will return the obj to the specified index
+}
+
+//remaining methods.
+}
+
+
+
+example:
+
+ArrayList<String> al=new ArrayList<>(); // it is the List of String object
+
+
+ArrayList<Integer> al=new ArrayList<>(); // it is the List of Integer object
+
+ArrayList<Student> al=new ArrayList<>(); // it is the List of Student object
+
+
+
+
+
+
+Student.java:
+--------------
+
+
+package com.hdfc;
+
+public class Student {
+
+	private int roll;
+	private String name;
+	private double marks;
+
+	public Student() {
+
+	}
+
+	public Student(int roll, String name, double marks) {
+		super();
+		this.roll = roll;
+		this.name = name;
+		this.marks = marks;
+	}
+
+	public int getRoll() {
+		return roll;
+	}
+
+	public void setRoll(int roll) {
+		this.roll = roll;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public double getMarks() {
+		return marks;
+	}
+
+	public void setMarks(double marks) {
+		this.marks = marks;
+	}
+
+	@Override
+	public String toString() {
+		return "Student [roll=" + roll + ", name=" + name + ", marks=" + marks + "]";
+	}
+
+}
+
+
+
+
+Demo.java:
+----------------
+
+package com.masai;
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Demo {
+
+	public static void main(String[] args) {
+		
+	
+		Scanner sc= new Scanner(System.in);
+		
+		ArrayList<Student> students = new ArrayList<>();
+		
+		int count = 1;
+		
+		while(true) {
+			
+			
+			System.out.println("Enter details of Student "+(count++));
+			
+			System.out.println("Enter Roll");
+			int roll= sc.nextInt();
+			
+			System.out.println("Enter Name");
+			String name= sc.next();
+			
+			System.out.println("Enter Marks");
+			int marks= sc.nextInt();
+			
+			Student student = new Student(roll, name, marks);
+			
+			students.add(student);
+			
+			System.out.println("Student object added sucessfully...");
+			
+			System.out.println("Want more(y/n) ?");
+			String choice=  sc.next();
+
+			if(choice.equalsIgnoreCase("n"))
+				break;
+				
+		}
+		
+		
+		
+		for(Student student: students) {
+			
+			System.out.println("Roll is :"+student.getRoll());
+			System.out.println("Name is :"+student.getName());
+			System.out.println("Marks is :"+student.getMarks());
+			
+			System.out.println("================================");
+		}
+		
+	}
+
+}
+
+
+
+Using normal for loop to iterate the ArrayList object:
+------------------------------------------------------------------------
+
+		for(int i=0;i< students.size();i++) {
+			
+			Student student= students.get(i);
+			
+			System.out.println("Roll is :"+student.getRoll());
+			System.out.println("Name is :"+student.getName());
+			System.out.println("Marks is :"+student.getMarks());
+			
+			System.out.println("================================");
+		
+		}
+
+
+Note : from the List object we can get elements one by one by using following approaches also:
+
+1. By using Iterator(I) object
+2. By using ListIterator(I) object
+3. By using forEach() method
+4. By using Stream API
+
+--In addition to the normal and enhanced for loop.
+
+
+
+Iterator interface:
+------------------
+
+--This interface gives us a standridze way of accessing the elements from any Collection object.
+
+
+--while itrating objects by iterator we can perform remove operation in addition to read operation.
+
+---It is a Universal cursor (Works with List, Set and Queue).
+
+Methods in Iterator interface:
+-----------------------------
+
+public boolean hasNext();  // check if next element exists
+public E next();           // get next element
+void remove();      // remove current element safely
+
+
+
+
+--To get the Iterator object, we need to call iterator() method on any Collection object.
+
+Example:
+
+
+Iterator itr= al.iterator();
+
+--It creates an iterator object that points to the same ArrayList object.
+
+
+Example:
+--------
+
+		ArrayList<String> al = new ArrayList<>();
+		
+		al.add("delhi");
+		al.add("mumbai");
+		al.add("chennai");
+		al.add("kolkata");
+		al.add("chandigarh");
+		al.add("hydrabad");
+		
+		
+		Iterator<String> itr= al.iterator();
+		
+		while(itr.hasNext()) {
+			String city= itr.next();
+			
+			System.out.println(city);
+		}
+
+
+
+Example for removing an element while iterating: // Safe way
+-------------------------------------------------
+
+
+
+	ArrayList<String> al = new ArrayList<>();
+		
+		al.add("delhi");
+		al.add("mumbai");
+		al.add("chennai");
+		al.add("kolkata");
+		al.add("chandigarh");
+		al.add("hydrabad");
+		
+		
+		Iterator<String> itr= al.iterator();
+		
+		while(itr.hasNext()) {
+			String city= itr.next();
+			
+			System.out.println(city);
+			if(city.equals("chennai")) {
+				itr.remove();   // safely remove
+			}
+			
+		}
+		
+		
+		System.out.println(al);
+		
+		
+
+
+Note: If we are trying to remove the element while iterating for enhanced for loop, It will throw the ConcurrentModificationException.
+
+Example:
+
+
+		ArrayList<String> al = new ArrayList<>();
+		
+		al.add("delhi");
+		al.add("mumbai");
+		al.add("chennai");
+		al.add("kolkata");
+		al.add("chandigarh");
+		al.add("hydrabad");
+		
+		
+		for(String city: al) {
+			System.out.println(city);
+			if(city.equals("chennai")) {
+				al.remove(city);  //throw the Exception
+			}
+		}
+		
+		
+		System.out.println(al);
+		
+		
+	}
+
+
+
+
+
+Reason:
+
+--Enhanced for-loop internally uses Iterator
+--Direct modification breaks iterator consistency (fail-fast)
+
+
+Fail-Fast behavior: 
+------------------
+
+--Most collection classes (ArrayList, HashSet, etc.) are fail-fast. They throw ConcurrentModificationException if the collection is structurally modified while iterating, except through the iterator’s own remove() method.
+
+
+
+Note: while iterating with normal for loop if we try to remove the element, it will be removed but the normal for-loop is not the universal way to iterating any collection object, it will not work with the Set or Queue objects, because they do not support the index.
+
+Example:
+
+
+ArrayList<String> al = new ArrayList<>();
+		
+		al.add("delhi");
+		al.add("mumbai");
+		al.add("chennai");
+		al.add("kolkata");
+		al.add("chandigarh");
+		al.add("hydrabad");
+		
+		
+		
+		for(int i=0;i<al.size();i++) {
+			String city= al.get(i);
+			System.out.println(city);
+			if(city.equals("chennai")) {
+				al.remove(city);
+			}
+		}
+		
+		System.out.println(al);
+		
+		
+
+
+Experiment:
+-----------
+
+	ArrayList<String> al = new ArrayList<>();
+		
+		al.add("a");
+		al.add("b");
+		al.add("c");
+		al.add("d");
+		al.add("e");
+		al.add("f");
+		
+		
+		for(int i=0;i<al.size();i++) {
+			
+			String s= al.get(i);
+			if(s.equals("b") || s.equals("c")) {
+				al.remove(s);
+			}
+			
+		}
+		
+		System.out.println(al); 
+
+
+
+Here the output: [a, c, d, e, f]: not expected, because after removing "b" the next element "c" shifted to the previous index.
+
+--To fix this problem we can use the following approaches:
+
+Approach1: Decrement the index after removing.
+
+
+
+		for(int i=0;i<al.size();i++) {
+			
+			String s= al.get(i);
+			if(s.equals("b") || s.equals("c")) {
+				al.remove(i);
+				i--;  //decrement the index
+			}
+			
+		}
+		
+
+Approach2: Traverse backward // No shift problem
+
+		for(int i=al.size()-1;i>=0;i--) {
+			
+			String s= al.get(i);
+			if(s.equals("b") || s.equals("c")) {
+				al.remove(s);
+					
+			}
+			
+		}
+
+
+
+
+Approach3: Using Iterator:
+
+		Iterator<String> itr= al.iterator();
+		
+		while(itr.hasNext()) {
+			
+			String s= itr.next();
+			if(s.equals("b") || s.equals("c")) {
+				itr.remove();
+			}
+			
+			
+		}
+
+
+
+
+limitations of Iterator:
+----------------------
+
+1. By using Iterator we can always move forward direction, but can't move backward direction, it is a single direction cursor.
+
+2. By using the Iterator we can perform only read and remove operation, but we can't perform the replace and add operation.
+
+
+
+
+ListIterator interface:
+-----------------------
+
+--It is the child interface of the Iterator interface.
+
+--By using ListIterator we can move either to the forward direction or to the backward direction. It is a bi-directional cursor.
+
+--By using ListIterator we can also perform replace or add operation while iterating over the List elements.
+
+Note: ListIterator is the most powerfull cursor but its limitation is, It is not a universal cursor, we can use it only with List objects not with the Set or Queue objects.
+
+
+
+ListIterator interface contains the following 9-methods:
+
+1. public boolean hasNext()
+
+2. public Object next()
+
+3. public int nextIndex()
+
+4. public boolean hasPrevious()
+
+5. public Object previous()
+
+6. public int previousIndex()
+
+7. public void remove()
+
+8. public void set(Object o)
+
+9. public void add(Object o)
+
+
+
+--To get the ListIterator object, we need to call listIterator() method on the List object.
+
+
+ListIterator ltr= al.listIterator();
+
+
+
+
+Example:
+--------
+
+
+		ArrayList<String> al = new ArrayList<>();
+		
+		al.add("a");
+		al.add("b");
+		al.add("c");
+		al.add("d");
+		al.add("e");
+		al.add("f");
+		
+		
+		ListIterator<String> ltr= al.listIterator();
+		
+		while(ltr.hasNext()) {   // Moving forward direction
+			String s= ltr.next();
+			System.out.println(s);
+		}
+		
+		
+		System.out.println("=====================");
+		
+		
+		while(ltr.hasPrevious()) { // moving backward direction
+			System.out.println(ltr.previous());
+		}
+		
+		
+		
+
+
+--First move forward then move backward. because when the ListIterator object is created, Cursor is at the start (before first element)
+
+So to go backward:
+
+--First move to end using next()
+--Then use previous()
+
+
+Shortcut (Start from End)
+
+ListIterator<String> ltr = al.listIterator(al.size()); // we can pass any number from where we want to move backward.
+		
+
+Example: Adding the new element while iterating:
+------------------------------------------------
+
+ while(ltr.hasNext()) {
+
+            String s = ltr.next();
+
+            if(s.equals("b")) {
+                ltr.add("X");   // insert after b
+            }
+        }
+
+
+
+Example: Replacing the new element while iterating:
+---------------------------------------------------
+
+while(ltr.hasNext()) {
+            String s = ltr.next();
+
+            if(s.equals("b")) {
+                ltr.set("B");   // replace b with B
+            }
+        }
+
+
+
+
+
+
+Polymorphic References for Creating ArrayList Object:
+==================================================
+
+
+--In Java, we can create an ArrayList object in multiple ways using different reference types. 
+--This is possible due to polymorphism (an object of a child class can be referred by its parent type).
+
+--Here are the common styles:
+
+1. Using Object class reference: (Least recommended for collection usage)
+
+	Object obj = new ArrayList<String>();
+
+--You can only call methods of the Object class (like toString(), equals(), hashCode()) without downcasting.
+
+--Not useful for collection operations.
+
+
+2. Using Collection interface reference:
+
+	Collection<String> col = new ArrayList<>();
+
+
+--You can only call methods declared in the Collection interface (without downcasting).
+
+--This reference can point to any implementation of Collection (ArrayList, LinkedList, HashSet, etc.).
+
+
+3. Using List interface reference : Most Recommended & Widely Used
+
+	List<String> list = new ArrayList<>();
+
+--You can call all methods declared in the List interface (add(), get(), set(), remove(int), indexOf(), etc.).
+
+--This is the best practice in most cases because:
+
+--It promotes loose coupling (your code is not tied to a specific implementation).
+
+--You can easily change the implementation later (e.g., from ArrayList to LinkedList or Vector) without changing the rest of the code.
+
+--It clearly shows that you only need List behavior.
+
+
+4. Using ArrayList class reference (Concrete type)
+
+
+	ArrayList<String> al = new ArrayList<>();
+
+
+--You can call all methods: Object + Iterable + Collection + List + ArrayList-specific methods (ensureCapacity(), trimToSize(), clone()).
+
+--Use this only when you specifically need ArrayList-only methods (like ensureCapacity() or trimToSize()).
+
+--It makes your code tightly coupled to ArrayList, which reduces flexibility.
+
+
+
+Best Practice:
+
+-- Always prefer 
+	List<String> list = new ArrayList<>(); 
+
+--unless you have a strong reason to use the concrete ArrayList type.
+
+--Programming to the interface (List) makes your code more maintainable and flexible.
+
+--If you declare the reference as List, you cannot call ensureCapacity() or trimToSize() directly. You will need to downcast or use ArrayList reference.
+
+
+
+
+
+Creating Fixed Lists Quickly: 
+==========================
+
+--Java provides two convenient utility methods to create a List from elements without manually adding them one by one.
+
+
+1. Arrays.asList():
+------------------
+
+Class: java.util.Arrays
+Introduced: Java 1.2
+Purpose: Converts an array (or varargs) into a fixed-size List.
+
+Key Characteristics:
+
+--Returns a fixed-size list backed by the original array.
+
+--You can modify existing elements using set(index, value).
+--You cannot change the size: add(), remove(), clear() method, throw UnsupportedOperationException.
+--Allows null values.
+
+--Changes made to the original array are reflected in the list (and vice versa) because it's just a wrapper/view of the array.
+
+
+
+Syntax:
+-------
+
+List<T> list = Arrays.asList(element1, element2, ...);   // varargs
+
+// or
+
+List<T> list = Arrays.asList(array);   // from existing array
+
+
+Example:
+
+
+Demo.java:
+---------
+
+
+package com.hdfc;
+
+import java.util.Arrays;
+import java.util.List;
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+		List<String> cities = Arrays.asList("Delhi", "Mumbai", "Chennai", "Kolkata");
+
+		System.out.println("List: " + cities);
+		System.out.println("Size: " + cities.size());
+
+		// Allowed: Modify element using set()
+		//cities.set(1, "Hyderabad");
+		//System.out.println("After set(1, 'Hyderabad'): " + cities);
+
+		// Not Allowed: Changing size
+		// cities.add("Bangalore"); // UnsupportedOperationException
+		// cities.remove(0); // UnsupportedOperationException
+
+		// Backed by array - changes reflect both ways
+		String[] arr = { "Apple", "Banana", "Mango" };
+		List<String> fruits = Arrays.asList(arr);
+		arr[0] = "Guava"; // Change in array
+		System.out.println("After changing array: " + fruits); // [Guava, Banana, Mango]
+
+	}
+
+}
+
+
+
+
+2. List.of() :
+----------
+
+Interface: java.util.List (static factory method)
+Introduced: Java 9
+Purpose: Creates an immutable (unmodifiable) list with the given elements(array or varargs). 
+
+
+Key Characteristics:
+
+--Returns a completely immutable list.
+
+--You cannot modify elements (set()), add, or remove anything, All structural modification methods throw UnsupportedOperationException.
+
+--Does NOT allow null values (throws NullPointerException if any element is null).
+
+--Creates a copy of the elements (not backed by the original array).
+
+--More memory-efficient and slightly better performance for small immutable lists.
+
+--Thread-safe (since immutable).
+
+
+
+Syntax:
+------
+
+List<T> list = List.of(element1, element2, element3, ...);
+
+
+List<T> list = List.of(array);   // from existing array
+
+
+
+Example:
+---------
+
+List<String> cities = List.of("Delhi", "Mumbai", "Chennai", "Kolkata");
+
+System.out.println("Immutable List: " + cities);
+
+// All modifications throw UnsupportedOperationException
+// cities.set(1, "Hyderabad");     // Exception
+// cities.add("Bangalore");        // Exception
+// cities.remove(0);               // Exception
+
+// Null not allowed
+// List.of("Delhi", null, "Mumbai");  // NullPointerException
+
+
+String[] arr = { "Apple", "Banana", "Mango" };
+		
+List<String> list = List.of(arr);
+		
+		
+arr[0] = "Guava"; // Change in array
+System.out.println("After changing array: " + list); // Not changed. // [Apple, Banana, Mango]
+
+
+If you need a modifiable list (you want to add/remove later), always do:
+
+
+List<String> list = new ArrayList<>(Arrays.asList("A", "B", "C"));
+// or
+List<String> list = new ArrayList<>(List.of("A", "B", "C"));
+
+
+
+
+--Arrays.asList():  Fixed size but mutable elements
+--List.of(): Fully immutable list
+
+
+
+
+
+Difference between Arrays.asList() and List.of()
+-------------------------------------------------
+
+
+| Feature      	| Arrays.asList() 	| List.of()  |
+| ------------ 	| --------------- 	| ---------  |
+| Add/Remove   	|  No            	|  No        |
+| Modify (set) 	|  Yes           	|  No        |
+| Null allowed 	|  Yes           	|  No        |
+| Type         	| Fixed-size      	| Immutable  |
+
+
+
+
+
+Important Note: 
+
+If we try to create a fixed sized List with an existing array by using Arrays.asList() or List.of() method:
+
+--Then that array must be the type of objects.
+--If the existing array is a primitive array, the entire array is treated as a single element, not multiple elements.
+
+Example:
+
+int[] arr = {10,20,30,40};
+
+List<int[]> list= List.of(arr);
+
+
+System.out.println(list.size()); //1
+
+int[] ar= list.get(0);
+		
+for(int a:ar) {
+	System.out.println(a);
+}
+
+
+Because:
+
+--Generics in Java work only with objects, not primitives
+--So primitive arrays like int[] are treated as one object
+
+--Will discuss about the details of Generics in future classes.
+
+
+
+
+Converting any collection to normal array:
+==========================================
+
+--To convert any Collection into a normal array, we use the following methods from the Collection interface:
+
+
+1. Object[] toArray()
+
+2. T[] toArray(T[]);
+
+
+
+
+1. Object[] toArray:
+-------------------
+
+--Converts any collection into an Object array
+
+--Returns Object[] (not type-safe)
+
+--Since it returns Object[], we need type casting while retrieving elements
+
+Example:
+
+   	List<String> list = new ArrayList<>();
+        	list.add("A");
+       		list.add("B");
+        	list.add("C");
+
+        	Object[] arr = list.toArray();
+
+        	for(Object obj : arr) {
+            		String s = (String) obj;   // type casting required
+            		System.out.println(s.toUpperCase());
+        	}
+
+
+
+
+2.  T[] toArray(T[] )
+------------------
+
+--Converts collection into a specific type array
+
+--Type-safe method
+
+
+Here, if supplied array size is:
+
+- Equal or larger:  elements copied into same array
+- Smaller:  new array is created internally
+
+
+Example:
+
+Demo.java:
+----------
+
+package com.hdfc;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+		List<String> list = new ArrayList<>();
+		list.add("A");
+		list.add("B");
+		list.add("C");
+
+		//String[] str = new String[3];
+		//String[] str = new String[list.size()];	
+		
+		//list.toArray(str); // elements are copied into existing array str
+		
+		//System.out.println(Arrays.toString(str));
+
+		String[] str2 = list.toArray(new String[0]);
+
+		System.out.println(Arrays.toString(str2));
+
+	}
+
+}
+
+
+Why new String[0]?
+
+ Best practice:
+
+String[] arr = list.toArray(new String[0]);
+
+--JVM creates correct-sized array internally
+--Cleaner and widely used
+
+
+
+Some of the Common key methods of Collection and List interface:
+=================================================================
+
+
+
+Example1: Collection inteface key methods:
+---------
+
+
+Demo.java:
+----------
+
+package com.hdfc;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+		List<String> cities = new ArrayList<>();
+
+		cities.add("Delhi");
+		cities.add("Mumbai");
+		cities.add("Chennai");
+		cities.add("Kolkata");
+		System.out.println("After add(): " + cities);
+
+		List<String> moreCities = List.of("Hyderabad", "Bangalore");
+
+		cities.addAll(moreCities);
+
+		System.out.println("After addAll(): " + cities);
+
+		System.out.println("Contains 'Delhi'? " + cities.contains("Delhi"));
+		System.out.println("Contains 'Pune'? " + cities.contains("Pune"));
+
+		cities.remove("Chennai");
+		System.out.println("After remove('Chennai'): " + cities);
+
+		List<String> toRemove = Arrays.asList("Mumbai", "Kolkata");
+		cities.removeAll(toRemove);
+		System.out.println("After removeAll(): " + cities);
+
+		List<String> toRetain = Arrays.asList("Delhi", "Hyderabad", "Pune");
+		cities.retainAll(toRetain);
+		System.out.println("After retainAll(): " + cities);
+
+	}
+
+}
+
+
+
+Example2: List inteface key methods:
+------------------------------------
+
+package com.hdfc;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+		List<String> list = new ArrayList<>();
+
+		list.add("Apple");
+		list.add("Banana");
+		list.add("Mango");
+		list.add("Orange");
+		list.add("Grapes");
+		System.out.println("Initial List: " + list);
+
+		// 1.insert at specific position
+		list.add(2, "Cherry");
+		System.out.println("After add(2, 'Cherry'): " + list);
+
+		// 2. Get the element from the specific index
+		System.out.println("Element at index 3: " + list.get(3));
+
+		// 3. Replace the old element
+		String old = list.set(4, "Pineapple");
+		System.out.println("set(4, 'Pineapple') - Old value was: " + old);
+		System.out.println("After set(): " + list);
+
+		// 4. removes by index and returns the removed element
+		String removed = list.remove(1);
+		System.out.println("remove(1) returned: " + removed);
+		System.out.println("After remove by index: " + list);
+
+		// 5. index of First and last occurrence of an object
+		list.add("Apple");
+		System.out.println("List now: " + list);
+		System.out.println("First occurrence of 'Apple': " + list.indexOf("Apple"));
+		System.out.println("Last occurrence of 'Apple': " + list.lastIndexOf("Apple"));
+
+		// 6. subList(int fromIndex, int toIndex)  view of portion of list
+		List<String> sub = list.subList(1, 4); // from index 1 to 3 (toIndex exclusive)
+		System.out.println("subList(1,4): " + sub);
+
+		// Modifying subList also affects original list and vice-varsa (because it's a view)
+		sub.set(0, "Guava");
+		System.out.println("After modifying subList, original list: " + list);
+
+	}
+
+}
+
+
+
+
+Time Complexity of various methods of Collection and List interface:
+====================================================================
+
+add(E e) : O(1) amortized : May become O(n) during resizing.
+
+add(index, e): O(n): shift elements
+
+remove(Object o) : O(n): Need to search the element.
+
+remove(index): O(n): Shift elements
+
+contains(Object o): O(n): linear search
+
+addAll(Collection c): O(n): Depends on size of input
+
+removeAll(Collection c): O(n * m): worst case
+
+retainAll(Collection c): O(n * m): comparison required
+
+get(index): O(1)
+
+set(index, e): O(1)
+
+indexOf(): O(n): Linear serach
+
+lastIndexOf(): O(n): Reverse serach
+
+
+
+
+
+
+Student task:
+-------------
+
+Question1: 
+
+-- Create A List quickly with the following elements: "A", "B", "C", "B", "D"
+
+--Remove all the "B" elements from the List.
+
+
+
+
+Question2:  Student Management System (Using List)
+
+--Create a Student bean class with:
+
+roll
+name
+marks
+
+Then:
+
+--Store multiple student objects in a List
+
+--Display all students
+
+--Find student with highest marks
+
+--Remove students with marks <400
+
+--Convert the list into an array
+
+
+
+Question3: ListIterator Advanced Operations
+
+Create a list: [a, b, c, d]
+
+Perform:
+
+--Traverse forward and print
+--Traverse backward and print
+--Replace "b" with "B"
+--Add "X" after "c"
+--Remove "d"
+
+
+
+Question4: Menu Driven List Program (Product management)
+
+Create a menu-driven program:
+
+1. Add a product name only
+2. Remove a product
+3. Display  product list
+4. Search a product
+5. Exit
+
+
+Solution4:
+
+
+Demo.java:
+-----------
+
+package com.hdfc;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+		Scanner sc = new Scanner(System.in);
+		List<String> list = new ArrayList<>();
+
+		while (true) {
+
+			System.out.println("\n===== MENU =====");
+			System.out.println("1. Add a Product Name");
+			System.out.println("2. Remove Product");
+			System.out.println("3. Display Product list");
+			System.out.println("4. Search a Product");
+			System.out.println("5. Exit");
+			System.out.print("Enter your choice: ");
+
+			int choice = sc.nextInt();
+
+			switch (choice) {
+
+			case 1: {
+				System.out.print("Enter product name to add: ");
+				String product = sc.next();
+				list.add(product);
+				System.out.println("Product added successfully!");
+				break;
+			}
+
+			case 2: {
+				System.out.print("Enter Product name to remove: ");
+				String product = sc.next();
+
+				if (list.remove(product)) {
+					System.out.println("Product removed successfully!");
+				} else {
+					System.out.println("Product not found!");
+				}
+				break;
+			}
+
+			case 3: {
+				System.out.println("All Products: " + list);
+				break;
+			}
+
+			case 4: {
+				System.out.print("Enter Product name to search: ");
+				String product = sc.next();
+
+				if (list.contains(product)) {
+					System.out.println("Product found!");
+				} else {
+					System.out.println("Product not found!");
+				}
+				break;
+			}
+
+			case 5: {
+				System.out.println("Exiting program...");
+				sc.close();
+				return; //Proper exit
+				//System.exit(0);
+			}
+
+			default:
+				System.out.println("Invalid choice! Try again.");
+			}
+		}
+	}
+}
+
+
+
+
+
+Collections Class in Java:
+========================
+
+--Collections is a utility class in Java that provides static methods to operate on collection objects.
+
+--It belongs to java.util package
+
+--It contains only static methods
+
+Can be used with:
+
+List
+Set
+Queue
+
+
+Commonly used methods of the Collections class:
+-----------------------------------------------
+1. sort():
+
+--It sort the original List objects
+
+Collections.sort(list); 
+Collections.sort(List list, Comparator c);
+
+
+Example:
+
+List<Integer> list = Arrays.asList(5, 2, 8, 1);
+Collections.sort(list);
+
+System.out.println(list); // [1, 2, 5, 8]
+
+
+2. reverse():
+
+--To reverse the elements of the List
+
+Collections.reverse(List list);
+
+Example:
+
+Collections.reverse(list);
+System.out.println(list); // [8, 5, 2, 1]
+
+
+3. max() and min():
+
+--To find min and max elements from a List
+
+
+Example:
+
+int max = Collections.max(list);
+int min = Collections.min(list);
+
+
+4. binarySearch():
+
+--Search element (list must be sorted)
+
+Example:
+
+Collections.sort(list);
+
+int index = Collections.binarySearch(list, 5);
+System.out.println(index);
+
+
+5. frequency():
+
+--Counts occurrences of an element
+
+Example:
+
+List<String> list = Arrays.asList("A", "B", "A", "C");
+
+int count = Collections.frequency(list, "A");
+System.out.println(count); // 2
+
+
+5. fill():
+
+--Replaces(reset) all elements with given value.
+
+Example:
+
+List<Integer> list = new ArrayList<>(List.of(10,20,30,40,50));
+	
+Collections.fill(list, 0);
+System.out.println(list); //[0, 0, 0, 0, 0]
+
+
+6. disjoint():
+
+--Checks if two collections have no common elements
+
+Example:
+
+List<Integer> list1 = List.of(10,20,30,40,50);
+List<Integer> list2 = List.of(70,80,90);
+		
+		
+System.out.println(Collections.disjoint(list1, list2)); //true
+
+
+7. swap():
+
+--Swaps two elements inside the List using index
+
+Example:
+
+List<Integer> list = new ArrayList<>(List.of(10,20,30,40,50));
+		
+Collections.swap(list, 0, 3);
+		
+System.out.println(list); //[40, 20, 30, 10, 50]
+
+
+8. unmodifiableList():
+
+--To convert an existing List to the unmodifiableList (Immutable collections)
+		
+Example:
+
+List<String> list = new ArrayList<>();
+list.add("A"); //Allowed
+
+List<String> unmod = Collections.unmodifiableList(list);
+		
+//unmod.add("C"); //Exception
+
+
+
+9. synchronizedList():
+
+--To make a Thread-safe list:
+
+Example:
+
+List<Integer> list = new ArrayList<>(List.of(10,20,30,40,50));
+		
+List<Integer> syncList = Collections.synchronizedList(list);
+		
+
+10. shuffle():
+
+--It randomly shuffle the elements of the List
+
+Example:
+
+List<Integer> list = new ArrayList<>(List.of(10,20,30,40,50));
+		
+Collections.shuffle(list);
+		
+System.out.println(list);
+
+
+
+
+
+
+
+Generice revisted:
+==================
+
+--Generics are a powerful feature introduced in Java 5 (1.5) that allows you to write reusable, type-safe classes, interface and methods that can work with different data types.
+
+--Generics let us to write true polymorphic code that works with any data types.
+
+--Think of generics as placeholders for types(<T>, <E>, <K, V>, etc.).Instead of writing separate classes or methods for String, Integer, Employee, etc., you write one generic version of  class/method that works with any type you specify at uses time.
+
+
+Note: Generics work only with reference types (objects like String, Integer, Employee). Primitives (int, double) are not allowed directly. You must use wrapper classes (Integer, Double, etc.).
+
+
+
+--Generics provide compile-time type safety, not runtime safety (due to type erasure).
+
+
+Without Generics (pre-Java 5 style):
+
+--You had to use Object and do manual casting. This was error-prone and not type-safe.
+
+
+
+Example: Creating a Java class which will work with any type of Object.(Non-Generic class)
+
+
+
+MyGen.java:
+-----------
+
+package com.hdfc;
+
+public class MyGen {
+
+	
+	private Object obj;
+	
+	void add(Object obj) {
+		this.obj = obj;
+	}
+	
+	
+	Object get() {
+		return obj;
+	}
+	
+}
+
+
+Demo.java:
+----------
+
+package com.hdfc;
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+		MyGen gen1 = new MyGen();
+
+		gen1.add("Welcome"); // String class object
+
+		// String s1= gen1.get(); //compilation error
+
+		Object obj = gen1.get();
+		String s1 = (String) obj; //downcasting..
+
+		System.out.println(s1.toUpperCase());
+
+		MyGen gen2 = new MyGen();
+
+		gen2.add(new A());
+
+		A a1 = (A) gen2.get();
+
+		a1.funA();
+
+	}
+}
+
+
+
+A.java:
+-------
+
+package com.hdfc;
+
+public class A {
+
+	public void funA() {
+		System.out.println("Inside funA of A class");
+	}
+	
+}
+
+
+Problems:
+
+--Here eventhough MyGen class can accept any type of object but, to get back that object we need to perform downcasting.
+
+
+-No type safety
+-Manual casting required
+-Runtime errors possible(while downcasting we may get ClassCastException)
+
+
+Solution Using Generics:
+------------------------
+
+Example: Creating a Java class which will work with any type of Object.(Generic class)
+
+MyGen.java:
+------------
+
+package com.hdfc;
+
+public class MyGen<T> {
+
+	
+	private T obj;
+	
+	void add(T obj) {
+		this.obj = obj;
+	}
+	
+	
+	T get() {
+		return obj;
+	}
+	
+}
+
+
+
+--Now the above MyGen class is capable to manage any type of object
+
+Example:
+
+
+Demo.java:
+----------
+
+package com.hdfc;
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+		MyGen<String> gen1 = new MyGen<>();
+		gen1.add("Hello");
+
+		String s1 = gen1.get();
+
+		System.out.println(s1.toUpperCase());
+
+		MyGen<Integer> gen2 = new MyGen<>();
+		gen2.add(20);
+		System.out.println(gen2.get());
+
+		MyGen<A> gen3 = new MyGen<>();
+		gen3.add(new A());
+
+		A a1 = gen3.get();
+
+		a1.funA();
+
+	}
+}
+
+
+ 
+
+
+
+
+Advatange of Generics:
+----------------------
+
+1. Type Safety
+
+--Compiler prevents you from adding wrong types (e.g., you can't add a String to List<Integer>).
+
+2. No More Downcasting / ClassCastException
+
+--You get the exact type back without casting.
+
+3. Code Reusability
+
+--Write once, use with any type.
+
+4. Compile-time Bug Detection
+
+--Errors are caught early instead of at runtime.
+
+5. Cleaner and More Readable Code
+
+
+Important Rule:
+---------------
+
+Generics work only with Reference Types:
+
+List<int> //Invalid
+List<Integer> //Valid
+
+
+
+Bounded Types (Constraints on Type Parameters)
+-----------------------------------------------
+
+
+--In Generic Classes, we can apply the constraint or bound the type parameter for a particular range by using "extends" keyword.
+
+
+Example 1: Unbounded type
+
+
+
+class Test<T>
+{
+}
+
+
+--It is unbounded type (without any constraint), we can pass any type of parameter.
+
+Test<String> t=new Test<>();
+Test<Integer> t=new Test<>();
+
+
+Example2: Bounded type:
+
+
+class Test<T extends X>
+{
+}
+
+
+--If X is a class type then we can pass either X type elements or sub class elements of X type as parameter types.
+
+Example:
+
+
+Payment: Parent class
+CashPayment: Child class
+CardPayment: Child class
+
+
+
+class Payment
+{
+}
+
+class CashPayment extends Payment
+{
+}
+
+class CardPayment extends Payment
+{
+}
+
+
+
+
+class Bill<T extends Payment>
+{
+}
+
+
+Bill<Payment> bill = new Bill<>(); ---> Valid
+Bill<CashPayment> bill = new Bill<>();--> Valid
+Bill<CardPayment> bill = new Bill<>();---> Valid
+
+//Bill<Integer> bill = new Bill<>();---> Invalid
+
+
+
+Another Example:
+-----------------
+
+
+class Test<T extends Number>
+{
+}
+
+Test<Number> t=new Test<>()---> Valid
+Test<Integer> t=new Test<>();----> Valid
+Test<Float> t=new Test<>();----> Valid
+
+//Test<String> t=new Test<>();---> Invalid
+
+
+
+--If 'X' is an interface then we are able to pass either X type elements of its implementation class types as parameter.
+
+
+Example:
+
+
+interface Java
+{
+}
+
+
+class CoreJava implements Java
+{
+}
+
+class AdvJava implements Java
+{
+}
+
+
+class Course<T extends Java>
+{
+}
+
+
+Course<Java> crs1 = new Course<>(); --->Valid
+Course<CoreJava> crs2 = new Course<>();--> Valid
+Course<AdvJava> crs3 = new Course<>();---> Valid
+
+Course<String> crs3 = new Course<>();---> Invalid
+
+
+***NOTE: Bounded parameters or constraint at class level are not allowing "implements" keyword and "super" keyword.
+
+
+Example:
+
+
+class Test<T implements Runnable>
+{
+}
+
+Status: Invalid
+
+
+class Test<T super String>
+{
+}
+
+Status: Invalid
+
+
+
+Multiple Bounds (using &)
+--------------------------
+
+--In Generic classes, we can use more than one type as bounded parameter by using '&' symbol.
+
+example
+
+class Test<T extends Number & Serializable>
+{
+}
+
+
+--Here Test class is able to allow the elements which must be either same as Number or sub classes to the Number and must be the implementations of Serializable interface.
+
+Test<Integer> t=new Test<Integer>();--> Valid
+Test<Float> t=new Test<Float>();--> Valid
+Test<String> t=new Test<String>--> Invalid.(Because String type is not a subtype of Number, but its implements the Serializable interface)
+
+
+***Note:  The "extends" keyword will not allow two class types at the same time.
+
+class Test<T extends Number & Thread>
+{
+}
+
+
+Status: Invalid
+
+
+But the "extends" keyword is able to allow more than one interface type.
+
+class Test<T extends Runnable & Serializable>
+{
+}
+
+Statis: valid.
+
+
+--The "extends" is able to allow both class type and interface type , but, first we have to specify class type then we have to specify Interface type. i.e first class name and then interface name.
+
+
+
+
+class Test<T extends Number & Runnable>
+{
+}
+
+
+Status: Valid.
+
+class Test<T extends Runnable & Number>
+{
+}
+
+Status: Invalid.
+
+
+
+
+
+Generic methods:
+===============
+
+---we can also declare a generic method inside a generic or non-generic class.
+
+
+Syntax: Type parameter(s) declared before the return type.
+
+
+
+Example1:
+
+
+
+
+Demo1.java:
+---------------
+
+package com.hdfc;
+
+public class Demo {
+		
+
+	// Non-generic method
+	//public static void fun1(String s) {
+		
+	//	System.out.println(s);
+		
+	//}
+	
+
+	//Generic method
+
+	public static <E> void fun1(E e) {
+		
+		System.out.println(e);
+		
+	}
+
+
+
+	
+	public static void main(String[] args) {
+		
+	
+		//fun1("Hello");
+		//fun1(10); //Error
+
+		fun1(10);
+		fun1("Hello");
+		fun1(new A());
+		
+		
+	}
+
+}
+
+
+
+Another Example:
+----------------
+
+public static void print(int key,int value){   
+	System.out.println(key+"==="+value);
+}
+
+
+
+//Here, if we want the key and value element can be any type: 
+
+
+public static <K,V> void print(K key, V value){
+	System.out.println(key+"==="+value);
+
+}
+
+
+
+
+
+
+--Instead of defining too many printArray method which will print array of Integer, String, Customer, Student, we can create a printArray method in generic way which can print array type of array.
+
+public <E> void printArray(E[] er){
+
+}
+
+
+--here <E> should come before the return type.
+
+
+
+Example:
+
+
+Demo.java:
+-----------
+
+
+package com.hdfc;
+
+public class Demo {
+	
+	
+	public static <E> void printArray(E[] arr) {
+		
+		for(E e:arr) {
+			System.out.println(e);
+		}
+		
+		
+	}
+	
+	
+	public static void main(String[] args) {
+		//In generics primitives are not allowed		
+		//int[] nums= {10,20,30,40,50};
+		
+		Integer[] nums= {10,20,30,40,50};
+		
+		printArray(nums);
+		
+		String[] cities= {"Delhi","pune","mumbai"};
+		
+		printArray(cities);
+			
+	}
+}
+
+
+
+Note: The above printArray() method as same as :
+
+
+	public static void printArray(Object[] arr) {
+		
+		for(Object obj:arr) {
+			System.out.println(obj);
+		}
+		
+		
+	}
+
+
+--Inside the printArray() method we can only invoke the Object class related methods, and not able to invoke object specific methods without downcasting.
+
+
+
+
+Example:
+
+
+
+Employee : Parent class
+
+Developer: Child class
+Manager: Child class
+
+
+
+
+public static void printArray(Employee[] employees){
+
+	for(Employee employee: employees){
+		System.out.println(employee);
+	}
+
+}
+
+
+
+--We can call the above method by passing Employee class array as well as Developers and Manager array as well.
+
+
+Employee[] employees = {new Employee(), new Employee()};
+printArray(employees);
+
+Developer[] developers = {new Developer(), new Developer()};
+printArray(developers);
+
+
+Manager[] managers = {new Manager(), new Manager()};
+printArray(managers);
+
+
+
+
+
+Covarience type in Java:
+========================
+
+--As we know that to the super class reference variable we can store any of its subclass object.
+
+
+Example:
+
+
+String s = "Hello";
+
+Object obj = s;
+
+
+--Covariance allows a type to accept its subtypes while preserving the "is-a" relationship.
+
+--In Java arrays are the covariance types:
+
+--We can store array of any object to the referernce variable of Object[] array also.
+
+
+Example:
+
+
+
+String[] fruits = {"Apple", "Mango", "Banana", "Pineapple"};
+
+Object[] objArray = fruits; //allowed
+
+
+Problem:
+
+objArray[0] = new A(); // Heap Pollution, ArrayStoreException
+
+Here, no error at compiled time, compiler is not able to detect it but at runtime we get an exception.
+
+
+
+In Java Generics are Invarient by default, Means does not follow parent-child relationship.
+
+
+Example:
+
+
+List<String> sList = new ArrayList<>();
+
+List<Object> oList = sList; // Compilation error
+
+
+
+Example:
+
+
+
+public static void printArray(List<Employee> employees){
+
+	for(Employee employee: employees){
+		System.out.println(employee);
+	}
+
+}
+
+
+
+
+List<Employee> employees = List.of(new Employee(), new Employee());
+printArray(employees); // valid
+
+List<Developer> developers = List.of(new Developer(), new Developer());
+printArray(developers); // Error
+
+Here is one way:
+
+
+
+		List<Developer> delevopers = new ArrayList<>(List.of(new Developer(), new Developer()));
+		
+		List<Employee> employees = new ArrayList<>();
+		
+		for(Developer developer: delevopers) {
+			
+			employees.add(developer);
+		}
+		
+		
+		printArray(employees);
+
+
+
+
+
+
+
+--To make our Collection to work as a covarience type and make them flexible, we need to make use of wildcards:
+
+--With the collections we can use following 3 types of wildcards:
+
+
+1. Subtype or upper bound wildcards: Covariance (for reading/producing)
+
+2. SuperType or Lower bound wildcards: Contravariance (for writing/consuming)
+
+3. Unbounded Wildcard 
+ 
+
+PECS Principle (Producer Extends, Consumer Super)
+
+--Producer (you only get/read values) : Use ? extends T
+--Consumer (you only put/write values):  Use ? super T
+
+
+
+
+
+
+1. Subtype or upper bound wildcards: (? extends T)
+-------------------------------------
+
+
+
+
+--Using this we can achieve the covarinece type of feature in collections also.
+
+syntax:
+
+<? extends T> 
+
+--means a type that is either T or a child of T, 
+
+
+Example:
+
+
+public static void printArray(List<? extends Employee> employees){
+
+	for(Employee employee: employees){
+		System.out.println(employee);
+	}
+	// employees.add(new Employee());       // Compile error - cannot add
+	employees.add(null); // allowed
+}
+
+
+--This method can accept at max or upper bound of Employee class object. we are trying to restrict the boundry at max to Employee class
+
+--The wildcard type ? extends Employee indicates some unknown subtype of Employee. we can call this method with List<Developer> or List<Manager> as well.
+
+
+Note: When we are using Subtype or Upper bound Wildcard, we can't add a new element/object inside the collection. For example inside the above method, if we try to add an object of Employee or its subtype we get a compilation error.
+
+
+--The reason is, the ? inside "? extends Employee", could refer to any subclass, perhaps Developer or Manager, Since we can't add a Developer to a List<Manager>.
+
+--But we can add null value, because null is the default value of any reference variable.
+
+2. SuperType or Lower bound wildcards:
+-----------------------------------
+
+--Contravarience is the opposite of covarience, and it refers to the ability of a type to accept more generic(broader) types.
+
+--Contravariance allows a generic type to work with its supertypes using ? super.
+
+--Lower bounded wildcard (? super T) allows a generic type to accept T and its supertypes, making it suitable for write operations.
+
+syntax:
+
+<? super T> 
+
+Means:
+
+Accepts:
+
+T
+Parent of T
+Grandparent of T
+
+
+
+
+
+
+
+
+
+
+
+
+
+Note: We can specify an upper bound for a windcard, or we can specify a lower bound but we can not specify both.
+
+
+
+
+--Suppose, we want to write a method that puts Integer object into a list, To maximize flexibility, we would like that method to work on List<Integer>, List<Number> or List<Object>: Anything that can hold an Integer value.
+
+
+
+public static void addNumbers(List<? super Integer> list){
+
+	for(int i=1;i<=10;i++){
+		list.add(i); //Perform write operation
+	}
+
+}
+
+
+
+List<Integer> l1 = new ArrayList<>();
+List<Number> l2 = new ArrayList<>();
+List<Object> l3 = new ArrayList<>();
+
+List<String> l4 = new ArrayList<>():
+
+
+
+addNumbers(l1); //valid
+addNumbers(l2); //valid
+addNumbers(l3); //valid
+
+addNumbers(l4); //invalid
+
+
+
+
+Key properties:
+--------------
+
+
+List<? super Integer>
+
+
+1. Write (Allowed)
+
+list.add(10); // Integer allowed, Because all these lists can store Integer
+
+--You can ADD T and its subclasses
+--You CANNOT safely add superclasses
+
+
+2. Read (Restricted):
+
+Object obj = list.get(0); // Only Object allowed, because Compiler doesn't know exact type
+// Not able to read in the lower bound types.
+
+
+
+
+
+Example2:
+=======
+
+
+package com.masai;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class Demo{
+
+	public static  void fun1(List<? super Developer> list) {
+		
+		list.add(new Developer()); // Allwoed, because this list can store developer
+
+		//list.add(new Employee()); // Not allowed	
+
+		//Developer dev= list.get(0); //Not allowed, Restricted	
+
+
+		for(Object s:list) {   // biggest type (Reading with Object, not with Developer)
+			
+			System.out.println(s);
+		}
+		
+		
+	}
+	
+	
+	public static void main(String[] args) {
+		
+		
+		List<Developer> plist=new ArrayList<>();
+		List<Employee> slist=new ArrayList<>();
+		List<Object> olist=new ArrayList<>();
+		
+		
+		fun1(plist);
+		fun1(slist);
+		fun1(olist);
+		
+	}
+
+}
+
+
+
+
+
+Another example:
+---------------
+
+package com.hdfc;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Demo {
+
+	public static void fun1(List<? super Employee> list) {
+
+		list.add(new Developer()); //Allowed
+		list.add(new Employee()); // Allowed
+		list.add(new Manager()); //Allowed
+
+		for (Object s : list) { // biggest type (Reading with Object, not with Developer)
+
+			System.out.println(s);
+		}
+
+	}
+
+	public static void main(String[] args) {
+
+		List<Employee> slist = new ArrayList<>(List.of(new Employee(), new Developer()));
+		fun1(slist);
+
+	}
+
+}
+
+
+
+
+
+
+
+
+extends = read, but write is not allowed except null value.
+super = write, but read only with Object class
+
+
+
+Unbounded wildcard:
+-------------------
+
+syntax:
+
+List<?>
+
+
+--In Java Generics, a wildcard (?) represents an unknown type.
+
+--Unbounded Wildcard (?) means:  "any type"
+
+--Unbounded wildcard is used when you don’t care about the type of the elements, but still want type safety.
+
+--There are two scenarios where using unbounded wildcard is useful.
+
+1. When writing a method that relies on Object class functionality, If a method uses only methods defined in the Object class (like toString(), equals()), then the exact type is not important.
+
+2. If a method uses operations that do not depend on the generic type (such as size(), clear(), isEmpty()), then <?> can be used.
+
+
+List<?> means a list typed to an unknown type. This could be a List<A>, a List<B>, a List<String> etc.
+
+Since  you do not know what type the List is typed to, you can only read from the collection but can not add the data, and you can only treat the objects read as being Object instances. Here is an example:
+
+package com.masai;
+
+import java.util.Arrays;
+import java.util.List;
+
+public class Demo{
+
+	public static void fun1(List<?> list) {
+		
+		for(Object obj:list) {
+			System.out.println(obj.toString());
+		}
+		//here we can not write inside the list
+		//list.add(10); // error	
+	
+	}
+
+	public static void fun2(List<?> list) {
+		
+		 System.out.println("Size: " + list.size()); // no type needed
+        	 list.clear(); // no type needed
+
+		// list.add(list.get(0)); //Not allowed
+	
+	}
+
+	
+	
+	public static void main(String[] args) {
+		
+		List<Integer> ilist=Arrays.asList(10, 11);
+		
+		List<String> slist= Arrays.asList("A","B","C");
+		
+		fun1(ilist);
+		fun1(slist); 
+		
+		fun2(slist); 
+
+				
+		
+	}
+
+}
+ 
+
+
+
+Difference between List<?> and List<T>
+--------------------------------------
+
+List<?>:
+
+--The method says:  "I don’t know what type this list holds".
+--You cannot use the type specifically:  use only as Object type.
+--Give me any list, I don’t care what’s inside.
+
+
+
+Example:
+
+public static void fun2(List<?> list) {
+
+    // T value = list.get(0);  // Not allowed
+
+    Object value = list.get(0); //  Only Object allowed
+
+  //list.add(list.get(0)); // Not allowed	
+  //list.add("Hello"); //Not allowed
+
+  list.add(null); // allowed
+	
+}
+
+
+
+List<T>: 
+
+--The method knows the exact type (even if you don’t see it explicitly)
+--That type can be used inside the method
+--Give me a list of some specific type, and I’ll work with that type.
+
+
+
+
+Example:
+
+public static <T> void fun1(List<T> list) {
+
+    T value = list.get(0);   // Allowed
+
+  list.add(list.get(0)); //Allowed
+
+}
+
+
+
+--Here T is not fixed globally, Its value will be decided at method call time:
+
+fun1(List<String>)  :  T = String  
+fun1(List<Integer>)  : T = Integer
+
+
+
+Example:
+
+
+public static <T> T getFirstElement(List<T> list) {
+
+    T value = list.get(0);   
+
+     return value;
+   
+}
+
+
+
+
+
+
+
+Example: Swap Elements in List(any type of Element)
+
+public static <T> void swap(List<T> list, int i, int j) {
+    T temp = list.get(i);
+    list.set(i, list.get(j));
+    list.set(j, temp);
+}
+
+
+
+Note: We cannot perform this operation with List<?> because the compiler does not know the exact type, so methods like set() are not type-safe.
+
+
+
+
+
+Student Task:
+=============
+
+
+1. Pridict the output ?
+
+public static void fun(List<?> list) {
+    list.add(null);
+    list.add("Hello");
+}
+
+
+
+
+
+Options:
+
+A. Both statements compile
+B. Only list.add(null) compiles
+C. Only list.add("Hello") compiles
+D. None compile
+
+
+
+
+Answer: B
+
+Because:
+
+? = unknown type
+Only null fits all types
+
+
+
+
+Q2. Which method calls are valid?
+
+public static void fun(List<? extends Number> list) { 
+
+}
+
+
+Options:
+
+A. fun(new ArrayList<Integer>())
+B. fun(new ArrayList<Double>())
+C. fun(new ArrayList<Object>())
+D. Both A and B
+
+
+
+Answer: D
+
+Rule:
+? extends Number:  Number or its subclasses only.
+
+
+
+
+3. Q3. What happens here ?
+
+public static void fun(List<? extends Number> list) {
+    list.add(10);
+}
+
+
+Options:
+
+A. Compiles successfully
+B. Runtime error
+C. Compile-time error
+D. Works only for Integer list
+
+
+
+Answer: C
+
+Because:
+
+List could be:
+
+List<Integer> or List<Double>
+
+-- Adding 10 (Integer) to List<Double> would break type safety.
+
+
+
+Q4. Which calls are valid?
+
+public static void fun(List<? super Integer> list) { 
+
+}
+
+
+
+Options:
+
+A. fun(new ArrayList<Integer>())
+B. fun(new ArrayList<Number>())
+C. fun(new ArrayList<Object>())
+D. All of the above
+
+
+
+Answer: D
+
+
+Q5. What can be assigned?
+
+
+public static void fun(List<? super Integer> list) {
+    Object obj = list.get(0);
+    Integer i = list.get(0);
+}
+
+
+Options:
+
+A. Both are valid
+B. Only Object obj is valid
+C. Only Integer i is valid
+D. None are valid
+
+
+
+Answer: B
+Because: Compiler only guarantees Object, not Integer.
+
+
+
+
+Q6. Which method compiles ?
+
+
+public static <T> void fun1(List<T> list) {
+    list.add(list.get(0));
+}
+
+public static void fun2(List<?> list) {
+    list.add(list.get(0));
+}
+
+
+Options:
+
+A. Only fun1
+B. Only fun2
+C. Both
+D. None
+
+
+Answer: A
+
+Reason:
+T is known
+? is unknown
+
+
+
+
+Q7. What happens here?
+
+public void fun(List<String> list) {
+
+}
+
+public void fun(List<Integer> list) {
+
+}
+
+
+Options:
+
+A. Both methods compile
+B. Overloading works fine
+C. Compile-time error
+D. Runtime error
+
+
+
+
+Answer: C
+Because of Type Erasure
+
+
+
+Q8. What does this mean?
+
+List<? extends Number>
+
+Options:
+
+A. Can only add elements
+B. Can only read elements
+C. Can read and write both
+D. Cannot do anything
+
+
+
+ Answer: B
+
+
+Q9. Fill in the blank
+
+void print(List<? ___ Number> list)
+
+(Only reading required)
+
+
+
+
+Options:
+
+A. super
+B. extends
+C. T
+D. Object
+
+Answer: B
+
+
+
+
+Q10. What happens here?
+
+List<? extends Number> list = new ArrayList<Integer>();
+Number n = list.get(0);
+
+Options:
+
+A. Compile-time error
+B. Runtime error
+C. Compiles successfully
+D. Works only for Double
+
+
+
+Answer: C
+Because: Whatever comes out is at least a Number.
+
+
+
+
+Q11. What can you add to List<?> ?
+
+A. Any object
+B. Only null
+C. Only String
+D. Only Integer
+
+
+
+
+Answer: B
+
+
+
+
+
+
+
+
+
+
+
+
+Type Erasure in Java:
+---------------------
+
+--Type Erasure is a mechanism used by Java to implement generics.
+
+--Type Erasure means removing generic type information at compile time.
+
+
+Defination:
+-----------
+
+--Type Erasure is the process of removing generic type information at compile time so that generic code is converted into non-generic code for JVM execution.
+
+Need for Type Erasure:
+---------------------
+
+--Java introduced generics in Java 5 without changing JVM
+
+So:
+
+--JVM does not understand generics
+--Compiler converts generic code to normal code
+-- No Generic Information at Runtime:
+
+
+This ensures:
+
+--Backward compatibility with older Java versions
+
+
+How Type Erasure Works:
+---------------------
+
+Case 1: Unbounded Type
+
+class Box<T> {
+    T value;
+}
+
+
+After compilation:
+
+class Box {
+    Object value;
+}
+
+
+Case 2: Bounded Type:
+
+class Box<T extends Number> {
+    T value;
+}
+
+After compilation:
+
+class Box {
+    Number value;
+}
+
+
+
+Example:
+
+List<String> list = new ArrayList<>();
+list.add("Hello");
+
+After type erasure:
+
+List list = new ArrayList();
+list.add("Hello");
+
+
+
+Key Effects of Type Erasure:
+-------------------------
+
+
+1. Method Overloading Restriction
+
+
+void fun1(List<Integer> list) {
+		
+}
+	
+void fun1(List<String> list) {
+		
+} // Not allowed
+
+
+2. Type Casting Inserted by Compiler
+
+List<String> slist = List.of("Java", "Pyhton", "C++");
+
+String s = slist.get(0);
+	
+Compiler internally adds:
+
+String s = (String) list.get(0);
+
+
+Important Note
+
+--Generics provide compile-time type safety, not runtime safety.
+
+
+
+Gift Box Analogy:
+
+At compile time:  box has label (String, Integer)
+At runtime: label removed:  only box remains
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

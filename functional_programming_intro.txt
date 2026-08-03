@@ -1,0 +1,457 @@
+Functional Programming in Java (Introduction)
+=============================================
+
+--Functional programming is a programming style where functions can be stored in variables, passed as arguments, and returned from methods.
+
+--We focus on what result we want, not how to achieve step by step.
+
+
+From Java 8, Java supports functional programming using:
+
+--Functional Interface
+--Lambda Expression (It is simmilar to arrow function in Java-Script language.)
+--Method Reference
+--Stream API
+
+--To make code shorter, cleaner, and more readable.
+
+
+
+
+
+
+
+
+
+
+Functional Interface:
+----------------------
+
+--A Functional Interface is an interface that contains only one abstract method.
+
+It can have:
+
+One abstract method
+Multiple default methods
+Multiple static methods
+
+Note: In Java, the functional interface is the base for the functional programming.
+
+
+Example:
+
+@FunctionalInterface // optional annotation for the functional interface
+interface MyInterface {
+    void show();   // Only one abstract method
+}
+
+
+
+Lambda expression:
+-----------------
+
+--It is an expression used to implement functional interface in shorter way.
+
+
+Example Without Lambda:
+-----------------------
+
+interface MyInterface {
+    void show();
+}
+
+
+// Implementation class
+class Demo implements MyInterface {
+
+    @Override
+    public void show() {
+        System.out.println("Hello");
+    }
+}
+
+
+public class Test {
+    public static void main(String[] args) {
+        MyInterface obj = new Demo();
+        obj.show();
+    }
+}
+
+
+--Too much code just to print "Hello".
+
+
+--We can write the implementation of an interface without using a seperate class also (using annonymous inner class)
+
+Example Using Anonymous Class
+------------------------------
+
+MyInterface obj = new MyInterface() {
+
+    @Override
+    public void show() {
+        System.out.println("Hello");
+    }
+};
+
+obj.show();
+
+
+Here also less code, but still long approach.
+
+
+
+Using Lambda expression:
+------------------------
+
+
+Syntax:
+
+(parameters) -> { body }
+
+
+Example:
+-------
+
+MyInterface obj = () -> {
+    System.out.println("Hello");
+};
+
+obj.show();
+
+
+Even shorter:
+
+MyInterface obj = () -> System.out.println("Hello");
+obj.show();
+
+
+Lambda Expression with parameter:
+---------------------------------
+
+
+interface Add {
+    void sum(int a, int b);
+}
+
+
+
+public class Demo {
+    public static void main(String[] args) {
+
+        Add a = (int x, int y) -> {
+			System.out.println(x+y);
+		};
+
+        a.sum(10, 20);
+    }
+
+}
+
+
+
+--inside the {} curly bracket if only one statement is there that curly bracket is optional
+-- inside the () small braket no need to specify the data type, it automatically detect.
+
+        Add a = (x, y) -> System.out.println(x+y);
+
+
+--If inside the () small bracket only one parameter is there then () small bracket is also optional.
+
+Example:
+
+
+interface MyInterface {
+    void show();
+}
+
+
+MyInterface intr = () -> System.out.println("Welcome");
+
+intr.show();
+
+
+
+With return type:
+----------------
+
+interface X{
+
+boolean isPositive(int num);
+
+}
+
+
+-- inside the Demo class, write the implementation of the above X interface using Lambda expression
+-- and call the isPositive() method with variaous values.
+
+
+
+
+
+
+
+
+
+
+
+
+
+X x1 = (num) -> {
+	if(num >= 0)
+		return true;
+	else
+		return false;
+};	
+
+
+Shorter way1 :
+
+X x1 = num -> {
+	return num >=0;
+};	
+
+
+Shorter way2:
+
+--If only one statement is there with return keyword then the return keyword is also optional
+
+
+X x1 = num -> num >=0;
+
+System.out.println(x1.isPositive(10));
+
+
+
+
+| Case                    | Rule                         |
+| ----------------------- | ---------------------------- |
+| Single statement        | `{}` optional                |
+| Single parameter        | `()` optional                |
+| Return single statement | `return` optional            |
+| Data type               | Optional (Java auto-detects) |
+
+
+
+
+
+
+Student task:
+-------------
+
+--implement the following interface using the lambda expression:
+
+interface Square {
+    int getSquare(int x);
+}
+
+
+Note: If there is a method which accepts the functional interface as an argument, then we can call that method by passing the implementation by using the Lambda expression also.
+
+Example:
+
+
+
+interface Intr{
+	
+	void doAddition(int num1, int num2);
+}
+
+
+
+ 
+
+Normal Implementation:
+----------------------
+class IntrImpl implements Intr{
+	
+	@Override
+	void doAddition(int num1, int num2){
+		System.out.println("Result is: "+(num1+num2));
+	}
+
+}
+
+
+
+
+
+
+
+public class A{
+
+
+	public void funA(Intr i1){
+		System.out.println("Inside funA of A class");
+		if(i1 != null){
+			i1.doAddition(10,20);
+		}else{
+			System.out.println("i1 is null");
+		}
+	}
+
+
+	public static void main(String[] args){
+	
+		A a1 = new A();
+
+		a1.funA(new IntrImpl());
+
+	}
+
+}
+
+
+--Using Lambda expression we need not write the seperate implementation classes for the funtional interface.
+
+
+
+	a1.funA((n1,n2) -> System.out.println("Result is: "+(n1+n2)));
+
+
+--similarly if a method has a return type of functional interface, then we can return a lamda expression directly instead of object of another impmenented class.
+
+
+
+Method Reference
+=================
+
+--Method reference works only when the method signature matches the functional interface method.
+
+--Method reference is a shorthand way of calling a method using :: operator.
+
+--Instead of writing lambda expression, we can directly refer to method.
+
+
+Types of Method Reference:
+
+
+| Type            | Syntax                |
+| --------------- | --------------------- |
+| Static method   | ClassName::methodName |
+| Instance method | object::methodName    |
+| Constructor     | ClassName::new        |
+
+
+
+Example 1: Static Method Reference
+-----------------------------------
+
+interface MyInterface {
+    void display();
+}
+
+class Test {
+    public static void show() {
+        System.out.println("Hello Students");
+    }
+}
+
+public class Demo {
+    public static void main(String[] args) {
+        MyInterface obj = Test::show;
+        obj.display();
+    }
+}
+
+
+Example 2: Instance Method Reference
+-------------------------------------
+
+class Test {
+    public void show() {
+        System.out.println("Hello Students");
+    }
+}
+
+public class Demo {
+    public static void main(String[] args) {
+        Test t = new Test();
+        MyInterface obj = t::show;
+        obj.display();
+    }
+}
+
+
+
+Example 3: Constructor Reference:
+---------------------------------
+
+interface MyInterface {
+    Test create();
+}
+
+class Test {
+    Test() {
+        System.out.println("Object Created");
+    }
+}
+
+public class Demo {
+    public static void main(String[] args) {
+        MyInterface obj = Test::new;
+        obj.create();
+    }
+}
+
+
+Example2:
+---------
+
+interface MyPrinter {
+    void doPrint(String msg);
+}
+
+
+public class Demo {
+    public static void main(String[] args) {
+
+        MyPrinter p = msg -> System.out.println(msg);
+
+        p.doPrint("Hello Students");
+    }
+}
+
+
+Using Method reference:
+----------------------
+
+
+public class Demo {
+    public static void main(String[] args) {
+
+        MyPrinter p = System.out::println;
+
+        p.doPrint("Hello Students");
+    }
+}
+
+
+
+Here, System.out::println is a method reference that refers to the println() method of the PrintStream object represented by System.out. 
+
+void doPrint(String msg);
+
+void println(String msg) 
+
+both are match.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

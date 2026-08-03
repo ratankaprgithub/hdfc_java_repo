@@ -1,0 +1,5083 @@
+Set in Java:
+============
+
+--Set is a child interface of the Collection interface.
+
+--It represents a collection that does not allow duplicate elements.
+
+--Index concept is not applicable in Set. Therefore, we cannot use methods like get(int index).
+
+--If we try to add a duplicate element, the add() method simply returns false (no exception is thrown).
+
+--Set is mainly used when uniqueness of elements is required.
+
+
+Key Features of Set:
+---------------------
+
+--No duplicates allowed.
+
+--Insertion order is not preserved (in most implementations).
+
+--Does not support index-based access.
+x
+--Set does not define any extra methods other than Iterable and Collection interfaces.
+
+
+Main Implementation classes of Set:
+-----------------------------------
+
+HashSet (Most commonly used)
+LinkedHashSet
+TreeSet (SortedSet)
+
+
+HashSet Class:
+--------------
+
+
+--HashSet is the first and most popular implementation of the Set interface.
+
+--It is not synchronized (not thread-safe by default).
+
+--It does not maintain insertion order.
+
+--Elements are stored and retrieved based on their hashCode()  (Hashing mechanism).
+
+--It offers excellent performance for searching (contains()), add(), and remove() operations: average time complexity O(1).
+
+--HashSet also does not have any extra methods.
+
+
+Note: Internally, HashSet uses HashMap to store elements. The element itself is stored as a key in the HashMap, and a dummy object is used as the value.
+
+
+
+Use HashSet when:
+
+1. You need unique elements
+2. Fast lookup required
+3. Order does not matter
+
+
+
+Constructors:
+------------
+
+
+HashSet hs1 = new HashSet<>(); // Default: capacity 16, load factor 0.75
+HashSet hs2 = new HashSet<>(int initialCapacity);
+HashSet hs3 = new HashSet<>(int initialCapacity, float loadFactor);
+HashSet hs4 = new HashSet<>(Collection c);   // Copy any types of Collection
+
+
+Load Factor (Fill Ratio):
+------------------------
+
+--Default value is 0.75.
+
+--When the HashSet is 75% full, A new internal array (table) is created and elements are rehashed.
+
+HashSet<Integer> hs= new HashSet<>(1000,0.8f);
+
+--here initial capacity is 1000 and and once reaches to the 80% then A new internal array(buckets) is created and elements are rehashed.
+
+
+
+
+Important Points:
+-----------------
+
+--Duplicate elements are not allowed.
+
+--Adding duplicate returns false.
+
+--Only one null value is allowed.
+
+--Best choice when frequent searching is required. searching a perticular element based on hashCode will have time complexity O(1).
+
+--Iteration order is unpredictable (not based on insertion order).
+
+
+
+Example:
+
+HashSetDemo.java:
+----------------
+
+
+package com.hdfc;
+import java.util.HashSet;
+
+public class HashSetDemo {
+    public static void main(String[] args) {
+
+        HashSet<Integer> hs = new HashSet<>();
+
+        hs.add(10);
+        hs.add(20);
+        hs.add(30);
+        hs.add(10);     // duplicate ignored
+        hs.add(40);
+        hs.add(null);
+        hs.add(null);   // second null ignored
+
+        System.out.println("Size: " + hs.size());   // 5
+        System.out.println("HashSet: " + hs);   // [null, 20, 10, 30, 40]  (order unpredictable)
+
+        // Checking contains (very fast O(1))
+        System.out.println("Contains 30? " + hs.contains(30));
+        System.out.println("Contains 50? " + hs.contains(50));
+    }
+}
+
+
+
+Iterating HashSet Elements:
+---------------------------
+
+--Since Set has no index, we cannot use normal for loop with index.
+
+1. Enhanced For Loop (Recommended)
+
+for(Integer num : hs) {
+    System.out.println(num);
+}
+
+2. Using Iterator
+
+Iterator<Integer> itr = hs.iterator();
+while(itr.hasNext()) {
+    System.out.println(itr.next());
+}
+
+
+
+
+Polymorphic refererence:
+------------------------
+
+Set<Integer> nums = new HashSet<>(); // recommended way
+
+HashSet<Integer> nums = new HashSet<>();
+
+
+
+
+
+
+
+
+
+
+Object Equality:
+----------------
+
+Consider the following Example:
+
+
+Student.java:
+-------------
+
+
+package com.hdfc;
+
+public class Student {
+
+	private int roll;
+	private String name;
+	private double marks;
+
+	public Student() {
+
+	}
+
+	public Student(int roll, String name, double marks) {
+		super();
+		this.roll = roll;
+		this.name = name;
+		this.marks = marks;
+	}
+
+	
+	//Getters and Setters
+
+
+	@Override
+	public String toString() {
+		return "Student [roll=" + roll + ", name=" + name + ", marks=" + marks + "]";
+	}
+
+}
+
+
+
+
+
+Demo.java:
+----------
+
+package com.hdfc;
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+	
+		Student s1 = new Student(10, "Raj", 500);
+		Student s2 = new Student(10, "Raj", 500);
+		
+		
+		System.out.println(s1 == s2);
+		System.out.println(s1.equals(s2));
+		
+		
+		
+		
+		
+	}
+}
+
+
+
+Output:
+
+false
+false
+
+
+Reason:
+
+--The objects created using "new" operator can't be physically equal.
+
+--To make the objects logically equal we need to make use of equals() method of the Object class.
+
+
+public boolean equals(Object obj);
+
+--this method is implemented inside the Object class as follows:
+
+
+public boolean equals(Object obj){
+
+/*
+if(obj == this)
+return true;
+else
+return false;
+*/
+
+return obj == this;
+
+}
+
+
+---In order to make our class objects logically equal we need to override the above equals() method from the Object class to our Student class.
+
+
+Example:
+
+
+Inside Student.java:
+--------------------
+
+
+
+	@Override
+	public boolean equals(Object obj) {
+
+		//Handle edge cases
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if(this.getClass() != obj.getClass())
+			return false;
+		
+
+	
+		Student s1= this;
+		Student s2=  (Student)obj;
+		
+		//if(s1.getRoll() == s2.getRoll()  && s1.getName().equals(s2.getName())  && s1.getMarks() == s2.getMarks() )
+		//	return true;
+		//else
+		//	return false;
+		
+		
+		return (s1.getRoll() == s2.getRoll()  && s1.getName().equals(s2.getName())  && s1.getMarks() == s2.getMarks() );
+		
+
+		
+
+
+
+
+	}
+
+
+
+--We can define any kind of logic by using which we can make objects of Student class logically equal.
+
+Now: 
+
+
+
+		Student s1 = new Student(10, "Raj", 500);
+		Student s2 = new Student(10, "Raj", 500);
+		
+		
+		System.out.println(s1 == s2);
+		System.out.println(s1.equals(s2));
+		
+		
+
+
+Output:
+
+false
+true
+
+
+
+Now, lets add multiple objects of Student class inside the HashSet.
+
+
+Demo.java:
+-----------
+
+
+package com.hdfc;
+
+import java.util.HashSet;
+import java.util.Set;
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+		Set<Student> students = new HashSet<>();
+
+		students.add(new Student(10, "Raj", 500));
+		students.add(new Student(10, "Raj", 500));
+
+		System.out.println(students.size());
+
+	}
+}
+
+
+Output: 2
+
+Here even though we have overriden the equals() method inside the Student class, but the HashSet class is not treated them identical. Both objects are treated as separate object even though the content is same.
+
+The reason is:
+
+This equals() method has a best friend called hashCode() method, it is also defiend inside the Object class:
+
+	public int hashCode();
+
+--equals() and hashCode() method is like a contract, if we override the equals() method to make our objects logically equal then we have to override the hashCode() method also;
+
+--if we call equals() method to compare two object and if it returns true then those objects hashCode value should also be same.
+
+
+
+
+
+Note: From the add() method of the HashSet class equals() and hashCode() both method is called to identify the object uniqueness:
+
+
+
+Example: Override the hashCode() method also inside the above Student class.
+ 
+
+import java.util.Objects
+
+
+	@Override
+	public int hashCode() {
+	
+		//return roll;
+		return Objects.hash(roll,name,marks);
+	
+	}
+
+
+Now:
+
+
+
+
+Demo.java:
+========
+
+package com.hdfc;
+
+import java.util.Set;
+import java.util.HashSet;
+
+public class Demo {
+
+	public static void main(String[] args) {		
+			
+		Set<Student> hs=new HashSet<>();
+	
+		hs.add(new Student(10, "n1", 780));
+		hs.add(new Student(12, "n2", 880));
+		hs.add(new Student(13, "n3", 980));
+		hs.add(new Student(10, "n1", 780));
+		hs.add(new Student(10, "n1", 780));
+		
+		System.out.println(hs.size());
+
+	}
+
+}
+
+
+Output:
+
+3
+
+--Always override both equals() and hashCode() together when using custom objects in HashSet, HashMap, etc.
+
+Note: String class and all the wrapper classes internally overrides the equals() and hashCode() method.
+
+
+	
+
+
+Important Notes:
+-----------------
+
+1. HashSet is backed by HashMap: add() internally calls map.put(element, PRESENT).
+
+2. Performance: Excellent for add, remove, and contains operations (Average O(1), worst-case O(n) due to collisions).
+
+3. Not suitable when you need to maintain insertion order: Use LinkedHashSet.
+
+4. Not suitable when you need sorted elements: Use TreeSet.
+
+5. Not thread-safe by default. Use Collections.synchronizedSet(new HashSet<>()) if needed.
+
+
+
+
+HashSet Internal working:
+------------------------
+
+--HashSet does not store data directly using array index like ArrayList.
+
+--Instead, it uses:
+
+1. Buckets
+2. Hashing
+3. equals()
+4. hashCode()
+
+
+Analogy:
+
+--Suppose a college has 16 lockers.
+
+--Each student gets locker number based on Roll Number:
+
+	locker = rollNumber % 16
+
+--So students are distributed quickly.
+
+--Same concept is used in HashSet.
+
+
+Internally, HashSet uses: HashMap
+
+When we write:
+
+	HashSet<String> hs = new HashSet<>();
+
+Internally Java creates:
+
+	HashMap<String, Object> 
+
+
+Where:
+
+Your element = Key
+Dummy constant object = Value
+
+
+Example:
+
+{
+   "Delhi" = PRESENT,
+   "Mumbai" = PRESENT,
+   "Chennai" = PRESENT
+}
+
+
+
+Internal Code Concept
+---------------------
+Roughly:
+
+
+public class HashSet<E> {
+
+    private HashMap<E,Object> map;
+
+    private static final Object PRESENT = new Object(); //dummy object
+
+    public boolean add(E e){
+        return map.put(e, PRESENT) == null;
+    }
+}
+
+
+
+--In HashMap, internally buckets of size 16 is created.
+
+--the bucket system is internally based on an array (table), default size 16, and each array index acts as one bucket. where Java places elements based on hash values.
+
+
+Step-by-Step Internal Working of add()
+
+Suppose:
+
+	HashSet<Integer> hs = new HashSet<>();
+
+	hs.add(25);
+
+
+Step 1: hashCode() Called
+
+For Integer:
+
+	25.hashCode() = 25
+
+
+Step 2: (Hashing) Hash Converted to Bucket Index
+
+Suppose capacity = 16
+
+	index = hashCode % 16
+	index = 25 % 16 = 9
+
+
+So element goes to bucket 9.
+
+
+
+Bucket Index:
+
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9   -> (25, PRESENT)
+10
+11
+12
+13
+14
+15
+
+
+
+Add Another Element
+
+	hs.add(41);
+
+	41 % 16 = 9
+
+Again bucket 9.
+
+
+--Now collision occurs.
+
+
+Collision Handling:
+--------------------
+
+--Both 25 and 41 want same bucket.
+
+--Java stores both using linked nodes (or tree if many collisions).
+
+
+
+Bucket Index:
+
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9   -> (25,PRESENT) -> (41, PRESENT)
+10
+11
+12
+13
+14
+15
+
+
+
+
+Add Another Element
+
+	hs.add(57);
+
+	57 % 16 = 9
+
+Again bucket 9.
+
+--Now collision occurs: this element also goes to the same bucket:
+
+
+Bucket Index:
+
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9   -> (25,PRESENT) -> (41, PRESENT) -> (57, PRESENT)
+10
+11
+12
+13
+14
+15
+
+
+
+How Duplicate is Checked: 
+
+Suppose:
+
+hs.add(25);
+hs.add(25); // not added 
+
+
+
+Internal Steps:
+---------------
+
+First add(25): 
+
+hashCode = 25
+bucket = 9
+stored successfully
+
+Second add(25): 
+
+hashCode = 25
+same bucket 9
+existing element found
+Now, equals() called
+25.equals(25) = true
+
+So duplicate rejected.
+
+add() returns false
+
+
+
+Important Rule:
+--------------
+
+--For duplicate detection:
+
+Java uses BOTH:
+
+hashCode()
+equals()
+
+
+Search Operation:  contains() method: hs.contains(41);
+
+Internal Working: 
+
+Step 1:
+
+hashCode = 41
+index = 9
+
+
+Step 2:
+
+Only bucket 9 searched.
+
+--Not entire set.
+
+--That is why searching is fast.
+
+
+Why O(1) Average Time?
+
+--Because Java directly jumps to bucket.
+
+Instead of checking:
+
+25, 41, 57, 99, 110 ...
+
+--It directly checks correct bucket.
+
+So average: O(1)
+
+
+Worst Case O(n): 
+
+--If all elements go same bucket:
+
+Bucket 9:
+
+10 -> 20 -> 30 -> 40 -> 50 -> 60
+
+Then search becomes linear using equals() method: O(n)
+
+--In modern Java versions, if collisions become too many, linked list converts into balanced tree.
+
+So performance improves to: O(log n)
+
+
+
+Advance concept:
+---------------
+
+--In modern Java HashMap / HashSet (since Java 8), a bucket’s collision chain (linked list) may be converted into a balanced tree (red-black tree) when certain thresholds are met.
+
+Main Threshold: 
+
+--When the number of nodes in a single bucket becomes 8 or more, Java considers treeification.
+
+--This constant is internally:
+
+	TREEIFY_THRESHOLD = 8
+
+So if one bucket has:
+
+	A -> B -> C -> D -> E -> F -> G -> H
+
+--then it can convert from linked list to tree.
+
+But There Is One More Important Condition: 
+
+
+--The overall table (internal array) size must be at least 64.
+
+	MIN_TREEIFY_CAPACITY = 64
+
+--If table size is smaller than 64, Java usually prefers resizing the table instead of converting to tree.
+
+So:
+
+Bucket chain reaches 8 nodes AND table capacity >= 64
+
+--Then linked list can become balanced tree.
+
+
+Because: If capacity is small (like 16 or 32), resizing often spreads elements into new buckets and reduces collisions naturally.
+
+--That is cheaper than building a tree.
+
+
+Untreeify Threshold: 
+
+--If a tree bucket later shrinks to 6 or fewer nodes, Java may convert it back to linked list.
+
+UNTREEIFY_THRESHOLD = 6
+
+
+
+How null is Handled in HashSet (Internal Working)
+
+null is allowed in a Java HashSet, but only one null value can be stored because duplicates are not allowed.
+
+Example:
+
+HashSet<String> hs = new HashSet<>();
+
+hs.add(null);   // true
+hs.add(null);   // false
+
+
+Internal Reason:
+
+HashSet uses HashMap internally.
+
+Conceptually:
+
+	map.put(null, PRESENT);
+
+--So null is stored as a key in internal HashMap.
+
+But null.hashCode() Causes NullPointerException
+
+--So Java HashSet and HashMap handles null specially.
+
+Special Rule for null:
+
+--Inside HashMap, if key is null, Java directly assigns:
+
+hash = 0
+
+--So null always maps to bucket related to hash 0.
+
+--So null usually goes into:
+
+bucket 0
+
+
+Student Task:
+==============
+
+Remove the duplicates from the following List
+
+List<String> cities = new ArrayList<>(List.of("delhi", "mumbai", "chennai", "delhi", "kolkata", "mumbai"));
+
+
+
+Solution:
+
+Set<String> uniqueCities = new HashSet<>(cities);
+
+System.out.println(uniqueCities);
+
+
+Note: Here it does not preserve the sequence order, If we need to preserve the sequence order then we need to make use of LinkedHashSet class instead of HashSet class.
+
+
+
+Example:
+
+
+Set<String> uniqueCities = new LinkedHashSet<>(cities);
+
+System.out.println(uniqueCities);
+
+
+
+LinkedHashSet:
+=============
+
+
+--LinkedHashSet is a child class of HashSet and an implementation of the Set interface.
+
+It is similar to HashSet but with one major difference:
+
+--It maintains the insertion order of elements.
+
+--While HashSet does not guarantee any order, LinkedHashSet preserves the sequence in which elements were added.
+
+--It is the best choice when you need uniqueness + insertion order.
+
+
+
+
+Internal Working:
+-----------------
+
+--LinkedHashSet internally uses a LinkedHashMap.
+
+--Additionally, it maintains a doubly-linked list running through all its entries.
+
+--This linked list is responsible for maintaining the insertion order.
+
+
+
+--Performance is slightly slower than HashSet due to the extra overhead of maintaining the linked list.
+
+--Supports fast operations: add(), remove(), contains():  average O(1) time complexity.
+
+
+
+Student task: 
+============
+
+1. Remove duplicate from the String:
+
+	public static String removeDuplicateFromString(String original) {
+
+
+
+
+
+
+
+
+
+Solution:
+---------
+
+Demo.java:
+----------
+
+
+package com.hdfc;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+
+public class Demo {
+		
+			
+	
+		public static String removeDuplicateFromString(String original) {
+			
+			char[] chr= original.toCharArray();
+			
+			LinkedHashSet<Character> lhs=new LinkedHashSet<>();
+			
+			for(char ch:chr) {
+				
+				lhs.add(ch);
+			}
+			
+			StringBuilder result= new StringBuilder("");
+			
+			
+			for(char ch: lhs) {
+				result.append(ch);
+			}
+			
+			
+			
+			return result.toString();
+			
+			
+		}
+	
+	
+	
+	
+	public static void main(String[] args) {
+				
+	
+		
+		String s= Demo.removeDuplicateFromString("hdfc");
+		
+		System.out.println(s);
+	
+
+	}
+
+}
+
+
+
+2. Check Duplicate Exists or Not
+
+
+	public static boolean isDuplicateExist(int[] arr)
+
+
+Solution:
+--------
+
+
+
+	public static boolean isDuplicateExist(int[] arr){
+
+		boolean flag = false;
+
+		HashSet<Integer> hs = new HashSet<>();
+	
+		   for(int num : arr){
+            		 if(hs.add(num) == false){
+                	     flag = true;
+                	     break;
+            	  	}
+        	  }
+		
+		return flag;
+
+	}
+
+
+
+3. Find Common Elements Between Two Arrays
+
+
+	public static void findCommon(int[] arr1, int[] arr2)
+
+
+
+Solution:
+---------
+
+
+public static void findCommon(int[] arr1, int[] arr2){
+
+
+	HashSet<Integer> hs = new HashSet<>();
+
+        for(int num : arr1){
+            hs.add(num);
+        }
+
+        for(int num : arr2){
+            if(hs.contains(num)){
+                System.out.println(num);
+            }
+        }
+
+}
+
+
+
+
+4. Count Unique Words:
+
+	public static int countUniqueWord(String str)
+
+
+Solution:
+--------
+
+
+	public static int countUniqueWord(String str){
+
+
+	 	String[] words = str.split(" ");
+
+        	 HashSet<String> hs = new HashSet<>();
+
+        	 for(String word : words){
+           		 hs.add(word);
+        	}
+
+		return hs.size();
+	}
+
+
+5. Returns the second non-repeating character from a string.
+
+
+Input:  "swiss"
+Output: 'i'
+
+
+ public static char secondNonRepeating(String str)
+
+
+
+
+Solution:
+---------
+
+
+ public static char secondNonRepeating(String str) {
+
+        LinkedHashSet<Character> unique = new LinkedHashSet<>();
+
+        HashSet<Character> duplicate = new HashSet<>();
+
+	char[] chr = str.toCharArray();
+
+        for(char ch : chr) {
+
+            if(duplicate.contains(ch) == false && unique.contains(ch) == false) {
+                unique.add(ch);
+            }
+            else {
+                unique.remove(ch);
+                duplicate.add(ch);
+            }
+        }
+
+        int count = 0;
+
+        for(char ch : unique) {
+            count++;
+
+            if(count == 2)
+                return ch;
+        }
+
+        return '\0';
+    }
+
+
+
+
+6. Remove duplicate characters from string while keeping the last occurrence of each character.
+
+
+Input:  "abacabad"
+Output: "cbad"
+
+
+Logic:
+
+--Traverse string from right to left.
+
+--Use HashSet to track visited chars.
+
+--Use StringBuilder.
+
+
+public static String keepLastOccurrence(String str)
+
+
+
+Solution:
+---------
+
+
+ public static String keepLastOccurrence(String str) {
+
+        HashSet<Character> set = new HashSet<>();
+
+        StringBuilder sb = new StringBuilder();
+
+        for(int i = str.length()-1; i >= 0; i--) {
+
+            char ch = str.charAt(i);
+
+            if(set.contains(ch) == false) {
+                set.add(ch);
+                sb.append(ch);
+            }
+        }
+
+        return sb.reverse().toString();
+    }
+
+
+
+
+
+
+
+
+
+
+TreeSet class:
+==============
+
+
+--TreeSet class is the another implementation of Set interface.
+
+Hierarchy:
+
+Iterable
+   |
+Collection
+   |
+  Set
+   |
+SortedSet
+   |
+NavigableSet (provides powerful navigation methods)
+   |
+TreeSet
+
+
+--Insertion order is not preserved.
+
+--It stores elements in sorted order (either natural sorting order or custom sorting order).
+
+--Duplicates are not allowed.
+
+--It is implemented using a Red-Black Tree (a self-balancing binary search tree).
+
+--Even a single Null value is also not allowed: because comparisons are required. Adding null usually throws NullPointerException.
+
+
+
+Best Choice When:
+
+--You want elements in sorted order.
+
+--You need fast retrieval of first/last elements or range-based operations.
+
+
+
+
+Time Complexity:
+----------------
+
+add(), remove(), contains(): O(log n) time complexity.
+
+
+
+
+Constructors:
+-------------
+
+TreeSet<E> ts1 = new TreeSet<>();  // Natural ordering
+TreeSet<E> ts2 = new TreeSet<>(Comparator<? super E> c); // Custom sorting using Comparator
+TreeSet<E> ts3 = new TreeSet<>(Collection<? extends E> c);
+TreeSet<E> ts4 = new TreeSet<>(SortedSet<E> s);
+
+
+
+Example:
+--------
+
+
+TreeSetDemo.java:
+-----------------
+
+
+package com.hdfc;
+
+import java.util.TreeSet;
+
+public class TreeSetDemo {
+    public static void main(String[] args) {
+
+        TreeSet<Integer> ts = new TreeSet<>();
+
+        ts.add(10);
+        ts.add(2);
+        ts.add(5);
+        ts.add(12);
+        ts.add(6);
+        ts.add(15);
+
+        System.out.println(ts);        // [2, 5, 6, 10, 12, 15] automatically sorted
+
+        TreeSet<String> cities = new TreeSet<>();
+        cities.add("Delhi");
+        cities.add("Mumbai");
+        cities.add("Chennai");
+        cities.add("Kolkata");
+        cities.add("Chandigarh");
+
+        System.out.println(cities);    // [Chandigarh, Chennai, Delhi, Kolkata, Mumbai]
+    }
+}
+
+
+
+
+Note: If we try to add any element inside the TreeSet object, then those elements should be comparable. i.e That object class should implements "java.lang.Comparable" interface. otherwise we will get a ClassCastException at runtime.
+
+
+Note: All the Wrapper classes and String class implements Comparable interface.
+
+
+Example:
+
+
+TreeSet<Student> students = new TreeSet<>();
+
+students.add(new Student(10,"Raj",800)); // throws ClassCastException, if Student class is not comparable.
+
+
+
+
+
+
+Comparable<T> interface:
+=====================
+
+--This interface belongs to java.lang package.
+
+--By using this interface, we will specify the sorting rules/technique inside the class.
+
+--This interface is having only one abstract method:
+
+	public int compareTo(T);
+
+--if we try to add any class object inside the TreeSet, then that class must implement Comparable interface and override this compareTo method. And inside this method we need to specify the sorting logic of that class object.
+
+
+
+
+Example:
+
+--TreeSet class internally call this compareTo() method to sort the elements.
+
+currentObject.compareTo(obj2):-
+
+returns -ve when currentObject has to place before obj2: obj2 >greter than currentObject
+
+returns +ve when currentObject has to place after obj2. obj2 <less than currentObject.
+
+return 0 when currentObject and obj2 both are equal.
+
+Note: incase of equal, TreeSet consider the duplicate object, and it will not allow that object.
+
+
+
+
+
+
+Example:
+
+Student.java:
+------------
+
+package com.hdfc;
+
+public class Student implements Comparable<Student> {
+    private int roll;
+    private String name;
+    private int marks;
+
+
+    //Default constructor
+    public Student() {
+     
+    }
+
+
+    //Parameterized construction
+    public Student(int roll, String name, int marks) {
+        this.roll = roll;
+        this.name = name;
+        this.marks = marks;
+    }
+
+    //Getters and Setters
+
+    @Override
+    public int compareTo(Student s2) {
+
+	Student s1= this;
+	
+	if(s1.marks > s2.marks)
+		return +1;
+	else if(s1.marks < s2.marks)
+		return -1;
+	else
+		return 0;
+
+	//return Integer.compare(s1.marks, s2.marks);
+	
+
+    }
+
+    @Override
+    public String toString() {
+        return "Student [roll=" + roll + ", name=" + name + ", marks=" + marks + "]";
+    }
+}
+
+
+
+
+
+--The above sorting logic is based on the marks.
+
+
+
+
+Demo.java:
+----------
+
+
+package com.hdfc;
+
+import java.util.TreeSet;
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+		TreeSet<Student> ts = new TreeSet<>();
+		
+		ts.add(new Student(101, "Amit", 85));
+		ts.add(new Student(102, "Priya", 92));
+		ts.add(new Student(103, "Rahul", 78));
+		ts.add(new Student(105, "Suresh", 78));
+		
+		System.out.println(ts);   // Sorted by marks
+		System.out.println(ts.size());
+	}
+}
+
+
+
+
+Note: In order to check the object uniqueness HashSet and LinkedHashSet class uses equals() and hashCode() methods 
+whereas TreeSet uses Comparable()/Comparator for both sorting and duplicate checking.
+If compareTo() method of Comparable or compare() method of Comparator returns 0, elements are treated as duplicates.
+
+ 
+
+
+sort the students based on name:
+-------------------------------
+
+
+	@Override
+	public int compareTo(Student s) {
+		
+		return this.getName().compareTo(s.getName());
+		
+		
+	}
+
+
+
+In reverse order:
+------------------
+
+@Override
+	public int compareTo(Student s) {
+		
+		return s.getName().compareTo(this.getName());	
+	}
+
+
+
+If Marks are same then sort them according to their name:
+---------------------------------------------------------
+
+	@Override
+	public int compareTo(Student s2) {
+
+    		int result = Integer.compare(this.marks, s2.marks);
+
+    		if (result == 0) {
+        		return this.name.compareTo(s2.name);
+    		}
+    		
+		return result;
+}
+
+
+
+
+Note: If we want to sort the students based on marks, and if 2 students get the same marks then we will miss the 2nd student object because if the compareTo() method returns the 0 then TreeSet class treat it as duplicate element and it will ignore that object.
+
+--In that case, we must compare one more field when marks are same to preserve the 2nd student:
+
+Example: marks + roll
+
+
+
+
+	@Override
+	public int compareTo(Student s2) {
+
+    		int result = Integer.compare(this.marks, s2.marks);
+
+    		if (result == 0) {
+        		return Integer.compare(this.roll, s2.roll);
+    		}
+    		
+		return result;
+}
+
+
+
+
+
+java.util.Comparator(I):
+========================
+
+--By using this interface, we can define the sorting logic for a class objects from the outside of that class.
+
+Note: If we want to define a sorting logic of a class objects inside the same class then we should use java.lang.Comparable interface.  whereas if we want to define the sorting logic outside of that class then we need to use java.util.Comparator interface.
+
+--With the help of Comparable we can define only one sorting logic, where as with the help of Comparator we can define multiple custom sorting logic.
+
+
+--This Comparator<T> interface has also only one abstract method:
+
+	public int compare(T t1, T t2);
+
+
+
+Steps to use the Comparator:
+-----------------------------
+
+step 1: Here we need not pollute/modify the Student class(Java bean class) by implementing Comparable interface and overriding the compareTo() method.
+
+step 2: Create a seperate class by any name and implements the Comparator interface and define the sorting logic by overriding the compare(--) method.
+
+
+
+Example:
+
+StudentMarksComp.java:
+---------------------
+
+package com.hdfc;
+
+import java.util.Comparator;
+
+public class StudentMarksComp implements Comparator<Student>{
+
+	@Override
+	public int compare(Student s1, Student s2) {
+		
+		if(s1.getMarks() > s2.getMarks())
+			return +1;
+		else if(s1.getMarks() < s2.getMarks())
+			return -1;
+		else
+			return 0;
+		
+	}
+
+}
+
+
+Step 3:
+
+--Create the above StudentMarksComp class object and pass that object to the constructor of the TreeSet class.
+
+
+		StudentMarksComp mcomp = new StudentMarksComp();
+		TreeSet<Student> ts= new TreeSet<>(mcomp);
+
+		//or
+
+		//TreeSet<Student> ts= new TreeSet<>(new StudentMarksComp());
+
+
+
+		ts.add(new Student(10, "n1", 780)); //s1
+		ts.add(new Student(12, "n2", 680)); //s2
+		ts.add(new Student(13, "n5", 480));
+		ts.add(new Student(14, "n4", 480));
+		ts.add(new Student(15, "n3", 480));
+	
+		
+		
+		System.out.println(ts.size());
+		
+		System.out.println(ts);
+
+
+
+
+sorting according to the name:
+-----------------------------
+
+package com.hdfc;
+
+import java.util.Comparator;
+
+public class StudentNameComp implements Comparator<Student>{
+
+	@Override
+	public int compare(Student s1, Student s2) {
+		
+		return s1.getName().compareTo(s2.getName());
+		
+	}
+
+}
+
+
+Note: Since Comparator is a functional interface, we can represent its implementation using Lambda Expression also.
+
+
+Example:
+
+Sorting by marks:
+-----------------
+
+TreeSet<Student> ts= new TreeSet<>(new StudentMarksComp());
+
+Using Lambda Expression:
+
+
+Comparator<Student> byName = (s1, s2) -> Integer.compare(s1.getMarks(), s2.getMarks());
+
+TreeSet<Student> ts = new TreeSet<>(byName);
+
+or
+
+TreeSet<Student> ts= new TreeSet<>((s1, s2) -> Integer.compare(s1.getMarks(), s2.getMarks()));
+
+or
+
+TreeSet<Student> ts= new TreeSet<>((s1, s2) -> s1.getMarks() - s2.getMarks()); // May have the oveflow issue if the numbers are very large or 2nd number is negetive
+
+
+
+
+Sorting by name:
+-----------------
+
+TreeSet<Student> ts= new TreeSet<>((s1, s2) -> s1.getName().compareTo(s2.getName()));
+
+
+
+
+Important methods of SortedSet interface:
+=========================================
+
+
+Object first():- returns the first element
+
+Object last():- returns the last element
+
+SortedSet subSet(E fromElement,E toElement);return view of the portion of specified range.
+
+SortedSet headSet(E toElement):- return view of the portion less than specified element.
+
+SortedSet tailSet(E fromElement):- return view of the portion grater than or equal to specified element 	
+
+
+example:
+
+--suppose we have a sorted set like this:
+
+
+100
+101
+102
+104
+106
+110
+115
+
+
+
+now:-
+
+
+first()---100
+
+last()----115
+
+headSet(106)-----[100,101,104]
+
+tailSet(106)-----[106,110,115]
+
+subSet(102,110)---[102,104,106]
+
+
+
+
+Important methods of NavigableSet interface:
+============================================
+
+
+NavigableSet(I):-This interface is included in java1.6 version,it gives the navigation support for our set.
+
+Example:-
+
+E ceiling(E e):- Returns the least element in this set greater than or equal to the given element, or  null if there is no such element.
+
+E floor(E e):-Returns the greatest element in this set less than or equal to the given element, or null if there is no such element.
+
+E higher(E e):-Returns the least element in this set strictly greater than the given element, or null if there is no such element
+
+E lower(E e):-Returns the greatest element in this set strictly less than the given element, or null if there is no such element. 
+
+E pollFirst():-Retrieves and removes the first (lowest) element, or returns null if this set is empty.
+
+E PollLast():-Retrieves and removes the last (highest) element, or returns null if this set is empty.
+
+
+
+
+
+suppose we have a sorted set like this:-
+
+
+100
+101
+102
+104
+106
+110
+115
+
+
+
+now:-
+
+
+lower(103);//102
+lower(110);//106
+
+higher(103)//104
+higher(110)//115
+
+ceiling(103);//104
+ceiling(110);//110
+
+floor(103);//102
+floor(110)//110
+
+
+
+
+
+
+
+
+
+
+Sorting a List:
+===============
+
+
+--To sort the elements inside a List (ArrayList, LinkedList, Vector) we have following 2 options:
+
+1. Using java.util.Collections.sort() method
+
+2. Using sort() method on the List object. // Modern way from Java 8
+
+
+
+Example: Collections.sort()
+
+
+Collections.sort(List) // Natural sorting
+Collections.sort(List, Comparator); // Custom sorting
+
+
+List<Student> students = new ArrayList<>();
+
+students.add(new Student(10,"Raj", 780));
+students.add(new Student(11,"Simran", 980));
+students.add(new Student(12,"Rahul", 480));
+students.add(new Student(13,"Priya", 680));
+
+
+Collections.sort(students, (s1, s2) -> Integer.compare(s1.getMarks(), s2.getMarks()));
+
+or
+
+Collections.sort(students, (s1, s2) -> {
+
+if(s1.getMarks()>s2.getMarks())
+	return +1;
+else if(s1.getMarks() < s2.getMarks())
+	return -1;
+else
+	return 0;
+
+});
+
+
+Example: sort() method of List object
+--------------------------------------
+
+
+listObj.sort(comparator)
+
+
+
+
+List<Student> students = new ArrayList<>();
+
+students.add(new Student(10,"Raj", 780));
+students.add(new Student(11,"Simran", 980));
+students.add(new Student(12,"Rahul", 480));
+students.add(new Student(13,"Priya", 680));
+
+
+
+students.sort((s1, s2) -> Integer.compare(s1.getMarks(), s2.getMarks()));
+
+or
+
+students.sort((s1,s2) -> s1.getMarks() - s2.getMarks()); // My cause the overflow issue
+
+
+
+Note: for Natural sorting order we can use sort(null);
+
+Example:
+
+List<Integer> nums= new ArrayList<>(List.of(10,2,3,5,12,5));
+	
+nums.sort(null);
+		
+System.out.println(nums);
+		
+
+
+
+Various implementation of Comparator and their effect:
+======================================================
+
+
+import java.util.Comparator;
+
+public class MyComparable implements Comparator<Integer> {
+    
+    @Override
+    public int compare(Integer x, Integer y) {
+        if (x < y) {
+            return +1;  // x is placed after y
+        } else if (x > y) {
+            return -1;  // x is placed before y
+        } else {
+            return 0;   // x and y are treated as duplicates
+        }
+    }
+}
+
+
+--When adding elements to a TreeSet (e.g., inserting 10, 0, 15, 4, 10), the return value of the compare() method strictly dictates how the tree is built.
+
+Here is how different return statements affect the final output:
+
+
+1. return x.compareTo(y): Natural Sorting Order: Standard ascending order. Duplicates are removed: [0, 4, 10, 15]
+
+2. return -x.compareTo(y); (or y.compareTo(x)): Descending Order: Reverse of natural sorting. Duplicates are removed.[15, 10, 4, 0]
+
+3. return +1; Insertion Order: Every new element is treated as "greater than" the existing elements. Duplicates are allowed because 0 is never returned. [10, 0, 15, 4, 10]
+
+4. return -1; Reverse Insertion Order: Every new element is treated as "less than" the existing elements. Duplicates are allowed because 0 is never returned. [10, 4, 15, 0, 10]
+
+5. return 0; First Element Only: Every new element is treated as an exact duplicate of the first element. Only the first element is added; the rest are rejected. [10]
+
+
+Important Note:  While returning a constant +1 or -1 only allows a TreeSet to store duplicates and preserve insertion/reverse-insertion order, it effectively breaks the rules of a mathematical Set and turns the underlying Red-Black Tree into a skewed, unbalanced LinkedList.
+
+
+
+
+Difference between Comparable and Comparator:
+=============================================
+
+| Feature               | Comparable   | Comparator    |
+| --------------------- | ------------ | ------------- |
+| Package               | java.lang    | java.util     |
+| Method                | compareTo()  | compare()     |
+| Sorting defined       | Inside class | Outside class |
+| No. of sorting logics | One          | Multiple      |
+| Modification needed   | Yes          | No            |
+
+
+
+
+Note: Comparable provides the default (natural) sorting order inside the class, whereas Comparator allows us to override that order and define custom sorting from outside the class.
+
+
+
+
+
+Student Task:
+=============
+
+
+1. sort the following list in decending order
+
+
+List<Integer> nums= new ArrayList<>(List.of(10,2,3,5,12,5));
+
+
+
+Solution:
+---------
+
+ List<Integer> nums = new ArrayList<>(List.of(10,2,3,5,12,5));
+
+ nums.sort(Comparator.reverseOrder());
+//Collections.sort(nums, Comparator.reverseOrder());
+//nums.sort((a,b) -> b.compareTo(a));
+
+ System.out.println(nums);
+
+
+
+2. Product Catalog using Multiple Comparators
+
+--Create a Product bean class with the following properties:
+
+id
+name
+price
+quantity
+
+Requirements:
+
+--Create 10 Product objects and store them inside an ArrayList<Product>.
+
+--Display the products using a menu-driven program:
+
+1. Sort by Product Name
+2. Sort by Price
+3. Sort by Quantity
+4. Sort by Product ID
+0. Exit
+
+Use Comparator for all sorting operations.
+By default, products should be sorted by Product ID.
+After every choice, display the sorted product list.
+
+
+
+
+Solution:
+---------
+
+Product.java:
+------------
+
+package com.hdfc;
+public class Product{
+
+
+    private int id;
+    private String name;
+    private double price;
+    private int quantity;
+
+// zero argument constructor
+// parameterized constructor
+// getters and setters
+// toString method
+
+
+}
+
+
+
+
+
+
+Demo.java:
+---------
+
+package com.hdfc;
+public class Demo{
+
+
+public static void display(List<Product> products) {
+
+        System.out.println("-----------------------------------");
+        System.out.println("ID   Name     Price   Quantity");
+        System.out.println("-----------------------------------");
+
+        for(Product p : products) {
+            System.out.println(p);
+        }
+
+        System.out.println();
+    }
+
+}
+
+
+ public static void main(String[] args) {
+
+        List<Product> products = new ArrayList<>();
+
+        products.add(new Product(104, "Mouse", 500, 20));
+        products.add(new Product(101, "Laptop", 55000, 5));
+        products.add(new Product(110, "Keyboard", 1200, 15));
+        products.add(new Product(106, "Monitor", 15000, 8));
+        products.add(new Product(103, "PenDrive", 800, 25));
+        products.add(new Product(109, "Printer", 9000, 4));
+        products.add(new Product(102, "Tablet", 25000, 7));
+        products.add(new Product(108, "Speaker", 3000, 10));
+        products.add(new Product(105, "Router", 2200, 12));
+        products.add(new Product(107, "Camera", 45000, 3));
+
+        Scanner sc = new Scanner(System.in);
+
+        while(true) {
+
+            System.out.println("1. Sort by Name");
+            System.out.println("2. Sort by Price");
+            System.out.println("3. Sort by Quantity");
+            System.out.println("4. Sort by ID");
+            System.out.println("0. Exit");
+
+            System.out.print("Enter Choice: ");
+            int choice = sc.nextInt();
+
+            switch(choice) {
+
+                case 1:
+                    products.sort(
+                        (p1, p2) ->
+                        p1.getName().compareTo(p2.getName())
+                    );
+                    display(products);
+                    break;
+
+                case 2:
+                    products.sort(
+                        (p1, p2) ->
+                        Double.compare(
+                            p1.getPrice(),
+                            p2.getPrice()
+                        )
+                    );
+                    display(products);
+                    break;
+
+                case 3:
+                    products.sort(
+                        (p1, p2) ->
+                        Integer.compare(
+                            p1.getQuantity(),
+                            p2.getQuantity()
+                        )
+                    );
+                    display(products);
+                    break;
+
+                case 4:
+                    products.sort(
+                        (p1, p2) ->
+                        Integer.compare(
+                            p1.getId(),
+                            p2.getId()
+                        )
+                    );
+                    display(products);
+                    break;
+
+                case 0:
+                    System.out.println("Thank You");
+                    sc.close();
+                    return;
+
+                default:
+                    System.out.println("Invalid Choice\n");
+            }
+        }
+    }
+}
+
+
+
+
+
+
+Queue in Java:
+==============
+
+--The Queue interface, introduced in Java 1.5 inside the Collection framework, is designed for holding elements prior to processing. Unlike a List which is a general sequence, a Queue focuses on the order of processing
+
+--It is mainly based on the concept of: FIFO (First In First Out)
+
+
+That means: Element inserted first will be removed first.
+
+Similar to:
+
+Ticket Counter line
+Printer queue
+CPU task scheduling
+Call center waiting line
+Sending Emails or SMS to multiple people
+
+
+Note: Queue follows FIFO order but based on our requirement we can implement our own order also by using PriorityQueue. (Where priority matters more than arrival time.)
+
+
+Hierarchy:
+----------
+
+	Iterable(I)
+   	   |
+	Collection(I)
+   	   |
+	 Queue(I)
+   	   |
+    --------------------
+    |		       |	
+PriorityQueue(C)     Deque(I)
+		       |
+		   ArrayDeque(C)
+	
+
+
+
+--Queue concept came in 1.5 version, from 1.5 version LinkedList class also implements Deque(I) interface.
+
+
+
+Important Characteristics of Queue:
+----------------------------------
+
+--Follows FIFO order (normally)
+
+--Allows duplicate elements
+
+--Usually insertion at rear
+
+--Usually deletion from front
+
+--index concept is not applicable.
+
+--Null handling depends on implementation
+
+--Used in scheduling, buffering, waiting systems
+
+
+Queue Interface Methods:
+-------------------------
+
+--Queue provides two versions of methods:
+
+
+1. Throws Exception Version:
+
+--These throw exception when operation fails.
+
+boolean add(e):	Insert element
+E remove(): Remove front element
+E element(): View front element
+
+
+
+2. Safe Version (returns special value):
+
+--These return special values instead of exception.
+
+boolean offer(e): Insert element
+E poll(): Remove front
+E peek(): View front
+
+
+
+
+Use: offer(), poll(), peek()
+
+More than: add(), remove(), element()
+
+--because safer and modern.
+
+
+
+
+Example: Queue using LinkedList
+-------------------------------
+
+
+Demo.java:
+----------
+
+package com.hdfc;
+
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+		Queue<Integer> queue = new LinkedList<>();
+
+		queue.offer(10);
+		queue.offer(20);
+		queue.offer(30);
+		queue.offer(40);
+		queue.offer(10); //duplicate
+		queue.offer(null); //null
+		queue.offer(null); //duplicate null
+		
+
+
+		System.out.println(queue);
+
+//		while(!queue.isEmpty()) {
+//			
+//			System.out.println(queue.peek());
+//			queue.remove();	
+//		}
+
+		System.out.println("========================");
+
+		while (!queue.isEmpty()) {
+			System.out.println(queue.poll());
+		}
+
+	}
+}
+
+
+
+This example shows:
+
+1. FIFO behaviour
+
+2. Duplicates are allowed
+
+3. Null Allowed (LinkedList implementation)
+
+
+
+
+
+PriorityQueue class:
+====================
+
+--PriorityQueue is an implementation of the Queue interface, but it behaves differently from a standard FIFO (First-In-First-Out) queue.
+
+--Elements are processed according to priority.
+
+Analogy: 
+
+--An Emergency Room in Hospital. Even if a patient with a "sore throat" arrives first, a patient with a "heart attack" will be processed immediately because their priority is higher.
+
+
+Default priority: (Min Heap)
+
+--By default, it acts as a Min-Heap, meaning the smallest element is at the "head" and will be removed first. 
+
+For the Custom class: class must implements the Comparable interface.
+
+--Elements are processed according to their natural ordering or by a Comparator provided at queue construction time.
+
+
+Key Features:
+
+-- Ordering: Not FIFO. Elements are ordered based on priority.
+-- Nulls: Does not allow null elements (throws NullPointerException).
+-- Duplicates: Allows duplicate elements.
+-- Performance: - offer() and poll(): O(log n)
+-- peek(): O(1)
+
+
+Constructors:
+-------------
+
+1. PriorityQueue<Integer> pq = new PriorityQueue<>(); //default capacity is 11
+
+--So internally Java creates space for 11 elements initially.
+
+--When the internal array becomes full, PriorityQueue automatically grows.
+
+--The growth is: 
+
+If current capacity < 64
+
+Grow by approximately:
+
+newCapacity = oldCapacity + (oldCapacity + 2)
+
+Which is roughly:
+
+--about 2x + small adjustment
+
+If current capacity >= 64
+
+Grow by:
+
+newCapacity = oldCapacity + (oldCapacity / 2)
+
+Which means: 1.5 times
+
+
+2. PriorityQueue<Integer> pq = new PriorityQueue<>(100); with initial capacity 100
+
+
+3. PriorityQueue pq= new PriorityQueue<>(Comparator);
+
+
+Internal Mechanics: The Binary Heap:
+------------------
+
+
+--Internally, PriorityQueue is implemented using a Binary Heap (a complete binary tree).
+
+-- A Min-Heap is a complete binary tree. where the parent node is always smaller than or equal to its children.
+
+Note: The min-heap only guarantees that the smallest element is at the root (index 0). It does not maintain a fully sorted list in memory. It only "sorts" the necessary elements when you call poll().
+
+--In a PriorityQueue, elements are not stored in fully sorted order like a TreeSet.
+Therefore, when we print the PriorityQueue object directly or traverse it using an Iterator, the elements may not appear in the expected sorted sequence.
+
+--This is because PriorityQueue internally uses a heap structure, not a sorted tree.
+
+--However, the element at the head of the queue always follows the defined priority (minimum by default, maximum if custom comparator is used).
+
+So, when we access elements using methods like:
+
+peek()
+poll()
+remove()
+element()
+
+--the returned head element will always be in correct priority order.
+
+So, PriorityQueue looks unsorted when printed, but removal using poll() gives elements in sorted priority order.
+
+
+
+
+Heap:
+-----
+
+--A Heap is a special tree-based data structure that follows a rule called the Heap Property.
+
+--It is mainly used when we need to repeatedly access:
+
+Smallest element quickly
+or
+Largest element quickly
+
+
+--A Heap is always a Complete Binary Tree, meaning:
+
+1. All levels are completely filled, except possibly the last level.
+
+2. The last level is filled from left to right.
+
+
+--Although Heap looks like a tree, it is usually stored internally inside an array using the following formula:
+
+Left child index: (2 * i) + 1
+Right child index: (2 * i) + 2
+
+Parent node: (i-1) / 2
+
+
+So:
+
+	Heap = Complete Binary Tree + Array Representation
+
+
+Heap is useful when we repeatedly need:
+
+--Highest priority item
+--Lowest price product
+--Most urgent patient
+--Next shortest path node
+--Largest score
+
+
+Types of Heap:
+--------------
+
+--There are two main types:
+
+1. Min-Heap
+2. Max-Heap
+
+
+
+1. Min-Heap:
+------------
+
+--In a Min-Heap, the value of the root node must be the minimum among all its children. This same property must be recursively true for all sub-trees.
+
+Root Element: Always the smallest element in the entire heap.
+
+Relationship: Parent Node <= Child Nodes.
+
+Example
+
+
+       10 (Root - Smallest)
+      /  \
+    20    30
+   /  \
+  40   50
+
+
+Explanation:
+
+10 <= 20 and 30
+20 <= 40 and 50
+
+So this is a valid Min-Heap.
+
+
+Array representation:
+-----------------------
+
+
+Stored Level-by-Level in Array:
+
+[10, 20, 30, 40, 50]
+
+Index Position:
+
+Index : 0   1   2   3   4
+Value :10  20  30  40  50
+
+
+Verification Using Formula:
+---------------------------
+
+For index 0: value 10
+
+Left child  = (2*0)+1 = 1:  20
+Right child = (2*0)+2 = 2: 30
+
+
+For index 1: value 20
+
+Left child  = (2*1)+1 = 3:  40
+Right child = (2*1)+2 = 4: 50
+
+
+For index 2: value 30
+
+Left child  = 5 (not present)
+Right child = 6 (not present)
+
+
+Hence proved:
+
+[10,20,30,40,50] correctly represents the tree.
+
+
+
+
+Use Case: This is the default internal structure for Java's PriorityQueue. When you call poll(), it removes the root, giving you the smallest value.
+
+
+
+Max-Heap:
+---------
+
+--In a Max-Heap, the value of the root node must be the maximum among all its children. This property must hold true for every node in the tree.
+
+Root Element: Always the largest element in the entire heap.
+
+Relationship: Parent Node >= Child Nodes.
+
+
+	50 (Root - Largest)
+      /  \
+    40    30
+   /  \
+  10   20
+
+
+
+Array representation:
+
+[50,40,30,10,20]
+
+
+
+Use Case: Used when you want to prioritize the "highest" values (e.g., a leaderboard or a task queue where the highest ID gets processed first).
+
+
+
+To convert into the max heap:
+
+PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.reverseOrder())
+
+
+
+
+
+PriorityQueue Methods:
+---------------------
+
+add(e) / offer(e): Inserts an element into the priority queue.
+
+peek()	Retrieves, but does not remove, the head (smallest element). Returns null if empty.
+
+poll()	Retrieves and removes the head (smallest element). Returns null if empty.
+
+remove(object)	Removes a specific element from the queue.
+
+
+Example:
+-------
+
+
+Demo.java:
+----------
+
+import java.util.PriorityQueue;
+
+public class PQDemo {
+    public static void main(String[] args) {
+ 
+       // Default Min-Heap
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+
+        pq.offer(40);
+        pq.offer(10);
+        pq.offer(30);
+        pq.offer(20);
+
+        System.out.println("PriorityQueue: " + pq); 
+        // Note: Output might be [10, 20, 30, 40] - it looks sorted by chance or heap structure.
+
+        System.out.println("Poll: " + pq.poll()); // Returns 10 (Smallest)
+        System.out.println("Poll: " + pq.poll()); // Returns 20 (Next Smallest)
+    }
+}
+
+
+
+
+
+Example2: Min Heap:
+
+
+Queue<Integer> pq = new PriorityQueue<>();
+
+pq.offer(50);
+pq.offer(10);
+pq.offer(30);
+pq.offer(20);
+
+while(!pq.isEmpty()) {
+    System.out.println(pq.poll());
+}
+
+
+
+Output:
+
+10
+20
+30
+50
+
+
+Example3: Max Heap:
+
+
+
+Queue<Integer> pq =
+new PriorityQueue<>(Comparator.reverseOrder());
+
+pq.offer(50);
+pq.offer(10);
+pq.offer(30);
+pq.offer(20);
+
+while(!pq.isEmpty()) {
+    System.out.println(pq.poll());
+}
+
+
+Real Use Cases of PriorityQueue:
+
+--Hospital emergency system
+--CPU scheduling
+--Top K largest numbers
+--Dijkstra algorithm
+--Task manager
+
+
+
+
+Student Task:
+-------------
+
+1. Find 3 Smallest Numbers.
+
+input: 40, 5, 80, 10, 2, 60
+
+output: 2, 5, 10
+
+
+Solution:
+---------
+
+
+PriorityQueue<Integer> pq = new PriorityQueue<>();
+
+int[] arr = {40,5,80,10,2,60};
+
+for(int x : arr)
+    pq.add(x);
+
+for(int i=1; i<=3; i++)
+    System.out.println(pq.poll());
+
+
+
+
+2. Hospital Emergency System:
+
+--Create a Patient bean class with:
+
+id, name, severity
+
+Requirements:
+
+--Higher severity treated first.
+--If severity same, lower id first.
+--Use PriorityQueue.
+
+
+
+Solution:
+---------
+
+
+Patient.java:
+-------------
+
+package com.hdfc;
+public class Patient {
+
+    private int id;
+    private String name;
+    private int severity;
+
+// Zero argument constructor
+//Parameterized constructor
+//getters and setters 
+//toString() method
+
+}
+
+
+
+Demo.java:
+----------
+
+package com.hdfc;
+public class Demo {
+
+    public static void main(String[] args) {
+
+        PriorityQueue<Patient> pq = new PriorityQueue<>(
+        (p1, p2) -> {
+
+            if(p1.getSeverity() != p2.getSeverity())
+                return Integer.compare(p2.getSeverity(), p1.getSeverity());
+
+            return Integer.compare(p1.getId(),p2.getId());
+        });
+
+
+        pq.add(new Patient(101,"Raj",5));
+        pq.add(new Patient(102,"Amit",9));
+        pq.add(new Patient(103,"Neha",7));
+        pq.add(new Patient(104,"Priya",9));
+
+        while(!pq.isEmpty()) {
+            System.out.println(pq.poll());
+        }
+    }
+}
+
+
+
+
+Deque interface:
+================
+
+--Deque (pronounced "Deck") stands for Double-Ended Queue.
+
+--It is a sub-interface of the Queue interface.
+
+--Unlike a standard Queue, a Deque allows you to insert and remove elements from both ends (front and rear).
+
+--It is a special data structure in which elements can be:
+
+Inserted from front
+Inserted from rear
+Removed from front
+Removed from rear
+
+--So it works from both ends.
+
+--Because of Two-Way Processing, It can function as both a FIFO (First-In-First-Out) Queue and a LIFO (Last-In-First-Out) Stack.
+
+--It is more flexible than a simple Queue because: 
+
+Normal Queue allows:
+
+Insert rear
+Remove front
+
+But Deque allows:
+
+Insert front / rear
+Remove front / rear
+
+So Deque is more powerful than Queue.
+
+
+Real Life Analogies:
+--------------------
+
+1. Train Coach Door
+
+Passengers can enter from:
+
+Front gate
+Back gate
+
+--And can also leave from both sides.
+
+
+2. Parking Lane Open from Both Ends
+
+--Cars can enter or exit from either side.
+
+
+
+Hierarchy:
+---------
+
+
+Iterable
+   |
+Collection
+   |
+ Queue
+   |
+ Deque
+
+
+
+Important implementations:
+--------------------------
+
+ArrayDeque
+LinkedList
+
+
+Deque Characteristics:
+----------------------
+
+Double-ended operations
+Can work as Queue
+Can work as Stack
+Duplicate elements allowed
+Null depends on implementation (In LinkedList allowed but in ArrayDeque not allowed)
+Faster than legacy Stack class
+
+
+
+Main Methods of Deque:
+----------------------
+
+Deque provides methods for:
+
+Front side
+Rear side
+Exception version
+Safe version
+
+
+
+Insert front:
+--------------
+
+void addFirst(E): Exception
+boolean offerFirst(E): Safe
+
+
+View front:
+-----------
+
+E getFirst() : Exception
+E peekFirst() : Safe
+
+
+Remove front:
+-------------
+
+E removeFirst(): Exception
+E pollFirst(): Safe
+
+
+Insert Rear:
+------------
+
+void addLast(E): Exception
+boolean offerLast(E): Safe
+
+View Rear:
+----------
+
+E getLast(): Exception
+E peekLast(): Safe
+
+
+Remove Rear:
+------------
+
+E removeLast(): Exception
+E pollLast(): Safe
+
+
+
+
+
+Note: offerLast(), pollFirst(), and peekFirst() are the standard methods used when we want to treat a Deque exactly like a regular Queue.
+
+
+
+Difference between poll() and pollFirst()
+------------------------------------------
+
+--Both methods usually perform the same operation,
+--but they come from different interface views.
+
+
+poll(): Removes the front/head element (Queue style)
+pollFirst(): Removes the front/first element (Deque style)
+
+
+--Same action, different naming based on the interface concept.
+
+simillarly:
+
+offer() : Add the element at the last (Queue style)
+offerLast(): Add the element at the end (Deque style)
+
+
+
+
+Some utility methods:
+---------------------
+
+Iterator<E> descendingIterator();
+
+Deque<E> reversed();
+
+
+
+
+Example: Using LinkedList:
+--------------------------
+
+
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+
+        Deque<Integer> dq = new LinkedList<>();
+
+        dq.addFirst(20);
+        dq.addFirst(10);
+
+        dq.addLast(30);
+        dq.addLast(40);
+
+        System.out.println(dq);
+    }
+}
+
+
+Output: [10, 20, 30, 40]
+
+
+Removing from both end:
+-----------------------
+
+System.out.println(dq.pollFirst());
+System.out.println(dq.pollLast());
+System.out.println(dq);
+
+Output:
+
+10
+40
+[20, 30]
+
+
+
+
+ArrayDeque Class:
+=================
+
+--ArrayDeque is a resizable-array implementation of the Deque interface.
+
+--It can be used as:
+
+Queue (FIFO)
+Stack (LIFO)
+
+--It is generally considered faster than Stack when used as a stack, and faster than LinkedList when used as a queue.
+
+--No Capacity Restrictions: It grows dynamically as needed.
+
+--It has low memory overhead because it doesn't need to create "Node" objects for every element like a LinkedList.
+
+--Like most collections, it is not synchronized.
+
+
+
+
+Internal Working
+
+It uses: Resizable Circular Array
+
+Meaning:
+
+--Array size grows automatically
+--Front and rear move circularly
+--Supports double-ended operations
+
+
+Formula for circular array: nextIndex = (currentIndex + 1) % size
+
+
+
+
+Important Features of ArrayDeque:
+--------------------------------
+
+--ArrayDeque is considered one of the best general-purpose data structures in Java for:
+
+Queue operations
+Stack operations
+Fast front/rear access
+
+
+--Better than LinkedList in many cases like:
+
+Less memory usage
+Better cache performance
+No node object creation
+Faster in many cases
+
+
+--Better than Stack, because Stack class is old(Legecy) and synchronized. Where as ArrayDeque is:
+
+Faster
+Cleaner
+Modern replacement
+
+
+--No null allowed Because:
+
+methods like:
+
+poll()
+peek()
+
+return null when empty.
+
+Allowing null would create ambiguity.
+
+
+--Dynamic size
+
+
+
+
+Constructors:
+--------------
+
+1. ArrayDeque<Integer> dq = new ArrayDeque<>();
+
+--Creates an empty ArrayDeque with Initial Capacity 16
+
+--Internally, Java typically creates space for 16 elements initially.
+
+--When full: capacity automatically increases by the double capacity (Depends upon the implementation)
+
+
+--The initial capacity is 16 because it maintains Good balance between:
+
+memory usage
+fewer resizes
+performance
+
+
+
+
+
+
+
+2. Deque<String> dq = new ArrayDeque<>(100);
+
+--Now the initial capacity will be 100, Good for large queue processing.
+
+
+3. Deque<String> dq = new ArrayDeque<>(Collection c);
+
+Example:
+
+ArrayDeque<Integer> dq = new ArrayDeque<>(List.of(10,20,30,40));
+
+
+
+Example: Queue Style:
+---------------------
+
+Deque<Integer> dq = new ArrayDeque<>();
+
+dq.offerLast(10);
+dq.offerLast(20);
+dq.offerLast(30);
+
+System.out.println(dq.pollFirst());
+System.out.println(dq);
+
+
+Output:
+
+10
+[20, 30]
+
+
+
+Example: Stack Style:
+---------------------
+
+Deque<Integer> dq = new ArrayDeque<>();
+
+dq.push(100);
+dq.push(200);
+dq.push(300);
+
+System.out.println(dq.pop());
+System.out.println(dq.peek());
+
+
+Output:
+
+300
+200
+
+
+Null Handling:
+--------------
+
+dq.add(null); //Throws NullPointerException
+
+
+
+Time Complexity:
+-----------------
+
+addFirst/addLast: O(1)
+pollFirst/pollLast: O(1)
+peekFirst/peekLast: O(1)
+
+
+
+
+
+
+LinkedList vs ArrayDeque:
+-------------------------
+
+| Feature      | LinkedList | ArrayDeque     |
+| ------------ | ---------- | -------------- |
+| Internal     | Nodes      | Circular Array |
+| Null Allowed | Yes        | No             |
+| Speed        | Good       | Faster         |
+| Memory       | More       | Less           |
+| Queue Use    | Yes        | Excellent      |
+| Stack Use    | Yes        | Excellent      |
+
+
+
+Note: Prefer ArrayDeque over the LinkedList because of : Less memory + better cache performance.
+
+
+Use ArrayDeque when:
+--------------------
+
+Normal queue
+Stack replacement
+Fast front/rear operations
+
+Use LinkedList when:
+--------------------
+ 
+Need null values
+Need List features also
+
+
+
+
+Implementing Queue: FIFO (Queue Style):
+-----------------------------------------
+
+	Queue<Integer> nums = new ArrayDeque<>();
+		
+		
+		nums.offer(100);
+		nums.offer(80);
+		nums.offer(200);
+		nums.offer(25);
+		nums.offer(70);
+		nums.offer(60);
+		
+		
+		while(!nums.isEmpty()) {
+			System.out.println(nums.poll());
+		}		
+		
+		System.out.println(nums);
+
+
+
+Implementing Queue: FIFO (Deque Style):
+-----------------------------------------
+
+
+
+	Deque<Integer> nums = new ArrayDeque<>();
+		
+		
+		nums.offerLast(100);
+		nums.offerLast(80);
+		nums.offer(200);
+		nums.offer(25);
+		nums.offer(70);
+		nums.offer(60);
+		
+		
+		while(!nums.isEmpty()) {
+			System.out.println(nums.pollFirst());
+		}		
+		
+		System.out.println(nums);
+
+
+
+
+
+Student Task:
+=============
+
+
+
+Question1: Guess the output:
+
+
+Deque<Integer> dq = new ArrayDeque<>();
+
+dq.push(10);
+dq.offer(20);
+dq.push(30);
+
+System.out.println(dq);
+
+
+
+
+Answer
+[30, 10, 20]
+
+Because:
+
+push() adds front
+offer() adds rear
+
+
+
+
+Question 2: Guess the output:
+
+
+Deque<Integer> dq = new ArrayDeque<>();
+
+dq.offer(10);
+dq.offerFirst(20);
+dq.offerLast(30);
+
+System.out.println(dq);
+
+
+
+Answer
+
+[20, 10, 30]
+
+offer(10) = add rear
+offerFirst(20) = add front
+offerLast(30) = add rear
+
+
+
+
+Question 3: Guess the output:
+
+
+Deque<Integer> dq = new ArrayDeque<>();
+
+dq.push(10);
+dq.push(20);
+dq.push(30);
+
+System.out.println(dq.pop());
+System.out.println(dq.peek());
+
+
+Question 4: Guess the output:
+
+
+
+Deque<String> dq = new ArrayDeque<>();
+
+dq.offer("A");
+dq.push("B");
+dq.offerLast("C");
+
+System.out.println(dq);
+
+
+Output:
+
+[B, A, C]
+
+Because:
+
+offer("A"): rear
+push("B"): front
+offerLast("C"): rear
+
+
+
+
+Question 5: Ticket Counter Queue System
+
+Problem:
+
+Customers are standing in queue:
+
+Amit
+Neha
+Rahul
+Priya
+
+Serve customers one by one using Queue.
+
+
+
+
+Solution:
+--------
+
+
+TicketCounter.java:
+-------------------
+
+
+package com.hdfc;
+import java.util.ArrayDeque;
+import java.util.Queue;
+
+public class TicketCounter {
+
+    public static void main(String[] args) {
+
+        Queue<String> ticketLine = new ArrayDeque<>();
+
+        ticketLine.offer("Amit");   
+        ticketLine.offer("Neha");
+        ticketLine.offer("Rahul");
+        ticketLine.offer("Priya");  
+
+
+        System.out.println("Current Line: " + ticketLine);
+
+
+        System.out.println("\n--- Serving Customers ---");
+
+        while (!ticketLine.isEmpty()) {
+
+            String nextCustomer = ticketLine.peek(); 
+            System.out.println("Now serving: " + nextCustomer);
+
+            String servedCustomer = ticketLine.poll(); 
+            System.out.println(servedCustomer + " has received their ticket.");
+        }
+
+        System.out.println("\nAll customers served. Counter closed.");
+    }
+}
+
+
+
+
+
+Question 6: Reverse First 3 Elements of Queue
+
+Input:
+
+10 20 30 40 50
+
+Output:
+
+30 20 10 40 50
+
+
+
+Logic:
+------
+
+Step 1: Dequeue (remove) the first 3 elements from the Queue and push them onto a Stack(Using ArrayDeque).
+
+Step 2: Pop the elements from the Stack(ArrayDeque) and enqueue (add) them back to the rear of the Queue.
+
+Step 3: Now the first 3 elements are at the back and reversed. To get them back to the front in the correct order, dequeue the remaining elements (the ones that weren't reversed) and move them to the back of the queue.
+
+
+
+
+
+Solution:
+---------
+
+import java.util.*;
+public class Demo {
+    public static void main(String[] args) {
+
+        Queue<Integer> q = new ArrayDeque<>();
+
+        q.offer(10);
+        q.offer(20);
+        q.offer(30);
+        q.offer(40);
+        q.offer(50);
+
+        Deque<Integer> st = new ArrayDeque<>();
+
+	//moving 1st 3 elements from Q to Stack
+        for(int i=1;i<=3;i++)
+            st.push(q.poll());
+
+
+        while(!st.isEmpty())
+            q.offer(st.pop());
+
+	int rem = q.size() - 3;
+
+        for(int i=1;i<=rem;i++)
+            q.offer(q.poll());
+
+        System.out.println(q);
+    }
+}
+
+
+
+
+
+Question 7: Check Palindrome String using ArrayDeque
+
+
+        String str = "madam";
+
+        Deque<Character> dq = new ArrayDeque<>();
+
+        for(char ch : str.toCharArray())
+            dq.offerLast(ch);
+
+        boolean flag = true;
+
+        while(dq.size() > 1) {
+
+            if(dq.pollFirst() != dq.pollLast()) {
+                flag = false;
+                break;
+            }
+        }
+
+        System.out.println(flag ? "Palindrome" : "Not Palindrome");
+    }
+}
+
+
+
+
+Question 8: Print Queue in Reverse Order: Use the ArrayDeque class
+
+Input Queue:
+
+10 20 30 40
+
+Output:
+
+40 30 20 10
+
+
+
+Solution:
+----------
+
+
+ Queue<Integer> q = new ArrayDeque<>();
+
+        q.offer(10);
+        q.offer(20);
+        q.offer(30);
+        q.offer(40);
+
+Deque<Integer> dq =new ArrayDeque<>();
+
+        while(!q.isEmpty()){
+            dq.push(q.poll()); // performing stack operation
+	}
+
+
+        while(!dq.isEmpty()){
+            System.out.println(dq.pop()); //performing stack operation
+	}
+
+
+
+
+Question 5: Generate Binary Numbers using Queue
+
+Print first 10 binary numbers:
+
+
+Solution:
+---------
+
+  Queue<String> q = new ArrayDeque<>();
+
+        q.offer("1");
+
+        for(int i=1;i<=10;i++) {
+
+            String s = q.poll();
+
+            System.out.println(s);
+
+            q.offer(s + "0");
+            q.offer(s + "1");
+        }
+
+
+
+
+
+
+
+Map in Java:
+=============
+
+--refer Map pic
+
+
+
+Map Interface:
+==============
+
+
+--The Map interface is part of Java Collections Framework and is used when we need to store data in the form of key-value pairs.
+
+--Here key and value must be an object (Primitives are not allowed).
+
+--Each key is unique (duplicate keys are not allowed).
+
+--Values can be duplicated.
+
+--Every key-value pair is called an Entry.
+
+--Map is not a child interface of the Collection interface. It is a separate root-level interface.
+
+
+
+Example:
+
+
+(101, Raj)
+(102, Simran)
+(103, Aman)
+
+
+
+Think of it like:
+
+Dictionary: word -> meaning
+Phonebook: name -> number
+Student Roll No -> Student Name
+Locker Number -> Owner Name
+Word -> Its frequency
+
+
+
+
+Main Purpose: To quickly retrieve a value based on its key (very fast lookup using hashing in most implementations).
+
+
+
+
+Important methods of the Map<K,V> interface:
+--------------------------------------------
+
+
+
+
+1. V put(K key, V value):
+
+--Inserts a key-value pair. If the key already exists, replaces the old value with the new one and returns the old value. 
+--Returns null if the key was not present.
+--This method can be used for update the value also
+
+
+2. V get(K key);
+
+--Returns the value associated with the key, or null if the key is not found.
+
+
+3. boolean containsKey(K key);
+
+--Check whether the Map contains the specified key object or not.
+
+
+4. boolean containsValue(V value);
+
+--Check whether the Map contains the specified Value object or not.
+
+
+5. boolean isEmpty();
+
+--Checks if the map has no key-value pairs.
+
+
+6. int size();
+
+--Returns the number of key-value pairs (entries) in the map.
+
+
+7. V remove(K key);
+
+--Removes the entry for the specified key and returns the value. Returns null if key not found.
+
+
+8. Set<K> keySet();
+
+--Returns a Set containing all the keys.
+
+
+9. Collection<V> values();
+
+--Returns a Collection containing all the values.
+
+
+10. Set<Map.Entry<K,V>> entrySet()
+
+--Returns a Set of all entries (key-value pairs).
+
+
+
+
+Note: Map revolve around two basic operations:
+
+
+V put(K key,V value); //To store/insert/update
+
+and 
+
+V get(K key); //To retrieve
+
+
+
+Entry interface:
+----------------
+
+--Each key value pair is called as one entry, hence a map is considered as a group of entries.
+
+
+--Without existing Map obj there is no-chance of existing entry obj (because of this Entry interface is defined inside Map interface).
+
+
+
+Example:
+
+
+interface Map<K,V> {
+    
+    interface Entry<K, V> {
+
+        K getKey();
+        V getValue();
+        V setValue(V value); // from Java 8
+    }
+
+//--all the above discussed methods..
+
+}
+
+
+
+
+
+
+Important Points about Entry:
+------------------------------
+
+
+--Entry is a nested interface defined inside the Map interface.
+
+--You cannot create an Entry object without an associated Map.
+
+--Used mainly when iterating over a map using entrySet().
+
+--In the following way we define the inner interface variable:
+
+
+Map.Entry<K,V> me= 
+
+
+--here me will be the variable of Entry interface.
+
+
+
+
+
+
+HashMap class:
+==============
+
+
+--The HashMap class is the most commonly used implementation of the Map interface. It uses a hash table data structure internally to store the data, which makes it incredibly fast for basic operations.
+
+
+Feature of HashMap class:
+-------------------------
+
+
+--Stores data in (Key, Value) pairs.
+
+--It uses a technique called Hashing to determine where to store the data.
+
+--Does not preserve the insertion order, It does not guarantee any order of elements. The order of entries can even change over time.
+
+--It allows one null key and multiple null values.
+
+--It is non-synchronized (not thread-safe). If multiple threads access it simultaneously, it must be synchronized externally by using Collections.synchronizedMap() method.
+
+--Provides O(1) (constant time) performance for basic operations like get() and put().
+
+
+
+How HashMap Works Internally:
+-----------------------------
+
+
+--HashMap works on the principle of Hashing. It uses an inner class called Node<K, V> (which implements Map.Entry) to store data.
+
+1. The Buckets (Array)
+
+--HashMap is essentially an array of "buckets." When you provide a key, Java calculates its HashCode to determine which bucket the entry should go into.
+
+2. Hash Collision
+
+--If two different keys result in the same bucket index, it is called a collision.
+
+Before Java 8: HashMap handled collisions using a LinkedList. New entries were added to the end of the list at that bucket.
+
+Java 8 and later: If a bucket exceeds a certain threshold (8 entries), The bucket chain may be converted into a red-black tree based node structure. This improves performance from O(n) to O(log n) for search within that bucket.
+
+
+Already discussed in HashSet.
+
+
+
+Constructors:
+-------------
+
+
+1. HashMap<Integer, String> hm = new HashMap<>();
+
+--Here the empty HashMap object is created with initial capacity 16 and the load factor 0.75, means when the HashMap is filled with 75% then it will double its capacity to reduce the collision.
+
+
+2. HashMap<Integer, String> hm = new HashMap<>(int initialCapacity); //with specified initial capacity
+
+
+3. HashMap<Integer, String> hm = new HashMap<>(int initialCapacity, float loadFactor); 
+
+
+4. HashMap<Integer, String> hm = new HashMap<>(Map map); // Create a HashMap containing elements of the specified Map.
+
+
+ 
+Example:
+-------
+
+package com.hdfc;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+		HashMap<Integer, String> students = new HashMap<>();
+
+		System.out.println(students); // {}
+
+		students.put(101, "Raj");
+		students.put(102, "Simran");
+		students.put(103, "Rahul");
+		students.put(104, "Vikash");
+		students.put(105, "Aman");
+
+		// Duplicate Key (Overwrites Raj)
+		students.put(101, "Priya");
+
+		System.out.println(students); // {101=Priya, 102=Simran, 103=Rahul, 104=Vikash, 105=Aman}
+						// Output order is not guaranteed.
+
+		// Get the Student 101
+		System.out.println("Student with roll 101 " + students.get(101)); // Priya
+
+		System.out.println("105 roll student removed: " + students.remove(105)); // Aman
+
+		Set<Integer> rolls = students.keySet();
+
+		System.out.println("All Keys are: " + rolls);// [101, 102, 103, 104]
+
+		Collection<String> names = students.values();
+
+		System.out.println("All student names are: " + names); // [Priya, Simran, Rahul, Vikash]
+
+		Set<Map.Entry<Integer, String>> entrySet = students.entrySet();
+
+		System.out.println(entrySet); // [101=Priya, 102=Simran, 103=Rahul, 104=Vikash]
+
+		for (Map.Entry<Integer, String> entry : entrySet) {
+
+			System.out.println(entry.getKey() + "=========" + entry.getValue());
+
+			if (entry.getKey().equals(104)) {
+				entry.setValue("Ajay"); // update the original Map, because Entry is connected to the Map
+			}
+		}
+
+		System.out.println(students);// {101=Priya, 102=Simran, 103=Rahul, 104=Ajay}
+
+	}
+}
+
+
+
+Note: 
+
+Collection<String> names= students.values();
+
+--That collection is a live view, not separate copy.
+--If map changes, values view changes too.
+
+
+
+
+
+
+Null handling:
+--------------
+
+students.put(null, "Admin");
+students.put(null, "Super Admin");
+
+Only one null key (latest value replaces old).
+
+
+But, Many null values allowed:
+
+map.put(1,null);
+map.put(2,null);
+
+
+
+
+Student Task:
+------------
+
+--Create a Employee bean class with the following properties:
+
+int id;
+String name;
+double salary
+
+
+--map 5 Employee objects to different cities:
+
+Delhi
+Kolkata
+Chandigarh
+Pune
+Chennai
+
+Map<String, Employee> employees = new HashMap<>();
+ 
+
+
+
+--Get the salary of the Employee who is working in Chandigarh
+
+--Hike the salary of the Employee by 10% who is working in Kolkata
+
+--Print all the Employees along with their working cities. using Iterator
+
+--While iterating remove the employee who is working in Pune.
+
+
+
+
+
+
+Solution:
+=========
+
+Employee.java:
+--------------
+
+
+package com.hdfc;
+public class Employee {
+
+	private int id;
+	private String name;
+	private double salary;
+
+// Zero argument constructor
+// Parameterized constructor
+// getters and setters
+// toString
+
+}
+
+
+Demo.java:
+----------
+
+package com.hdfc;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+public class Demo {
+
+	public static void main(String[] args) {
+
+		// City = Key
+		// Employee = Value
+
+		Map<String, Employee> employees = new HashMap<>();
+
+		employees.put("Delhi", new Employee(101, "Raj", 50000));
+		employees.put("Kolkata", new Employee(102, "Simran", 60000));
+		employees.put("Chandigarh", new Employee(103, "Aman", 70000));
+		employees.put("Pune", new Employee(104, "Rahul", 55000));
+		employees.put("Chennai", new Employee(105, "Priya", 65000));
+
+		// Get salary of employee working in Chandigarh
+		Employee emp1 = employees.get("Chandigarh");
+
+		System.out.println("Salary of Chandigarh Employee: " + emp1.getSalary());
+
+		// Hike salary by 10% of employee working in Kolkata
+		Employee emp2 = employees.get("Kolkata");
+
+		double oldSalary = emp2.getSalary();
+		double newSalary = oldSalary + (oldSalary * 10 / 100);
+
+		emp2.setSalary(newSalary); // updates the map automatically
+
+		System.out.println("Updated Salary of Kolkata Employee: " + emp2.getSalary());
+
+		// Print all employees with cities
+		System.out.println("\nAll Employees with Working Cities:\n");
+
+		Set<Map.Entry<String, Employee>> entrySet= employees.entrySet();
+		
+		
+		
+		Iterator<Map.Entry<String, Employee>> itr= entrySet.iterator();
+		
+		while(itr.hasNext()) {
+			
+			Map.Entry<String, Employee> entry= itr.next();
+			
+			String city= entry.getKey();
+			Employee emp= entry.getValue();
+			
+			System.out.println(city+"=========>"+emp);
+			
+			if(city.equals("Pune"))
+				itr.remove();
+			
+			
+		}
+		
+		
+		
+		System.out.println("==========After removal==========");
+
+		
+		for(Map.Entry<String, Employee> entry: employees.entrySet()) {
+			
+			String city= entry.getKey();
+			Employee emp = entry.getValue();
+			
+			System.out.println(city+"=========>"+emp);
+			
+		}
+
+	}
+}
+
+
+Note: If we want to use any custom object as a key inside a HashMap, it is strongly recommended to override both the equals() and hashCode() methods inside that class.
+
+Because HashMap uses:
+
+hashCode(): to decide the bucket location
+equals(): to check whether two keys are logically same or different
+
+--If these methods are not overridden, Java uses the default implementations from the Object class, which compare objects by memory address.
+
+--That means two objects having same data may still be treated as different keys.
+
+
+
+Example: Without overriding equals() and hashCode() method inside the Employee class
+
+
+Map<Employee, String> map = new HashMap<>();
+
+
+map.put(new Employee(10, "Raj", 65000), "A");
+map.put(new Employee(10, "Raj", 65000), "B");
+
+
+System.out.println(map.size()); // 2
+
+System.out.println(map); // {Employee [id=10, name=Raj, salary=65000.0]=A, Employee [id=10, name=Raj, salary=65000.0]=B}
+
+
+
+
+
+Reason: Both objects are considered different because default equals() and hashCode() are used.
+
+But after overriding the equals() and hashCode() method inside the Employee class the map.size() will be 1 and the output will be:
+
+{Employee [id=10, name=Raj, salary=65000.0]=B}
+
+
+
+To quickly create a Map: use the Map.of() method:
+------------------------------------------------
+
+Map.of() method is used to create an immutable Map.
+
+Example:
+
+Map<Integer, String> map= Map.of(10, "Admin", 20, "Editor", 30, "Viewer")
+
+
+
+--To create a mutable map quickly we can use the following approach:
+
+
+Map<Integer, String> map = new HashMap<>(Map.of(10, "Admin", 20, "Editor", 30, "Viewer"));
+		
+System.out.println(map);
+		
+Output:
+
+{20=Editor, 30=Viewer, 10=Admin}
+		
+
+
+
+
+Student Task:
+-------------
+
+
+Sort the Following HashMap according to the Employee Salary (Sort by value):
+
+
+Map<String, Employee> employees = new HashMap<>();
+
+		employees.put("Delhi", new Employee(101, "Raj", 50000));
+		employees.put("Kolkata", new Employee(102, "Simran", 60000));
+		employees.put("Chandigarh", new Employee(103, "Aman", 70000));
+		employees.put("Pune", new Employee(104, "Rahul", 55000));
+		employees.put("Chennai", new Employee(105, "Priya", 65000));
+
+
+
+
+
+Solution:
+---------
+
+
+
+
+package com.hdfc;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+		Map<String, Employee> employees = new HashMap<>();
+
+		employees.put("Delhi", new Employee(101, "Raj", 50000));
+		employees.put("Kolkata", new Employee(102, "Simran", 60000));
+		employees.put("Chandigarh", new Employee(103, "Aman", 70000));
+		employees.put("Pune", new Employee(104, "Rahul", 55000));
+		employees.put("Chennai", new Employee(105, "Priya", 65000));
+
+		
+		Set<Map.Entry<String, Employee>> entrySet= employees.entrySet();
+		
+		//Convert the above entrySet into the List.
+		List<Map.Entry<String, Employee>> list = new ArrayList<>(entrySet);
+		
+		
+		list.sort((me1, me2) ->{
+			
+			Employee emp1= me1.getValue();
+			Employee emp2= me2.getValue();
+			
+			return Double.compare(emp1.getSalary(), emp2.getSalary());
+			
+		});
+		
+		
+		//Printing the sorted Result:
+		
+		for(Map.Entry<String, Employee> me: list) {
+			
+			String city= me.getKey();
+			Employee emp= me.getValue();
+			
+			System.out.println(city+" ====== "+emp);
+		}
+		
+	}
+}
+
+
+
+
+
+
+
+LinkedHashMap class:
+====================
+
+
+--The LinkedHashMap is a subclass of HashMap. 
+
+--It is almost identical to HashMap in terms of performance and functionality, with one major difference: 
+
+--It preserves the insertion order of key-value pairs. That means entries are stored in the same sequence in which they were inserted.
+
+
+Characteristics:
+
+
+--It is a combination of a hash table and a Doubly Linked List.
+
+--It preserves the insertion order. If you put "Delhi" then "Mumbai", they will always come out in that order when you iterate.
+
+--Slightly slower than HashMap because it has the added overhead of maintaining the linked list, but it still offers O(1) for add, contains, and remove.
+
+
+Example:
+
+
+LinkedMapDemo.java:
+-------------------
+
+
+package com.hdfc;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public class LinkedMapDemo {
+    public static void main(String[] args) {
+        // Insertion Order is preserved
+        Map<String, String> lhm = new LinkedHashMap<>();
+
+        lhm.put("Z", "Zebra");
+        lhm.put("A", "Apple");
+        lhm.put("M", "Mango");
+
+        System.out.println(lhm); 
+        // Output: {Z=Zebra, A=Apple, M=Mango} (Exactly as inserted)
+        
+        // HashMap would likely print: {A=Apple, Z=Zebra, M=Mango}
+    }
+}
+
+
+
+When to Use LinkedHashMap?
+=========================
+
+Use when:
+
+Key-value pairs needed
+Fast lookup needed
+Order should remain same
+Predictable iteration required
+
+
+
+
+Student task:
+=============
+
+Task 1: Count Frequency of Numbers using HashMap
+
+Input:
+
+int[] arr = {1,2,1,3,2,1,4,3};
+
+Output:
+
+1=3
+2=2
+3=2
+4=1
+
+
+
+Solution:
+---------
+
+
+
+HashMap<Integer,Integer> map = new HashMap<>();
+
+for(int num : arr){
+
+    if(map.containsKey(num)){
+        int count = map.get(num);
+        map.put(num, count + 1);
+    }
+    else{
+        map.put(num, 1);
+    }
+}
+
+System.out.println(map);
+
+
+
+
+Task 2: First Non-Repeating Character using Map
+
+
+Solution:
+---------
+
+
+String str = "swiss";
+
+LinkedHashMap<Character,Integer> map =
+        new LinkedHashMap<>();
+
+for(char ch : str.toCharArray()){
+
+    if(map.containsKey(ch)){
+        int count = map.get(ch);
+        map.put(ch, count + 1);
+    }
+    else{
+        map.put(ch, 1);
+    }
+}
+
+for(Map.Entry<Character,Integer> e : map.entrySet()){
+
+    if(e.getValue() == 1){
+        System.out.println(e.getKey());
+        break;
+    }
+}
+
+
+
+Task3: Group Words by Length
+
+Question:
+
+Given words:
+
+cat dog apple car ball sky mango
+
+Group all words according to their length.
+
+Expected Output:
+3 -> [cat, dog, car, sky]
+4 -> [ball]
+5 -> [apple, mango]
+
+
+
+
+Solution: 
+----------
+
+String[] words = {
+            "cat","dog","apple",
+            "car","ball","sky","mango"
+        };
+
+        HashMap<Integer,
+            ArrayList<String>> map =
+                new HashMap<>();
+
+        for(String word : words) {
+
+            int len = word.length();
+
+            if(!map.containsKey(len))
+                map.put(len, new ArrayList<String>());
+
+            map.get(len).add(word);
+        }
+
+        System.out.println(map);
+
+
+
+Task4: Find Missing Number from 1 to N
+
+Question:
+
+Array contains numbers from 1 to 5, but one number is missing.
+
+{1,2,4,5}
+
+Find missing number using HashMap.
+
+Expected Output:
+3
+
+
+Solution:
+----------
+
+import java.util.HashMap;
+
+public class Demo {
+
+    public static void main(String[] args) {
+
+        int[] arr = {1,2,4,5};
+        int n = 5;
+
+        HashMap<Integer,Integer> map =
+                new HashMap<>();
+
+        for(int num : arr)
+            map.put(num,1);
+
+        for(int i=1;i<=n;i++) {
+
+            if(!map.containsKey(i)) {
+                System.out.println(i);
+                break;
+            }
+        }
+    }
+}
+
+
+
+
+
+TreeMap class:
+==============
+
+
+--TreeMap is a class in Java is the another implementation class of the Map interface.
+
+Hierarchy:
+----------
+
+
+Map(I)
+ |
+SortedMap(I)
+ |
+NavigableMap(I)
+  |
+TreeMap(C)
+
+
+
+--It also stores data in the form of key-value pair, just like HashMap, but with one special feature:
+
+It stores all keys in sorted order automatically.
+
+
+Analogy:
+
+Imagine a dictionary.
+
+Words are stored alphabetically:
+
+Apple
+Ball
+Cat
+Dog
+Elephant
+
+If words were random, searching becomes difficult.
+
+Same concept in TreeMap.
+
+--Keys are automatically arranged in sorted order.
+
+
+Example:
+
+101 -> Raj
+103 -> Aman
+102 -> Simran
+105 -> Priya
+104 -> Rahul
+
+
+When stored inside TreeMap, output becomes:
+
+101=Raj
+102=Simran
+103=Aman
+104=Rahul
+105=Priya
+
+Sorted by key.
+
+
+Because internally it uses a: Red-Black Tree
+
+--which is a self-balancing binary search tree.
+
+So:
+
+Tree + Map = TreeMap
+
+
+Features of TreeMap:
+====================
+
+--Stores data in key-value pairs
+
+--Duplicate keys not allowed
+
+--Duplicate values allowed
+
+--Keys remain sorted automatically
+
+--Faster than normal tree traversal
+
+--Null key not allowed( throws NullPointerException)
+
+--Multiple null values allowed
+
+--Not synchronized
+
+Time complexity:
+
+put() = O(log n)
+get() = O(log n)
+remove() = O(log n)
+
+
+Example:
+
+Demo.java:
+----------
+
+
+import java.util.TreeMap;
+
+public class Demo {
+
+    public static void main(String[] args) {
+
+        TreeMap<Integer,String> students =
+                new TreeMap<>();
+
+        students.put(103,"Aman");
+        students.put(101,"Raj");
+        students.put(105,"Priya");
+        students.put(102,"Simran");
+        students.put(104,"Rahul");
+
+        System.out.println(students);
+    }
+}
+
+
+Output:
+
+{101=Raj, 102=Simran, 103=Aman, 104=Rahul, 105=Priya}
+
+
+Example: String Keys
+
+
+TreeMap<String,Integer> map = new TreeMap<>();
+
+map.put("Banana",10);
+map.put("Apple",20);
+map.put("Cat",30);
+
+System.out.println(map);
+
+
+Output:
+
+{Apple=20, Banana=10, Cat=30}
+
+
+Internal Working:
+=================
+
+Suppose:
+
+put(50,"A")
+put(30,"B")
+put(70,"C")
+put(20,"D")
+put(40,"E")
+
+
+Internally tree like:
+
+        50
+       /  \
+     30    70
+    /  \
+   20  40
+
+
+Java balances tree automatically.
+
+
+Special TreeMap Methods:
+-----------------------
+
+firstKey()
+lastKey()
+higherKey()
+lowerKey()
+ceilingKey()
+floorKey()
+
+
+
+Example:
+-------
+
+TreeMap<Integer,String> map = new TreeMap<>();
+
+map.put(101,"Raj");
+map.put(103,"Aman");
+map.put(105,"Priya");
+
+System.out.println(map.firstKey()); //101
+System.out.println(map.lastKey());  //105
+System.out.println(map.higherKey(103)); //105
+System.out.println(map.lowerKey(103));  //101
+
+
+
+
+Sorting the custom object as key:
+---------------------------------
+
+--Here the Custom object either implements the Comparable or we need to make use of Comparator object.
+
+
+TreeMap<Integer,String> map =new TreeMap<>(Comparator);
+
+
+Example:
+
+
+TreeMap<Integer,String> map = new TreeMap<>(Comparator.reverseOrder());
+
+Now keys descending order.
+
+
+
+
+
+Example:
+
+
+
+package com.hdfc;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.TreeMap;
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+		TreeMap<Employee,String> employees = new TreeMap<>((e1, e2) -> Double.compare(e1.getSalary(), e2.getSalary()));
+		
+		
+		employees.put(new Employee(10, "Raj", 65000), "Sales");
+		employees.put(new Employee(11, "Rohit", 75000), "Sales");
+		employees.put(new Employee(12, "Rahul",40000), "Sales");
+		employees.put(new Employee(13, "Aman", 85000), "HR");
+		employees.put(new Employee(14, "Vikash", 55000), "HR");
+		employees.put(new Employee(15, "Dinesh", 35000), "Marketing");
+		employees.put(new Employee(16, "Sunil", 75000), "Finanace");
+		
+		
+		
+		
+		for(Map.Entry<Employee, String> me: employees.entrySet()) {
+			
+			Employee emp= me.getKey();
+			String dept= me.getValue();
+			
+			
+			System.out.println(dept+"====="+emp);
+		}
+		
+		
+		Employee lowestSalEmp=  employees.firstKey();
+		
+		System.out.println("Lowest Salary emp: "+lowestSalEmp);
+		
+		Employee highestSalEmp= employees.lastKey();
+		
+		System.out.println("Highest Salary emp: "+highestSalEmp);
+		
+	
+	}
+}
+
+
+Note: Here if two employee have the same salary, that Employee object will not be added: 
+
+--In order to keep that employee also we need to modify the Comparator as if salary is same then sort them using their id:
+
+Example:
+
+		TreeMap<Employee,String> employees = new TreeMap<>((e1, e2) -> {
+
+			int result = Double.compare(e1.getSalary(), e2.getSalary());
+
+			if(result == 0){
+				return Integer.compare(e1.getId(), e2.getId());
+			}else{
+				return result;
+			} 
+
+		});
+		
+
+
+
+
+Question: Print Department of Highest Salary Employee
+
+
+Employee emp = employees.lastKey();
+
+String dept = employees.get(emp);
+
+System.out.println(dept);
+
+
+
+
+Question: Print Second Highest Salary Employee
+
+
+Employee highest = employees.lastKey();
+
+Employee second = employees.lowerKey(highest);
+
+System.out.println(second);
+
+
+
+Question: Print Employee Just Lower Than Raj
+
+
+Employee raj = new Employee(10,"Raj",65000);
+
+Employee emp = employees.lowerKey(raj);
+
+System.out.println(emp);
+
+
+
+Question: Print Employees Salary Greater Than or equal to 60000
+
+Employee key = new Employee(0,"X",60000);
+
+for(Map.Entry<Employee,String> e : employees.tailMap(key).entrySet()){
+
+    System.out.println(e.getKey());
+}
+
+
+
+Question: Print Employees Salary Less Than to 60000
+
+
+Employee key = new Employee(0,"X",60000);
+
+for(Map.Entry<Employee,String> e : employees.headMap(key).entrySet()){
+
+    System.out.println(e.getKey());
+}
+
+
+Question: Print Employees Salary Between 50000 to 80000: <= 50000 and < 80000
+
+
+Employee low = new Employee(0,"X",50000);
+
+Employee high = new Employee(0,"Y",80000);
+
+for(Map.Entry<Employee,String> e : employees.subMap(low,high).entrySet()){
+
+    System.out.println(e.getKey());
+}
+
+
+
+
+Hashtable:-
+===========
+
+
+--Hashtable is similar to HashMap, but with the following important differences:
+
+
+| HashMap                                                                    | Hashtable                                                                         |
+| -------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Introduced in Java 1.2 as part of the Collections Framework.               | Available since Java 1.0 (legacy class).                                          |
+| Methods are not synchronized by default, so it is not thread-safe.         | Most methods are synchronized, so it is thread-safe for basic operations.         |
+| Generally faster because there is no synchronization overhead.             | Generally slower because synchronization adds overhead.                           |
+| Allows one null key and multiple null values.                              | Does not allow any null key or null value.                                        |
+| Commonly used in single-threaded or externally synchronized code.          | Mostly found in legacy code                                                       |
+
+
+
+
+Example:
+
+
+Demo.class:
+----------
+
+
+
+
+package com.hdfc;
+
+import java.util.Hashtable;
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+		Hashtable<Integer, String> ht = new Hashtable<>();
+		
+		ht.put(10, "Raj");
+		ht.put(20, "Simran");
+		ht.put(30, "Priya");
+		ht.put(40, "Rahul");
+		ht.put(50, "Rohit");
+	
+		
+		System.out.println(ht);
+		
+			
+	}
+}
+
+
+
+	
+
+Output:
+
+{10=Raj, 20=Simran, 30=Priya, 40=Rahul, 50=Rohit}
+
+Order is not guaranteed		
+		
+		
+		
+		
+
+
+Properties class:
+=================
+	
+--Properties is a special child class of Hashtable used to store data in the form of:
+
+String Key -> String Value
+
+--It is mainly used to store:
+
+Configuration settings
+Database details
+Username / password files
+Application environment values
+Key-value text files (.properties)
+
+
+Features of Properties:
+=======================
+
+--Stores key-value pairs
+
+--Mostly key and value are Strings
+
+--Thread-safe (inherits Hashtable)
+
+--No null key/value
+
+--Can read data from file
+
+--Commonly used for configuration		
+		
+
+
+
+
+--Although HashMap can store key-value pairs, Properties gives extra methods like:
+
+load()
+store()
+getProperty()
+setProperty()
+
+--These methods make file-based settings easy.
+
+
+
+Example:
+
+Demo.java:
+---------
+
+
+import java.util.Properties;
+
+public class Demo {
+
+    public static void main(String[] args) {
+
+        Properties p = new Properties();
+
+        p.setProperty("username","admin");
+        p.setProperty("password","1234");
+        p.setProperty("theme","dark");
+
+        System.out.println(p);
+    }
+}
+
+Output:
+{password=1234, theme=dark, username=admin} // (Order not guaranteed)
+
+
+Properties File Example:
+========================
+
+Suppose file:
+
+config.properties
+-----------------
+
+username=admin
+password=1234
+city=Delhi
+theme=dark
+
+
+
+Example: Read File (config.properties)
+
+
+
+import java.io.FileInputStream;
+import java.util.Properties;
+
+public class Demo {
+
+    public static void main(String[] args) throws Exception {
+
+        Properties p = new Properties();
+
+        FileInputStream fis = new FileInputStream("config.properties");
+
+        p.load(fis);
+
+        System.out.println(p.getProperty("username"));
+
+        fis.close();
+    }
+}
+
+
+
+Output:
+admin
+
+
+
+
+
+
+WeakHashMap class:
+==================
+
+
+--WeakHashMap is a special implementation of the Map interface.
+
+--It works similar to HashMap, but with one important difference:
+
+--Keys in WeakHashMap are stored as weak references.
+
+That means:
+
+--If a key object has no strong reference outside the map,
+--then it becomes eligible for Garbage Collection (GC),
+--and the corresponding entry may be removed automatically.
+
+
+Simple Meaning:
+
+HashMap:
+
+--Map keeps key alive.
+
+--Even if outside references are gone, key remains because map strongly references it.
+
+WeakHashMap:
+
+--Map does NOT strongly protect key.
+
+--If no outside strong reference exists, GC can remove key + entry.
+
+
+Key Rule: 
+
+--If key loses all strong references,
+--WeakHashMap entry can disappear.
+
+
+
+Example 1: Unreferenced Keys
+
+
+
+Demo.java:
+----------
+
+import java.util.WeakHashMap;
+
+public class Demo {
+
+    public static void main(String[] args) throws Exception {
+
+        WeakHashMap<Employee,Integer> map = new WeakHashMap<>();
+
+        map.put(new Employee(10,"Raj",50000),100);
+        map.put(new Employee(20,"Aman",60000),200);
+
+        System.out.println(map.size()); // 2
+        System.out.println(map);
+
+        System.gc();
+        Thread.sleep(1000);
+
+        System.out.println(map.size());
+        System.out.println(map);
+    }
+}
+
+
+Possible Output:
+
+2
+{...two entries...}
+0
+{}
+
+
+Because keys were created like:
+
+new Employee(...)
+
+No reference variable saved.
+
+So keys became eligible for GC.
+
+
+
+
+Example 2: 
+
+
+import java.util.WeakHashMap;
+
+public class Demo {
+
+    public static void main(String[] args) throws Exception {
+
+        WeakHashMap<Employee,Integer> map = new WeakHashMap<>();
+
+
+	 Employee e1 = new Employee(10,"Raj",50000);
+
+        Employee e2 = new Employee(20,"Aman",60000);
+
+
+
+        map.put(e1,100);
+        map.put(e2,200);
+
+        System.out.println(map.size()); // 2
+        System.out.println(map);
+
+        System.gc();
+        Thread.sleep(1000);
+
+        System.out.println(map.size()); //2
+        System.out.println(map);
+    }
+}
+
+
+
+Real Time Uses:
+===============
+
+1. Cache
+
+--Temporary cached data should disappear when key no longer used.
+
+
+2. Object Association
+
+Attach extra info to objects temporarily.
+
+etc..
+
+
+
+
+
+IdentityHashMap:
+================
+
+--IdentityHashMap is a special implementation of the Map interface.
+
+--It is similar to HashMap, but with one major difference:
+
+--It compares keys using reference equality (==), not logical equality using equals().
+
+
+
+Normal HashMap Behavior:
+-----------------------
+
+--HashMap checks duplicate keys using:
+
+hashCode() + equals()
+
+--That means two different objects containing same data may be treated as same key.
+
+
+IdentityHashMap Behavior:
+--------------------------
+
+--IdentityHashMap checks keys using:
+
+key1 == key2
+
+That means:
+
+Same object reference: same key
+Different objects, even same content: different keys
+
+
+Example: Using HashMap
+
+HashMap<String,Integer> map = new HashMap<>();
+
+map.put("one",10);
+map.put(new String("one"),40);
+
+System.out.println(map.size());
+System.out.println(map);
+
+
+Output:
+1
+{one=40}
+
+
+Example: Using IdentityHashMap:
+
+
+import java.util.IdentityHashMap;
+
+public class Demo {
+
+    public static void main(String[] args) {
+
+        IdentityHashMap<String,Integer> map = new IdentityHashMap<>();
+
+        map.put("one",10);
+        map.put(new String("one"),40);
+
+        System.out.println(map.size());
+        System.out.println(map);
+    }
+}
+
+
+
+
+Output:
+
+2
+{one=10, one=40}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

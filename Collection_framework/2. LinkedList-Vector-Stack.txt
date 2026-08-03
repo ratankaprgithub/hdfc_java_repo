@@ -1,0 +1,1427 @@
+LinkedList:
+===========
+
+
+--This class is the another implementation of List interface.
+
+--This class is the best choice if our frequent operation is insertion and deletion from middle.(Because No shifting of elements)
+
+--From Java 1.5 onwards this LinkedList class also implements Deque interface.
+
+--So, it can act as List, Queue, Deque and Stack also.
+
+--It internally uses doubly-linked list data structure, where each Element(called a Node) contains:
+
+Data: (The actual element)
+next: the reference to the next node
+prev: the reference to the prev node
+
+
+
+
+	      Head (first)			                         Tail (last)
+    		|                                     			   |
+   		v                                     			   v
+null <- [prev | data | next] <-> [prev | data | next] <-> ... <-> [prev | data | next] -> null
+
+
+
+--This structure allows efficient insertions and deletions at both ends and in the middle (once position is known), but slower random access compared to ArrayList.
+
+
+Empty list: head = tail = null.
+
+--There is no initial capacity of the LinkedList.
+
+Note: You cannot see the internal Node class directly: it is a private static inner class in LinkedList.
+
+
+
+
+
+Custom LinkedList Demo:
+-----------------------
+
+MyLinkedList.java:
+------------------
+
+
+
+package com.hdfc;
+
+public class MyLinkedList<E> {
+
+    // Node inner class
+    private static class Node<E> {
+        E data;
+        Node<E> next;
+        Node<E> prev;
+
+        Node(E data) {
+            this.data = data;
+            this.next = null;
+            this.prev = null;
+        }
+    }
+
+    private Node<E> head;   // first node
+    private Node<E> tail;   // last node
+    private int size;
+
+    // Constructor
+    public MyLinkedList() {
+        head = null;
+        tail = null;
+        size = 0;
+    }
+
+    // 1. Add element at the end (most common operation)
+    public void add(E data) {
+        Node<E> newNode = new Node<>(data);
+
+        if (head == null) {           // List is empty
+            head = tail = newNode;
+        } else {
+            tail.next = newNode;      // link new node after tail
+            newNode.prev = tail;      // link tail to new node
+            tail = newNode;           // update tail
+        }
+        size++;
+    }
+
+    // 2. Add element at the beginning
+    public void addFirst(E data) {
+        Node<E> newNode = new Node<>(data);
+
+        if (head == null) {
+            head = tail = newNode;
+        } else {
+            newNode.next = head;
+            head.prev = newNode;
+            head = newNode;
+        }
+        size++;
+    }
+
+    // 3. Add element at specific index
+    public void add(int index, E data) {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+
+        if (index == 0) {
+            addFirst(data);
+            return;
+        }
+        if (index == size) {
+            add(data);
+            return;
+        }
+
+        // Traverse to the node before the insertion point
+        Node<E> current = head;
+        for (int i = 0; i < index - 1; i++) {
+            current = current.next;
+        }
+
+        Node<E> newNode = new Node<>(data);
+        newNode.next = current.next;
+        newNode.prev = current;
+        current.next.prev = newNode;
+        current.next = newNode;
+
+        size++;
+    }
+
+    // 4. Get element at index
+    public E get(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+
+        Node<E> current = head;
+        // Optimize: traverse from head or tail depending on index
+        if (index < size / 2) {
+            for (int i = 0; i < index; i++) {
+                current = current.next;
+            }
+        } else {
+            current = tail;
+            for (int i = size - 1; i > index; i--) {
+                current = current.prev;
+            }
+        }
+        return current.data;
+    }
+
+    // 5. Remove element at index
+    public E remove(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+
+        Node<E> current;
+
+        if (index == 0) {                    // Remove first
+            current = head;
+            head = head.next;
+            if (head != null) {
+                head.prev = null;
+            } else {
+                tail = null;                 // List became empty
+            }
+        } 
+        else if (index == size - 1) {        // Remove last
+            current = tail;
+            tail = tail.prev;
+            tail.next = null;
+        } 
+        else {                               // Remove from middle
+            current = head;
+            for (int i = 0; i < index; i++) {
+                current = current.next;
+            }
+            current.prev.next = current.next;
+            current.next.prev = current.prev;
+        }
+
+        size--;
+        return current.data;
+    }
+
+    // 6. Get size
+    public int size() {
+        return size;
+    }
+
+    // 7. Check if empty
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    // 8. Clear the list
+    public void clear() {
+        head = null;
+        tail = null;
+        size = 0;
+    }
+
+    // 9. Display the list (for debugging)
+    public void display() {
+        Node<E> current = head;
+        System.out.print("LinkedList: [ ");
+        while (current != null) {
+            System.out.print(current.data + " ");
+            current = current.next;
+        }
+        System.out.println("]");
+    }
+
+    // Bonus: Display in reverse
+    public void displayReverse() {
+        Node<E> current = tail;
+        System.out.print("Reverse: [ ");
+        while (current != null) {
+            System.out.print(current.data + " ");
+            current = current.prev;
+        }
+        System.out.println("]");
+    }
+}
+
+
+
+Key Characteristics of LinkedList class:
+----------------------------------------
+
+1. Dynamic size: grows and shrinks automatically.
+
+2. Allows duplicates and multiple null elements.
+
+3. Maintains insertion order.
+
+4. Implements List (index-based) + Deque (queue/stack operations).
+
+5. Not synchronized (not thread-safe by default).
+
+6. Fail-fast iterator behavior (like ArrayList).
+
+
+
+Constructors:
+-------------
+
+LinkedList<String> list1 = new LinkedList<>();           // Empty LinkedList
+LinkedList<String> list2 = new LinkedList<>(collection); // Copy from another Collection
+
+
+
+
+Important methods of LinkedList:
+--------------------------------
+
+1. From Iterable, Collection and List  Interface (Common with ArrayList):
+
+
+Adding Elements:
+
+boolean add(E e) // add at end O(1) amortized
+void add(int index, E element) // insert at index O(n)
+
+Accessing Elements:
+
+E get(int index) // get element O(n)
+
+
+Updating Elements:
+
+E set(int index, E element) // replace and return old value O(n)
+
+Removing Elements:
+
+E remove(int index) // remove by index O(n)
+boolean remove(Object o) // remove by value O(n)
+
+
+Searching:
+
+int indexOf(Object o) // first occurrence
+int lastIndexOf(Object o) // last occurrence
+
+
+Utility Methods:
+
+int size()
+boolean isEmpty()
+void clear()
+List<E> subList(int fromIndex, int toIndex) // view (not new list)
+
+
+2. Deque / Queue Specific Methods
+
+At Beginning (Head / First):
+
+void addFirst(E e)
+boolean offerFirst(E e)
+E getFirst() // throws NoSuchElementException if empty, it does not remove the element
+E peekFirst() // returns null if empty, Safer than getFirst(), It does not remove the element
+E removeFirst() // throws exception if empty
+E pollFirst()  // returns null if empty, and it also remove the element
+
+
+
+At End (Tail / Last):
+
+void addLast(E e)
+boolean offerLast(E e)
+E getLast() // throws exception if empty
+E peekLast() // returns null if empty
+E removeLast() // throws exception if empty
+E pollLast() // returns null if empty
+
+
+3. Stack Operations (LIFO):
+
+void push(E e)      // same as addFirst()
+E pop()             // same as removeFirst()
+E peek()            // same as peekFirst()
+
+
+
+4. Queue Operations (FIFO):
+
+boolean offer(E e)  // add at end
+E poll()            // remove from front
+E element()         // view front (throws exception if empty)
+E peek()            // view front (returns null if empty)
+
+
+
+5. Other Useful Methods:
+
+Iterator<E> descendingIterator()   // reverse traversal
+Object[] toArray()
+<T> T[] toArray(T[] a)
+
+
+
+Note:
+
+add / remove:  Exception-based
+offer / poll / peek : Safe (no exception)
+
+
+Time Complexity Summary:
+------------------------
+
+
+1. add(E) / addLast(): O(1) Direct access to tail
+
+2. addFirst(): O(1) Direct access to head
+
+3. removeFirst() / poll(): O(1) Direct access to head
+
+4. removeLast(): O(1) Direct access to tail
+
+5. get(int index): O(n) Traverse from closer end (head or tail)
+
+6. add(int index, E): O(n) Traverse + link update
+
+7. remove(int index): O(n) Traverse + unlink
+
+8. contains(Object): O(n) Linear search
+
+9. indexOf(Object): O(n) Linear search
+
+
+Note: Even though insertion/deletion at a known position is O(1) after finding the node, finding the position costs O(n).
+
+
+
+ArrayList vs LinkedList, When to Use Which?:
+---------------------------------------------
+
+| Feature                     | ArrayList                             | LinkedList                                |
+| --------------------------- | ------------------------------------- | ----------------------------------------- |
+| Internal Structure          | Dynamic Array                         | Doubly Linked List                        |
+| Random Access (get())       | Fast:  O(1)                           | Slow: O(n)                	          |
+| Insert/Delete at End        | Fast: Amortized O(1)                  | Fast: O(1)                       	  |
+| Insert/Delete in Middle     | Slow: O(n) (shifting elements)        | O(n) (traversal) + O(1) (link change)     |
+| Memory Usage                | Lower: (contiguous, cache-friendly)   | Higher (extra `prev` & `next` pointers)   |
+| Cache Locality              | Excellent: (better performance)       | Poor                                      |
+| Implements                  | List, RandomAccess                    | List, Deque                               |
+| Best Use Case               | Frequent reads, indexing              | Frequent insert/remove at ends            |
+| Iterator Performance        | Good                                  | Good (also supports reverse traversal)    |
+
+
+
+
+
+1. Example: Basic Operations:
+-----------------------------
+
+
+
+LinkedListDemo.java:
+-------------------
+
+
+
+import java.util.LinkedList;
+import java.util.List;
+
+public class LinkedListDemo {
+    public static void main(String[] args) {
+
+        LinkedList<String> cities = new LinkedList<>();
+
+        // Add elements
+        cities.add("Delhi");           // at end
+        cities.addFirst("Mumbai");
+        cities.addLast("Chennai");
+        cities.add(1, "Kolkata");      // at index
+
+        System.out.println("Cities: " + cities);  // [Mumbai, Kolkata, Delhi, Chennai]
+
+        // Deque operations
+        cities.offerFirst("Hyderabad");
+        System.out.println("After offerFirst: " + cities);
+
+        // Remove
+        System.out.println("Removed first: " + cities.removeFirst());
+        System.out.println("Removed last: " + cities.removeLast());
+
+        // Get
+        System.out.println("First: " + cities.getFirst());
+        System.out.println("Last: " + cities.getLast());
+    }
+}
+
+
+
+
+2. Using as Queue(FIFO):
+
+LinkedList<String> queue = new LinkedList<>();
+
+queue.offer("Task1");
+queue.offer("Task2");
+queue.offer("Task3");
+
+while (!queue.isEmpty()) {
+    System.out.println("Processing: " + queue.poll());
+   //System.out.println("Processing: " + queue.pollFirst());
+
+}
+
+System.out.println(queue); //[]
+
+
+3. Using as Stack (LIFO):
+
+
+LinkedList<String> stack = new LinkedList<>();
+
+stack.push("Page1");
+stack.push("Page2");
+stack.push("Page3");
+
+while (!stack.isEmpty()) {
+    System.out.println("Popped: " + stack.pop());
+}
+
+System.out.println(stack);// []
+
+
+4. Iterating in Both Directions:
+
+LinkedList<String> list = new LinkedList<>(List.of("A", "B", "C", "D"));
+
+System.out.println("Forward:");
+for (String s : list) {
+	System.out.print(s + " ");
+}
+
+System.out.println("\nBackward using descendingIterator:");
+		
+Iterator<String> descItr = list.descendingIterator();
+
+while (descItr.hasNext()) {
+	System.out.print(descItr.next() + " ");
+}
+
+
+
+5. Type-Safe with Generics + Student Example:
+---------------------------------------------
+
+LinkedList<Student> students = new LinkedList<>();
+
+students.add(new Student(101, "Amit", 85));
+students.addFirst(new Student(102, "Priya", 92));
+
+// Iterate
+for (Student s : students) {
+    System.out.println(s);
+}
+
+
+
+6. Polymorphic References (Same as ArrayList):
+----------------------------------------------
+
+List<String> list = new LinkedList<>();     // Recommended
+Deque<String> deque = new LinkedList<>();   // When using as queue/stack
+
+
+7. Converting to Array
+-----------------------
+
+String[] arr = cities.toArray(new String[0]);   // Preferred way
+
+
+Important Notes:
+----------------
+
+1. LinkedList is not suitable for heavy random access (get(index) in a loop of 1 million elements is slow).
+
+2. It has higher memory overhead due to extra pointers per node.
+
+***3. In modern JVMs, ArrayList often outperforms LinkedList even in insertion-heavy scenarios due to better cache performance.
+
+4. For thread-safety: Use Collections.synchronizedList(new LinkedList<>())
+
+
+
+
+Performance Comparison: ArrayList vs LinkedList for Middle Insertion in Java:
+
+--The following program inserts 10,000 elements in the middle of both collections and compares execution time.
+
+
+Demo.java:
+----------
+
+package com.hdfc;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+		System.out.println("Performance Comparison: Insert 10,000 elements in the middle");
+
+		// Test with ArrayList
+		long startTime = System.currentTimeMillis();
+
+		List<Integer> arrayList = new ArrayList<>();
+
+		for (int i = 0; i < 10000; i++) {
+			// Insert in the middle every time
+			arrayList.add(arrayList.size() / 2, i);
+		}
+
+		long endTime = System.currentTimeMillis();
+		System.out.println("ArrayList Time: " + (endTime - startTime) + " ms");
+
+		// Test with LinkedList
+		startTime = System.currentTimeMillis();
+
+		List<Integer> linkedList = new LinkedList<>();
+
+		for (int i = 0; i < 10000; i++) {
+			// Insert in the middle every time
+			linkedList.add(linkedList.size() / 2, i);
+		}
+		endTime = System.currentTimeMillis();
+		System.out.println("LinkedList Time: " + (endTime - startTime) + " ms");
+	}
+}
+
+
+
+Expected Theory vs Practical Result for the above application:
+
+Theoretical Complexity:
+
+| Operation        | ArrayList | LinkedList |
+| ---------------- | --------- | ---------- |
+| Insert in middle | O(n)      | O(1)*      |
+
+
+*Only if the target node is already known.
+
+--So many students expect LinkedList to be faster.
+
+
+Why LinkedList Is Often Slower in Practice
+
+1. Hidden Traversal Cost
+
+When you write: linkedList.add(index, value);
+
+--Java must first locate the node at that index.
+
+Traversal cost: O(n)
+Then insertion: O(1)
+
+Total: O(n)
+
+
+
+2. Poor Cache Performance
+
+--LinkedList stores nodes in different memory locations.
+
+--CPU must jump from one memory location to another.
+
+This causes:
+
+--Cache misses
+--Pointer chasing
+--Slower execution
+
+
+
+Why ArrayList Is Often Faster than LinkedList: 
+
+
+1. Contiguous Memory Storage
+
+--Elements are stored next to each other.
+--Better CPU cache usage.
+
+
+2. Fast Internal Shifting
+
+--During insertion, Java shifts elements using optimized native operations like:
+
+System.arraycopy(...)
+
+--This is highly efficient.
+
+
+Important Conclusion:
+
+--Big-O complexity does not tell the full story.
+
+--Real performance also depends on:
+
+CPU cache locality
+Memory layout
+Native optimizations
+Object allocation overhead
+
+
+
+When LinkedList Can Still Be Better ?
+
+--Use LinkedList when:
+
+Frequent addFirst() / removeFirst()
+Frequent addLast() / removeLast()
+Queue / Deque behavior
+Insertion/deletion when node position is already known (using iterator)
+
+
+
+
+Performance Comparison: ArrayList vs LinkedList for Middle Insertion/Deletion using Iterator.
+
+--In this case, since we are using Iterator, The LinkedList will now work faster than ArrayList.
+
+
+Demo.java:
+----------
+
+
+package com.hdfc;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+		System.out.println("Performance Comparison: Deletion/Insertion from middle using Iterator ");
+
+		List<Integer> arrayList = new ArrayList<>();
+		List<Integer> linkedList = new LinkedList<>();
+
+		for (int i = 0; i < 10000; i++) {
+			arrayList.add(i);
+			linkedList.add(i);
+		}
+
+		// Test with ArrayList
+		long startTime = System.currentTimeMillis();
+
+		Iterator<Integer> itr1 = arrayList.iterator();
+
+		while (itr1.hasNext()) {
+			if (itr1.next() == 500)
+				itr1.remove();
+		}
+
+		System.out.println("ArrayList Size: " + arrayList.size());
+
+		long endTime = System.currentTimeMillis();
+		System.out.println("ArrayList Time: " + (endTime - startTime) + " ms");
+
+		// Test with LinkedList
+		startTime = System.currentTimeMillis();
+
+		Iterator<Integer> itr2 = linkedList.iterator();
+
+		while (itr2.hasNext()) {
+			if (itr2.next() == 500)
+				itr2.remove();
+		}
+
+		System.out.println("LinkedList Size: " + linkedList.size());
+
+		endTime = System.currentTimeMillis();
+
+		System.out.println("LinkedList Time: " + (endTime - startTime) + " ms");
+	}
+}
+
+
+
+
+
+
+Note: LinkedList is important conceptually and for niche workloads, but in modern Java, ArrayList and ArrayDeque are preferred for most practical workloads.
+
+
+
+
+
+Student Task:
+-------------
+
+Task 1: Train Reservation Queue System (Using LinkedList)
+
+Create a Train Reservation System where:
+
+--Passengers are added to the queue
+--First passenger gets served first (FIFO)
+
+You can:
+--Add passengers
+--Remove passengers (boarding)
+--View current passenger
+--Display all passengers
+
+
+
+Requirements
+
+Use:
+
+LinkedList<String>
+
+
+Must use methods:
+
+offer()
+poll()
+peek()
+isEmpty()
+
+
+Menu:
+
+	    System.out.println("\n===== MENU =====");
+            System.out.println("1. Add Passenger");
+            System.out.println("2. View Next Passenger");
+            System.out.println("3. Board Next Passenger");
+            System.out.println("4. Display All Passengers");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+
+
+
+
+
+Solution:
+---------
+
+TrainReservation.java:
+-----------------------
+
+
+package com.hdfc;
+
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Scanner;
+
+public class TrainReservation {
+
+    public static void main(String[] args) {
+
+        Queue<String> passengerQueue = new LinkedList<>();  // Best practice: Use Queue interface
+       
+	 Scanner sc = new Scanner(System.in);
+
+        System.out.println("=== Train Reservation Queue System (FIFO) ===\n");
+
+        while (true) {
+            System.out.println("\n===== MENU =====");
+            System.out.println("1. Add Passenger");
+            System.out.println("2. View Next Passenger");
+            System.out.println("3. Board Next Passenger");
+            System.out.println("4. Display All Passengers");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+
+            int choice = sc.nextInt();
+           
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter passenger name: ");
+                    String name = sc.next();
+                    passengerQueue.offer(name);        // Add at the end
+                    System.out.println(name + " added to the queue successfully!");
+                    break;
+
+                case 2:
+                    if (passengerQueue.isEmpty()) {
+                        System.out.println("No passengers in queue!");
+                    } else {
+                        System.out.println("Next passenger to board: " + passengerQueue.peek());
+                    }
+                    break;
+
+                case 3:
+                    if (passengerQueue.isEmpty()) {
+                        System.out.println("No passengers waiting to board!");
+                    } else {
+                        String boarded = passengerQueue.poll();   // Remove from front
+                        System.out.println("Boarding: " + boarded);
+                    }
+                    break;
+
+                case 4:
+                    if (passengerQueue.isEmpty()) {
+                        System.out.println("Queue is empty.");
+                    } else {
+                        System.out.println("Current Passenger Queue: " + passengerQueue);
+                    }
+                    break;
+
+                case 5:
+                    System.out.println("Thank you! Train reservation system closed.");
+                    sc.close();
+                    return;
+
+                default:
+                    System.out.println("Invalid choice! Please try again.");
+            }
+        }
+    }
+}
+
+
+
+
+Task 2: Browser History System (Using LinkedList as Stack)
+
+
+Create a Browser History System:
+
+--User visits pages
+--Last visited page is removed first (LIFO)
+
+You can:
+
+--Visit a page
+--Go back
+--View current page
+--Display history
+
+
+Menu:
+
+	    System.out.println("\n===== MENU =====");
+            System.out.println("1. Visit New Page");
+            System.out.println("2. View Current Page");
+            System.out.println("3. Go Back (Pop)");
+            System.out.println("4. Display Full History");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+
+
+
+
+Solution:
+---------
+
+
+package com.hdfc;
+
+import java.util.LinkedList;
+import java.util.Scanner;
+
+public class BrowserHistory {
+
+    public static void main(String[] args) {
+
+        LinkedList<String> historyStack = new LinkedList<>();  // Using as Stack
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("=== Browser History System (LIFO - Stack) ===\n");
+
+        while (true) {
+            System.out.println("\n===== MENU =====");
+            System.out.println("1. Visit New Page");
+            System.out.println("2. View Current Page");
+            System.out.println("3. Go Back (Pop)");
+            System.out.println("4. Display Full History");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+
+            int choice = sc.nextInt();
+            sc.nextLine(); // consume newline
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter webpage URL: ");
+                    String url = sc.nextLine();
+                    historyStack.push(url);           // Add at top (LIFO)
+                    System.out.println("Visited: " + url);
+                    break;
+
+                case 2:
+                    if (historyStack.isEmpty()) {
+                        System.out.println("No pages visited yet!");
+                    } else {
+                        System.out.println("Current Page: " + historyStack.peek());
+                    }
+                    break;
+
+                case 3:
+                    if (historyStack.isEmpty()) {
+                        System.out.println("No more history to go back!");
+                    } else {
+                        String previous = historyStack.pop();   // Remove from top
+                        System.out.println("Going back from: " + previous);
+                    }
+                    break;
+
+                case 4:
+                    if (historyStack.isEmpty()) {
+                        System.out.println("History is empty.");
+                    } else {
+                        System.out.println("Browser History (Most recent first): " + historyStack);
+                    }
+                    break;
+
+                case 5:
+                    System.out.println("Exiting Browser History System...");
+                    sc.close();
+                    return;
+
+                default:
+                    System.out.println("Invalid choice! Please try again.");
+            }
+        }
+    }
+}
+
+
+
+
+
+Task 3: Undo & Redo System (Using LinkedList)
+---------------------------------------------
+
+Design a simple Undo/Redo system (like in a text editor):
+
+The system should allow:
+
+--Perform an action (e.g., typing text, drawing)
+--Undo the last action
+--Redo the last undone action
+--Display current state
+--Display internal stacks (for understanding)
+
+
+
+Requirements
+
+Use: LinkedList<String>
+
+
+Maintain two stacks:
+
+1. done: Stores performed actions
+
+2. undone: Stores undone actions
+
+
+Menu:
+
+	    System.out.println("\n===== MENU =====");
+            System.out.println("1. Do Action (Type something)");
+            System.out.println("2. Undo");
+            System.out.println("3. Redo");
+            System.out.println("4. Show Current State");
+            System.out.println("5. Show Both Stacks (Debug)");
+            System.out.println("6. Exit");
+            System.out.print("Enter choice: ");
+
+
+
+
+
+
+Solution:
+----------
+
+
+package com.hdfc;
+
+import java.util.LinkedList;
+import java.util.Scanner;
+
+public class UndoRedoSystem {
+
+    private LinkedList<String> done = new LinkedList<>();     // Main history (current state)
+    private LinkedList<String> undone = new LinkedList<>();   // Stores actions that were undone
+
+    // Perform an action (like typing text, drawing, etc.)
+    public void doAction(String action) {
+        done.push(action);        // Add to done stack (most recent on top)
+        undone.clear();           // Clear redo stack because new action breaks redo chain
+        System.out.println("Performed: " + action);
+    }
+
+    // Undo the last action
+    public void undo() {
+        if (done.isEmpty()) {
+            System.out.println("Nothing to undo!");
+            return;
+        }
+        String lastAction = done.pop();     // Remove from done
+        undone.push(lastAction);            // Move to undone stack
+        System.out.println("Undone: " + lastAction);
+    }
+
+    // Redo the last undone action
+    public void redo() {
+        if (undone.isEmpty()) {
+            System.out.println("Nothing to redo!");
+            return;
+        }
+        String actionToRedo = undone.pop(); // Remove from undone
+        done.push(actionToRedo);            // Move back to done
+        System.out.println("Redone: " + actionToRedo);
+    }
+
+    // Show current state (all done actions)
+    public void showCurrentState() {
+        if (done.isEmpty()) {
+            System.out.println("No actions performed yet.");
+            return;
+        }
+        System.out.println("Current State (Most recent first): " + done);
+    }
+
+    // Show undo and redo stacks for debugging
+    public void showStacks() {
+        System.out.println("Done (History)   : " + done);
+        System.out.println("Undone (Redoable): " + undone);
+    }
+
+    public static void main(String[] args) {
+        UndoRedoSystem system = new UndoRedoSystem();
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("=== Simple Undo/Redo System ===\n");
+
+        while (true) {
+            System.out.println("\n===== MENU =====");
+            System.out.println("1. Do Action (Type something)");
+            System.out.println("2. Undo");
+            System.out.println("3. Redo");
+            System.out.println("4. Show Current State");
+            System.out.println("5. Show Both Stacks (Debug)");
+            System.out.println("6. Exit");
+            System.out.print("Enter choice: ");
+
+            int choice = sc.nextInt();
+            sc.nextLine(); // consume newline
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter action (e.g., 'Typed Hello', 'Drew circle'): ");
+                    String action = sc.nextLine();
+                    system.doAction(action);
+                    break;
+
+                case 2:
+                    system.undo();
+                    break;
+
+                case 3:
+                    system.redo();
+                    break;
+
+                case 4:
+                    system.showCurrentState();
+                    break;
+
+                case 5:
+                    system.showStacks();
+                    break;
+
+                case 6:
+                    System.out.println("Exiting Undo/Redo System...");
+                    sc.close();
+                    return;
+
+                default:
+                    System.out.println("Invalid choice! Please try again.");
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+Vector Class in Java
+====================
+
+--Vector is another implementation of List interface.
+
+--It is a legacy class in the Java Collections Framework. It was introduced in Java 1.0 (before the Collection Framework was added in Java 1.2).
+
+--It is a dynamic array implementation (like ArrayList).
+
+--Vector class is thread-safe, most of the methods of the Vector class is synchronized.
+
+
+
+
+Note: Even though Vector is still available, ArrayList is preferred in modern Java applications unless thread-safety or any backward compatibility ixuired.
+
+
+Constructors:
+-------------
+
+
+Vector<String> v1 = new Vector<>();                    // Default: Initial capacity 10, grows by 100%
+Vector<String> v2 = new Vector<>(int initialCapacity); // Specify initial capacity
+Vector<String> v3 = new Vector<>(int initialCapacity, int capacityIncrement); // Custom growth
+Vector<String> v4 = new Vector<>(Collection c);        // Copy from another collection
+
+
+
+
+Key Characteristics of Vector:
+------------------------------
+
+1. Dynamic Size: Can grow automatically.
+
+2. Thread-Safe: Most of the methods are synchronized (slow but safe in multi-threaded environment).
+
+3. Allows Duplicates and null values.
+
+4. Maintains Insertion Order.
+
+5. Legacy Class: Old methods like addElement(), elementAt(), removeElement() are still supported.
+
+6. Implements RandomAccess marker interface (fast random access like ArrayList).
+
+7. Fail-fast iterator behavior.
+
+
+
+Note: Vector class is similar to ArrayList class with the following differences:
+
+1. Thread Safety:
+   - Vector is synchronized (thread-safe)
+   - ArrayList is not synchronized
+
+	
+2. Capacity & Growth:
+   - Vector default capacity = 10, grows by 100% (doubles)
+   - ArrayList grows dynamically (~1.5x); initial capacity 10.
+
+3. Legacy vs Modern:
+   - Vector is a legacy class (Java 1.0)
+   - ArrayList is part of Collections Framework (Java 1.2) and is preferred 
+
+
+
+If thread safety is needed with ArrayList: (Better than using Vector in modern Java)
+
+	List<Integer> list = Collections.synchronizedList(new ArrayList<>());
+
+
+
+Polymorphic References:
+-----------------------
+
+List<String> list = new Vector<>();  // Recommended (Best Practice)
+Vector<String> v = new Vector<>();  // When you need Vector-specific methods
+
+
+
+Example 1:
+
+
+Demo.java:
+-----------
+
+
+package com.hdfc;
+
+import java.util.Vector;
+
+public class Demo {
+    public static void main(String[] args) {
+
+        Vector<String> v = new Vector<>();
+
+        v.add("Delhi");
+        v.addElement("Mumbai"); // Legacy method
+        v.add(1, "Kolkata");
+
+        System.out.println("Vector: " + v);
+        System.out.println("Size: " + v.size());
+        System.out.println("Capacity: " + v.capacity());
+
+        v.trimToSize();
+        System.out.println("Capacity after trimToSize(): " + v.capacity());
+    }
+}
+
+
+
+
+Example2: 2. Using with Initial Capacity and Increment
+
+
+		Vector<Integer> numbers = new Vector<>(5, 3); // Initial 5, grows by 3 each time
+
+		for (int i = 1; i <= 10; i++) {
+			numbers.add(i);
+			System.out.println("Capacity: " + numbers.capacity());
+		}
+
+		System.out.println("Elements: " + numbers);
+
+
+
+
+
+Stack Class in Java:
+====================
+
+
+Stack is also a legacy class in Java that represents a Last-In-First-Out (LIFO) data structure.
+
+--It was introduced in Java 1.0.
+
+--It extends Vector class and inherits all its properties.
+
+--It is synchronized (thread-safe) by default.
+
+--It is mainly used to implement Stack operations like push, pop, peek, etc.
+
+
+
+Note: Stack is considered a legacy class. In modern Java, it is recommended to use Deque (especially ArrayDeque or LinkedList) instead of Stack for better performance and flexibility.
+
+
+
+Internal Structure:
+
+--Since Stack extends Vector, it internally uses a dynamic array.
+
+--Elements are added and removed from the top of the stack.
+
+--The top of the stack is the last element of the underlying List
+
+
+
+Key Characteristics of Stack:
+
+1. LIFO (Last-In-First-Out) behavior.
+
+2. Dynamic Size: grows automatically (inherits from Vector).
+
+3. Thread-Safe: All methods are synchronized (slow in single-threaded apps).
+
+4. Allows Duplicates and null values.
+
+5. Maintains Insertion Order.
+
+6. Legacy Class: Old methods like push(), pop(), peek() are provided.
+
+7. Implements List (through Vector) and supports index-based access (though not recommended for Stack usage).
+
+8. Fail-fast iterator behavior.
+
+
+
+Constructors:
+------------
+
+Stack<String> stack1 = new Stack<>(); // Default (capacity 10) also grow with 100%
+
+Note: You cannot directly set initial capacity or capacity increment in Stack constructor because it calls super() of Vector with default values.
+
+
+
+1. Methods Inherited from Collection, List, Vector
+
+2. Core Stack Operations (LIFO)
+
+E push(E e): Adds element on top of the stack.
+
+E pop()throws EmptyStackException : Removes and returns the top element
+
+E peek():throws EmptyStackException :Returns the top element without removing
+
+boolean empty()Checks if stack is empty (legacy method)
+
+int search(Object o): Returns 1-based position from top (or -1)
+
+
+
+Warning: Using index-based methods (get(), add(index)) on Stack breaks the Stack principle and is not recommended.
+
+
+Example 1:
+
+StackDemo.java:
+---------------
+
+
+package com.hdfc;
+
+import java.util.Stack;
+
+public class StackDemo {
+    public static void main(String[] args) {
+
+        Stack<String> stack = new Stack<>();
+
+        stack.push("Page1 - Home");
+        stack.push("Page2 - Profile");
+        stack.push("Page3 - Settings");
+
+        System.out.println("Stack: " + stack);
+        System.out.println("Top element (peek): " + stack.peek());
+
+        System.out.println("Popped: " + stack.pop());
+        System.out.println("Popped: " + stack.pop());
+
+        System.out.println("Current Stack: " + stack);
+        System.out.println("Is empty? " + stack.empty());
+    }
+}
+
+
+
+
+Example 2: Search Operation (1-based position from top)
+
+
+Stack<Integer> s = new Stack<>();
+
+s.push(10);
+s.push(20);
+s.push(30);
+s.push(40);
+
+System.out.println("Position of 20 from top: " + s.search(20));  // Returns 3
+System.out.println("Position of 50: " + s.search(50));           // Returns -1 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
