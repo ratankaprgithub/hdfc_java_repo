@@ -842,6 +842,157 @@ hash = 0
 bucket 0
 
 
+
+
+
+Benchmark Lookup vs Iteration:
+==============================
+
+
+What is Benchmarking?
+
+--Benchmarking is the process of measuring the execution time or performance of different operations to compare their efficiency.
+
+In Java, performance is commonly measured using:
+
+System.nanoTime()
+
+--This method returns the current time in nanoseconds, making it suitable for measuring short execution durations.
+
+
+Lookup:
+-------
+
+--A lookup operation checks whether an element exists in a collection.
+
+Example:
+
+list.contains(100);
+set.contains(100);
+
+Time Complexity:
+-----------------
+
+| Collection | Lookup Complexity |
+| ---------- | ----------------- |
+| ArrayList  | O(n)              |
+| LinkedList | O(n)              |
+| HashSet    | O(1) Average      |
+| TreeSet    | O(log n)          |
+
+
+
+--HashSet is significantly faster for search operations because it uses a hash table internally.
+
+
+Iteration:
+----------
+
+--Iteration means visiting every element in a collection.
+
+Example:
+
+for(Integer value : list){
+    System.out.println(value);
+}
+
+--Both ArrayList and HashSet require visiting each element once.
+
+
+Time Complexity:
+----------------
+
+| Collection | Iteration Complexity |
+| ---------- | -------------------- |
+| ArrayList  | O(n)                 |
+| HashSet    | O(n)                 |
+
+
+--Although both are O(n), ArrayList often has better cache locality and can be slightly faster in practice.
+
+
+
+Example Micro Benchmark: Iteration
+-----------------------
+
+For List:
+--------
+
+long start = System.nanoTime();
+
+for(Integer i : list){
+
+}
+
+long end = System.nanoTime();
+
+System.out.println(end-start);
+
+
+For Set:
+--------
+
+long start = System.nanoTime();
+
+for(Integer i : set){
+
+}
+
+long end = System.nanoTime();
+
+System.out.println(end-start);
+
+
+Expected Output:
+----------------
+
+List
+
+420000 ns
+
+Set
+
+470000 ns
+
+
+--The difference is very low.
+
+
+
+
+
+Example Micro Benchmark: Lookup
+-----------------------
+
+List<Integer> list = new ArrayList<>();
+Set<Integer> set = new HashSet<>();
+
+for (int i = 0; i < 1_000_000; i++) {
+    list.add(i);
+    set.add(i);
+}
+
+long start = System.nanoTime();
+list.contains(999999);
+long end = System.nanoTime();
+
+System.out.println("ArrayList Lookup: " + (end - start));
+
+start = System.nanoTime();
+set.contains(999999);
+end = System.nanoTime();
+
+System.out.println("HashSet Lookup: " + (end - start));
+
+
+Expected Result:
+----------------
+
+
+ArrayList Lookup : Much slower
+HashSet Lookup   : Much faster
+
+
 Student Task:
 ==============
 

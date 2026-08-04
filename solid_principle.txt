@@ -1,0 +1,1740 @@
+SOLID priciples:
+================
+
+Introduction to SOLID Principles:
+--------------------------------
+
+What is SOLID?
+
+--SOLID is a set of five Object-Oriented Design Principles that help developers design software that is:
+
+Maintainable
+Flexible
+Scalable
+Easy to understand
+Easy to test
+
+--The principles were popularized by Robert C. Martin (Uncle Bob) and aim to reduce tight coupling while improving software quality.
+
+
+Full Form of SOLID:
+------------------
+
+S: Single Responsibility Principle (SRP)
+O: Open-Closed Principle (OCP)
+L: Liskov Substitution Principle (LSP)
+I: Interface Segregation Principle (ISP)
+D: Dependency Inversion Principle (DIP)
+
+
+Why Do We Need SOLID?
+
+--As software grows, requirements frequently change. Without proper design, even small modifications can introduce bugs and make the application difficult to maintain.
+
+SOLID principles help developers write software that is:
+
+--Easier to extend without breaking existing code.
+--Easier to maintain over time.
+--Easier to unit test.
+--More reusable and modular.
+--Better suited for team development.
+
+
+Real-World Example:
+-------------------
+
+--Consider an OrderService class that performs all of the following:
+
+Validate an order
+Calculate tax
+Calculate discounts
+Save the order
+Generate an invoice
+Send notifications
+Update inventory
+
+--Although this design may work initially, it becomes difficult to maintain as new features are added. 
+
+--If we do any small changes/modification in one logic then there may be a change of other logic will fail, furthurmore we need to retest the entire functionality again and again.
+
+In Software engineering there is a famous line:
+
+"Bad code may work today, but good design keeps it working tomorrow."
+
+
+
+--SOLID encourages separating these responsibilities into focused classes with clear responsibilities.
+
+
+Goal of Software Engineers:
+---------------------------
+
+--As a software engineer, we don't write the code to just run the application, We write the code which will:
+
+Easy to understand
+Easy to modify
+Easy to test
+Easy to extend
+Easy to maintain.
+
+
+
+Simple analogy:
+--------------
+
+Imagine there is a restaurant, and in that restaurant only one employee is working, and he do all the work himself like:
+
+
+Cooking
+Billing
+Cleaning
+Serving
+Online Order
+Inventory
+Marketing
+
+
+--Will this restaurant run efficiently ?
+
+Absolutly NO
+
+--Beacause one person can't perform many operations in long run.
+
+--Each person should have their own responsibility.
+
+--Same rule should be applicable for the softwares also.
+
+--If one class have various tasks(responsibility) then the application will fail at some time.
+
+
+
+Main objective of SOLID principle:
+-----------------------------------
+
+--Software should be developed to adopt/handle the future changes easily. because client requirements are dynamic and changes over the time.
+
+
+
+SOLID Doesn't Mean, more classes
+it means
+Better Responsibilities.
+
+
+
+Benefits of SOLID:
+------------------
+
+Improves maintainability
+Reduces code duplication
+Encourages loose coupling
+Simplifies testing
+Makes code easier to understand
+Supports future enhancements with minimal impact
+Improves collaboration in large development teams
+
+
+
+Note: SOLID is not about writing more classes; it is about assigning the right responsibilities to the right classes.
+
+--Software designed using SOLID principles is generally easier to understand, extend, test, and maintain throughout its lifecycle.
+
+
+
+
+Simple Memory Trick for SOLID Principles:
+=========================================
+
+
+--Imagine a well-managed company where every employee has a clearly defined role:
+
+S: Single Responsibility Principle: Every employee belongs to one department and has one primary responsibility.
+
+O:  Open-Closed Principle: When new work arises, hire a new employee or assign a new role instead of constantly changing the responsibilities of existing employees.
+
+L: Liskov Substitution Principle: If the Manager is replaced by the Assistant Manager, the team should continue working smoothly without any disruption.
+
+I: Interface Segregation Principle: Every employee should be provided only with the tools and responsibilities required for their specific job, not unnecessary ones.
+
+D: Dependency Inversion Principle: Employees should depend on a role (designation or responsibility) rather than on a specific individual. For example, if someone needs approval, they should request it from the Manager role, regardless of who is currently filling that position.
+
+
+Similarly, a well-designed software system is organized by assigning clear responsibilities, minimizing unnecessary dependencies, and making it easy to extend, maintain, and replace components without affecting the rest of the system.
+
+Memory Tip:
+
+--Think of SOLID as the rules for running a well-managed company. If a company follows these rules, it becomes organized, scalable, and easy to manage. Likewise, software that follows SOLID principles becomes maintainable, flexible, and easy to extend.
+
+
+SOLID Principle 1
+Single Responsibility Principle (SRP):
+--------------------------------------
+
+Suppose in our house there is a person named: "Ravi"
+
+--He is doing:
+
+Cook
+Clean House
+Drive Kids to School
+Pay Electricity Bill
+Repair Washing Machine
+Teach Tuition
+Go to Office
+Buy Grocery
+Handle Bank Work
+
+
+Question: Is the Ravi life easy ?
+
+Obviously NO.
+
+One day Ravi get sick, then all the task will stops.
+
+--Now lets understand the similar problem with softwre:
+
+
+--Suppose we have a class called EmployeeManage:
+
+public class EmployeeManager {
+
+    public void saveEmployee(){}
+
+    public void sendEmail(){}
+
+    public void generateSalary(){}
+
+    public void printReport(){}
+
+    public void connectDatabase(){}
+
+    public void backupDatabase(){}
+
+}
+
+
+Question: What is the purpose of this class ?
+
+--to manage Employee ?
+--to manage Email ?
+--to manage database ?
+--to manage Salary ?
+--to manage reports ?
+
+Answer: Everything, this is the problem.
+
+--It will not be a just single class, instead it is like a mini softwre..
+
+Now, if we want to perform any changes in any one task, we need to recompile the entire class, we need to retest the entire logics again and again..
+
+--There might be too much chances of getting bugs.
+
+
+--SRP is used to to solve this kind of problem only.
+
+
+The Single Responsibility Principle (SRP) states:
+
+--One class should have one and only one responsibility.
+
+more acuratly,
+
+--A class should have only one reason to change.
+
+--A class should have one and only one responsibility, or one reason to change.
+
+--A responsibility represents a specific area of functionality. If a class handles multiple unrelated responsibilities, it becomes difficult to maintain and more prone to bugs when requirements change.
+
+
+
+--As we know s/w application requirments changes frequently,and if a class has more responsibilities,then more often we need to change it in the future,this might cause more bugs in other classes which depends upon this class.
+
+--software components, microservices, packages that have only one responsibility that are much easier to explain, understand and implement than the ones that provide a solution for everything.
+
+--however we should not oversimplyfy our code by creating our class with just one function as single responsibilty,it leads to have many dependencies to achive a perticular task.and that will makes our code more confusing and complicated,so single responsibility means,related task(functions) which all toghter have a single responsibilty.
+
+
+
+
+
+Incorrect Design (Violates SRP):
+--------------------------------
+
+public class EmployeeManager {
+
+    public void saveEmployee() {}
+
+    public void sendEmail() {}
+
+    public void generateSalary() {}
+
+    public void printReport() {}
+}
+
+
+
+Problems:
+
+--Multiple unrelated responsibilities.
+--Changes in one feature may affect others.
+--Difficult to test and maintain.
+--Higher risk of introducing bugs.
+
+
+Correct Design (Follows SRP):
+-----------------------------
+
+public class EmployeeService {
+
+    public void saveEmployee() {}
+}
+
+public class EmailService {
+
+    public void sendEmail() {}
+}
+
+public class SalaryService {
+
+    public void generateSalary() {}
+}
+
+
+--Each class has a single, well-defined responsibility.
+
+
+Note: One Responsibility Does Not Mean One Method
+
+--A class can contain multiple methods as long as they all contribute to the same responsibility.
+
+
+
+Example:
+
+public class StudentService {
+
+    public void addStudent() {}
+
+    public void updateStudent() {}
+
+    public void deleteStudent() {}
+
+    public void findStudent() {}
+}
+
+
+--All methods are related to student management, so this class follows SRP.
+
+
+
+
+Another example:
+
+
+
+classs Test{
+
+1.connect with Database
+
+2.read some record from table
+
+3.download some file
+
+4.save employee record in the database
+
+}
+
+
+--The above class does not fit in the category of SRP,bocoz the above class has the multiple responsibilites.
+
+
+Database management
+File download
+Employee save
+
+
+--we can simplfy the above task by seperating these functionalty into different classes.
+
+like: 
+
+--DBUtil class to connect with the DBServer
+
+--DAO class which read the record and save the record in the DB.
+
+--Other utility class which is responsible to download some files.
+
+
+Advantages of SRP:
+------------------
+
+Easier to understand.
+Easier to maintain.
+Reduces the chances of bugs.
+Simplifies testing.
+Improves code reusability.
+Makes future modifications easier.
+
+
+Real-World Example:
+-------------------
+
+--An e-commerce application should not place order validation, invoice generation, notification sending, and tax calculation in a single class.
+
+Instead, these responsibilities should be divided into separate classes such as:
+
+OrderValidator
+TaxCalculator
+InvoiceService
+NotificationService
+OrderRepository
+
+--Each class performs one well-defined responsibility.
+
+
+--A class should focus on doing one job well. If a class has multiple unrelated responsibilities, it should be divided into smaller, focused classes.
+
+
+
+
+SOLID Principle 2:
+Open-Closed Principle (OCP):
+----------------------------
+
+
+Suppose, you have a smart tv, in which some apps are preinstalled, like:
+
+YouTube
+Netflix
+Prime Video
+
+--Now you want to install HotStar:
+
+--should we buy the another tv ?
+--should we need to configure some preinstalled apps ?
+
+--We just need to install another app, without doing any changes in existing apps.
+
+--This is the OCP.
+
+
+The Open-Closed Principle (OCP) states:
+
+Software entities (classes, modules, functions, etc.) should be open for extension but closed for modification.
+
+--This means that new functionality should be added by extending existing code rather than modifying code that has already been tested and is working correctly.
+
+
+
+Problem Without OCP:
+---------------------
+
+Consider the following design:
+
+
+public class Rectangle {
+
+    double length;
+    double width;
+}
+
+
+public class AreaCalculator {
+
+    public double calculateRectangleArea(Rectangle rectangle) {
+        return rectangle.length * rectangle.width;
+    }
+
+}
+
+
+Now client says this AreaCalculator class should calculate the Circle Area also.
+
+
+then developer create a Circle class:
+
+public class Circle {
+
+    double radius;
+}
+
+--and modify the AreaCalculator class also to calculate the circle area
+
+
+public class AreaCalculator {
+
+    public double calculateRectangleArea(Rectangle rectangle) {
+        return rectangle.length * rectangle.width;
+    }
+
+    public double calculateCircleArea(Circle circle) {
+        return Math.PI * circle.radius * circle.radius;
+    }
+}
+
+
+--Again after some time Client requirement it to support triangle area also, then after some time, Pentagon area also...
+
+--As a developer for each requirements we need to keep on changing the AreaCalculator class by adding some new functionalities.
+
+Here the Problem is:
+
+--after each modification we need to perform:
+
+Recompilation
+Testing
+Regression Testing
+
+--again and again for the AreaCalculator class, which may be the chances of bugs also.
+
+
+--Whenever a new shape is introduced (such as Triangle or Pentagon), the AreaCalculator class must be modified.
+
+Problems:
+
+--Existing code changes frequently.
+--Risk of introducing bugs.
+--Increased testing effort.
+--Difficult to maintain as the application grows.
+
+OCP solve this problem, it state that: Add new functionality by adding new code, not by changing old working code.
+
+
+--Generally we implement this principle by either using inheritance or by using an interface concept.
+
+--A class is closed, since it may be compiled, stored in a library, and used by client classes. 
+
+--But it is also open, since any new class may use it as parent, adding new features. When a descendant class is defined, there is no need to change the original or to disturb its clients.
+
+--we prefer interface over superclasses to allow different implementations, which we can easily substitute without changing the code that uses them. 
+
+--The interfaces are closed for modifications, and we can provide new implementations to extend the functionality of our software.
+
+--with the interface we achive loose coupling also.
+
+
+
+
+Improved Design Using OCP:
+--------------------------
+
+--Create an abstraction:
+
+public interface Shape {
+
+    double calculateArea();
+}
+
+
+Rectangle implementation:
+
+public class Rectangle implements Shape {
+
+    double length;
+    double width;
+
+    @Override
+    public double calculateArea() {
+        return length * width;
+    }
+}
+
+Circle implementation:
+
+public class Circle implements Shape {
+
+    double radius;
+
+    @Override
+    public double calculateArea() {
+        return Math.PI * radius * radius;
+    }
+}
+
+
+Area calculator:
+
+public class AreaCalculator {
+
+    public double calculateArea(Shape shape) {
+        return shape.calculateArea();
+    }
+}
+
+--Now, adding a new shape only requires creating another implementation of Shape. The existing AreaCalculator remains unchanged.
+
+
+
+Real-World Example:
+-------------------
+
+--A payment system initially supports only credit card payments. Later, support for UPI, wallets, and net banking is added.
+
+
+--Instead of modifying the existing PaymentService class every time, create separate classes for each payment type while keeping the existing processing code unchanged.
+
+
+
+Advantages of OCP:
+------------------
+
+Easier to add new features.
+Existing code remains stable.
+Reduces the possibility of introducing bugs.
+Improves maintainability.
+Simplifies testing.
+Makes the system more scalable.
+
+
+
+Note: New functionality should be added by extending the system, not by repeatedly modifying existing, tested code.
+
+--This approach keeps software flexible, maintainable, and easier to evolve as requirements change.
+
+
+
+
+
+SOLID Principle 3:
+Liskov Substitution Principle:
+-------------------------------
+
+--This Principle is introduced by Barbara Liskov.
+
+--The meaning of substitution is, to replace someone.
+
+
+According to this princliple: A child class should be able to replace its parent class without breaking the program.
+
+--If class B is a subtype of class A, then wherever class A is expected, class B should work correctly without changing the program's behavior.
+
+
+Example:
+
+In your office, the Manager went for a leave, now in place of him/her, the AssistentManager came.
+
+--In that case, the work for the company should not stops, like:
+
+Meetings
+Approvals
+etc..
+
+
+means, AssistentManager can sucessfully replace the Manger.
+
+--This is the LSP.
+
+
+--The LSP principle is the extension of Open/Closed Principle by focusing on the behaviour of a superclass and its subtypes.
+
+--This principle says that, we should not use inheritance unnecessory just for reuse some codes.
+
+--We should use the inheritence only Subtypes must be substitutable for their base types. i.e superclass is replacable by a subclass in all the instances.
+
+--By which the objects of our subclasses should behave in the same way as the objects of our superclass.
+
+--Inheritance should be used only when the subclass can completely satisfy the behavior expected from the superclass.
+
+
+
+
+--As this principle is extended form of Open and closed principle(OCP), Lets see one example:
+
+
+Suppose in a bank, there are 2 types of accounts are there:
+
+1. SavingAccount
+2. CurrentAccount
+
+
+
+public class SavingAccount{
+
+
+	public void depositAmmount(int amount){
+		--
+	}
+
+	public int withdrawAmount(int amount){
+
+		--
+	}
+
+}
+
+
+public class CurrentAccount{
+
+
+	public void depositAmmount(int amount){
+		--
+	}
+
+	public int withdrawAmount(int amount){
+		--
+	}
+
+}
+
+--Now, BankingService class serves the withdraw functionality to its users from the both type of accounts:
+
+
+public class BankingService {
+
+
+    public void withdrawFromSavingAccount(int amount) {
+	SavingAccount saccouunt= new SavingAccounnt();
+	saccount.withdraw(amount);
+	
+    }
+
+   
+    public void withdrawFromCurrentAccount(int amount) {
+	CurrentAccount caccouunt= new CurrentAccounnt();
+	saccount.withdraw(amount);
+	
+    }
+
+}
+
+
+
+--By this above approach, we are breaking the OCP principle, because suppose if another type of account is introduced then our BankingService class need to be modified.
+
+--To solve this problem we refacter the above code by follwoing OCP principle as follows:
+
+Step1: We create an interface called Account:
+
+
+public interface Account{
+
+	public void deposit(int amount);
+
+	public int withdraw(int amount);
+
+}
+
+
+Step2: We will design both SavingAccount and CurrentAccount classes by implementing the Account interface.
+
+
+public class SavingAccount implements Account{
+
+
+	@Override
+	public void depositAmmount(int amount){
+		--
+	}
+
+	@Override
+	public int withdrawAmount(int amount){
+		--
+	}
+
+}
+
+
+public class CurrentAccount implements Account{
+
+
+	@Override
+	public void depositAmmount(int amount){
+		--
+	}
+
+	@Override
+	public int withdrawAmount(int amount){
+		--
+	}
+
+}
+
+
+
+Step3: We refactor the BankingService class by taking the Account type of dependency:
+
+
+public class BankingService {
+
+	private Account account;
+
+	public BankingService(Account account){
+		this.account= account;
+	}
+	
+
+       public void withdrawFromAccount(int amount) {
+		account.withdraw(amount);
+        }
+
+}
+
+
+
+
+--With the above implementation everything will be good but there may be one issue arise in following condition:
+
+--suppose a new Account type is introduced called "FixedTermDepositAccount" which only support deposit() facility, but not supporting the withdraw() functionality.
+
+--in this case if we implement this Account interface, we must override even withdraw() method as well. 
+
+And to satisfy the compiler ofcource we can implement this withdraw() method by throwing UnsupportedOperationException.
+
+
+Example:
+
+public class FixedDepositAccount implements Account {
+
+    @Override
+    public void deposit(int amount) {
+        System.out.println("Deposit");
+    }
+
+    @Override
+    public void withdraw(int amount) {
+        throw new UnsupportedOperationException();
+    }
+}
+
+
+With this the compiler is satisfied but the design is wrong.
+
+
+--Because if somebody pass this FixedTermDepositAccount object to the BankingService method, since it is accepting Account type.
+
+--if do so then our BankingService will crash and throws error.
+
+--BankingService class is a client of the Account. It expects that any Account obj i.e its subtypes or implemented class guaranted behavior that the Account interface has specified for its withdraw method:
+
+--By not supporting the withdraw method, the FixedTermDepositAccount violates this method specification. Therefore, we cannot reliably substitute FixedTermDepositAccount for Account.
+
+
+LSP Rule of Thumb:
+
+--If a subclass overrides a superclass/interface method by doing nothing or throwing an UnsupportedOperationException, your inheritance hierarchy is almost certainly breaking LSP.
+
+
+***According to the Liskov Substitution Principle,the subtype must behave like its supertype.
+
+Correct Design:
+---------------
+
+--Here we need to redesign the interfaces.
+
+public interface Account {
+
+    void deposit(int amount);
+
+}
+
+AND
+
+public interface WithdrawableAccount extends Account {
+
+    void withdraw(int amount);
+
+}
+
+
+Now, SavingAccount:
+
+public class SavingAccount implements WithdrawableAccount {
+
+    @Override
+    public void deposit(int amount) {}
+
+    @Override
+    public void withdraw(int amount) {}
+}
+
+CurrentAccount:
+
+
+public class CurrentAccount implements WithdrawableAccount {
+
+    @Override
+    public void deposit(int amount) {}
+
+    @Override
+    public void withdraw(int amount) {}
+}
+
+
+
+FixedDepositAccount:
+
+public class FixedDepositAccount implements Account {
+
+    @Override
+    public void deposit(int amount) {}
+
+}
+
+
+Then refactor the BankingService class as:
+
+
+
+
+public class BankingService {
+
+	private WithdrawableAccount account;
+
+	public BankingService(WithdrawableAccount account){
+		this.account= account;
+	}
+	
+
+       public void withdrawFromAccount(int amount) {
+		account.withdraw(amount);
+        }
+
+}
+
+
+
+--Now we can not pass the FixedAccount to this BankingAccount class, Compiler won't allow it, And our application will not be crashed at runtime.
+
+
+Benefits of LSP:
+----------------
+
+Prevents unexpected runtime errors.
+Makes inheritance safe.
+Improves polymorphism.
+Reduces special-case handling.
+Makes code easier to extend.
+Increases reliability.
+
+
+
+
+SOLID Principle 4
+Interface Segregation Principle (ISP):
+--------------------------------------
+
+
+--Suppose you joined a gym:
+
+--In this gym 3 types of members are there:
+
+1. Cardio members
+2. Weight Training members
+3. Swimming members
+
+--Now, gym owner says, each members need to do cardio, weight training and swimming also.
+
+Question:
+
+--If someone want to just learn swimming then why he should do weight training or cardio, it is unfair.
+
+--Each member should choose only that activity which he want to do..
+
+This is exactly the ISP.
+
+
+Another example:
+
+Suppose you go for a restaurant, and restaurant owner says that each customer should learn:
+
+Online Order
+
+Telephone Order
+
+Walk-in Order
+
+Online Payment
+
+Cash Payment
+
+Question:
+
+For a walk-in customer giving the button for online order is a bad design.
+
+
+ISP says that: Clients should not be forced to depend on methods they do not use.
+
+
+--Instead of creating one large interface with many unrelated methods, create multiple small and focused interfaces.
+
+-- A "fat interface" is split into smaller interfaces based on related functionality.
+
+
+
+Example:
+
+Suppose we create one fat interface that contains every possible way of placing an order and making a payment.
+
+public interface RestaurantService {
+
+    void acceptOnlineOrder();
+
+    void acceptTelephoneOrder();
+
+    void acceptWalkInOrder();
+
+    void payOnline();
+
+    void payInPerson();
+}
+
+
+Question
+
+Who is going to implement this interface?
+
+Online Customer?
+Walk-in Customer?
+Telephone Customer?
+
+Answer: All of them.
+
+--At first glance, this may look fine, but it creates a design problem.
+
+
+Online Customer Implementation:
+
+--An online customer can:
+
+Place an online order
+Pay online
+
+--The customer cannot
+
+Place a telephone order
+Place a walk-in order
+Pay in person
+
+Still, Java forces us to implement every method.
+
+
+public class OnlineCustomer implements RestaurantService {
+
+    @Override
+    public void acceptOnlineOrder() {
+        System.out.println("Order placed through website.");
+    }
+
+    @Override
+    public void payOnline() {
+        System.out.println("Payment completed online.");
+    }
+
+    @Override
+    public void acceptTelephoneOrder() {
+        throw new UnsupportedOperationException("Online customers cannot place telephone orders.");
+    }
+
+    @Override
+    public void acceptWalkInOrder() {
+        throw new UnsupportedOperationException("Online customers cannot place walk-in orders.");
+    }
+
+    @Override
+    public void payInPerson() {
+        throw new UnsupportedOperationException("Online customers cannot pay in person.");
+    }
+}
+
+
+
+
+Walk-in Customer Implementation:
+
+
+--A walk-in customer can:
+
+Place a walk-in order
+Pay in person
+
+--Again, unnecessary methods must be implemented.
+
+public class WalkInCustomer implements RestaurantService {
+
+    @Override
+    public void acceptWalkInOrder() {
+        System.out.println("Walk-in order accepted.");
+    }
+
+    @Override
+    public void payInPerson() {
+        System.out.println("Cash payment completed.");
+    }
+
+    @Override
+    public void acceptOnlineOrder() {
+        throw new UnsupportedOperationException("Walk-in customers cannot place online orders.");
+    }
+
+    @Override
+    public void acceptTelephoneOrder() {
+        throw new UnsupportedOperationException("Walk-in customers cannot place telephone orders.");
+    }
+
+    @Override
+    public void payOnline() {
+        throw new UnsupportedOperationException("Walk-in customers cannot pay online.");
+    }
+}
+
+
+
+Problem:
+--------
+
+--Both implementation classes use only two methods.
+
+--The remaining methods exist only because the compiler forces us to implement them.
+
+--This is a clear violation of the Interface Segregation Principle (ISP).
+
+"Clients should not be forced to depend on methods they do not use."
+
+
+
+Is This Also a Violation of SRP?
+
+Yes.
+
+--The interface contains two completely different responsibilities:
+
+Responsibility 1: Order Placement
+
+	Online Order
+
+	Telephone Order
+
+	Walk-in Order
+
+
+Responsibility 2: Payment Processing
+
+	Online Payment
+
+	Cash Payment
+
+
+--Since unrelated responsibilities are grouped together, the interface also violates the Single Responsibility Principle (SRP).
+
+
+Correct Design: Refactoring Using ISP
+-------------------------------------
+
+--Instead of creating one large interface, divide it into smaller interfaces based on responsibilities.
+
+Step 1
+
+Create separate interfaces for ordering and payment.
+
+
+public interface OrderService {
+
+    void placeOrder();
+}
+
+public interface PaymentService {
+
+    void payForOrder();
+}
+
+
+Step 2
+
+--If different ordering mechanisms require different behavior, further divide the interfaces.
+
+public interface OnlineOrder {
+
+    void placeOnlineOrder();
+}
+
+public interface TelephoneOrder {
+
+    void placeTelephoneOrder();
+}
+
+public interface WalkInOrder {
+
+    void placeWalkInOrder();
+}
+
+
+--Similarly, payment can also be separated.
+
+
+public interface OnlinePayment {
+
+    void payOnline();
+}
+
+public interface CashPayment {
+
+    void payInPerson();
+}
+
+
+Online Customer:
+
+--Now the online customer implements only the required interfaces.
+
+
+public class OnlineCustomer implements OnlineOrder, OnlinePayment {
+
+    @Override
+    public void placeOnlineOrder() {
+        System.out.println("Order placed through website.");
+    }
+
+    @Override
+    public void payOnline() {
+        System.out.println("Payment completed online.");
+    }
+}
+
+
+
+--Notice that there are no unnecessary methods.
+
+
+Walk-in Customer:
+
+
+public class WalkInCustomer implements WalkInOrder, CashPayment {
+
+    @Override
+    public void placeWalkInOrder() {
+        System.out.println("Walk-in order accepted.");
+    }
+
+    @Override
+    public void payInPerson() {
+        System.out.println("Cash payment completed.");
+    }
+}
+
+
+--Again, only the required functionality is implemented.
+
+
+
+Another example:
+
+
+
+--We created an interface called: Printer
+
+public interface Printer {
+
+    void print();
+
+    void scan();
+
+    void fax();
+
+    void photocopy();
+}
+
+
+
+Now, for simple HomePrinter, it require only print() functionality:
+
+public class HomePrinter implements Printer {
+
+    @Override
+    public void print() {
+        System.out.println("Printing...");
+    }
+
+    @Override
+    public void scan() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void fax() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void photocopy() {
+        throw new UnsupportedOperationException();
+    }
+
+}
+
+
+Problems:
+----------
+
+--HomePrinter is forced to implement methods it does not support.
+--The interface contains unrelated responsibilities.
+--The design becomes difficult to maintain.
+
+
+
+
+Correct Design:
+--------------
+
+Break down this fat interface into small small interfaces:
+
+
+public interface Printer {
+
+    void print();
+
+}
+
+public interface Scanner {
+
+    void scan();
+
+}
+
+public interface FaxMachine {
+
+    void fax();
+
+}
+
+
+public interface Photocopier {
+
+    void photocopy();
+
+}
+
+
+Now, The HomePrinter:
+
+public class HomePrinter implements Printer {
+
+    @Override
+    public void print() {
+        System.out.println("Printing...");
+    }
+
+}
+
+The OfficePrinter:
+
+
+public class OfficePrinter implements Printer, Scanner,FaxMachine, Photocopier {
+
+    @Override
+    public void print() {}
+
+    @Override
+    public void scan() {}
+
+    @Override
+    public void fax() {}
+
+    @Override
+    public void photocopy() {}
+
+}
+
+
+
+
+Difference between ISP and SRP:
+-------------------------------
+
+| SRP                                      | ISP                                               |
+| ---------------------------------------- | ------------------------------------------------- |
+| Concerned with Classes                   | Concerned with Interfaces                         |
+| One class should have one responsibility | One interface should contain only related methods |
+| Prevents multiple responsibilities       | Prevents unnecessary methods                      |
+
+
+SRP= Keep the classes clean
+ISP= Keep the interfaces clean
+
+
+
+
+Signs of an ISP Violation:
+---------------------------
+
+--Large interfaces with many unrelated methods.
+--Implementation classes throwing UnsupportedOperationException.
+--Classes implementing methods that are never used.
+
+
+
+
+
+
+Benefits of ISP:
+---------------
+
+
+Small interfaces are easier to understand.
+No unnecessary implementation.
+Cleaner design.
+Better maintainability.
+Less coupling.
+Easier testing.
+Better flexibility.
+
+
+
+
+SOLID Principle 5
+Dependency Inversion Principle (DIP):
+-------------------------------------
+
+
+--It says depends upon the abstraction(interfaces)rather than concreate classes.
+
+--High-level modules should not depend on low-level modules. Both should depend on abstractions.
+
+--Instead of directly depending on concrete classes, classes should depend on interfaces or abstract classes.
+
+--With this principle,we can use to implement well-structured, highly-decoupled, and reusable software components.
+
+
+Loose coupling and tight coupling:-
+----------------------------------
+
+
+--If one class calls another class functionality then we say that both classes are coupled with each other.
+
+--If a class calls another class functionality then 1st one is called dependent and 2nd one is called dependency class.
+
+--If dependent class wants to call methods of its dependency class then it can create an obj of its dependency class, and it can call the methods of its dependency class using that object.
+
+
+***Now suppose,if any changes are made in dependency class and if it is forcing to do the changes in dependent class also then we say that both classes are tightly coupled with each other.
+
+
+dependency class
+-----------------
+
+public class Car
+{
+	public void start(){//modify as go()
+		System.out.println("Car Started");
+	}
+} 
+
+
+dependent class
+-----------------
+
+public class Travel
+{
+
+	Car c=new Car();
+
+	public void journey()
+	{
+		c.start();//forced to change here also as go().
+		System.out.println("journey started..");
+	}
+
+}
+
+
+
+
+--Now if we modify the method of dependency class Car as go() from start(), and because of this we have to modify its dependent class Travel also.
+
+--hence both classes are tightly coupled to each other.
+
+--Tight coupling occurs in another way also, when dependent class wants to change from current dependency to another simmilar dependency:
+
+example:
+
+public class Travel
+{
+
+	//Car c=new Car();//if we want to change it as Bike class
+
+	Bike b=new Bike();
+
+	public void journey()
+	{
+		//c.go();// now this mehthod will not work
+
+		b.ride();
+		System.out.println("journey started..");
+
+	}
+}
+
+
+
+
+--In the above code to change dependency from Car to Bike we need to modify dependent class also.
+
+--In order to get loose coupling between two classes in an application we need to follow the below rules:
+
+
+1.Design the dependency class applying by following POJI by POJO model.
+
+2.Apply DI mechanism.
+
+
+--Suppose, If we want to get loose coupling between Travel(dependent) and its dependencies(like Car and Bike)
+then we need to create Car and Bike classes by implementing a Vehicle Interface.
+
+Example:
+
+
+public interface Vehicle
+{
+	public void go();
+}
+
+
+public class Car implemenets Vehicle
+{
+
+	public void start(){
+		System.out.println("Car Started..");
+	}
+
+	@Override
+	public void go()
+	{
+		start();
+	}
+
+	
+
+
+}
+
+
+public class Bike implements Vehicle
+{
+
+	public void ride(){
+		System.out.println("Ride starts");
+	}
+
+	@Override
+	public void go()
+	{
+		ride();
+	}
+}
+
+
+public class Travel
+{
+
+	Vehicle v;//here v can store one of its implementation class object.
+
+
+	//setter injection
+	public void setV(Vehicle v)
+	{
+		this.v=v;
+	}
+
+	//constructor injection
+	public Travel(Vechile v){
+		this.v=v;
+	}
+
+
+
+	public void journey()
+	{
+		v.go();
+	}
+}
+
+  
+
+public class Demo{
+
+
+	public static void main(String[] args){
+
+		
+		//Travel t = new Travel(new Car());
+		//Travel t = new Travel(new Bike());
+
+		t.journey();
+
+	}
+
+
+}
+
+
+
+--Here High-Level Module is: Travel class
+--Low level Modules are : Car, Bike, Bus
+--Abstraction is: Vehicle interface
+
+
+
+
+Dependency Inversion vs Dependency Injection:
+---------------------------------------------
+
+| Dependency Inversion Principle           | Dependency Injection                                    |
+| ---------------------------------------- | ------------------------------------------------------- |
+| A design principle                       | A design technique                                      |
+| Encourages depending on abstractions     | Provides the required dependency from outside the class |
+| Improves flexibility and maintainability | Helps implement DIP in practice                         |
+
+
+
+Another example:
+---------------
+
+
+EmailSender.java:
+---------------
+
+public class EmailSender  {
+
+    
+    public void sendingEmail(String message) {
+
+        System.out.println("Email : " + message);
+
+    }
+
+}
+
+
+
+SmsSender.java:
+--------------
+
+public class SmsSender {
+
+    
+    public void sendingSms(String message) {
+
+        System.out.println("SMS : " + message);
+
+    }
+
+}
+
+
+
+public class NotificationService {
+
+   private EmailSender emailSender = new EmailSender();   
+
+    public void notifyUser(String message) {
+        emailSender.sendingEmail(message);
+    }
+
+}
+
+
+
+--Here NotificationService is tightly coupled with EmailSender class, if we want to notify the user using sms or WhatsApp, then we need to change the NotificationService class also.
+
+
+--To make the NotificationService class loosly coupled with its dependencies we need to apply DIP.
+
+
+Correct Design:
+----------------
+
+public interface MessageSender {
+
+    void send(String message);
+
+}
+
+public class EmailSender implements MessageSender {
+
+    @Override
+    public void send(String message) {
+
+        System.out.println("Email : " + message);
+
+    }
+
+}
+
+
+public class SmsSender implements MessageSender {
+
+    @Override
+    public void send(String message) {
+
+        System.out.println("SMS : " + message);
+
+    }
+
+}
+
+
+public class NotificationService {
+
+    private MessageSender sender;
+
+    public NotificationService(MessageSender sender) {
+        this.sender = sender;
+    }
+
+    public void notifyUser(String message) {
+        sender.send(message);
+    }
+
+}
+
+
+
+Advantages of DIP:
+------------------
+
+Reduces coupling between classes.
+Makes implementations interchangeable.
+Improves maintainability.
+Simplifies testing.
+Increases flexibility and code reusability.
+
+
+
+--Depend on abstractions, not on concrete implementations. A class should not create its own dependencies; instead, they should be provided from outside.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

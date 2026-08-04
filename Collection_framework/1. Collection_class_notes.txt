@@ -3,6 +3,7 @@ Collection Framework Class notes:
 
 
 
+
 --As we know, Arrays are a fundamental data structure used to store multiple values of the same type in a single variable. 
 
 Key Characteristics of Arrays:
@@ -46,7 +47,7 @@ Concept:
 --When array becomes full, create a new bigger array:  copy old data then add new element
 
 
-1. Create array with capacity 2
+1. Create array with capacity 5
 2. Add elements
 3. If array is full:
       Create new array of double capacity
@@ -303,7 +304,7 @@ Main Interfaces of Collection:
 
 List: --> When we need to arrange the elements in a sequence (index based manner) and duplicate elements are allowed.
 
-Set: --> When we need uniqueness (duplicate elements are not allowed)
+Set: --> When we need uniqueness (duplicate elements are not allowed), and the fast lookup.
 
 Queue: --> When we need to process elements in a specific order (FIFO by default). Supports priority-based processing.
 
@@ -640,7 +641,7 @@ public class Demo {
 		al.add("chennai");
 		al.add("kolkata");
 		al.add("delhi");
-		al.add(10);
+		al.add(10); // CCE
 		al.add(null);
 		
 		
@@ -1887,6 +1888,9 @@ public class Demo {
 		}
 	}
 }
+
+
+
 
 
 

@@ -4,7 +4,7 @@ LinkedList:
 
 --This class is the another implementation of List interface.
 
---This class is the best choice if our frequent operation is insertion and deletion from middle.(Because No shifting of elements)
+--This class is the best choice if our frequent operation is insertion and deletion from begining/middle.(Because No shifting of elements)
 
 --From Java 1.5 onwards this LinkedList class also implements Deque interface.
 
@@ -1154,6 +1154,7 @@ Vector Class in Java
 --It is a dynamic array implementation (like ArrayList).
 
 --Vector class is thread-safe, most of the methods of the Vector class is synchronized.
+
 
 
 
