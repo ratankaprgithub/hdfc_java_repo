@@ -1,0 +1,1347 @@
+
+Design Pattern:
+===============
+
+
+--A Design Pattern is a proven, reusable solution to a commonly occurring software design problem.
+
+--A design pattern is not a ready-made class or library. Instead, it provides a blueprint for organizing classes and objects to solve recurring design challenges.
+
+--When we use regular technologies like Java, C, C++ to develop an application or a product there may be a chances of getting some problems repeatedly, In this case we need some solutions to resolve those repeated problems for getting better results/performance.
+
+
+
+Analogy:
+-------
+
+--Suppose you want to build a new house and you went to a Architect:
+
+--Now what architect will do ?
+
+--Will the architect design the house from scratch like:
+
+Where should be the door ?
+Where should be the kitchen ?
+Where should be the bedroom ?
+Where should be the bathroom ?
+
+--Every time new design?
+
+Ans/- No
+
+--The architect already have 100+ designs are available.
+
+--If client says he needs 2BHK
+
+--Architect will choose the existing blueprint and do little customization and the house is ready.
+
+--Here architect has just reused a proven blueprint.
+
+--Design patterns are exactly similar to proven blueprint of softwares.
+
+
+Why Do We Need Design Patterns?
+
+--Software applications often encounter similar design problems, such as:
+
+Creating objects
+Managing object relationships
+Reusing code
+Reducing coupling
+Improving maintainability
+
+--Instead of reinventing solutions for these problems, developers use established design patterns that have been tested and refined over time.
+
+
+Remember,
+
+Design pattern is not:
+
+- A readymade code
+- A readmade class
+- A framework
+- An algorithm
+
+--It is just a standard blueprint(one idea) to solve a problem.
+
+
+History of Desing patterns:
+--------------------------
+
+
+Alexender christoper: a civil engineer, who wrote the book, having all the problems and solution related to civil engineer industry. the design pattern for creating bridges, roads, houses, etc.
+
+
+--In 1994 there are 4 software developers published 23 design patterns.
+
+Erich Gamma
+Richard Helm
+Ralph Johnson
+John Vlissides
+
+--They are called as "Gangs of Four".
+
+--They published a book called "Design Patterns: Elements of Reusable Object-Oriented Software"
+
+--Today we have 100+ design patterns are available in the industry.
+
+ 
+
+
+
+Categogy of Design patterns:
+============================
+
+--The Gang of Four (GoF) classified 23 design patterns into three categories:
+
+
+1. Creational Patterns:
+-----------------------
+
+--These patterns deal with object creation i.e How an object can be created.
+
+--These patterns makes object creation easy.
+
+--The basic form of object creation (using "new" keyword) could result in design problems or complexity.
+
+--Creational design patterns solve this problem by somehow controlling this object creation.
+
+
+
+Example:
+
+Factory Method
+Abstract Factory
+Singleton
+Builder
+
+
+
+2. Structural Patterns:
+-----------------------
+
+--These patterns define how classes and objects are composed to form larger structures.
+
+--How to connect objects..
+
+Example:
+
+Adapter
+Decorator
+Facade
+Bridge
+Composite
+
+
+3. Behavioral Patterns:
+-----------------------
+
+--These patterns define how objects communicate and interact with each other.
+
+--It defines the common communication patterns between objects and increases the flexibility in communication.
+
+
+Example:
+
+Strategy
+Observer
+Command
+State
+Iterator
+Chain Of Resposibility pattern
+Mediator pattern
+Template pattern
+
+
+
+
+
+Benefits of Design Patterns:
+----------------------------
+
+--Provide proven solutions to recurring design problems.
+--Improve code readability and maintainability.
+--Encourage code reuse.
+--Reduce coupling between classes.
+--Improve flexibility and extensibility.
+--Establish a common design vocabulary among developers.
+
+
+
+--A Design Pattern is a reusable design blueprint—not a ready-made implementation. It helps developers solve recurring software design problems using well-established and maintainable approaches.
+
+
+
+
+Factory Method Pattern:
+-----------------------
+
+
+--Suppose you went for a car showroom and ask the salesman that you need a SUV.
+
+Question:
+
+--Do you go inside the car factory and: 
+
+--Cut the irons
+--Desing a car engine
+--assemble the tyres
+
+Ofcourse NOT..
+
+
+--You just say, i need a Car.
+
+and all the car creation operation is done by Car factory and will be handed over to you.
+
+
+--Same thing will be done by the factory pattern in application development.
+
+
+Suppose you have a Vechile interface:
+
+
+public interface Vehicle {
+
+    void start();
+
+}
+
+
+--and for this interface you have 3 implemented classes:
+
+Car
+Bike
+Truck
+
+
+public class Car implements Vehicle {
+
+    @Override
+    public void start() {
+        System.out.println("Car Started");
+    }
+
+}
+
+
+public class Bike implements Vehicle {
+
+    @Override
+    public void start() {
+        System.out.println("Bike Started");
+    }
+
+}
+
+
+public class Truck implements Vehicle {
+
+    @Override
+    public void start() {
+        System.out.println("Truck Started");
+    }
+
+}
+
+
+
+Now the Client code:
+
+
+public class Client {
+
+    public static void main(String[] args) {
+
+        Vehicle vehicle = new Car();
+
+        vehicle.start();
+
+    }
+
+}
+
+
+Now, you need Bike then..
+
+
+Vehicle vehicle = new Bike();
+
+Now, you need truck then
+
+Vehicle vehicle = new Truck();
+
+
+--Here for each requirement we need to modify the Client class code.
+
+--This is a bad design.
+
+
+--Here the Client is having 2 responsibility:
+
+1. Object creation
+2. Using that object
+
+
+--But actually Client should only use that object, He should not worry about the creating that object.
+
+Factory Pattern says that:
+
+--Separate the object creation logic from the Client.
+
+--In other word: Client should ask for an object instead of creating it directly.
+
+
+--So, Here we should think to create a VechileFactory class which can create and return any type of Vechiles based on the Client requirement.
+
+
+Example:
+
+
+public class VehicleFactory {
+
+    public  Vehicle getVehicle(String type) {
+
+        if(type.equalsIgnoreCase("CAR")) {
+
+            return new Car();
+
+        }
+
+        else if(type.equalsIgnoreCase("BIKE")) {
+
+            return new Bike();
+
+        }
+
+        else if(type.equalsIgnoreCase("TRUCK")) {
+
+            return new Truck();
+
+        }
+
+        return null;
+
+    }
+
+} 
+
+
+
+Now the Client Code:
+
+
+public class Client {
+
+    public static void main(String[] args) {
+
+        VehicleFactory factory = new VehicleFactory();
+
+	Scanner sc = new Scanner(System.in);
+
+	System.out.println("Which type of vechile you want ?");
+	String type= sc.next();
+
+        Vehicle vehicle = factory.getVehicle(type); // CAR
+
+	if(vehicle != null){
+
+        	vehicle.start();
+	}else{
+		System.out.println("Please pass the proper Vehicle type(CAR, BIKE, TRUCK)");
+	}
+
+    }
+
+}
+
+
+--Here Client has not used "new Car()" or "new Bike()" instead it is asking the getVehicle() method of VehicleFactory class by suppying its requirement.
+
+
+--Here Factory has created the object.
+
+
+Now suppose a new requirement comes:
+
+--support the ElectricCar also.
+
+
+Here we just need to follow following 2 steps:
+
+1. create a new ElectricCar class by implementing the Vehicle interface:
+
+
+public class ElectricCar implements Vehicle {
+
+    @Override
+    public void start() {
+
+        System.out.println("Electric Car Started");
+
+    }
+
+}
+
+
+2. Change the VechileFactory class:
+
+else if(type.equalsIgnoreCase("ELECTRIC")){
+
+    return new ElectricCar();
+
+}
+
+
+
+--But inside the Client, there should be no any changes.
+
+
+
+Question: Is it a perfect desing ?
+
+Ans/- Not Yet..
+
+
+--because here VechileFactory class got modified.
+
+--And it violates OCP of SOLID principle.
+
+
+
+--To solve this problem "Factory method design pattern" is introduced.
+
+--To overcome the limitation of "Factory pattern" the "Factory method pattern" is introduced.
+
+To apply the Factory method pattern, first of all we create an interface called : VechileFactory
+
+
+public interface VehicleFactory {
+
+    Vehicle createVehicle();
+
+}
+
+
+Now,
+
+CarFactory class:
+
+public class CarFactory implements VehicleFactory {
+
+    @Override
+    public Vehicle createVehicle() {
+
+        return new Car();
+
+    }
+
+}
+
+
+BikeFactory class:
+
+public class BikeFactory implements VehicleFactory {
+
+    @Override
+    public Vehicle createVehicle() {
+
+        return new Bike();
+
+    }
+
+}
+
+TruckFactory class:
+
+public class TruckFactory implements VehicleFactory {
+
+    @Override
+    public Vehicle createVehicle() {
+
+        return new Truck();
+
+    }
+
+}
+
+
+Client code:
+
+public class Client {
+
+    public static void main(String[] args) {
+
+        VehicleFactory factory = new CarFactory();
+
+        Vehicle vehicle = factory.createVehicle();
+
+        vehicle.start();
+
+    }
+
+}
+
+Tomorrow, for Bike:
+
+
+VehicleFactory factory = new BikeFactory();
+
+That's it.
+
+No existing factory modified.
+
+Now
+
+OCP is also satisfied.
+
+
+
+Advantages:
+
+Object creation is centralized.
+Client is decoupled from concrete classes.
+Easier to maintain.
+Easier to extend.
+Improves readability.
+Supports Open-Closed Principle (Factory Method version).
+
+
+Disadvantages:
+
+More classes.
+Slightly more complex for very small applications.
+Too many factories if overused.
+
+
+When Should We Use Factory?
+-----------------------------
+
+Use Factory when:
+
+Object creation is complex.
+Multiple implementations exist.
+Client should not know the concrete class.
+You want loose coupling.
+New object types may be added in the future.
+
+
+
+Difference between Simple Factory and Factory Method:
+-----------------------------------------------------
+
+| Simple Factory                              | Factory Method                                          |
+| ------------------------------------------- | ------------------------------------------------------- |
+| One factory class creates all objects       | Each product has its own factory                        |
+| Factory changes when new products are added | New factories are added without modifying existing ones |
+| Violates OCP                                | Supports OCP                                            |
+
+
+
+Q/- Does Factory eliminate the use of new?
+
+Ans/-  No.
+
+--The new keyword still exists, but it is centralized inside the factory rather than scattered throughout the client code.
+
+
+
+Another Example:
+================
+
+--Suppose we are developing a Car Dealer application. The dealer sells cars from different manufacturers.
+
+Available cars:
+
+Maruti
+Mahindra
+Hyundai
+
+
+Every car implements a common interface.
+
+
+Car.java:
+---------
+
+
+public interface Car {
+
+    String getDetails();
+
+}
+
+
+
+Maruti.java:
+-----------
+
+public class Maruti implements Car {
+
+    private String model;
+    private String color;
+
+    public Maruti(String model, String color) {
+        this.model = model;
+        this.color = color;
+    }
+
+    @Override
+    public String getDetails() {
+        return "Maruti : " + model + " (" + color + ")";
+    }
+}
+
+
+Mahindra.java:
+-------------
+
+public class Mahindra implements Car {
+
+    private String model;
+    private String color;
+
+    public Mahindra(String model, String color) {
+        this.model = model;
+        this.color = color;
+    }
+
+    @Override
+    public String getDetails() {
+        return "Mahindra : " + model + " (" + color + ")";
+    }
+}
+
+
+
+Hyundai.java:
+-------------
+
+public class Hyundai implements Car {
+
+    private String model;
+    private String color;
+    private String fuelType;
+
+    public Hyundai(String model, String color, String fuelType) {
+
+        this.model = model;
+        this.color = color;
+        this.fuelType = fuelType;
+    }
+
+    @Override
+    public String getDetails() {
+
+        return "Hyundai : "+ model + " ("+ color + ", " + fuelType + ")";
+    }
+}
+
+
+
+Without Factory Pattern:
+--------------------------
+
+Client creates objects directly.
+
+
+
+public class CarDealer {
+
+    public static void main(String[] args) {
+
+        Car car1 = new Maruti("Brezza", "Red");
+
+        Car car2 = new Mahindra("Scorpio", "Black");
+
+        Car car3 = new Hyundai("Creta","White","Petrol");
+
+        System.out.println(car1.getDetails());
+        System.out.println(car2.getDetails());
+        System.out.println(car3.getDetails());
+
+    }
+
+}
+
+Problems:
+
+
+Client knows
+
+--which class to instantiate
+--constructor parameters
+--object creation logic
+
+Suppose Hyundai constructor changes:
+
+public Hyundai(String model, String color, String fuelType,boolean sunRoof)
+
+--Now every client must change also.
+
+
+Lets apply Simple Factory Pattern: 
+----------------------------------
+
+--Centralize the object creation process:
+
+
+CarFactory.java:
+----------------
+
+
+public class CarFactory {
+
+    public static Car getCar(String type) {
+
+        switch (type.toLowerCase()) {
+
+            case "maruti":
+                return new Maruti("Brezza", "Red");
+
+            case "mahindra":
+                return new Mahindra("Scorpio","Black");
+
+            case "hyundai":
+                return new Hyundai("Creta","White","Petrol");
+
+            default:
+                throw new IllegalArgumentException("Invalid Car Type");
+        }
+    }
+}
+
+
+
+
+Now,
+
+CarDealer.java:
+--------------
+
+
+
+public class CarDealer {
+
+    public static void main(String[] args) {
+
+        Car car1 = CarFactory.getCar("maruti");
+
+        Car car2 = CarFactory.getCar("mahindra");
+
+        Car car3 = CarFactory.getCar("hyundai");
+
+        System.out.println(car1.getDetails());
+
+        System.out.println(car2.getDetails());
+
+        System.out.println(car3.getDetails());
+
+    }
+
+}
+
+
+
+Advantages:
+
+--Client no longer creates objects.
+--Object creation is centralized.
+--Constructor changes affect only the factory.
+--Loose coupling between client and concrete classes.
+
+
+
+
+Limitation of above Simple Factory:
+-----------------------------------
+
+--Suppose tomorrow we add
+
+Tata Punch
+
+--We must modify
+
+CarFactory and add
+
+case "tata":
+
+--So every new car (brand) requires modifying the factory.
+
+--This violates the Open-Closed Principle (OCP).
+
+--Software should be open for extension but closed for modification.
+
+--To solve this problem, we use the Factory Method Pattern.
+
+
+Factory Method Pattern:
+----------------------
+
+--Instead of one factory handling all cars, each car has its own factory.
+
+
+CarFactory.java:
+----------------
+
+public interface CarFactory {
+
+    Car createCar();
+
+}
+
+
+Maruti Factory:
+
+public class MarutiFactory
+        implements CarFactory {
+
+    @Override
+    public Car createCar() {
+
+        return new Maruti("Brezza","Red");
+    }
+}
+
+
+Mahindra Factory:
+
+public class MahindraFactory implements CarFactory {
+
+    @Override
+    public Car createCar() {
+
+        return new Mahindra("Scorpio", "Black");
+    }
+}
+
+
+Hyundai Factory:
+
+public class HyundaiFactory
+        implements CarFactory {
+
+    @Override
+    public Car createCar() {
+
+        return new Hyundai("Creta", "White","Petrol");
+    }
+}
+
+
+Client:
+
+
+public class CarDealer {
+
+    public static void main(String[] args) {
+
+        CarFactory factory = new HyundaiFactory();
+
+        Car car = factory.createCar();
+
+        System.out.println(car.getDetails());
+
+    }
+
+}
+
+
+--Notice that the client no longer knows how a Hyundai is created. It only works with the CarFactory interface.
+
+
+Adding a New Car:
+
+--Suppose we introduce Tata.
+
+Create the product:
+
+Tata.java:
+----------
+
+
+public class Tata implements Car {
+
+    @Override
+    public String getDetails() {
+        return "Tata Punch";
+    }
+}
+
+
+Create its factory:
+
+public class TataFactory implements CarFactory {
+
+    @Override
+    public Car createCar() {
+
+        return new Tata();
+    }
+
+}
+
+
+--No existing factory needs to change.
+
+--This is much closer to the Open-Closed Principle.
+
+
+Visual Comparison
+------------------
+
+Without Factory: 
+
+CarDealer
+
+   |
+
+new Maruti()
+
+new Mahindra()
+
+new Hyundai()
+
+
+--The client knows every concrete class.
+
+
+Simple Factory:
+
+  CarDealer
+      │
+  CarFactory
+      │
+----------------------------
+  |       |       |
+Maruti Mahindra Hyundai
+
+
+
+--The client knows only the factory, but the factory must be modified whenever a new car is added.
+
+
+Factory Method Pattern:
+
+
+
+	  CarDealer
+      	     │
+  	CarFactory
+      	     │
+-----------------------------------------------
+  |                 |               |
+MarutiFactory   MahindraFactory   HyundaiFactory
+   |		    |		    |
+ Maruti		Mahindra	  Hyundai
+
+
+
+--Each factory is responsible for creating exactly one type of car, making the design easier to extend.
+
+
+
+Abstract Factory Pattern:
+=========================
+
+
+--Factory Method creates one object (one type of product):
+
+
+Example:
+
+CarFactory: Car
+
+BikeFactory: Bike
+
+TruckFactory: Truck
+
+
+--Abstract Factory creates a family of related objects.
+
+
+Analogy:
+---------
+
+--Suppose you're furnishing a house. and visit: "HomeTwon".
+
+You choose: Modern Theme
+
+The salesperson gives you:
+
+Modern Chair
+Modern Table
+Modern Sofa
+
+Everything matches.
+
+Now suppose you choose: Classic Theme
+
+Now you get
+
+Classic Chair
+Classic Table
+Classic Sofa
+
+Again everything matches.
+
+Question
+
+Will HomeTown give you:
+
+Modern Chair
+
+Classic Table
+
+Modern Sofa
+
+--Never.
+
+--Everything should belongs to one family.
+
+--This is exactly the problem solved by the Abstract Factory Pattern.
+
+
+
+
+Simple Definition:
+
+--Abstract Factory provides an interface for creating families of related or dependent objects without specifying their concrete classes.
+
+
+Family Means?
+
+Suppose,
+
+Windows Theme contains: 
+
+--Windows Button
+--Windows Checkbox
+--Windows TextBox
+
+Mac Theme contains: 
+
+--Mac Button
+--Mac Checkbox
+--Mac TextBox
+
+
+--Each family contains related products.
+
+
+Example: Implementing Abstract Factory Design pattern:
+-------------------------------------------------------
+
+Step1: Create Product Interfaces
+
+
+Button:
+
+public interface Button {
+
+    void paint();
+
+}
+
+Checkbox:
+
+public interface CheckBox {
+
+    void check();
+
+}
+
+
+
+Step 2: Windows Products
+
+Windows Button
+
+public class WindowsButton implements Button {
+
+    @Override
+    public void paint() {
+
+        System.out.println("Windows Button");
+
+    }
+
+}
+
+
+Windows Checkbox:
+
+public class WindowsCheckBox implements CheckBox {
+
+    @Override
+    public void check() {
+
+        System.out.println("Windows Checkbox");
+
+    }
+
+}
+
+
+
+
+Step 3: Mac Products
+
+Mac Button:
+
+public class MacButton implements Button {
+
+    @Override
+    public void paint() {
+
+        System.out.println("Mac Button");
+
+    }
+
+}
+
+
+Mac Checkbox:
+
+public class MacCheckBox implements CheckBox {
+
+    @Override
+    public void check() {
+
+        System.out.println("Mac Checkbox");
+
+    }
+
+}
+
+
+
+Step 4: Create Abstract Factory
+
+public interface GUIFactory {
+
+    Button createButton();
+
+    CheckBox createCheckBox();
+
+}
+
+
+
+Question: What this GUIFactory is creating
+
+
+One object? 
+
+No.
+
+It is creating multiple related objects(Button, CheckBox).
+
+
+
+Step 5
+
+Windows Factory:
+
+public class WindowsFactory implements GUIFactory {
+
+    @Override
+    public Button createButton() {
+
+        return new WindowsButton();
+
+    }
+
+    @Override
+    public CheckBox createCheckBox() {
+
+        return new WindowsCheckBox();
+
+    }
+
+}
+
+
+
+Mac Factory:
+
+public class MacFactory implements GUIFactory {
+
+    @Override
+    public Button createButton() {
+
+        return new MacButton();
+
+    }
+
+    @Override
+    public CheckBox createCheckBox() {
+
+        return new MacCheckBox();
+
+    }
+
+}
+
+
+Client:
+
+public class Client {
+
+    public static void main(String[] args) {
+
+        GUIFactory factory = new WindowsFactory();
+
+        Button button = factory.createButton();
+
+        CheckBox checkBox = factory.createCheckBox();
+
+        button.paint();
+
+        checkBox.check();
+
+    }
+
+}
+
+
+
+Difference Between Factory Method and Abstract Factory:
+-------------------------------------------------------
+
+| Factory Method            | Abstract Factory                        |
+| ------------------------- | --------------------------------------- |
+| Creates one product       | Creates a family of related products    |
+| One factory: One product  | One factory: Multiple related products  |
+| Example: CarFactory       | Example: WindowsFactory                 |
+| Simpler                   | More flexible                           |
+
+
+
+Banking Example:
+----------------
+
+Suppose your banking application supports two countries.
+
+1. India
+
+Need:
+
+IndianTaxCalculator
+
+IndianStatementGenerator
+
+IndianCurrencyFormatter
+
+
+2. USA
+
+Need:
+
+USTaxCalculator
+
+USStatementGenerator
+
+USCurrencyFormatter
+
+
+
+--Instead of writing,
+
+new IndianTaxCalculator();
+
+new IndianStatementGenerator();
+
+everywhere,
+
+we create
+
+IndiaFactory
+
+Similarly,
+
+USAFactory
+
+--Each factory creates the complete family of country-specific objects.
+
+
+
+Advantages:
+
+Keeps related objects together.
+Easy to switch between product families.
+Promotes consistency.
+Reduces coupling.
+Supports the Open-Closed Principle.
+
+
+Disadvantages:
+
+More interfaces and classes.
+Can become complex if there are many product families.
+
+
+When Should We Use Abstract Factory?
+
+Use it when:
+
+--The application supports multiple themes.
+--The application supports multiple operating systems.
+--Multiple databases require related objects.
+--Country-specific or platform-specific implementations are needed.
+--Objects belong to a logical family and should always be used together.
+
+
+
+Q/- What is the main purpose of the Abstract Factory Pattern?
+
+Ans/- To create families of related objects without specifying their concrete classes.
+
+
+
+
+Student Task:
+---------------
+
+
+Build a Furniture Factory.
+
+Product Families:
+
+
+1. Modern Furniture
+
+ModernChair
+ModernTable
+ModernSofa
+
+2. Classic Furniture
+
+ClassicChair
+ClassicTable
+ClassicSofa
+
+
+Abstract Factory: FurnitureFactory
+
+Methods:
+
+Chair createChair();
+
+Table createTable();
+
+Sofa createSofa();
+
+
+Implement:
+
+ModernFurnitureFactory
+ClassicFurnitureFactory
+
+
+
+
+
+
+
+

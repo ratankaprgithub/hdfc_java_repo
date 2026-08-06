@@ -193,11 +193,15 @@ One day Ravi get sick, then all the task will stops.
 --Now lets understand the similar problem with softwre:
 
 
---Suppose we have a class called EmployeeManage:
+--Suppose we have a class called EmployeeManager:
 
 public class EmployeeManager {
 
     public void saveEmployee(){}
+
+    public void updateEmployee(){}
+
+    public void deleteEmployee(){}
 
     public void sendEmail(){}
 
@@ -263,6 +267,11 @@ public class EmployeeManager {
 
     public void saveEmployee() {}
 
+    public void updateEmployee(){}
+
+    public void deleteEmployee(){}
+
+
     public void sendEmail() {}
 
     public void generateSalary() {}
@@ -286,6 +295,11 @@ Correct Design (Follows SRP):
 public class EmployeeService {
 
     public void saveEmployee() {}
+  
+    public void updateEmployee(){}
+
+    public void deleteEmployee(){}
+
 }
 
 public class EmailService {
@@ -1392,7 +1406,7 @@ Dependency Inversion Principle (DIP):
 --With this principle,we can use to implement well-structured, highly-decoupled, and reusable software components.
 
 
-Loose coupling and tight coupling:-
+Loose coupling and tight coupling:
 ----------------------------------
 
 
@@ -1411,7 +1425,7 @@ dependency class
 
 public class Car
 {
-	public void start(){//modify as go()
+	public void start(){
 		System.out.println("Car Started");
 	}
 } 
@@ -1427,7 +1441,7 @@ public class Travel
 
 	public void journey()
 	{
-		c.start();//forced to change here also as go().
+		c.start();
 		System.out.println("journey started..");
 	}
 
@@ -1444,6 +1458,18 @@ public class Travel
 
 example:
 
+
+public class Bike{
+
+	public void ride(){
+		System.out.println("Ride starts..");
+	}
+
+
+}
+
+
+
 public class Travel
 {
 
@@ -1453,7 +1479,7 @@ public class Travel
 
 	public void journey()
 	{
-		//c.go();// now this mehthod will not work
+		//c.start();// now this mehthod will not work
 
 		b.ride();
 		System.out.println("journey started..");
@@ -1523,6 +1549,8 @@ public class Bike implements Vehicle
 public class Travel
 {
 
+
+	
 	Vehicle v;//here v can store one of its implementation class object.
 
 
@@ -1542,6 +1570,7 @@ public class Travel
 	public void journey()
 	{
 		v.go();
+		System.out.println("Journey begins...");
 	}
 }
 
@@ -1554,7 +1583,7 @@ public class Demo{
 
 		
 		//Travel t = new Travel(new Car());
-		//Travel t = new Travel(new Bike());
+		Travel t = new Travel(new Bike());
 
 		t.journey();
 
@@ -1700,6 +1729,664 @@ Increases flexibility and code reusability.
 --Depend on abstractions, not on concrete implementations. A class should not create its own dependencies; instead, they should be provided from outside.
 
 
+
+
+
+Code Smells that Violate SOLID Principles:
+==========================================
+
+Q/- What is a Code Smell?
+
+First of all...
+
+--A Code Smell is NOT a bug.
+
+Many beginners think:
+
+"Code smell means code is wrong."
+
+--No.
+
+The code may be:
+
+--Working correctly
+--Passing all test cases
+--Producing the correct output
+
+Still...
+
+--It can have a bad design.
+
+--That bad design is called a Code Smell.
+
+
+
+Defination:
+-----------
+
+--A Code Smell is a symptom of poor software design. It does not necessarily indicate a bug, but it suggests that the code may become difficult to maintain, understand, test, or extend in the future.
+
+--A code smell serves as a warning that the design should be reviewed and possibly refactored.
+
+
+
+Simple analogy:
+----------------
+
+--Suppose you enter a room.
+
+You notice a bad smell.
+
+Question: Does the smell prove something is broken?
+
+No.
+
+But...
+
+It indicates that something may be wrong.
+
+Maybe
+
+Garbage
+Dead mouse
+Drain leakage
+
+--The smell itself is not the problem.
+
+--It is an indication.
+
+--Exactly the same in software.
+
+
+A Code Smell tells us
+
+--"There is probably a design problem here."
+
+
+Example: 
+
+--Suppose this code works perfectly.
+
+public class EmployeeService {
+
+    public void saveEmployee() {}
+
+    public void sendEmail() {}
+
+    public void generateSalary() {}
+
+    public void printReport() {}
+
+    public void connectDatabase() {}
+
+}
+
+Will this compile? Yes
+
+Will it run? Yes
+
+Is it bug free? Maybe.
+
+**Is the design good? No.
+
+This class has
+
+Employee Management
+Email
+Salary
+Report
+Database
+
+Multiple responsibilities.
+
+
+This is a code smell.
+
+More specifically,
+
+it is becoming a God Class.
+
+
+
+Why Should We Care?
+
+--Suppose today the class has
+
+200 lines
+
+No problem.
+
+--After one year
+
+1200 lines
+
+--After three years
+
+6000 lines
+
+--Now imagine
+
+10 developers
+
+working on the same class.
+
+--Every week someone changes it.
+
+-Merge conflicts.
+
+-Bugs.
+
+-Testing.
+
+-Regression.
+
+-Maintenance nightmare.
+
+
+Code Smell is Like Fever:
+
+Fever is not a disease.
+
+It is a signal of the actual problem.
+
+Similarly,
+
+God Class
+Long Method
+Duplicate Code
+Large Interface
+
+
+--are all symptoms (Code Smell).
+
+
+
+Most Common Code Smells:
+-------------------------
+
+
+1. God Class
+
+2. Long Method
+
+3. Duplicate Code
+
+4. Large Interface (Fat Interface)
+
+5. Tight Coupling
+
+6. Switch Explosion
+
+7. Feature Envy
+
+8. Shotgun Surgery
+
+
+
+--All of there violates SOLID principles directly or indirectly.
+
+
+
+1. God Class:
+-------------
+
+--A class that performs too many unrelated responsibilities.
+
+Example
+
+class EmployeeManager {
+
+    saveEmployee(){}
+    updateEmployee(){}
+    deleteEmployee(){}
+    generateSalary(){}
+    printReport(){}
+    sendEmail(){}
+    backupDatabase(){}
+    exportExcel(){}
+
+}
+
+
+Violates: Single Responsibility Principle (SRP)
+
+
+2. Long Method:
+---------------
+
+--A method that has grown too large and performs multiple tasks.
+
+Example
+
+public void processOrder() {
+
+    // 500 of lines of code 
+    // perform too many tasks
+}
+
+
+--Debugging and maintaince problem.
+
+
+Violates: Single Responsibility Principle (SRP)
+
+--Because one method performing too many resposibilities.
+
+
+3. Duplicate Code:
+------------------
+
+
+--The same logic appears in multiple classes or methods.
+
+Problem:
+
+--A change must be applied in multiple places, increasing maintenance effort and the risk of inconsistency.
+
+
+Example:
+
+public class EmployeeService {
+
+    public void calculateTax(){
+
+        // tax logic
+
+    }
+
+}
+
+
+public class CustomerService {
+
+    public void calculateTax(){
+
+        // same logic
+
+    }
+
+}
+
+--Now suppose tomorrow, need to change the tax calculation logic, due to the changes in GST.
+
+--Then we need to do changes in multiple places.
+
+--So, the better solution would be: create a separate TaxCalculator class, having the calculateTax() method.
+
+
+Violates: Mostly Single Responsibility Principle (SRP) and also maintainability issue.
+
+
+4. Large Interface:
+------------------
+
+--An interface contains many unrelated methods, forcing implementation classes to provide unnecessary method implementations.
+
+
+Example:
+
+interface Printer{
+
+print();
+
+scan();
+
+fax();
+
+photocopy();
+
+}
+
+
+HomePrinter: throw new UnsupportedOperationException();
+
+
+Violates: Interface Segregation Principle (ISP)
+
+
+5. Tight Coupling:
+------------------
+
+
+--A class directly depends on a concrete implementation instead of an abstraction.
+
+
+Example:
+
+Travel --> Car, Bike
+
+--Travel class directly creating the object of concrete classes like 
+
+new Car()
+new Bike()
+
+--Travel class should rather depend upon abstraction: Vehicle interface.
+
+Violates: Dependency Inversion Principle (DIP)
+
+
+
+6. Switch Explosion:
+---------------------
+
+--Large if-else or switch statements that grow whenever a new type or feature is introduced.
+
+Example:
+
+if(type.equals("CARD"))
+
+else if(type.equals("UPI"))
+
+else if(type.equals("WALLET"))
+
+else if(type.equals("NETBANKING"))
+
+else if(type.equals("PAYPAL"))
+
+else if(type.equals("CRYPTO"))
+
+
+--For every new types of payment, changes should be done inside the same class.
+
+Violates: Open-Closed Principle (OCP)
+
+
+Better solution: 
+
+--Create Payment interface with multiple impmentation class like :
+
+CardPayment
+UPIPayment
+WalletPayment
+
+
+
+
+7. Feature Envy:
+----------------
+
+
+--A class frequently accesses the internal data of another class instead of using its own behavior.
+
+in other word:
+
+--A method is more interested in another object's data than its own object's data.
+
+--This usually indicates that the method is placed in the wrong class and should probably be moved to the class whose data it primarily uses.
+
+Example:
+
+class Employee {
+
+    private String name;
+    private double basicSalary;
+    private double bonus;
+
+    public Employee(String name, double basicSalary, double bonus) {
+
+        this.name = name;
+        this.basicSalary = basicSalary;
+        this.bonus = bonus;
+    }
+
+    public double getBasicSalary() {
+        return basicSalary;
+    }
+
+    public double getBonus() {
+        return bonus;
+    }
+}
+
+
+
+class SalaryCalculator {
+
+    public double calculateSalary(Employee emp) {
+
+        return emp.getBasicSalary() + emp.getBonus();
+    }
+
+}
+
+
+
+Now Question yourself: The calculateSalary() method of SalaryCalculator class using which data of its own class ?
+
+Ans/- Nothing.. the calculateSalary() method is totally depends upon the Employee class. So this calculateSalary() method should be the part of Employee class only.
+
+
+Better design:
+---------------
+
+
+class Employee {
+
+    private String name;
+    private double basicSalary;
+    private double bonus;
+
+    public Employee(String name, double basicSalary, double bonus) {
+
+        this.name = name;
+        this.basicSalary = basicSalary;
+        this.bonus = bonus;
+    }
+
+    public double getBasicSalary() {
+        return basicSalary;
+    }
+
+    public double getBonus() {
+        return bonus;
+    }
+
+    public double calculateSalary() {
+
+        return basicSalary + bonus;
+    }
+
+}
+
+
+--If a method spends more time using another object's data than its own, it may suffer from the Feature Envy code smell. Consider moving that method to the class that owns the data.
+
+
+
+
+8. Shotgun Surgery:
+-------------------
+
+--Shotgun Surgery is a code smell that occurs when a single change requires modifying many different classes or files.
+
+In simple words:
+
+--One small change forces you to make changes in multiple places in the codebase.
+
+
+Difference between Duplicate code and Shotgun Surgery:
+--------------------------------------------------------
+
+--Duplicate Code is about the same code being copied in multiple places. Shotgun Surgery is about a single change requiring modifications in many places. Duplicate code is one common cause of Shotgun Surgery, but Shotgun Surgery can also happen because of poor design, tight coupling, or responsibilities being scattered across many classes.
+
+
+--This indicates poor modularity and weak separation of responsibilities.
+
+Example:
+
+--Suppose GST is calculated in four different classes.
+
+OrderService
+InvoiceService
+PaymentService
+ReportService
+
+
+Each class contains:
+
+--double gst = amount * 0.18;
+
+
+--Now the government changes GST from 18% to 20%.
+
+You must modify:
+
+OrderService
+InvoiceService
+PaymentService
+ReportService
+
+This is Shotgun Surgery.
+
+
+Student Task:
+-------------
+
+
+Legacy Order Processing Refactoring Exercise:
+=============================================
+
+Objective:
+
+--You have inherited a legacy Order Processing system. The code works, but it violates several SOLID principles and contains multiple code smells.
+
+Your task is to:
+
+--Identify the code smells.
+--Identify the violated SOLID principles.
+--Refactor the design.
+--Explain why your solution is better.
+
+
+Legacy Code:
+------------
+
+
+Item.java:
+---------
+
+public class Item {
+
+    private String name;
+    private double price;
+    private int quantity;
+
+    public Item(String name, double price, int quantity) {
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+}
+
+
+
+
+Order.java:
+-----------
+
+import java.util.List;
+
+public class Order {
+
+    private List<Item> items;
+    private String customerType;
+
+    public Order(List<Item> items, String customerType) {
+        this.items = items;
+        this.customerType = customerType;
+    }
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public String getCustomerType() {
+        return customerType;
+    }
+}
+
+
+
+OrderService.java:
+------------------
+
+class OrderService {
+
+    public void processOrder(Order order) {
+
+        // Validate Order
+        if (order.getItems().isEmpty()) {
+            throw new RuntimeException("Order is empty");
+        }
+
+        // Calculate Total
+        double total = 0;
+        for (Item item : order.getItems()) {
+            total += item.getPrice() * item.getQuantity();
+        }
+
+        // Apply Discount
+        if (order.getCustomerType().equals("PREMIUM")) {
+            total = total * 0.9;
+        }
+
+	// Connecting with the DB
+	System.out.println("Connecting with the DB Server");
+
+        // Save Order
+        System.out.println("Saving order into database...");
+
+        // Send Email
+        System.out.println("Sending confirmation email...");
+
+        // Generate Report
+        System.out.println("Generating order report...");
+    }
+}
+
+
+
+Demo.java:
+----------
+
+import java.util.List;
+
+public class Demo {
+
+    public static void main(String[] args) {
+
+        Item laptop = new Item("Laptop", 50000, 1);
+        Item mouse = new Item("Mouse", 1000, 2);
+
+        Order order = new Order(List.of(laptop, mouse),"PREMIUM");
+
+        OrderService service = new OrderService();
+        service.processOrder(order);
+    }
+}
+
+
+
+
+Questions:
+
+Q1. Which SOLID principle(s) are violated?
+Q2. Identify at least four code smells present in the code.
+Q3. How would you refactor this design?
+Q4. Which responsibilities can be moved into separate classes?
+Q5. How will your design make future changes easier?
 
 
 

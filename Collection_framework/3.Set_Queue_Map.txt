@@ -1,3 +1,56 @@
+Collection: 
+List: ---> index supports:-- ArrayList, LinkedList, Vector-->Stack
+
+//Raw type type unsafe list
+ArrayList al = new ArrayList();
+al.add("")
+
+// Type safe list
+//ArrayList<Student> students = new ArrayList<>();
+
+Iterator :  ListIterator
+
+
+List<Student> students = new ArrayList<>();
+
+// Collections   
+
+
+LinkedList<> Node
+
+List list = new LinkedList<>();
+Deque dq = new LinkedList<>();
+Queue q = new LinkedList<>();
+
+ Set: 
+
+HashSet: hashing machanism 
+
+
+HashSet<Student> hs = new HashSet<>();
+
+equals() -----> 
+hashCode() --> 
+
+String
+Wrapper classes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Set in Java:
 ============
 
@@ -50,7 +103,6 @@ HashSet Class:
 
 
 Note: Internally, HashSet uses HashMap to store elements. The element itself is stored as a key in the HashMap, and a dummy object is used as the value.
-
 
 
 Use HashSet when:
@@ -479,7 +531,7 @@ HashSet Internal working:
 
 Analogy:
 
---Suppose a college has 16 lockers.
+--Suppose a college has 16 lockers. 1-->10000
 
 --Each student gets locker number based on Roll Number:
 
@@ -654,7 +706,7 @@ Bucket Index:
 6
 7
 8
-9   -> (25,PRESENT) -> (41, PRESENT) -> (57, PRESENT)
+9   -> (25,PRESENT) -> (41, PRESENT) -> (57, PRESENT) 
 10
 11
 12
@@ -2206,8 +2258,6 @@ public static void display(List<Product> products) {
 
 
 
-
-
 Queue in Java:
 ==============
 
@@ -2399,30 +2449,6 @@ Constructors:
 -------------
 
 1. PriorityQueue<Integer> pq = new PriorityQueue<>(); //default capacity is 11
-
---So internally Java creates space for 11 elements initially.
-
---When the internal array becomes full, PriorityQueue automatically grows.
-
---The growth is: 
-
-If current capacity < 64
-
-Grow by approximately:
-
-newCapacity = oldCapacity + (oldCapacity + 2)
-
-Which is roughly:
-
---about 2x + small adjustment
-
-If current capacity >= 64
-
-Grow by:
-
-newCapacity = oldCapacity + (oldCapacity / 2)
-
-Which means: 1.5 times
 
 
 2. PriorityQueue<Integer> pq = new PriorityQueue<>(100); with initial capacity 100
@@ -3050,6 +3076,11 @@ Stack (LIFO)
 --It has low memory overhead because it doesn't need to create "Node" objects for every element like a LinkedList.
 
 --Like most collections, it is not synchronized.
+
+
+int[] arr= new int[5];
+
+
 
 
 
@@ -3749,7 +3780,6 @@ interface Map<K,V> {
 
 
 
-
 Important Points about Entry:
 ------------------------------
 
@@ -4187,6 +4217,17 @@ public class Demo {
 		List<Map.Entry<String, Employee>> list = new ArrayList<>(entrySet);
 		
 		
+		Collections.sort(list,(me1, me2) ->{
+			
+			Employee emp1= me1.getValue();
+			Employee emp2= me2.getValue();
+			
+			return Double.compare(emp1.getSalary(), emp2.getSalary());
+			
+		} );
+
+
+		// or we can use this approach also
 		list.sort((me1, me2) ->{
 			
 			Employee emp1= me1.getValue();
