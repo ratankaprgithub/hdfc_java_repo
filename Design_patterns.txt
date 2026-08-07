@@ -1206,6 +1206,18 @@ public class Client {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 Difference Between Factory Method and Abstract Factory:
 -------------------------------------------------------
 
@@ -1337,6 +1349,2712 @@ Implement:
 
 ModernFurnitureFactory
 ClassicFurnitureFactory
+
+
+
+
+
+
+
+
+Singleton Pattern:
+===================
+
+--How many principle are there in your school/collage ?
+
+1
+2
+10
+50
+
+Obviously: Only one
+
+--If there would be 5 principles are there: 
+
+1st Principle: Tomorrow is holiday 
+2nd Principle: Tomorrow is exam
+3rd Principle: Tomorrow is Sprots day
+--
+--
+
+
+Analogy:
+--------
+
+--suppose we want to perform some Database operation from our Java application. 
+
+--And imagine there is a class called DatabaseConnection
+
+Now, Employees can create multiple DatabaseConnection objects
+
+
+DatabaseConnection db1 = new DatabaseConnection();
+DatabaseConnection db2 = new DatabaseConnection();
+DatabaseConnection db3 = new DatabaseConnection();
+
+
+Remember, Database connections are very expensive because each connection consumes:
+
+Memory
+Network
+Resources
+Cost
+ 
+
+--Imagine, Amazon will open or create a new Database connection for each user request then for 1 lakh request simulatenouisly, 1 lakh Databse connection object is created...
+
+Server crash
+
+
+Solution: Create only One Database connection, which will be used by all the user request.
+
+--Creating multiple objects of a class which serves the same functionalites is wastage of memory and time.
+
+--Generally if a class that does not having a any state(any variables)  only methods are there, or that class is having only readonly state like only final variables, creating multiple object of that class will be waste of memory. Here we can create only one object of that class and reuse that object for multiple time. because creating object is costly affair in Java(memory utilizations).
+
+
+--Singleton Design pattern is a creational design pattern which allows the application to create only one object of a Java class and reuse it for multiple times on each JVM in order to minimize the memory wastage and to increase the performance.
+
+
+--A Singleton is a class that ensures only one instance exists within a JVM and provides a global access point to that instance.
+
+
+
+In realtime applications generrally we create the following classes as singleton:
+
+
+Configuration Manager
+Logger
+Cache Manager
+Database Connection Manager
+Printer Spooler
+License Manager
+
+
+--because only one object is sufficient for each one.
+
+
+Don't use Singleton for:
+
+Student
+Employee
+Customer
+Order
+Product
+
+--These represent real-world entities where multiple objects are expected with different state.
+
+
+
+
+Creating Singleton class:
+-------------------------
+
+--There are many ways we can create a class as singleton Java class, but at the end they all acheive the same result of a single object.
+
+--To develop perfect singleton Java class we need to close all the doors that are there to create object for a Java class and open one door to check and create a single object.
+
+--The biggest door from outside is the "new" operator: (public constructor) making it as private.
+
+--We need to open one door (taking a public static method which returns the object of the same class)
+
+public static getInstance();
+
+
+
+
+Eager Singleton:
+-----------------
+
+--Simplest implementation:
+
+
+DatabaseConnection.java:
+------------------------
+
+public class DatabaseConnection {
+
+    private static final DatabaseConnection INSTANCE = new DatabaseConnection();
+
+    private DatabaseConnection() {
+
+    }
+
+    public static DatabaseConnection getInstance() {
+
+        return INSTANCE;
+
+    }
+
+}
+
+
+Demo.java:
+----------
+
+public class Demo {
+
+    public static void main(String[] args) {
+
+        DatabaseConnection db1 = DatabaseConnection.getInstance();
+
+        DatabaseConnection db2 = DatabaseConnection.getInstance();
+
+        DatabaseConnection db3 = DatabaseConnection.getInstance();
+
+        System.out.println(db1);
+
+        System.out.println(db2);
+
+        System.out.println(db3);
+
+    }
+
+}
+
+
+
+Output:
+
+DatabaseConnection@7ad
+DatabaseConnection@7ad
+DatabaseConnection@7ad
+
+
+
+--Here As soon as the class will be loaded into the memory the Object of the DatabaseConnection class is created into the memory. and the same object will be returned every time when we call getIntance() method.
+
+
+Advantages:
+
+--Very simple.
+--Thread-safe because the JVM loads classes safely.
+--No synchronization required.
+
+
+Disadvantages:
+
+--Object is created even if it is never used.
+--Wastes memory if object creation is expensive.
+
+
+
+Note: if the object creation is multi step approach or need to handle exceptions then the same advantage we can get by creating the object inside the static block of that class.
+
+Example:
+
+
+
+DatabaseConnection.java:
+------------------------
+
+public class DatabaseConnection {
+
+    private static final DatabaseConnection INSTANCE = null; 
+
+   static {
+        try {
+            System.out.println("Reading configuration...");
+            INSTANCE = new DatabaseConnection();
+        } catch (Exception e) {
+           System.out.println(e.getMessage());
+        }
+    }
+
+
+    private DatabaseConnection() throws Exception{
+
+    }
+
+    public static DatabaseConnection getInstance() {
+
+        return INSTANCE;
+
+    }
+
+}
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+Lazy Initialization:
+--------------------
+
+--Create the object only when it is required.
+
+--And next time onwards return the same object.
+
+
+
+
+
+
+DatabaseConnection.java:
+------------------------
+
+public class DatabaseConnection {
+
+    private static DatabaseConnection INSTANCE;
+
+    private DatabaseConnection() {
+
+    }
+
+    public static DatabaseConnection getInstance() {
+
+
+	if(INSTANCE == null){
+        	INSTANCE = new DatabaseConnection();
+	}
+
+	return INSTANCE;
+    }
+
+}
+
+
+Advantages:
+
+--Object is created only when needed.
+--Saves memory.
+
+Problem:
+
+--This implementation is not thread-safe.
+
+--Suppose two threads execute
+
+getInstance(); at exactly the same time.
+
+Both may see instance == null
+
+and both create separate objects.
+
+Singleton breaks due to the Race condition.
+
+
+
+Making our Singleton class multithreaded compatible:
+----------------------------------------------------
+
+
+public class DatabaseConnection{
+
+//it is good practice to make this variable as volatile in multi-threaded environment
+
+private static volatile DatabaseConnection INSTANCE;
+
+
+private DatabaseConnection(){
+
+}
+
+
+public static DatabaseConnection getInstance(){
+
+
+synchronized(DatabaseConnection.class){
+
+if(INSTANCE == null)
+	instance=new DatabaseConnection();
+
+}
+
+
+return INSTANCE;
+
+}
+}
+
+
+Advantages:
+
+--Thread-safe.
+
+Disadvantages:
+
+--Every call acquires a lock of the DatabaseConnection class.
+--Slower because synchronization happens even after the object has already been created.
+
+
+--It synchronizes every call. 
+
+Even after the object has already been created.
+
+This causes unnecessary locking.
+
+
+Double Checked Locking: recommended
+-----------------------
+
+--To avoid unnecessary synchronization, check twice.
+
+
+public class Singleton {
+
+    private static volatile DatabaseConnection INSTANCE;
+
+    private DatabaseConnection() {
+    }
+
+    public static DatabaseConnection getInstance() {
+
+        if (INSTANCE == null) {
+
+            synchronized (DatabaseConnection.class) {
+
+                if (INSTANCE == null) {
+                    INSTANCE = new DatabaseConnection();
+                }
+            }
+        }
+
+        return INSTANCE;
+    }
+}
+ 
+
+
+--Here if the object is created then next time if a thread in calling getInstance() method, it does not require to accquire a lock. 
+
+
+
+
+Static Inner Class Singleton:
+-----------------------------
+
+--This is one of the cleanest implementations.
+
+public class DatabaseConnection {
+
+    private DatabaseConnection() {
+    }
+
+    private static class Holder {
+
+        private static final DatabaseConnection INSTANCE = new DatabaseConnection();
+
+    }
+
+    public static DatabaseConnection getInstance() {
+
+        return Holder.INSTANCE;
+
+    }
+
+}
+
+
+Here:
+
+--The outer class loads first.
+
+--The inner class is not loaded immediately.
+
+--The inner class loads only when getInstance() is called.
+
+--Therefore, the object is created lazily.
+
+--Class loading is thread-safe, so no explicit synchronization is required.
+
+
+Advantages:
+
+--Lazy initialization.
+--Thread-safe.
+--No synchronization overhead.
+
+
+Enum Singleton:
+---------------
+
+--The simplest and safest implementation.
+
+public enum DatabaseConnection {
+
+    INSTANCE;
+
+    public void display() {
+        System.out.println("Singleton Object");
+    }
+}
+
+
+
+Client code:
+
+
+public class TestSingleton {
+
+    public static void main(String[] args) {
+
+        // Access the singleton object
+        DatabaseConnection singleton1 = DatabaseConnection.INSTANCE;
+        DatabaseConnection singleton2 = DatabaseConnection.INSTANCE;
+
+        singleton1.display();
+        singleton2.display();
+
+        // Check whether both references point to the same object
+        System.out.println(singleton1 == singleton2);      // true
+        System.out.println(singleton1.equals(singleton2)); // true
+
+        // Print hashcodes
+        System.out.println(singleton1.hashCode());
+        System.out.println(singleton2.hashCode());
+    }
+}
+
+
+
+Advantages:
+
+--Thread-safe.
+--Prevents reflection attacks.
+--Prevents serialization issues.
+--Very simple to implement.
+
+--This approach is recommended by Joshua Bloch in Effective Java.
+
+--The most frequent approach is static inner class approach. and enum is also shortcut of creating a singleton object.
+
+
+Disadvantage:
+
+--You cannot perform custom multi-step lazy initialization using an enum Singleton.
+
+
+
+
+Q/- Which Singleton Should We Use?
+-----------------------------------
+
+1. Eager:
+
+Use when
+
+--Object is lightweight
+
+--and always required.
+
+
+2. Lazy:
+
+--Never use directly.
+
+--Not thread-safe.
+
+
+3. synchronized
+
+--Good
+
+--but slower.
+
+
+4. Double Checked Locking
+
+--Very common
+
+--in enterprise applications.
+
+--Excellent.
+
+
+5. Static Inner Class
+
+--One of the best implementations.
+
+--Simple
+
+--Fast
+
+--Lazy
+
+--Thread-safe.
+
+
+
+6. Enum Singleton
+
+--Safest implementation.
+
+--Recommended in many cases.
+
+Especially when
+
+--Reflection
+
+and
+
+--Serialization
+
+must be prevented.
+
+
+
+
+
+
+Exercise: DatabaseConnectionFactory
+===================================
+
+Suppose, you joined HDFC company and your application is currently uses: MySQL database.
+
+
+Example:
+
+public class UserService {
+
+    public void saveUser() {
+
+        DatabaseConnection db = new MySqlConnection();
+
+        db.connect();
+
+
+	// save the user data to the database.
+    }
+
+}
+
+
+Similarly,
+
+InverntoryService
+OrderService
+PaymentService
+--
+500+ classes..
+
+
+
+
+
+--After 6 month management decided to migrate the database to PostgreSQL.
+
+--Then we need to do the modification in all the files where we created the object of MySqlConnection class.
+
+new MySqlConnection(); to new PostgreSQLConnection();
+
+500+ files..
+
+--After a few year management want to switch to the Oracle DB after some time SQLServer DB...
+
+
+Then, we need to keep on changing:
+
+new OracleConnection()
+
+new SqlServerConnection()
+
+new PostgreSqlConnection()
+
+
+--In all over 500+ classes or files..
+
+
+--It is a bad design, there must be a better design.
+
+
+
+Solution:
+
+Instead of saying: 
+
+new MySqlConnection(); // Create a MySqlConnection()
+
+Client should say: 
+
+--Give me a database connection.
+
+Factory decides: 
+
+--which implementation to return.
+
+
+
+Step 1:  Create an interface.
+
+
+public interface DatabaseConnection {
+
+    void connect();
+
+}
+
+
+Step 2: Implement all the database connection classes to this DatabaseConnection interface:
+
+
+MySQL: 
+
+public class MySqlConnection implements DatabaseConnection {
+
+    @Override
+    public void connect() {
+
+        System.out.println("Connected to MySQL");
+
+    }
+
+}
+
+
+
+PostgreSQL:
+
+public class PostgreSqlConnection implements DatabaseConnection {
+
+    @Override
+    public void connect() {
+
+        System.out.println("Connected to PostgreSQL");
+
+    }
+
+}
+
+
+Oracle:
+
+public class OracleConnection implements DatabaseConnection {
+
+    @Override
+    public void connect() {
+
+        System.out.println("Connected to Oracle");
+
+    }
+
+}
+
+
+
+SQL Server:
+
+public class SqlServerConnection implements DatabaseConnection {
+
+    @Override
+    public void connect() {
+
+        System.out.println("Connected to SQL Server");
+
+    }
+
+}
+
+
+Step 4: Create a DatabaseConnectionFactory class which will return any database connection object based on the user requirement:
+
+
+public class DatabaseConnectionFactory {
+
+    public static DatabaseConnection getConnection(String db) {
+
+        switch (db.toLowerCase()) {
+
+            case "mysql":
+                return new MySqlConnection();
+
+            case "postgres":
+                return new PostgreSqlConnection();
+
+            case "oracle":
+                return new OracleConnection();
+
+            case "sqlserver":
+                return new SqlServerConnection();
+
+            default:
+                throw new IllegalArgumentException("Unknown Database");
+        }
+
+    }
+
+}
+
+
+
+
+Client code:
+
+
+public class Client {
+
+    public static void main(String[] args) {
+
+        DatabaseConnection db =DatabaseConnectionFactory.getConnection("mysql");
+
+        db.connect();
+
+    }
+
+}
+
+
+
+
+--In realword, the client class which require the database connection could be the..
+
+
+UserService
+InverntoryService
+OrderService
+PaymentService
+--
+500+ classes..
+
+
+Like:
+
+
+
+public class UserService {
+
+    public void saveUser() {
+
+        DatabaseConnection db = DatabaseConnectionFactory.getConnection("mysql");
+
+
+        db.connect();
+
+
+	// save the user data to the database.
+    }
+
+}
+
+
+
+--So, here we don't hardcode: 
+
+getConnection("mysql"); 
+
+
+--We read this configuration from the .properties file (It is a text file with .properties extension)
+
+Example:
+
+dbconf.properties
+-----------------
+
+dbname=mysql
+
+
+--And we read the configuration from this dbconf.properties file in all the Client classes:
+
+Example:
+
+
+Properties properties = new Properties();
+
+properties.load(new FileInputStream("dbconfig.properties"));
+
+String dbname = properties.getProperty("dbname");
+
+
+--And Then:
+
+
+DatabaseConnection connection = DatabaseConnectionFactory.getConnection(dbname);
+
+--Now tomorrow DB changing database means
+
+only changing
+
+dbname=oracle
+
+--No recompilation.
+--No Java code changes.
+
+
+
+Let's solve the last problem of this desing:
+
+
+For each client call:
+
+DatabaseConnectionFactory.getConnection(dbname); //"mysql"
+
+
+--Internally this getConnection() method of DatabaseConnectionFactory class will create a brand new object of MySqlConnection class.
+
+
+Question:
+
+--Do we need multiple object of MySqlConnection class, everywhare a brand new MySqlConnection object ?
+
+--We already know that DB connection is the costly resource, only one connection is enough for the entire application.
+
+--So, here Singleton enters:
+
+
+Singleton + Factory:
+-----------------------
+
+Instead of
+
+return new MySqlConnection();
+
+--We'll make every connection class as Singleton.
+
+
+MySQLConnection Singleton:
+--------------------------
+
+public class MySqlConnection implements DatabaseConnection {
+
+    private static final MySqlConnection INSTANCE = new MySqlConnection();
+
+    private MySqlConnection() {
+    }
+
+    public static MySqlConnection getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
+    public void connect() {
+
+        System.out.println("Connected to MySQL");
+
+    }
+
+}
+
+
+
+
+Modify the DatabaseConnectionFactory class:
+
+
+
+DatabaseConnectionFactory.java:
+------------------------------
+
+
+public class DatabaseConnectionFactory {
+
+    public static DatabaseConnection getConnection(String db) {
+
+        switch (db.toLowerCase()) {
+
+            case "mysql":
+                return MySqlConnection.getInstance();
+
+            case "postgres":
+                return PostgreSqlConnection.getInstance();
+
+            case "oracle":
+                return OracleConnection.getInstance();
+
+            default:
+                throw new IllegalArgumentException("Unknown Database");
+        }
+
+    }
+
+}
+
+
+
+Complete flow:
+--------------
+
+
+
+	  Client
+            |
+   DatabaseConnectionFactory
+	    |
+------------------------------------------------------------------
+|			|		                  |
+MySqlConnection      PostgreSQLConnection            OracleConnection
+   |			 |				  |
+Singlton obj	     Singleton obj			Singleton obj
+
+
+
+
+
+Note: Since we are making use of the configuration file to read the details from outside (using a .properties file ), for this case Here Factory pattern is ok. otherwise we need to follow the Factory method pattern. 
+
+
+
+
+Student task:
+---------------
+
+If you notice the DatabaseConnectionFactory class:
+
+--It is just following the Factory pattern not the Factory method design pattern.
+
+--And violates the rule of OCP SOLID principle.
+
+--Because if tommorow any new Database connection is required like: MongodbConnection, then we need to modify the DatabaseConnectionFactory class
+
+
+case "mongodb":
+	return MongoDbConnection.getInstance();
+
+
+--Refactor the above code to follow the Factory method pattern, which satisfy the OCP also.
+
+
+Hint: Instead of one factory DatabaseConnectionFactory, create multiple factories for each Database:
+
+ex:
+
+MySqlFactory
+OracleFactory
+SQlServerFactory
+..
+MongoFactory
+
+by implementing the following interface:
+
+
+public interface ConnectionFactory {
+
+    DatabaseConnection createConnection();
+
+}
+
+
+
+Q/- When is Simple Factory Enough?
+
+A/- Simple Factory is perfectly acceptable when:
+
+--The number of product types is small and stable.
+--New products are rarely added.
+--Simplicity is more important than complete adherence to OCP.
+
+
+--When Should We Prefer Factory Method?
+
+When:
+
+--New product types are added frequently.
+--The application is expected to evolve over time.
+--You want to follow the Open-Closed Principle.
+--Different teams may independently introduce new implementations.
+
+
+
+Note: Using a configuration file makes the application configurable by moving values outside the source code. However, it does not remove the Open-Closed Principle violation of a Simple Factory. If new product types are expected to be added frequently, the Factory Method Pattern is preferred because it allows the system to grow through extension rather than modification.
+
+
+	
+
+Builder Pattern:
+=================
+
+
+--The Builder Pattern is a creational design pattern used to construct complex objects step-by-step. It is the preferred solution in Java when an object requires a large number of optional parameters, effectively solving the messy "telescoping constructor" problem and ensuring object immutability.
+
+
+Analogy:
+---------
+
+Suppose you went to Domino's to order a Pizza,
+
+--Cashier ask: Which size ?
+
+you: medium pizza,
+
+cashier: Extra cheese ?
+
+you: yes
+
+cashier: Mushroom ?
+
+you: no
+
+cashier: Paneer ?
+
+you: yes
+
+cashier: Coke ?
+
+you: yes
+
+
+Question: Does everyone order the same pizza?
+
+Ans/- No.
+
+--Someone says
+
+Small
+
+Veg
+
+
+--Someone says
+
+Medium
+
+Extra Cheese
+
+Mushroom
+
+
+--Someone says:
+
+Large
+
+Extra Cheese
+
+Paneer
+
+Olives
+
+Corn
+
+Double Cheese
+
+
+Question:  Can one constructor handle all these combinations nicely?
+
+
+Let's see another example:
+
+
+Suppose you want to send an Email:
+
+--To send an Email we have varaious fields like:
+
+From
+To
+Subject
+Body
+CC
+BCC
+Attachment
+Priority
+Signature
+ReplyTo
+ReadReceipt
+
+Question: Is all fields are mandatory ?
+
+Ans/- No
+
+Only mandatory fields are: 
+
+to
+from
+
+--Remaining all fields are optional.
+
+
+Beginer Student will create a class with a constructor with all the fields:
+
+Example:
+
+
+public Email(String from, String to, String subject, String body, String cc, String bcc, String attachment, String priority, String signature ){
+
+this.from = from;
+this.to = to
+--
+--
+
+}
+
+
+--And if client want to Create the Email object with just using "to" and "from" and he don't want any extra things:
+
+
+Email email = new Email("a@gmail.com", "b@gmail.com", null, null, null, null, null, null, null );
+
+
+Problem:
+
+--It is not at all readable.
+--Client need to know about all the parameters and their order.
+
+--Tomorrow if manager ask to add some fields then we need to modify the constructor again and again..
+
+This Problem is Called: Telescoping Constructor Problem.
+
+Telescoping Constructor:
+-----------------------
+
+Version 1
+
+public Email(String from,String to)
+
+
+Version 2
+
+public Email(String from,
+             String to,
+             String subject)
+
+
+Version 3
+
+public Email(String from,
+             String to,
+             String subject,
+             String body)
+
+
+Version 4
+
+public Email(String from,
+             String to,
+             String subject,
+             String body,
+             String cc)
+
+
+
+Version 5
+
+public Email(...)
+
+Version 6
+
+public Email(...)
+
+
+
+
+--Constructors become difficult to manage when a class contains many optional fields.
+
+--This leads to the Telescoping Constructor Problem, where multiple overloaded constructors are created to support different combinations of parameters.
+
+
+
+--A Telescoping Constructor is an anti-pattern where a class has multiple overloaded constructors, each calling another constructor with one additional parameter ( chaining them together like sections of a expanding telescope).
+
+--It is essentially the problem of having too many overloaded constructors, specifically designed to handle optional parameters when instantiating an object.
+
+Note: Builder Pattern is initially discovered to solve the telescoping constructor problem only.
+
+
+--Now to solve this problem, we can think another approach like: Using a Java Bean class:
+
+instead of initializing the fields using constructor, we can make use of setter methods.
+
+--So create the object using normal constructor:
+
+Email email = new Email();
+
+--and set all the fields using the setter methods:
+
+email.setFrom(...);
+
+email.setTo(...);
+
+email.setSubject(...);
+
+email.setBody(...);
+
+
+
+--But with approach also there is a problem:
+
+--if client forget to set the mandatory fields ?
+
+
+Another problem with this approach: 
+
+In multithreaded environment if:
+
+Thread A
+
+calls the setTo();
+
+At the same time:
+
+Thread B 
+
+calls: send(email)
+
+--At this point the object is half initialized..which can be dangerous.
+
+
+
+JavaBeans Problems:
+
+--Mutable object
+--Half-constructed object
+--Mandatory fields not guaranteed
+--Difficult to make thread-safe
+
+
+
+So What Do We Need?
+
+We want:
+
+--Mandatory fields required
+
+--Optional fields optional
+
+--Easy to read
+
+--Immutable object
+
+--No telescoping constructors
+
+
+Question:  Is there a pattern?
+
+Yes.
+
+Builder Pattern.
+
+
+
+--Builder Pattern separates the construction of a complex object from its representation, allowing the object to be built step by step.
+
+Simple language
+
+--Instead of creating a complex object in one huge constructor, build it gradually.
+
+
+
+Builder Idea: 
+
+Instead of creating object directly we create another helper class called: Builder
+
+
+Builder will collects all values one by one. Finally creates object.
+
+
+Just like, you want to build a house, so you can use a builder to build your house:
+
+the builder will first build the foundation,
+then walls
+then doors
+then windows
+then roof
+then painting
+then House is ready, and given to you.
+
+--This is what a builder pattern.
+
+
+Example:
+
+PizzaBuilder
+BurgerBuilder
+HouseBuilder
+EmailBuilder
+
+
+
+With Builder, How the client code will look like:
+
+Instead of,
+
+Email email = new Email(
+			"a@gmail.com",
+			"b@gmail.com",
+			null,
+			null,
+			null,
+			null,
+			null
+			);
+
+
+It looks like:
+
+Email email =new EmailBuilder()
+				.from("abc@gmail.com")
+            			.to("xyz@gmail.com")
+            			.subject("Meeting")
+		                .body("Tomorrow")
+  		                .build();
+
+
+
+
+Is it Readable?: Yes
+Need null?: No.
+Need 20 constructor?: No
+
+
+
+
+--Is it not looking like method chaining mechanism, recall our Calculator class:
+
+
+public class Calculator {
+
+    private int result = 0;
+
+    public Calculator add(int n) {
+        result += n;
+        return this;
+    }
+
+    public Calculator subtract(int n) {
+        result -= n;
+        return this;
+    }
+
+    public Calculator multiply(int n) {
+        result *= n;
+        return this;
+    }
+
+    public int getResult() {
+        return result;
+    }
+}
+
+
+
+Inside the main method we used:
+
+
+Calculator cal = new Calculator();
+
+int result = cal
+        .add(10)
+        .subtract(5)
+        .multiply(2)
+        .getResult();
+
+
+
+
+--In the similar way we use builder pattern.
+
+--Here each method of EmailBuilder class retunrs its own object by using 'this' keyword, except the last method build().
+
+--build() is the last method which returns the final Email class object.
+
+
+
+Fluent API: 
+-----------
+
+--A Fluent API in Java is a software engineering design style based on method chaining that makes source code more intuitive, readable, and structured like a natural English sentence.
+
+
+
+Method Chaining vs Fluent API:
+
+--Method Chaining is a programming technique.
+
+--Fluent API is a design style that makes the code readable and expressive by using Method Chaining.
+
+In Simple Language:
+
+--Method Chaining tells us HOW methods are called.
+
+--Fluent API tells us HOW BEAUTIFULLY the API is designed.
+
+Remember:
+
+--Every Fluent API uses Method Chaining.
+
+But
+
+--Every Method Chaining is not necessarily a Fluent API.
+
+
+
+Example:
+
+
+String str = " Welcome to Java ";
+
+String result = str
+                    .toUpperCase()
+                    .trim()
+                    .replace("JAVA", "Spring Boot")
+                    .concat(" !!!");
+
+System.out.println(result);
+
+
+--The above approach is method chaining and can be called as Fluent API because: the code reads naturally like a sentence.
+
+Another example: 
+
+students.stream()
+        .filter(s -> s.getMarks() > 60)
+        .sorted()
+        .limit(5)
+        .toList();
+
+--Method chaining as well as fluent API.
+
+
+
+Example: Method chaining but not a fluent API
+
+public class NumberProcessor {
+
+    private int value;
+
+    public NumberProcessor(int value) {
+        this.value = value;
+    }
+
+    public NumberProcessor fun1() {
+        value += 5;
+        return this;
+    }
+
+    public NumberProcessor fun2() {
+        value *= 2;
+        return this;
+    }
+
+    public NumberProcessor fun3() {
+        value = value % 7;
+        return this;
+    }
+
+    public int getValue() {
+        return value;
+    }
+}
+
+
+
+
+Client code:
+
+
+int result = new NumberProcessor(10)
+                    .fun1()
+                    .fun2()
+                    .fun3()
+                    .getValue();
+
+
+
+--It is not a fluent API.
+
+
+
+
+Note: In real enterprise Java, if someone intentionally writes method chaining, they almost always choose meaningful method names. As a result, the API naturally becomes fluent.
+
+
+--The Builder Pattern separates object construction from the final object, allowing complex objects to be created step by step using a readable and maintainable fluent API.
+
+
+
+
+Advantages of Builder pattern:
+--------------------------------
+
+--Eliminates telescoping constructors.
+--Makes object creation more readable.
+--Mandatory fields enforced
+--Supports optional parameters naturally.
+--Works well with immutable objects.
+--Improves maintainability and extensibility.
+
+
+
+Q/- When to use Builder Pattern:
+
+Many optional parameters exist.
+Objects should be immutable.
+Constructor becomes difficult to read.
+Validation is required before object creation.
+
+
+Q/- When to not use Builder Pattern:
+
+
+Class has only 2–3 mandatory fields.
+No optional fields exist.
+
+--Here Simple construtor is enough.
+
+
+
+
+
+Desiginig the Email class using Builder pattern:
+------------------------------------------------
+
+We want to create
+
+Email email = new Email.Builder("admin@hdfc.com","customer@gmail.com")
+        								.subject("Loan Approved")
+        								.body("Congratulations...")
+        								.cc("manager@hdfc.com")
+        								.build();
+
+
+
+--Because: to and from is mandatory and other fields are optional
+
+
+
+
+Step1: Identify the mandatory and optional fields:
+
+
+
+Step2: Make the Email class as immutable:
+
+Immutable Object:
+-----------------
+
+--An immutable object is an object whose state cannot be changed after it is created.
+
+--Once all the values are assigned during object creation, they remain fixed throughout the lifetime of the object.
+
+Characteristics of an Immutable Class:
+---------------------------------------
+
+--The class is declared as final (optional but recommended).
+--All instance variables are declared as private and final.
+--No setter methods are provided.
+--Values are initialized only through the constructor (or Builder).
+--If the class contains mutable objects (like List, Date, etc.), defensive copies are used.
+
+
+Q/- Why Should the Email Class be Immutable in the Builder Pattern?
+
+A/- 
+
+--The Builder Pattern is generally used to construct complex immutable objects.
+
+--After the build() method creates the Email object, its data should never change.
+
+For example, this should not be possible:
+
+email.setSubject("Hacked");   // Not allowed
+email.setTo("another@gmail.com"); // Not allowed
+
+
+Advantages of an Immutable Email Object:
+----------------------------------------
+
+1. Prevents Accidental Modification
+
+Once an email is created, nobody can accidentally change the recipient, subject, or body.
+
+Email email = builder.build();
+
+// Subject cannot be changed later.
+
+This guarantees that the email being sent is exactly the one that was created.
+
+
+2. Thread Safe
+
+Immutable objects are naturally thread-safe because multiple threads can read the same object simultaneously without synchronization.
+
+Thread-1 ---> Reads Email
+Thread-2 ---> Reads Email
+Thread-3 ---> Reads Email
+
+Since no thread can modify the object, there is no risk of inconsistent data.
+
+
+3. Maintains Data Integrity:
+
+--Imagine an email has already been validated and approved for sending.
+
+--If someone changes the recipient or subject afterward, the validation becomes invalid.
+
+--Immutability ensures that once an email is validated, it remains unchanged.
+
+
+
+4. Easy to Share
+
+--The same immutable email object can safely be passed to different methods or classes.
+
+Email email = builder.build();
+
+emailService.send(email);
+
+emailLogger.log(email);
+
+emailBackup.save(email);
+
+--Since none of these methods can modify the object, sharing it is completely safe.
+
+
+
+Note: The Builder class is itself mutable while constructing the object; the object produced by the Builder should be immutable.
+
+
+public final class Email {   // making it final is optional but recomended
+
+    private final String from;
+    private final String to;
+    private final String subject;
+    private final String body;
+    private final String cc;
+    private final String bcc;
+    private final String attachment;
+   
+
+    // constructor is private
+    private Email(Builder builder){
+
+        this.from = builder.from;
+        this.to = builder.to;
+        this.subject = builder.subject;
+        this.body = builder.body;
+        this.cc = builder.cc;
+        this.bcc = builder.bcc;
+        this.attachment = builder.attachment;
+   
+    }
+
+
+   // only getter methods for all the fields. No setter methods..
+   // toString() method for all the fileds.
+
+
+
+}
+
+
+--Here we marked the constructor as private, so that no one can create its object from the outside.
+
+--Only Builder class (inner class) will create its object.
+
+--We only defined the getter methods to get the properties values.
+
+--No setter methods.
+
+
+
+
+Step3:
+
+--Create a Builder class as static inner class inside the Email class:
+
+
+
+public static class Builder{
+
+}
+
+
+
+--We make this Builder class as inner class because:
+
+This Builder class belongs only to Email.
+
+
+--We make this Builder class as static because:
+
+This Builder class doesn't need Email object to exist.
+
+
+
+
+Step 4:
+
+--Take the mandatory fields also inside the Builder class and initialize it with the Builder class constructor.
+
+public static class Builder{
+
+    private String from;
+
+    private String to;
+
+    public Builder(String from, String to){
+
+        this.from = from;
+
+        this.to = to;
+
+    }
+
+}
+
+
+--With this developer can't forget the to and from fields; compiler will give an error.
+
+
+
+Step5:
+
+Define all the optional fields inside the inner Builder class also as private:
+
+
+private String subject;
+
+private String body;
+
+private String cc;
+
+private String bcc;
+
+private String attachment;
+
+
+
+Step 6: 
+
+Define the builder methods inside the Builder class for each optional properties as follows:
+
+For subject:
+
+public Builder subject(String subject){
+
+    this.subject = subject;
+
+    return this;
+
+}
+
+For Body:
+
+public Builder body(String body){
+
+    this.body = body;
+
+    return this;
+
+}
+
+similarly for other fields
+
+
+Step7: optional
+
+--Define the private validate() method inside the Builder class to validate the mandatory fields:
+
+ private void validate() {
+
+            if (from == null || from.isBlank()) {
+                throw new IllegalArgumentException("From email cannot be empty.");
+            }
+
+            if (to == null || to.isBlank()) {
+                throw new IllegalArgumentException("To email cannot be empty.");
+            }
+
+            if (!from.contains("@")) {
+                throw new IllegalArgumentException("Invalid From email.");
+            }
+
+            if (!to.contains("@")) {
+                throw new IllegalArgumentException("Invalid To email.");
+            }
+        }
+
+
+
+Because if someone call: 
+
+new Email.Builder("", "");
+
+--This should not be allowed.
+
+
+
+
+
+Step8: 
+
+--Define the last method build() inside the Builder class which will create and return the Email class object by passing its current referernce.
+
+--Inside this build method before returning the Email object we should call the validate() method.
+
+  
+
+public Email build() {
+
+            validate();
+
+            return new Email(this);
+  }
+
+
+
+
+
+
+Final version:
+--------------
+
+
+
+
+Email.java:
+----------
+
+
+public final class Email {
+
+    // Mandatory Fields
+    private final String from;
+    private final String to;
+
+    // Optional Fields
+    private final String subject;
+    private final String body;
+    private final String cc;
+    private final String bcc;
+    private final String attachment;
+   
+    /**
+     * Private Constructor
+     * Only Builder can create Email objects.
+     */
+    private Email(Builder builder) {
+
+        this.from = builder.from;
+        this.to = builder.to;
+        this.subject = builder.subject;
+        this.body = builder.body;
+        this.cc = builder.cc;
+        this.bcc = builder.bcc;
+        this.attachment = builder.attachment;    }
+
+    // Getters
+
+    public String getFrom() {
+        return from;
+    }
+
+    public String getTo() {
+        return to;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public String getCc() {
+        return cc;
+    }
+
+    public String getBcc() {
+        return bcc;
+    }
+
+    public String getAttachment() {
+        return attachment;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Email {" +
+                "\nFrom='" + from + '\'' +
+                ",\nTo='" + to + '\'' +
+                ",\nSubject='" + subject + '\'' +
+                ",\nBody='" + body + '\'' +
+                ",\nCC='" + cc + '\'' +
+                ",\nBCC='" + bcc + '\'' +
+                ",\nAttachment='" + attachment + '\'' +
+                "\n}";
+    }
+
+    /**
+     * Static Inner Builder Class
+     */
+    public static class Builder {
+
+        // Mandatory Fields
+        private final String from;
+        private final String to;
+
+        // Optional Fields
+        private String subject;
+        private String body;
+        private String cc;
+        private String bcc;
+        private String attachment;
+       
+        /**
+         * Constructor for Mandatory Fields
+         */
+        public Builder(String from, String to) {
+
+            this.from = from;
+            this.to = to;
+        }
+
+        public Builder subject(String subject) {
+            this.subject = subject;
+            return this;
+        }
+
+        public Builder body(String body) {
+            this.body = body;
+            return this;
+        }
+
+        public Builder cc(String cc) {
+            this.cc = cc;
+            return this;
+        }
+
+        public Builder bcc(String bcc) {
+            this.bcc = bcc;
+            return this;
+        }
+
+        public Builder attachment(String attachment) {
+            this.attachment = attachment;
+            return this;
+        }
+
+       
+
+        /**
+         * Final Object Creation
+         */
+        public Email build() {
+
+            validate();
+
+            return new Email(this);
+        }
+
+        /**
+         * Validation
+         */
+        private void validate() {
+
+            if (from == null || from.isBlank()) {
+                throw new IllegalArgumentException("From email cannot be empty.");
+            }
+
+            if (to == null || to.isBlank()) {
+                throw new IllegalArgumentException("To email cannot be empty.");
+            }
+
+            if (!from.contains("@")) {
+                throw new IllegalArgumentException("Invalid From email.");
+            }
+
+            if (!to.contains("@")) {
+                throw new IllegalArgumentException("Invalid To email.");
+            }
+        }
+
+    }
+
+}
+
+
+
+
+
+
+
+Modern Java Note (Lombok @Builder):
+-----------------------------------
+
+--In modern enterprise development (Spring Boot / Java microservices), writing manual builder boilerplate is often replaced using Project Lombok:
+
+Java
+@Getter
+@Builder
+public class Email {
+    private final String from;
+    private final String to;
+    private final String subject;
+    // ...
+}
+
+
+--Lombok automatically create a builder pattern for this Email class.
+
+
+
+
+
+
+
+Director Class (Optional):
+-------------------------
+
+--In the Builder Pattern, a Director is an optional class that knows how to build a particular object step-by-step using the Builder.
+
+--The Director does not create the object directly. Instead, it instructs the Builder about which construction steps should be executed and in what order.
+
+--The main responsibility of the Director is to encapsulate a predefined object construction process.
+
+Example:
+
+--Suppose an application frequently sends a Welcome Email to every new customer.
+
+--Instead of writing the following code repeatedly:
+
+
+Email email = new Email.Builder(
+        "admin@company.com",
+        "customer@gmail.com")
+        .subject("Welcome")
+        .body("Welcome to our platform.")
+        .build();
+
+
+
+We can create a Director class:
+
+
+public class EmailDirector {
+
+    public Email createWelcomeEmail(String customerEmail) {
+
+        return new Email.Builder(
+                "admin@company.com",
+                  customerEmail)
+                .subject("Welcome")
+                .body("Welcome to our platform.")
+                .build();
+    }
+}
+
+
+Client Code:
+
+	EmailDirector director = new EmailDirector();
+
+	Email email = director.createWelcomeEmail("john@gmail.com");
+
+
+
+Advantages:
+
+Reuses the same object construction logic.
+Keeps client code simple.
+Centralizes complex object creation.
+Ensures the object is always built in the correct sequence.
+
+
+
+Note: The Director class is completely optional. In many real-world Java applications, especially when using a Fluent Builder API, the client directly uses the Builder without a Director. A Director is useful only when the same construction process is reused multiple times or when object creation is complex.
+
+
+
+Behavioral Design Patterns:
+============================
+
+
+
+--Behavioral Design Patterns focus on how objects communicate and interact with each other.
+
+--Unlike Creational Patterns (which create objects) and Structural Patterns (which organize objects), Behavioral Patterns define how responsibilities are shared among objects.
+
+Examples include:
+
+Strategy
+Observer
+Command
+State
+Chain of Responsibility
+Iterator
+Mediator
+
+
+In this lesson, we will study the two most commonly used behavioral patterns:
+
+Strategy Pattern
+Observer Pattern
+
+
+
+Strategy Pattern:
+-----------------
+
+
+--The Strategy Pattern defines a family of algorithms, encapsulates each one into separate classes, and makes them interchangeable at runtime without changing the client code.
+
+
+Suppose, Virat kohali is batting in a oneday match:
+
+Situation 1: Fast bower
+
+Strategy: Defence
+
+Situation 2: Spin bowler 
+
+Strategy: Attack
+
+Situation 3: Power play
+
+Strategy: Aggresive
+
+--so based on the situation he changed his strategy.
+
+
+--Here same player but strategy is changed at runtime based on a context/situation.
+
+
+Another example:
+
+E-commerce website:  Pricing Algorithm
+
+Weekend: 20% Discount
+
+Festival: 40% Discount
+
+VIP Customer: 15%
+
+Student: 10%
+
+Employee: 30%
+
+Flash Sale: 50%
+
+
+--Same E-commerce application discount strategy is changed at runtime based on a context/situation.
+
+
+--Without strategy pattern, this type of scenario we generally manage inside our application using long if, else-if..else 
+
+
+Example:
+
+
+--Suppose Inside your application, the customer can do the payment by using different ways:
+
+sometime using:
+
+Credit Card
+
+sometime using:
+
+UPI
+
+sometime using:
+
+Netbanking
+
+sometime using:
+
+Debit card
+
+sometime using:
+
+Crypto
+
+And in future he can use Apple Pay also.
+
+
+
+
+So you have written a code like:
+
+
+class PaymentService {
+
+    public void pay(String type){
+
+        if(type.equals("UPI")){
+            System.out.println("Pay using UPI");
+        }
+
+        else if(type.equals("CARD")){
+            System.out.println("Pay using Card");
+        }
+
+        else if(type.equals("PAYPAL")){
+            System.out.println("Pay using PayPal");
+        }
+
+    }
+
+}
+
+
+
+--But after some time if you want to support:
+
+Crypto
+
+then
+
+--you have to modify this code and write:
+
+else if(type.equals("CRYPTO")){
+    ...
+}
+
+then again after some time
+
+Wallet
+GiftCard
+EMI
+
+--You need to modify the PaymentService class again and again..
+
+--Basically you are violating the OCP
+
+**If you observe the main task of the PaymentService class is to accept the payment.
+
+
+--The Strategy Pattern is a behavioral design pattern that lets you put different ways of doing the same task into separate classes. It allows you to choose or change the required algorithm at runtime without changing the existing code.
+
+
+
+In simple:
+
+--The Strategy Pattern allows us to change the behavior of an object at runtime by selecting one of several algorithms stored in separate classes.
+
+--The client  can switch algorithms at runtime without modifying its own code.
+
+
+--Real companies they uses different strategy based on the different context/situations like:
+
+
+Amazon: Different pricing strategies
+
+Uber: Different fare calculation strategies
+
+Google Maps: Different routing strategies
+
+Netflix: Different recommendation algorithms
+
+Payment Gateway: Different payment strategies
+
+
+--The Strategy pattern eliminates large if-else or switch statements used for selecting different behaviors.
+--It follows the Open/Closed Principle by allowing new strategies to be added without modifying existing code.
+
+
+
+Advantage:
+
+--Removes complex conditional logic.
+--Makes code easier to maintain and extend.
+--Encourages composition over inheritance.
+--Supports runtime behavior changes.
+--Improves testability by isolating algorithms.
+
+
+
+Implementing the Strategy pattern: For payment
+------------------------------------------------
+
+Step1: First of all try to find out the common behaviour for all the payment options.
+
+Like:
+
+UPI
+CreditCard
+PayPal
+Wallet
+
+
+--The common behaviour among all is: pay the payment.
+
+--So create a strategy interface:
+
+
+
+public interface PaymentStrategy {
+
+    void pay(double amount);
+
+}
+
+
+--So all the payment strategy need to implement this interface, because all of them need to pay the amount. 
+--So all of them have to override this pay() method.
+
+
+Step2:
+
+--Implement the PaymentStrategy interface inside each payment class:
+--Create the concrete strategies.
+
+
+Example:
+
+UPI:
+
+public class UpiPayment implements PaymentStrategy {
+
+    @Override
+    public void pay(double amount) {
+        System.out.println(amount + " paid using UPI");
+    }
+
+}
+
+
+Card:
+
+public class CardPayment implements PaymentStrategy {
+
+    @Override
+    public void pay(double amount) {
+        System.out.println(amount + " paid using Credit Card");
+    }
+
+}
+
+
+PayPal:
+
+public class PaypalPayment implements PaymentStrategy {
+
+    @Override
+    public void pay(double amount) {
+        System.out.println(amount + " paid using PayPal");
+    }
+
+}
+
+
+
+
+Step 4: 
+
+--Create a context class:
+
+--The Context class is the class that uses a strategy to perform a task. 
+
+--It holds a reference to the Strategy interface instead of a concrete strategy class and delegates the work to the selected strategy. 
+
+--The Context does not know the implementation details of the algorithm; it simply calls the strategy through the common interface.
+
+
+public class PaymentService {
+
+    private PaymentStrategy strategy;
+
+}
+
+
+--So, here PaymentService class will act as a context class, and it says that it can work with any type PaymentStrategy.
+
+
+Step5: Use the constructor injection to initialize this strategy object.
+
+
+public class PaymentService {
+
+    private PaymentStrategy strategy;
+
+    public PaymentService(PaymentStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+}
+
+
+Step 6: add a setter method also to leter change the strategy:
+
+
+
+public class PaymentService {
+
+    private PaymentStrategy strategy;
+
+    public PaymentService(PaymentStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public void setStrategy(PaymentStrategy strategy){
+	this.strategy= strategy;
+    }
+
+
+}
+
+
+Step7: Add the payment processing method:
+
+
+
+public class PaymentService {
+
+    private PaymentStrategy strategy;
+
+    public PaymentService(PaymentStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public void setStrategy(PaymentStrategy strategy){
+	this.strategy= strategy;
+    }
+
+    public void processPayment(double amount) {
+
+    	strategy.pay(amount);
+    }
+
+
+}
+
+
+
+--Here context does not know client will use which type of payment strategy..and when he can change its strategy at runtime.
+
+
+
+Now the client code creates the strategy object and passes it to the context.
+
+PaymentStrategy strategy = new UpiPayment();
+PaymentService service = new PaymentService(strategy);
+service.processPayment(1000);
+
+
+
+Note: In Spring Boot applications, the IoC Container usually creates and injects the strategy implementation.
+
+
+
+Another example:
+-------------------
+
+--Let's create a sorting engine using strategy design pattern:
+
+--Client can choose any of the following types of sorting algorithm
+
+Bubble Sort
+Merge Sort
+Quick Sort
+
+
+
+Step1: first define a common task each algoritm is performing:
+
+Ans/- sort an array.
+
+
+Based on this create an interface.
+
+
+public interface SortingStrategy {
+
+    void sort(int[] arr);
+
+}
+
+Step2: create the separate concret classes for each algorithm:
+
+Bubble Sort:
+
+public class BubbleSort
+        implements SortingStrategy {
+
+    @Override
+    public void sort(int[] arr) {
+
+        System.out.println("Sorting using Bubble Sort");
+
+    }
+
+} 
+
+
+Merge Sort:
+
+public class MergeSort
+        implements SortingStrategy {
+
+    @Override
+    public void sort(int[] arr) {
+
+        System.out.println("Sorting using Merge Sort");
+
+    }
+
+}
+
+
+Quick Sort:
+
+public class QuickSort
+        implements SortingStrategy {
+
+    @Override
+    public void sort(int[] arr) {
+
+        System.out.println("Sorting using Quick Sort");
+
+    }
+
+}
+
+
+
+Step3: Create a context class which uses these strategy to perform the task.
+
+
+public class Sorter {
+
+    private SortingStrategy strategy;
+
+    public Sorter(SortingStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+
+	
+    public void setStrategy(SortingStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+
+
+    public void performSorting(int[] arr) {
+
+        strategy.sort(arr);
+
+    }
+
+}
+
+
+
+
+Client code:
+
+Sorter sorter = new Sorter(new MergeSort());
+
+sorter.performSorting(arr); //merger sort
+
+sorter.setStrategy(new BubbleSort());
+
+sorter.performSorting(arr2); // bubble sort
+
+
+
+
+
+Q/- Which SOLID principle does the Strategy Pattern mainly support?
+
+Answer:
+
+1. Open/Closed Principle (OCP) – Add new strategies without modifying existing classes.
+2. Dependency Inversion Principle (DIP) – Context depends on the Strategy abstraction, not concrete implementations.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
