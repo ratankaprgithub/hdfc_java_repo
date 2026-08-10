@@ -3957,6 +3957,978 @@ Answer:
 
 
 
+Observer Design Pattern:
+========================
+
+
+--The Observer Pattern is a Behavioral Design Pattern.
+
+--It establishes a one-to-many relationship between objects.
+
+--When the state of one object changes, all dependent objects are notified automatically.
+
+--The object being observed is called the Subject, and the objects receiving updates are called Observers.
+
+--Observer Pattern is also known as the Publish-Subscribe (Pub-Sub) Pattern.
+
+--It promotes loose coupling between event producers and event consumers.
+
+
+Simple Definition:
+
+--Observer Pattern is a behavioral design pattern that creates a one-to-many dependency between a Subject and multiple Observers. Whenever the Subject's state changes, all registered Observers are automatically notified and updated.
+
+
+
+Analogy: YouTube Subscription
+-----------------------------
+
+Suppose you subscribe to a YouTube channel.
+
+Whenever the creator uploads a new video:
+
+--You receive a notification.
+--Thousands or even millions of subscribers receive notifications.
+
+
+--The creator does not notify every subscriber individually.
+
+Instead:
+
+New Video Uploaded => All Subscribers Notified automatically.
+
+--Only one event occurs, but all interested subscribers receive the update automatically.
+
+This is exactly how the Observer Pattern works.
+
+
+
+More Real-Time Examples:
+
+
+Example 1: Cricket Score Updates
+
+--Whenever Virat Kohli scores a century:
+
+Mobile apps update automatically.
+Sports websites update automatically.
+TV scoreboards update automatically.
+Commentary systems update automatically.
+
+
+Century Scored => Multiple Systems Updated
+
+--One event, many listeners.
+
+
+Example 2: Stock Market Application
+
+--When the stock price of Reliance changes:
+
+Trading dashboard updates.
+Mobile application updates.
+Price alert service updates.
+Analytics system updates.
+
+
+Stock Price Changed => All Interested Services Notified.
+
+
+Example 3: Food Delivery App
+
+--When an order is placed:
+
+Customer receives confirmation.
+Restaurant receives order details.
+Delivery partner receives notification.
+Billing service updates payment records.
+
+
+Order Placed => Multiple Services Notified.
+
+
+Example 4: Social Media Platforms
+
+--When a user publishes a new post:
+
+Followers receive notifications.
+News feed gets updated.
+Recommendation engine receives updates.
+
+
+
+Example 5: Weather Monitoring System
+
+--When weather data changes:
+
+Mobile app updates.
+TV channels update forecasts.
+Weather websites update dashboards.
+
+
+
+The Core Idea of Observer Pattern:
+----------------------------------
+
+The Observer Pattern consists of two major participants:
+
+1. Subject: The object whose state changes.
+
+2. Observers: The objects that want to be notified whenever the Subject changes.
+
+
+Examples of Subject and Observers:
+
+
+Example 1: Newspaper Agency
+
+Subject   : News Agency
+Observers : Readers / Subscribers
+
+--Whenever a new newspaper is published, all subscribers receive it.
+
+
+Example 2: YouTube
+
+Subject   : YouTube Channel
+Observers : Subscribers
+
+
+Example 3: Instagram
+
+Subject   : User Account
+Observers : Followers
+
+Example 4: Stock Market
+
+Subject   : Stock
+Observers : Trading Dashboard, Mobile App, Alert Service
+
+
+Example 5: Weather Application
+
+Subject   : Weather Station
+Observers : Mobile App, TV Channel, Website
+
+
+
+Note: Observer Pattern is often called the Publish-Subscribe Pattern because:
+
+Publisher (Subject): 
+
+--Publishes events whenever its state changes.
+
+Examples:
+
+Order Placed
+Video Uploaded
+Stock Price Changed
+Weather Updated
+
+
+Subscribers (Observers): 
+
+--Subscribe to receive updates.
+
+Examples:
+
+Email Service
+SMS Service
+Mobile App
+Followers
+Readers
+Dashboard
+
+
+Notification: 
+
+--Whenever an event occurs:
+
+Subject => Publishes Event => All Subscribers Receive Notification.
+
+
+
+Applications of Observer Pattern:
+-----------------------------------
+
+--The Observer Pattern is widely used in systems where changes in one object need to be reflected automatically in multiple dependent objects.
+
+Common Applications:
+
+
+1. Social Media Notifications
+
+--Users receive updates whenever someone they follow posts new content.
+
+2. Stock Market Applications
+
+--Investors receive real-time updates when stock prices change.
+
+3. Weather Monitoring Systems
+
+--Weather displays update automatically whenever new weather data arrives.
+
+4. E-Commerce Applications
+
+--When an order is placed:
+
+Email notification service
+SMS notification service
+Billing service
+Inventory service
+
+all receive updates.	
+
+
+5. Event Listeners in GUI Applications
+
+--User interface components respond to events such as:
+
+Button clicks
+Keyboard input
+Mouse actions
+
+
+
+
+The main Participants in Observer Pattern:
+------------------------------------------
+
+
+1. Subject:
+
+--The Subject is the event producer.
+
+Examples
+
+YouTube Channel
+Stock
+Weather Station
+Order Service
+News Agency
+
+
+Responsibilities of the Subject: 
+
+--Maintain a list of observers.
+--Register observers.
+--Remove observers.
+--Notify all observers whenever its state changes.
+
+
+2. Observer:
+
+--The Observer is the event consumer.
+
+Examples
+
+Email Notification Service
+SMS Notification Service
+Mobile App
+Website Dashboard
+Push Notification Service
+
+
+Responsibilities of the Observer:
+
+--Define an update method.
+--Receive notifications from the Subject.
+--React to changes in the Subject.
+
+
+
+Note: Observer Pattern is one of the foundations of Event-Driven Architecture.
+
+
+Meaning of Event-Driven Programming:
+------------------------------------
+
+--Something happends(Object state changed) => an event will be generated => Interested objects(listeners) gets the notification and react to that event.
+
+
+Example: Button Click Event
+
+
+User Clicks Button => Click Event Generated => All Registered Listeners Execute
+
+
+JavaScript Example:
+
+	button.addEventListener("click", callback);
+
+--Here the callback function acts as an Observer.
+
+--This is a practical implementation of the Observer Pattern.
+
+
+
+Without Observer Pattern:
+--------------------------
+
+--In a traditional implementation, the OrderService directly calls all dependent services whenever an order is placed.
+
+Example:
+
+public class OrderService {
+
+    public void placeOrder() {
+
+        System.out.println("Order Placed");
+
+        sendEmail();
+
+        sendSMS();
+
+        notifyWarehouse();
+
+        notifyDeliveryTeam();
+
+        updateBilling();
+    }
+}
+
+
+
+What Happens When Requirements Change?
+
+--Today, the application supports:
+
+Email Notifications
+SMS Notifications
+Warehouse Updates
+Billing Updates
+
+Tomorrow, the business may ask for:
+
+WhatsApp Notifications
+Telegram Notifications
+Push Notifications
+
+--For every new notification channel, the OrderService class must be modified.
+
+sendWhatsapp();
+
+sendTelegram();
+
+sendPushNotification();
+
+
+--As the system grows, the class becomes larger, harder to maintain, and more difficult to extend.
+
+
+--With this typs of implementation we violates 2 Principle of SOLID:
+
+1. SRP:
+
+The responsibility of OrderService should be:
+
+--Placing an order.
+
+However, it is also responsible for:
+
+Sending Emails
+Sending SMS
+Updating Warehouse
+Updating Billing
+Informing Delivery Team
+
+--As a result, the class has multiple reasons to change, which violates the Single Responsibility Principle.
+
+
+2. OCP:
+
+The Open/Closed Principle states:
+
+--Software entities should be open for extension but closed for modification.
+
+--In the current design, whenever a new notification channel is introduced, the existing OrderService class must be modified.
+
+
+Problems with This Design:
+--------------------------
+
+--Tight coupling between OrderService and dependent services.
+--Difficult to maintain.
+--Difficult to extend.
+--Violates SRP.
+--Violates OCP.
+--Increased risk of introducing bugs when modifying existing code.
+
+
+
+With Observer Pattern:
+----------------------
+
+--The Observer Pattern solves this problem by decoupling the event producer from the event consumers.
+
+--Instead of directly calling every service, the OrderService simply notifies all registered observers.
+
+
+Example:
+
+
+public class OrderService {
+
+    public void placeOrder() {
+
+        System.out.println("Order Placed");
+
+        notifyObservers();
+    }
+}
+
+
+--That's it.
+
+--The OrderService no longer needs to know:
+
+Who is listening?
+How many listeners exist?
+What actions they perform?
+
+--It simply publishes an event.
+
+
+How Notifications Work Now:
+
+
+1. Order Placed
+      
+2. notifyObservers()
+      |
+      |-- EmailNotifier
+      |-- SMSNotifier
+      |-- WhatsAppNotifier
+      |-- WarehouseNotifier
+      |-- BillingNotifier
+
+
+--Whenever an order is placed, all registered observers receive the notification automatically.
+
+
+Benifits: 
+-----------
+
+
+1. Loose Coupling: 
+
+--The Subject does not depend on concrete notification services.
+
+OrderService
+      |      
+Observer Interface
+      |
+EmailNotifier
+SMSNotifier
+WhatsAppNotifier
+BillingNotifier
+WarehouseNotifier
+
+--The Subject only knows the Observer abstraction.
+
+
+2. Easy Extension: 
+
+--Suppose tomorrow the business asks for:
+
+Telegram Notifications
+Slack Notifications
+Mobile Push Notifications
+
+--Simply create new Observer classes:
+
+public class TelegramNotifier implements Observer {
+    ...
+}
+
+--No changes are required in OrderService.
+
+
+Follows SRP: 
+
+OrderService Responsibility: Place Orders
+
+EmailNotifier Responsibility: Send Emails
+
+SMSNotifier Responsibility: Send SMS
+
+BillingNotifier Responsibility: Update Billing
+
+--Each class has a single responsibility.
+
+
+Follows OCP:
+
+--New notification channels can be added by creating new Observer implementations.
+
+--Existing classes remain unchanged.
+
+
+
+
+Key Benefits of Observer Pattern:
+----------------------------------
+
+--Establishes one-to-many communication.
+--Supports event-driven systems.
+--Promotes loose coupling.
+--Easy to add new observers.
+--Improves maintainability.
+--Supports Open/Closed Principle.
+--Widely used in modern frameworks and applications.
+
+
+
+--The Observer Pattern allows multiple objects to stay synchronized with a Subject without creating tight dependencies. Whenever the Subject changes its state, all registered Observers are automatically notified. This pattern is heavily used in notification systems, event listeners, social media platforms, stock market applications, weather systems, and modern event-driven architectures.
+
+
+
+
+
+Building Observer Pattern Step-by-Step:
+=======================================
+
+
+Let's build a notification system where:
+
+When an order get placed:
+
+--We send an Email
+--we send a SMS
+
+In future:
+
+--We can add:
+
+WhatsApp service
+Telegram sevice
+Push Notification
+
+--Without modifying the OrderService we can add any notification channels.
+
+
+Step1: Observer Interface:
+
+--Lets define a common contract for each notification channels:
+
+What will be taks for each notification channel ?
+
+Email Observer
+SMS Observer
+WhatsApp Observer 
+
+--They all perform one common task: Recieves the Notification
+
+public interface Observer {
+
+    void update(String message); //Here Subject will pass some data(message) to each observers.
+
+}
+
+
+
+--Here we choose an interface(abstraction) instead one concrete class, because Subject (OrderService) does not know which Notification channel is registered.
+
+Subject only knows, there will be an Observer. That's it.
+
+
+Just like: 
+
+Principle says: All teachers attend the meeting, He does not know about which teacher ?
+
+Math Teacher
+Science Teacher
+English Teacher
+
+
+Step2: Create the concrete Observers: for each Notification channels:
+
+
+Email Observer:
+
+public class EmailNotifier implements Observer {
+
+    @Override
+    public void update(String message) {
+
+        System.out.println("Email: "+message);
+
+    }
+
+}
+
+ 
+SMS Observer:
+
+
+public class SMSNotifier implements Observer {
+
+    @Override
+    public void update(String message) {
+
+        System.out.println("SMS: "+message);
+
+    }
+
+}
+
+
+Note: Here Subject will push the data(message) to each Observer, At the same time each of observers can pull the letest changes from the system also.
+
+Example:
+
+
+    @Override
+    public void update(String message) {
+
+        System.out.println("SMS: "+message);
+
+	stock.getPrice();
+	object.currentUpdate()
+
+    }
+
+
+
+
+Step3: Design the Subject interface:
+
+
+--Now, we need to design An event producer.
+
+Subject should perform:
+
+1. Register the Observer
+2. Remove the Observer
+3. Notify the Observer
+
+
+
+
+public interface Subject {
+
+    void registerObserver(Observer observer);
+
+    void removeObserver(Observer observer);
+
+    void notifyObservers(String message); //To notify each observers with a message
+ 
+}
+
+
+Step 4: Create the Concrete Subject (OrderService):
+
+--When the order will be placed it need to notify all the Observers.
+--One to Many: One Subject has many observers.
+
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class OrderService implements Subject {
+
+    // One to Many relationship
+    private List<Observer> observers = new ArrayList<>();
+
+}
+
+
+--It will store the list of all Observers.
+
+
+
+Step5: Register the Observers:
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class OrderService implements Subject {
+
+    private List<Observer> observers = new ArrayList<>();
+
+    @Override
+    public void registerObserver(Observer observer) {
+
+    	observers.add(observer);
+
+    }
+
+
+}
+
+
+Step6: Remove Observer:
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class OrderService implements Subject {
+
+    private List<Observer> observers = new ArrayList<>();
+
+    @Override
+    public void registerObserver(Observer observer) {
+
+    	observers.add(observer);
+
+    }
+
+
+    @Override
+    public void removeObserver(Observer observer) {
+
+        observers.remove(observer);
+
+    }
+
+}
+
+
+
+Step 7: Notify Observers
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class OrderService implements Subject {
+
+    private List<Observer> observers = new ArrayList<>();
+
+    @Override
+    public void registerObserver(Observer observer) {
+
+    	observers.add(observer);
+
+    }
+
+
+    @Override
+    public void removeObserver(Observer observer) {
+
+        observers.remove(observer);
+
+    }
+
+    @Override
+    public void notifyObservers(String message) {
+
+    for (Observer observer: observers) {
+
+           observer.update(message);
+    }
+
+}
+    
+
+
+Complete OrderService class:
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class OrderService implements Subject {
+
+    private List<Observer> observers = new ArrayList<>();
+
+    @Override
+    public void registerObserver(Observer observer) {
+
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers(String message) {
+
+        for (Observer observer: observers) {
+
+            observer.update(message);
+        }
+    }
+
+
+    //The actucal business method
+
+    public void placeOrder(int orderId) {
+
+        System.out.println("Order placed successfully");
+
+        notifyObservers("Order # "+orderId+ "has been placed.");
+    }
+
+}
+
+
+Step 8: Client Code:
+
+
+public class NotificationDemo {
+
+    public static void main(String[] args) {
+
+        OrderService orderService = new OrderService();
+
+        orderService.registerObserver(new EmailNotifier());
+
+        orderService.registerObserver(new SMSNotifier());
+
+        orderService.placeOrder(101);
+    }
+
+}
+
+
+Output:
+
+Order placed successfully
+EMAIL : Order #101 has been placed.
+SMS : Order #101 has been placed.
+
+
+
+
+Adding New Notification Channel: WhatsApp Notification
+-------------------------------
+
+
+public class WhatsAppNotifier implements Observer {
+
+    @Override
+    public void update(String message) {
+
+        System.out.println("WhatsApp: "+message);
+
+    }
+
+}
+
+
+
+Now Client will register this notifier class: 
+
+orderService.registerObserver(new WhatsAppNotifier());
+
+
+
+Output:
+
+Order placed successfully
+Email notification sent
+SMS notification sent
+WhatsApp notification sent
+
+
+Notice: Here we have not modified the Existing OrderService class.
+
+Open For Extension
+Closed For Modification
+
+--Followed: OCP principle
+
+
+
+Runtime Unsubscribe:
+-------------------
+
+Client just remove that Observer object:
+
+SMSNotifier sms = new SMSNotifier();
+
+orderService.registerObserver(sms);
+
+orderService.removeObserver(sms);
+
+
+
+Event-Driven Architecture:
+
+	Order Placed => Event Generated => Interested Observers Receive Notification. 
+
+
+
+
+
+
+Observer vs Publish-Subscribe:
+=============================
+
+--Many people think both are identical.
+
+But it is Not exactly.
+
+
+Observer Pattern Usually:
+
+--Subject knows observers.
+
+Example:
+
+List<Observer> observers;
+
+--The Subject maintains references to observers.
+
+
+Whereas Publish Subscribe Usually uses:
+
+--Message Broker
+
+Examples:
+
+Kafka
+RabbitMQ
+ActiveMQ
+
+
+--Subject (OrderService) only publishes an event to Kafka. It has no knowledge of who consumes it.
+
+
+Flow:
+------
+
+Publisher => Message Broker => Subscribers
+
+--Publisher and Subscriber don't know each other.
+
+
+Example: 
+
+Observer Pattern:
+
+YouTube Channel
+      |
+ Subscribers
+
+
+--Here Channel knows subscribers.
+
+
+Pub/Sub Model:
+
+Order Service
+    |
+  Kafka (Message broker)
+    |
+Email Service
+SMS Service
+Analytics Service
+
+--Services communicate through a broker.
+
+
+--The main difference between the Observer Pattern and the Publish-Subscribe (Pub-Sub) model is that in the Observer Pattern, the Subject directly maintains references to its Observers and notifies them directly, whereas in the Pub-Sub model, the Publisher and Subscribers communicate indirectly through a Message Broker (or Event Bus), and neither side needs to know about the other. Completely decoupling publishers from subscribers.
+
+
+
+
 
 
 
