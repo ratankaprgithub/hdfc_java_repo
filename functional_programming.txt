@@ -1,0 +1,2274 @@
+Functional Programming in Java: 
+===============================
+
+--Functional programming is a programming style where functions can be:
+
+1. Stored in variables 
+2. Passed as arguments of a method.
+3. Returned from a method.
+
+
+From Java 8, Java supports functional programming using:
+
+--Functional Interface
+--Lambda Expression (It is simmilar to arrow function in Java-Script language.)
+--Method Reference
+--Stream API
+
+--To make code shorter, cleaner, and more readable.
+
+
+
+Functional Interface:
+----------------------
+
+--In Java, the functional interface is the base for the functional programming.
+
+
+--A Functional Interface is an interface that contains only one abstract method.
+
+It can have:
+
+One abstract method
+
+Multiple default methods
+Multiple static methods
+Multiple private instance methods
+Multiple private static methods
+Methods from Object class
+
+
+
+Example1:
+
+@FunctionalInterface // optional annotation for the functional interface
+interface MyInterface {
+    void show();   // Only one abstract method
+}
+
+
+
+
+
+Example2: Error (Not a functional interface)
+
+
+@FunctionalInterface
+interface MyInterface {
+    void show1();
+    void show2();   
+}
+
+
+Because: 2 abstract methods are there.
+
+
+Example3:
+
+
+@FunctionalInterface 
+interface MyInterface {
+
+    void show(); //abstract method
+
+    public default void show2(){
+	//default method
+    }   
+
+   public static void show3(){
+	//static method
+    }   
+
+    private void show4(){
+	//private instance method
+    }   
+
+    private static void show4(){
+	//private static method
+    }   
+
+
+   public String toString(); //Method of Object class
+   public boolean equals(Object obj);
+   public int hashCode();
+
+
+
+}
+
+
+
+--The above interface is the valid functional interface.
+
+
+
+Advantages:
+
+Less boilerplate code
+Better readability
+Easier behavior customization
+Supports Stream API
+Encourages declarative programming
+
+
+
+
+
+functional interface in Java:
+=============================
+
+--An interface which has only one abstract method is called as functional interface.
+
+--With the help of Functional Interface, we can achieve functional programming in java using Lambda expression.
+
+--Some of the Predefined functional interfaces are:
+
+
+Comparable: public int compareTo(T obj)
+Comparator : public int compare(T obj1, T obj2)
+Runnable : public void run();
+Iterable : public Iterator iterator();
+
+
+
+
+
+
+
+Lambda expression:
+-----------------
+
+--It is an expression used to implement functional interface in shorter way.
+
+
+
+
+Example Without Lambda:
+-----------------------
+
+interface MyInterface {
+    void show();
+}
+
+
+// Implementation class
+class Demo implements MyInterface {
+
+    @Override
+    public void show() {
+        System.out.println("Hello");
+    }
+}
+
+
+public class Test {
+    public static void main(String[] args) {
+        MyInterface obj = new Demo();
+        obj.show();
+    }
+}
+
+
+--Too much code just to print "Hello".
+
+
+--We can write the implementation of an interface without using a seperate class also (using annonymous inner class)
+
+Example Using Anonymous Class
+------------------------------
+
+MyInterface obj = new MyInterface() {
+
+    @Override
+    public void show() {
+        System.out.println("Hello");
+    }
+};
+
+obj.show();
+
+
+Here also less code, but still long approach.
+
+
+
+Using Lambda expression:
+------------------------
+
+
+Syntax:
+
+(parameters) -> { body }
+
+
+Example:
+-------
+
+MyInterface obj = () -> {
+    System.out.println("Hello");
+};
+
+obj.show();
+
+
+Even shorter:
+
+MyInterface obj = () -> System.out.println("Hello");
+obj.show();
+
+
+
+Note: To use the Annonymous inner class, interface need not be a functional. but to use Lambda Expression, interface must be functional.
+
+
+
+Rules to use Lambda Expression:
+------------------------------
+
+--Lambda Expression is a imlementation of a functional interface (using Lambda Expression we can provide the implementation of a Functional Interface in much more easier way).
+
+--Lambda Expression comprises 3 things:
+
+1. Parameter (here data type is optional and parameter name also can be any name) : If only one parameter is there then () small bracket is also optional.
+
+--Small bracket () is mandatory when we have zero or more than one parameter is there.
+
+2. Lambda operator  ->
+
+3. Method body: If we write only one statement inside the implementation body then {} is optional and "return" keyword is not allowed.
+
+
+
+Note:- A lambda expression matches only the method signature (parameter list + return type).
+
+--The abstract method name is irrelevant..
+
+
+
+Note: A Lambda Expression does NOT create a new method.
+
+--It provides the implementation of the single abstract method of a Functional Interface.
+
+
+
+Target Typing:
+-------------
+
+--Java determines the type of a lambda expression from the context where it is used.
+
+
+Example1:
+
+
+@FunctionalInterface
+interface Greeting {
+    void sayHello();
+}
+
+Now:
+
+
+Greeting g = () -> System.out.println("Hello");
+
+Java sees:
+
+Greeting g =
+
+
+--and immediately understands:
+
+--This lambda must implement sayHello()
+
+--because Greeting has only one abstract method.
+
+--And it matches with the signature of sayHello() method of the Greeting interface.
+
+--This is Target Typing.
+
+
+
+Real-Life Analogy
+------------------
+
+--Suppose someone says: please sign here.
+
+You instantly know:
+
+bank form
+office document
+agreement
+
+--because the paper gives context.
+
+Without the paper:
+
+--Sign here has no meaning.
+
+--The variable type provides context to the lambda.
+
+
+Note: Lambda Has No Type By Itself
+
+Example: 
+
+
+ (a,b) -> a+b;
+
+
+--A lambda expression gets meaning only after being assigned to a functional interface.
+
+
+
+
+Lambda Expression with parameter:
+---------------------------------
+
+
+interface Add {
+    void sum(int a, int b);
+}
+
+
+
+public class Demo {
+    public static void main(String[] args) {
+
+        Add a = (int x, int y) -> {
+			System.out.println(x+y);
+		};
+
+
+	
+        a.sum(10, 20);
+    }
+
+}
+
+
+
+--inside the {} curly bracket if only one statement is there that curly bracket is optional
+-- inside the () small braket no need to specify the data type, it automatically detect.
+
+        Add a = (x, y) -> System.out.println(x+y);
+
+
+--If inside the () small bracket only one parameter is there then () small bracket is also optional.
+
+Example1:
+
+
+interface MyInterface {
+    void show();
+}
+
+
+MyInterface intr = () -> System.out.println("Welcome");
+
+intr.show();
+
+
+
+Example2: 
+
+
+Student.java:
+-------------
+
+
+
+public class Student{
+
+
+private int roll;
+private String name;
+private double marks;
+
+//Zero arg constructor
+//Parameterized constructor
+//getters and setters
+//toString
+
+
+}
+
+
+
+Intr.java:
+------------
+
+@FunctionalInterface
+public interface Intr {
+	 
+	 void printDetails(Student student);
+
+}
+
+
+
+Demo.java:
+----------
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+		Intr i1 = (s) ->  {
+
+				System.out.println("Roll is: "+s.getRoll());
+				System.out.println("Name is: "+s.getName());
+				System.out.println("Marks is: "+s.getMarks());
+			};
+			
+		
+		i1.printDetails(new Student(10,"Raj",850));		
+		
+	}
+}
+
+
+
+
+
+
+With return type:
+----------------
+
+interface X{
+
+boolean isPositive(int num);
+
+}
+
+
+-- inside the Demo class, write the implementation of the above X interface using Lambda expression
+-- and call the isPositive() method with variaous values.
+
+
+
+
+X x1 = (num) -> {
+	if(num >= 0)
+		return true;
+	else
+		return false;
+};	
+
+
+Shorter way1 :
+
+X x1 = num -> {
+	return num >=0;
+};	
+
+
+Shorter way2:
+
+--If only one statement is there with return keyword then the return keyword is also optional
+
+
+X x1 = num -> num >=0;
+
+System.out.println(x1.isPositive(10));
+
+
+
+
+| Case                    | Rule                         |
+| ----------------------- | ---------------------------- |
+| Single statement        | `{}` optional                |
+| Single parameter        | `()` optional                |
+| Return single statement | `return` optional            |
+| Data type               | Optional (Java auto-detects) |
+
+
+
+
+
+
+Student task:
+-------------
+
+--implement the following interface using the lambda expression:
+
+interface Square {
+    int getSquare(int x);
+}
+
+
+
+
+
+
+Passing Lambda expression to the method parameter:
+--------------------------------------------------
+
+--If there is a method which accepts the functional interface as an argument, then we can call that method by passing the implementation by using the Lambda expression also.
+
+Example:
+
+
+
+interface Intr{
+	
+	void doAddition(int num1, int num2);
+}
+
+
+
+ 
+
+Normal Implementation:
+----------------------
+class IntrImpl implements Intr{
+	
+	@Override
+	void doAddition(int num1, int num2){
+		System.out.println("Result is: "+(num1+num2));
+	}
+
+}
+
+
+
+
+
+
+
+public class A{
+
+
+	public void funA(Intr i1){
+
+		System.out.println("Inside funA of A class");
+
+		if(i1 != null){
+			i1.doAddition(10,20);
+		}else{
+			System.out.println("i1 is null");
+		}
+	}
+
+
+	public static void main(String[] args){
+	
+		A a1 = new A();
+
+		a1.funA(new IntrImpl());
+
+	}
+
+}
+
+
+--Using Lambda expression we need not write the seperate implementation classes for the funtional interface.
+
+
+
+	a1.funA((n1,n2) -> System.out.println("Result is: "+(n1+n2)));
+
+
+--similarly if a method has a return type of functional interface, then we can return a lamda expression directly instead of object of another impmenented class.
+
+
+Example:
+
+
+public class A{
+
+
+	public Intr funA(String username, String password){
+
+		System.out.println("Inside funA of A class");
+
+		if("admin".equals(username) && "12345".equals(password)){
+			return (n1,n2) -> System.out.println("Result is: "+(n1+n2)); 
+		}
+
+		return null;
+
+	}
+
+
+	public static void main(String[] args){
+	
+		A a1 = new A();
+
+		Intr i1= a1.funA("admin", "12345");
+
+		if(i1 != null){
+			i1.doAddition(10,20);
+		}else{
+			System.out.println("Invalid Username or password");
+		}
+
+	}
+
+}
+
+
+
+
+
+Example: Sorting the List of Students:
+--------------------------------------
+
+Using Collections.sort() method:
+
+
+1. Collections.sort(list): for natural sorting order: Here items inside the list must be Comparable
+
+2. Collections.sort(list, Comparator): For custom Sorting order: To customize the sorting we need to pass the Comparator object as 2nd argument
+
+
+--As we already know that Comparator interface has only one abstract method called:
+
+public int compare(T1, T2);
+
+--So, We can say that Comparator is a functional interface
+
+--Since Comparator is a type of functional interface, then we can supply its object(implementation)  as a Lambda expression also.
+
+
+Example:
+
+
+  List<Student> students = new ArrayList<>(List.of(
+
+                new Student(10,"N1",400),
+                new Student(2,"N5",410),
+                new Student(5,"N2",520),
+                new Student(12,"N3",412),
+                new Student(4,"N4",510)
+            )
+        );
+
+
+
+
+1. Collections.sort(students); // Here Student class must implements the java.lang.Comparable interface.
+
+
+
+
+
+2. Sorting using external class: Using Comparator
+
+StudentMarksComp.java:
+----------------------
+
+import java.util.Comparator;
+
+public class StudentMarksComp implements Comparator<Student>{
+
+
+	@Override
+	public int compare(Student s1, Student s2){
+
+		return Double.compare(s1.getMarks(), s2.getMarks());
+	}
+
+
+}
+
+
+
+Collections.sort(students, new StudentMarksComp());
+
+
+
+3. Sorting using Lambda expression: Using Comparator
+
+Collections.sort(students, (s1,s2) -> Double.compare(s1.getMarks(), s2.getMarks()));
+
+
+
+4. If Marks are same then sort them using their roll:
+
+
+Collections.sort(students, (s1,s2) -> {
+
+
+		int result = Double.compare(s1.getMarks(), s2.getMarks())
+		
+		if(result == 0){
+			return Integer.compare(s1.getRoll(), s2.getRoll());
+		}
+
+		return result;
+
+);
+
+
+
+From the Java 1.8 onwards to sort a list using:
+
+
+list.sort() method also.
+
+--From Java 1.8 onwards List interface define a default method:
+
+ public default void sort(Comparator comp);
+
+
+--From Java 8 onwards the Collections.sort() method simply delegates the sorting a list to this sort() method.
+
+
+Example1 :
+
+
+students.sort(null); // for natural sorting order; Student class must implements Comparable.
+
+students.sort((s1,s2) -> Double.compare(s1.getMarks(), s2.getMarks()));
+
+
+
+Example2:
+
+
+List<Integer> numbers = new ArrayList<>(List.of(10,2,5,3,4,7));
+
+numbers.sort(null);
+
+System.out.println(numbers);
+
+numbers.sort(Comparator.reverseOrder()); //Elements must be comparable
+
+System.out.println(numbers);
+
+
+
+
+Method Reference
+=================
+
+
+--It is the simplified form (short-cut) of Lambda Expression (Cleaner alternative).
+
+--Instead of creating a Lambda Expression with all the details, With the help of Method Reference we can refer an existing class method to the functional interface variable.
+
+--It is represented by using :: double colon symbol.
+
+
+
+Many developers write:
+
+	name -> System.out.println(name)
+
+But experienced Java developers usually write:
+
+	System.out::println
+
+--This is called a Method Reference.
+
+
+
+--Method reference works only when the method signature matches the functional interface method.
+
+
+Types of Method Reference:
+
+
+| Type            | Syntax                |
+| --------------- | --------------------- |
+| Static method   | ClassName::methodName |
+| Instance method | object::methodName    |
+| Constructor     | ClassName::new        |
+
+
+
+Example 1: Static Method Reference
+-----------------------------------
+
+
+HelloIntr.java:
+----------------
+
+@FunctionalInterface
+public interface HelloIntr{
+
+	public void sayHello(String name);
+
+}
+
+
+
+HelloIntrImpl.java:
+-------------------
+
+public class HelloIntrImpl implements HelloIntr{
+
+	@Override
+	public void sayHello(String name){
+
+		System.out.println("Using an external class");
+		System.out.println("Hello: "+name);
+	}
+
+}
+
+
+
+
+Demo.java:
+----------
+
+public class Demo {
+
+	public static void greet(String s) {
+		
+		System.out.println("Welcome to HDFC :"+s);
+		
+	}
+
+	
+	public static void main(String[] args) {
+
+		//using external class
+		HelloIntr i1 = new HelloIntrImpl();
+		i1.sayHello("Rahul");
+		
+		//using LE
+		HelloIntr i2 = n -> System.out.println("Using LE :"+n);
+		i2.sayHello("Raj");
+		
+		//using MR
+		HelloIntr i3= Demo::greet; // reffering to already existing functionality 
+		i3.sayHello("Simran");
+		
+		
+	}
+}
+
+
+
+
+--If the above greet() is a non-static:
+
+		//Demo d1 = new Demo();
+		//HelloIntr i3= d1::greet;
+
+		//OR
+		
+		HelloIntr i3= new Demo()::greet;
+		i3.sayHello("Simran");
+		
+
+
+--If the functionality is matching with the constructor of a class:
+
+--There should be void return type
+--Constructor parameters should also matches.
+
+--Then we can refer to the constructor of any class also using:
+
+		HelloIntr i4= Demo::new;
+		i4.sayHello("Ravi");
+
+
+Example 1:
+
+Demo.java:
+----------
+
+public class Demo {
+
+
+	//Non-static method
+	public void greet(String s) {
+		
+		System.out.println("Using a instance method");
+		System.out.println("Welcome to HDFC:"+s);
+		
+	}
+	
+
+	//static method
+	public static void fun2(String s) {
+		
+		System.out.println("Using a static method");
+		System.out.println("Good morning :"+s);		
+	}
+
+
+	//Constructor
+	public Demo(String s) {
+		
+		System.out.println("Using the constructor of Demo class");
+		System.out.println("Hello Everyone :"+s);		
+	}
+	
+	
+	
+	public static void main(String[] args) {
+		
+		//using LE
+		HelloIntr i1 = n -> System.out.println("Using LE, Welcome :" +n);
+		i1.sayHello("Raj");
+
+		
+		//reffering static method
+		HelloIntr i2= Demo::greet2;
+		i2.sayHello("Rahul");
+		
+		
+		//refering non-static (instance) method
+		HelloIntr i3= new Demo("anystring")::greet;
+		i3.sayHello("Dinesh");
+		
+		//refering constructor
+		HelloIntr i4= Demo::new;
+		i4.sayHello("Priya");
+		
+	}
+}
+
+
+
+Example2: 
+
+
+
+NumIntr.java:
+------------
+
+
+@FunctionalInterface
+public interface NumIntr {
+	 
+	int getTheNumber(String number);
+
+}
+
+
+
+NumIntrImpl.java:
+-------------------
+
+public class NumIntrImpl implements NumIntr{
+
+	@Override
+	public int getTheNumber(String number) {
+		
+		System.out.println("inside a method using External class");
+
+
+		//int result = Integer.parseInt(number.trim());
+		
+		return Integer.parseInt(number.trim());
+		
+		
+	}
+}
+
+
+Demo.java:
+------------
+
+
+public class Demo {
+
+	
+	public static void main(String[] args) {
+		
+	
+		
+		//Using External class
+		NumIntr i1 = new NumIntrImpl();
+		int number1= i1.getTheNumber("50");
+		System.out.println(number1+10);
+		
+		
+		//Using Lambda expression
+		NumIntr i2 = s ->  Integer.parseInt(s);
+		int number2= i2.getTheNumber("70");		
+		System.out.println(number2+10);
+		
+		
+		//Using method reference.
+		NumIntr i3 = Integer::parseInt;
+		int number3= i3.getTheNumber("90");		
+		System.out.println(number3+10);
+
+		//Here we are refering the existing parseInt() method of Integer class: It matches with the method signature of NumIntr method.
+
+			
+	}
+}
+
+
+Example3:
+
+
+PrintIntr.java:
+---------------
+
+@FunctionalInterface
+public interface PrintIntr {
+	 
+	void printOnConsole(String s);
+
+}
+
+
+PrintIntrImpl.java:
+-------------------
+
+
+public class PrintIntrImpl implements PrintIntr{
+
+	@Override
+	public void printOnConsole(String s) {
+		
+		System.out.println(s);
+		
+	}
+}
+
+
+Demo.java:
+----------
+
+public class Demo {
+
+	
+	public static void main(String[] args) {
+	
+			
+		//Using an external class
+		NumIntr i1 = new NumIntrImpl();
+		i1.printOnConsole("Hello");
+
+		
+		//Using a Lambda expression
+		NumIntr i2 = s -> System.out.println(s);		
+		i2.printOnConsole("Welcome");
+		
+		//Using Method reference 
+		NumIntr i3 = System.out::println;
+		i3.printOnConsole("Using MR, Welcome");
+		
+		// Here we are referening the existing println(String s) method of PrintStream object
+		//Remember 'out' is the object of java.io.PrintStream class which is statically defined inside the System class
+		
+	}
+}
+
+
+
+
+
+
+
+Example4: 
+
+
+
+interface MyInterface {
+    void display();
+}
+
+class Test {
+    public static void show() {
+        System.out.println("Hello Students");
+    }
+}
+
+public class Demo {
+    public static void main(String[] args) {
+        MyInterface obj = Test::show;
+        obj.display();
+    }
+}
+
+
+Example 2: Instance Method Reference
+-------------------------------------
+
+class Test {
+    public void show() {
+        System.out.println("Hello Students");
+    }
+}
+
+public class Demo {
+    public static void main(String[] args) {
+        Test t = new Test();
+        MyInterface obj = t::show;
+        obj.display();
+    }
+}
+
+
+
+Example 3: Constructor Reference:
+---------------------------------
+
+interface MyInterface {
+    Test create();
+}
+
+class Test {
+    Test() {
+        System.out.println("Object Created");
+    }
+}
+
+public class Demo {
+    public static void main(String[] args) {
+        MyInterface obj = Test::new;
+        obj.create();
+    }
+}
+
+
+Example2:
+---------
+
+interface MyPrinter {
+    void doPrint(String msg);
+}
+
+
+public class Demo {
+    public static void main(String[] args) {
+
+        MyPrinter p = msg -> System.out.println(msg);
+
+        p.doPrint("Hello Students");
+    }
+}
+
+
+Using Method reference:
+----------------------
+
+
+public class Demo {
+    public static void main(String[] args) {
+
+        MyPrinter p = System.out::println;
+
+        p.doPrint("Hello Students");
+    }
+}
+
+
+
+Here, System.out::println is a method reference that refers to the println() method of the PrintStream object represented by System.out. 
+
+void doPrint(String msg);
+
+void println(String msg) 
+
+both are match.
+
+
+
+Unbound Instance Method Reference:
+---------------------------------
+
+--Sometimes we do not refer to a method of a specific object. Instead, we refer to an instance method of a class itself.
+
+--Not bounded with any specific object, instead take the parameter of any object of the class.
+
+
+
+Example:
+
+@FunctionalInterface
+interface NameIntr {
+    String convert(String name);
+}
+
+
+
+public class Demo {
+
+    public static void main(String[] args) {
+
+        // Using Lambda Expression
+        NameIntr i1 = s -> s.toUpperCase();
+
+        // Using Method Reference
+        NameIntr i2 = String::toUpperCase;
+
+        System.out.println(i1.convert("ratan"));
+        System.out.println(i2.convert("kumar"));
+    }
+}
+
+
+
+Output:
+
+RATAN
+KUMAR
+
+How it works:
+
+String::toUpperCase
+
+is equivalent to:
+
+
+s -> s.toUpperCase()
+
+
+--Here Java automatically treats the first parameter of the functional interface method as the object on which toUpperCase() will be called.
+
+
+i2.convert("kumar")
+
+becomes:
+
+"kumar".toUpperCase()
+
+
+
+Note: This type of method reference is called an "Unbound Instance Method Reference" because we are referring to an instance method of a class without creating or specifying a particular object.
+
+
+--On which object of String class the getName() method will be called will act as a parameter of the convert() method of NameIntr interface.
+
+--And since the return type of convert() method is String and getName() also return String then it will be matched. 
+
+
+
+
+In other word:
+
+
+
+--The first parameter of the functional interface method becomes the object on which the instance method is invoked.
+
+--And the return type of the functional interface method must match the return type of the referred instance method.
+
+--Therefore:
+
+String getStudentName(Student student);
+
+matches with:
+
+String Student.getName();
+
+because:
+
+Input  : Student
+Output : String
+
+matches
+
+Student -> String
+
+
+
+
+
+Example: Referring to a Custom Class Instance Method:
+
+
+@FunctionalInterface
+interface StudentIntr {
+
+    String getStudentName(Student student);
+}
+
+
+public class Demo {
+
+    public static void main(String[] args) {
+
+        // Using Lambda Expression
+        StudentIntr i1 = s -> s.getName();
+
+        // Using Method Reference
+        StudentIntr i2 = Student::getName;
+
+        Student st1 = new Student(101, "Raj");
+	Student st2 = new Student(101, "Simran");
+
+        System.out.println(i1.getStudentName(st1));
+        System.out.println(i2.getStudentName(st2));
+    }
+}
+
+
+Here: the method is: String getStudentName(Student student);
+
+Parameter is: Student object
+Return type is: String
+
+StudentIntr i2 = Student::getName;
+
+--Here Student::getName meaning is:
+
+--Take any Student class object as a parameter and call the getName() method on that object.
+
+s -> s.getName(); // here s is any of the Student class object.
+
+
+
+
+
+Some of the functional interface introduced in java 8 to perform functional programming in Java:
+------------------------------------------------------------------------------------------------
+
+--These interfaces belongs to "java.util.function" package.
+
+1. Predicate
+
+2. Consumer
+
+3. Supplier
+
+4. Function
+
+5. BiFunction
+
+6. UnaryOperator
+
+7. BinaryOperator<T>
+
+
+
+1.Predicate<T>:
+===============
+
+--In this interface only one abstract method is there:
+
+
+interface Predicate<T>{
+
+	public boolean test(T t);
+
+}
+
+
+----The test(T t) method checks whether the supplied object satisfies a condition or not.
+
+--A Predicate always answers only one question:
+
+TRUE
+or
+FALSE
+
+
+
+Examples:
+
+--Is age greater than 18?
+
+--Is salary greater than 50000?
+
+--Is email valid?
+
+--Is student passed?
+
+
+Whenever your logic returns a boolean result,
+
+Java says: Use Predicate.
+
+
+
+Example1: 
+
+
+PositivePredicate.java:
+-----------------------
+
+import java.util.function.Predicate;
+
+public class PositivePredicate implements Predicate<Integer>{
+
+	@Override
+	public boolean test(Integer i) {
+		
+		if(i >= 0)
+			return true;
+		else
+			return false;
+
+
+		// return i >=0;	
+	}
+}
+
+
+
+Demo.java:
+---------
+
+
+public class Demo {
+		
+	public static void main(String[] args) {
+	
+
+		//using External class		
+		Predicate<Integer> p1= new PositivePredicate();
+		System.out.println(p1.test(-10));
+
+		
+		//using LE
+		Predicate<Integer> p2 = i ->  i >0;
+				
+		System.out.println(p2.test(10));
+
+
+		//To check a even number
+		Predicate<Integer> isEven = n ->  n % 2 == 0;
+				
+		System.out.println(isEven.test(5)); //false
+		System.out.println(isEven.test(10)); //true
+
+
+		//To check a valid Email address
+		Predicate<String> validEmail = email -> email.contains('@');
+		System.out.println(validEmail.test("abc@gmail.com"));
+
+
+	
+				
+	}
+}
+
+
+
+Example2 : test a Student object whetherer student marks is greater than 500 or not:
+
+
+
+StudentMarksPredicate.java:
+---------------------------
+
+
+import java.util.function.Predicate;
+
+public class StudentMarksPredicate implements Predicate<Student>{
+
+	@Override
+	public boolean test(Student s) {
+		
+		/*	if(s.getMarks() > 500)
+			return true;
+		else
+			return false;
+		*/
+
+		
+		return s.getMarks() > 500;
+		
+		
+	}
+}
+
+
+Demo.java:
+-------------
+
+package com.masai;
+
+import java.util.function.Predicate;
+
+public class Demo {
+
+	
+	public static void main(String[] args) {
+		
+		//Using external class
+		Predicate<Student> p1 = new StudentMarksPredicate();
+		System.out.println(p1.test(new Student(10, "Rahul", 780)));
+		
+
+		//Using LE
+		Predicate<Student> p2 = s -> s.getMarks() > 500;
+		System.out.println(p2.test(new Student(10, "Dinesh", 480)));
+		
+		
+	}
+}
+
+
+
+--From java 1.8 onwards inside the Collection interface one new method is added called:
+
+	public boolean removeIf(Predicate filter);
+
+--removeIf() removes those elements for which the Predicate returns true.
+
+Example:
+
+
+List<Integet> numbers = new ArrayList<>(List.of(10,20,5,3,50,15,17,30));
+
+
+Predicate<Integer> even = n -> n % 2 == 0;
+
+numbers.removeIf(even);
+
+or
+
+numbers.removeIf(n -> n % 2 == 0);
+
+
+All even numbers will be removed because Predicate returned true for them.
+
+
+
+Example: From the List of Students, remove all the students whose marks is less than 500.
+
+
+Demo.java:
+---------
+
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
+
+public class Demo {
+		
+	public static void main(String[] args) {
+	
+	List<Student> students=new ArrayList<>();
+	
+	students.add(new Student(1, "Raj", 780));
+	students.add(new Student(2, "Simran", 720));
+	students.add(new Student(3, "Rahul", 580));
+	students.add(new Student(4, "Priya", 480));
+	students.add(new Student(5, "Rohit", 450));
+	students.add(new Student(6, "Dinesh", 680));
+	students.add(new Student(7, "Priti", 420));
+	
+
+		
+	//Predicate<Student> p = new StudentMarksPredicate();	
+	//students.removeIf(p);
+	
+	//or
+	
+	//students.removeIf(new StudentMarksPredicate());
+	
+	students.removeIf(s -> s.getMarks() < 500);
+	
+	System.out.println(students);
+			
+	}
+
+}
+
+
+
+
+Predicate Chaining:
+--------------------
+
+--Predicate interface provides three special default methods to perform Predicate chaining.
+
+public default Predicate and(Predicate p)
+public default Predicate or(Predicate p)
+public default Predicate negate();
+
+
+and():
+------
+
+Example1:
+
+Employee must satisfy:
+
+Age >= 18
+AND
+Salary > 50000
+
+
+Create Predicates:
+
+Predicate<Employee> ageCheck = e -> e.getAge() >= 18;
+
+Predicate<Employee> salaryCheck = e -> e.getSalary() > 50000;
+
+Combine:
+
+Predicate<Employee> result = ageCheck.and(salaryCheck);
+
+
+Example2: Filter the students whose marks is greater than 500 and less than 700.
+
+
+Predicate<Integer> greaterThan500 = s -> s.getMarks() > 500;
+
+Predicate<Integer> lessThan700 = s -> s.getMarks() < 700;
+
+students.removeIf(greaterThan500.and(lessThan700));
+
+
+
+or():
+-----
+
+--simmilar to  OR operator:
+
+
+Example:
+
+Filter the students whose marks is greater than 500 or name is Rahul.
+
+
+Predicate<Integer> greaterThan500 = s -> s.getMarks() > 500;
+
+Predicate<String> isRahul = s -> s.getName().equals("Rahul");
+
+students.removeIf(greaterThan500.or(isRahul));
+
+
+negate():
+--------
+
+Negate means reverse.
+
+Example:
+
+Predicate<Integer> even = n -> n % 2 == 0;
+
+Negated:
+
+Predicate<Integer> odd = even.negate();
+
+
+System.out.println(odd.test(5)); //true
+
+
+
+
+
+2. Consumer<T>:
+===============
+
+--Consumer represents an operation that accepts a single input argument and performs side effects without returning any result.
+
+--Accept Data, Perform Action, Return Nothing
+
+
+
+public interface Consumer<T>{
+
+	public void accept(T t);
+
+}
+
+
+--It consumes the input, performs some action, and returns nothing.
+
+
+Example1:  Print a name
+
+Input: Raj
+Action: Print
+Return: Nothing
+
+Example 2: Send an Email
+
+Input: Email Object
+Action: Send Email
+Return: Nothing
+
+
+Example 3: Save Employee
+
+Input: Employee
+Action: Save in DB
+Return: Nothing
+
+
+Whenever you need:
+
+Take Input
+Do Something
+Return Nothing
+
+--Use Consumer.
+
+
+Example1: 
+
+
+NameConsumer.java:
+------------------
+
+import java.util.function.Consumer;
+
+public class NameConsumer implements Consumer<String>{
+
+	@Override
+	public void accept(String name) {
+		
+		System.out.println("Welcome "+name.toUpperCase());
+		
+	}
+
+}
+
+
+Demo.java:
+----------
+
+
+import java.util.function.Consumer;
+
+public class Demo {
+	
+	//normal static method of Demo class
+	public static void greet(String name) {
+		System.out.println("Hello "+name.toUpperCase());
+	}
+	
+	public static void main(String[] args) {
+		
+		//using Extenral class
+		Consumer<String> c1= new NameConsumer();
+		c1.accept("ravi");
+		
+		//using LE
+		Consumer<String> c2= str -> System.out.println("Hi "+str.toUpperCase());
+		c2.accept("amit");
+		
+		//using MR
+		Consumer<String> c3=Demo::greet;
+		c3.accept("raj");
+
+		//using MR
+		Consumer<String> c4 = System.out::println;
+		c4.accept("Simran");
+
+				
+	}
+}
+
+
+
+
+
+Example2:
+
+StudentConsumer.java:
+---------------------
+
+import java.util.function.Consumer;
+
+public class StudentConsumer implements Consumer<Student>{
+
+	@Override
+	public void accept(Student s) {
+		
+		System.out.println("Roll is :"+s.getRoll());
+		System.out.println("Name is :"+s.getName());
+		System.out.println("Marks is :"+s.getMarks());
+		
+		
+	}	
+}
+
+Demo.java:
+----------
+
+package com.masai;
+
+import java.util.function.Consumer;
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+	
+
+		//Using external class
+		Consumer<Student> c1 = new StudentConsumer();
+		c1.accept(new Student(10, "n1", 780));
+		
+		
+		//Using LE
+		Consumer<Student> c2 = s -> {
+			System.out.println("Roll is :"+s.getRoll());
+			System.out.println("Name is :"+s.getName());
+			System.out.println("Marks is :"+s.getMarks());
+		};
+		
+		
+		c2.accept(new Student(10, "n2", 980));
+		
+
+		//Using MR
+		Consumer c3 = System.out::println;
+		c3.accept(new Student(12, "n3", 900));
+	
+	}
+}
+
+
+
+
+
+Consumer chaining: andThen() method
+------------------
+
+--Just like Predicate chaining Consumer interface also provide the following method:
+
+	public default Consumer andThen(Consumer c)
+
+
+Example:
+
+Consumer<String> greet = name -> System.out.println("Hello " + name);
+
+Consumer<String> welcome = name -> System.out.println("Welcome " + name);
+
+
+Combine:
+
+
+Consumer<String> result = greet.andThen(welcome);
+
+
+result.accept("Rahul");
+
+
+Output:
+
+Hello Rahul
+Welcome Rahul
+
+
+Note:
+
+--Unlike Predicate.and(), Consumer.andThen() does not combine results.
+
+--It combines actions.
+
+First Consumer executes,
+then second Consumer executes.
+
+
+
+Example2: 
+
+Consumer<Student> printName = s -> System.out.println(s.getName());
+
+Consumer<Student> printMarks = s -> System.out.println(s.getMarks());
+
+
+Combine:
+
+
+Consumer<Student> details = printName.andThen(printMarks);
+
+
+
+
+
+
+forEach method:
+---------------
+
+--Form Java 1.8 onwards we can iterate over each collection items using the forEach() method also.
+
+--This forEach() method is a default method present inside the Iterable interface, which is the super most interface in the collection hirarchy.
+
+
+pubilc default void forEach(Consumer c);
+
+--forEach() internally takes a Consumer object and invokes its accept() method for every element of the collection.
+
+
+
+Demo.java:
+---------------
+
+package com.masai;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+	List<String> list = new ArrayList<>(List.of("ram", "amit", "ravi", "sunil"));  
+       
+	// passing external consumer implementation
+        //list.forEach(new MyConsumer());
+       
+	//Using LE
+        //list.forEach(n -> System.out.println("Welcome using LE :" +n.toUpperCase()));
+        //list.forEach(e -> System.out.println(e));
+
+
+	Using MR
+	//list.forEach(System.out::println);        
+	//list.forEach(A::greet); 
+        
+
+	//students.forEach(System.out::println);
+
+	students.forEach(s -> {
+		
+		System.out.println("Roll is: "+s.getRoll());
+		System.out.println("Name is: "+s.getName());
+		System.out.println("Marks is: "+s.getMarks());
+		System.out.println("===========================");        		
+
+		});
+        		
+	}
+}
+
+
+
+
+Note: 
+
+list.forEach(System.out::println);
+
+Internally behaves like:
+
+for(String s : list){
+    System.out.println(s);
+}
+
+
+
+
+
+3. Supplier<T>:
+===============
+
+--It takes noting, but returns something.
+
+
+public interface Supplier<T> {
+
+    T get();
+
+}
+
+
+--A Supplier does not accept any input.
+
+--It only supplies (provides) a value whenever requested.
+
+Input  -> Nothing
+Action -> Create / Fetch / Supply
+Return -> Some Value
+
+
+
+Example 1: Vending Machine
+
+Input  : Nothing
+Action : Dispense a cold drink
+Return : Cold Drink
+
+Example 2: Generate OTP
+
+Input  : Nothing
+Action : Generate OTP
+Return : 583921
+
+
+Example 3: Getting a List of Students
+
+Input  : Nothing
+Action : Create/fetch List of Students
+Return : List<Student> object.
+
+
+Whenever You Need:
+
+No Input
+Produce Some Data
+Return That Data
+
+Use: Supplier<T>
+
+
+
+Eample1:
+
+MessageSupplier.java:
+---------------------
+
+
+public class MessageSupplier implements Supplier<String>{
+
+	@Override
+	public String get() {
+		
+		return "Message: This message is supplied using an external class";	
+	}
+}
+
+
+
+Demo.java:
+--------------
+
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+		Supplier<String> s= new MessageSupplier();
+		String str=s.get();
+		System.out.println(str);
+		 
+		Supplier<String> s1 = () -> "Message: This message is returnd using LE";
+		System.out.println(s1.get());
+		
+		
+		//Supplier of Student
+		Supplier<Student> s2 = () -> new Student(10, "n1", 780); // Lazy initialization, here actual object is not created in the memory
+		System.out.println(s2.get()); // object will be created only when get() method is called.
+
+	
+				
+	}
+}
+
+
+Generate Random Number:
+
+
+Supplier<Integer> otpSupplier = () -> (int)(Math.random() * 1000000); //Every time supplier will return the different value.
+
+System.out.println(otpSupplier.get());
+
+
+Note: Supplier does not support chaining mechanism.
+
+
+Method Reference with Supplier:
+--------------------------------
+
+If constructor has no arguments:
+
+public Student() {
+
+}
+
+
+then we can refer to this constructor also:
+
+Supplier<Student> supplier = Student::new;
+
+is equivalent to:
+
+Supplier<Student> supplier = () -> new Student();
+
+
+
+
+
+4. Function<T,R>:
+=================
+
+--Take Input, Transform It, Return Result
+
+public interface Function<T,R>{
+
+    R apply(T t);
+
+}
+
+---It will take T type object as parameter and returns R type object.
+
+
+Meaning: A Function accepts one input and returns one output.
+
+Input  -> T
+Action -> Transform
+Output -> R
+
+
+Example 1:
+
+Input  : "raj"
+Action : Convert to Uppercase
+Output : "RAJ"
+
+
+Example 2:
+
+Input  : Student Object
+Action : Extract Marks
+Output : 780
+
+
+Example 3:
+
+Input  : Integer
+Action : Find Square
+Output : Integer
+
+
+Whenever You Need:
+
+Take Input
+Convert / Transform It
+Return Something
+
+Then Use:
+
+Function<T,R>
+
+
+Example:
+
+Function<String,Integer>
+
+means:
+
+Input: String
+
+Return: Integer
+
+
+
+Example1: Convert String to Uppercase
+
+
+
+UpperCaseFunction.java:
+-----------------------
+
+
+import java.util.function.Function;
+
+public class UpperCaseFunction implements Function<String,String>{
+
+    @Override
+    public String apply(String str){
+
+        return str.toUpperCase();
+
+    }
+
+}
+
+
+
+Demo.java:
+----------
+
+import java.util.function.Function;
+
+public class Demo {
+
+    public static void main(String[] args) {
+
+        //Using External Class
+        Function<String,String> f1 = new UpperCaseFunction();
+        System.out.println(f1.apply("raj"));
+
+
+        //Using Lambda Expression
+        Function<String,String> f2 = str -> str.toUpperCase();
+        System.out.println(f2.apply("amit"));
+
+
+	//Using MR
+	Function<String,String> f3 = String::toUpperCase;;
+        System.out.println(f3.apply("rohit"));
+
+
+
+    }
+
+}
+
+
+
+Example2: Find Square of a Number
+
+
+Function<Integer,Integer> square = n -> n * n;
+
+System.out.println(square.apply(10));
+
+
+Example3: Getting a Student object and returning the result of the Student if marks is > 500 then pass otherwise fail.
+
+MyFunction.java:
+--------------------
+
+
+import java.util.function.Function;
+
+public class StudentResultFunction implements Function<Student, String>{
+
+	@Override
+	public String apply(Student s) {
+		
+		if(s.getMarks() > 500)
+			return s.getName() +" is Pass";
+		else
+			return s.getName()+ " is Fail";
+		
+		
+		
+	}
+}
+
+
+
+Demo.java:
+----------
+
+
+import java.util.function.Function;
+
+public class Demo {
+
+	public static void main(String[] args) {
+
+		//Using external class
+		Function<Student, String> f= new StudentResultFunction();		
+		String result= f.apply(new Student(10,"Ramesh",480));
+		System.out.println(result);
+		
+		//Using LE
+		Function<Student, String> f= s -> s.getMarks() > 500 ? s.getName()+" is Pass": s.getName()+" is Fail";
+		System.out.println(f.apply(new Student(10, "Amit", 780)));
+				
+	}
+}
+
+
+
+
+
+Example3: //To get the name of the Student.
+
+
+Using LE:
+
+Function<Student,String> f = s -> s.getName();
+	
+Using MR:
+
+Function<Student,String> f = Student::getName;
+
+
+
+Function Chaining:
+-----------------
+
+
+
+
+
+

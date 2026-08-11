@@ -285,7 +285,7 @@ note:-whenever we need to define multiple catch blocks and if catch(Exception e)
 
 
 Checked and Unchecked Exceptions:
-================================
+=================================
 
 
 ---The next importent concept of exception handling is checked exception and unchecked exceptions.
@@ -366,7 +366,7 @@ class Test {
         Test t = new Test();
         t.fun1(10, 2);
 
-        System.out.println("inside main()");
+        System.out.println("end of main()");
     }
 }
 
@@ -424,44 +424,79 @@ Note:-even though throws is applicable with main() also it is highly recomended 
 
 throws keyword and constructor:-
 --------------------------------
-definetly we can use throws keyword constructor also bcoz constructor may have many number of statement which r proven to generate exception class object.
 
-ex:-
-class Test {
 
-    int z = 20;
+--definetly we can use throws keyword constructor also bcoz constructor may have many number of statement which r proven to generate exception class object.
 
-    Test() throws Exception {
-        int i = 10;
-        int j = 0;
-        int x = i / j;   // ArithmeticException
+
+
+Rule
+
+--If a constructor of a class declares a checked exception, then creating an object of that class must either:
+
+--handle the exception using try-catch, or
+
+--declare the exception using throws.
+
+--Because of this, we cannot directly create the object as an instance member of another class without handling the exception.
+
+Example
+
+class A {
+
+    A() throws Exception {
+        System.out.println("Constructor of A");
     }
 
-    public static void main(String[] args) {
-
-        try {
-            Test t = new Test();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        System.out.println(t.z);   // Compile Time Error
-    }
 }
+
+Now consider another class:
+
+class B {
+
+    A a1 = new A();   // Compile Time Error
+
+}
+
+
+Why Error?
+
+A() throws a checked exception, but instance variable initialization cannot handle the exception directly.
+
+Compiler error:
+
+Unhandled exception type Exception
+
+
+Correct Approach
+----------------
+
+Create the object inside the constructor of the class.
+
+class B {
+
+    A a1;
+
+    B() throws Exception {
+        a1 = new A();
+    }
+
+}
+
+Or handle it using try-catch.
 
 
 method overriding rules wtih exception:-
 =========================================
 
-1.if the superclass method does not declares any exception:-
+1.i	
 
 
 
-if the superclass method does not declare an exception,subclass overridden method cannot declare the checked exception,but it can declare unchecked exception....
+if the superclass method does not declare an exception,subclass overridden method cannot declare the checked exception,but it can declare unchecked exceptions.
 
 
-2.if the superclass method declares an exception:-
+2.If the superclass method declares an exception:
 
 
 if the super class method deaclares an exception subclass overridden method can declare
@@ -574,6 +609,7 @@ try {
 }
 catch(Exception e) {
     System.out.println(e);
+   
 }
 
 Problem:
@@ -730,6 +766,97 @@ finally {
     if(fr != null)
         fr.close();
 }
+
+
+
+
+Try-With-Resources
+
+
+--try-with-resources is a special try statement used to automatically close resources after execution.
+
+--A resource is an object that must be closed after use.
+
+Examples:
+
+File streams
+
+Database connections
+
+Network connections
+
+Scanner objects
+
+
+Syntax
+
+
+try(Resource resource = new Resource()) {
+
+    // code using resource
+
+}
+catch(Exception e) {
+
+}
+
+Java automatically calls: resource.close(); when execution finishes.
+
+
+Example:
+
+import Java.io.*;
+
+class Demo {
+
+    public static void main(String[] args) {
+
+        try(FileInputStream fis = new FileInputStream("data.txt")) {
+
+            System.out.println("File opened");
+
+        }
+        catch(Exception e) {
+            System.out.println(e);
+        }
+
+    }
+
+}
+
+
+Requirement for Try-With-Resources:
+
+
+The object must implement: Java.lang.AutoCloseable Interface.
+
+AutoCloseable Interface
+-----------------------
+
+It contains only one method:
+
+public void close() throws Exception;
+
+Any class implementing this interface can be used in try-with-resources.
+
+Example:
+
+
+FileInputStream
+
+BufferedReader
+
+Scanner
+
+Connection
+
+
+
+
+
+
+
+
 
 
 
@@ -943,16 +1070,51 @@ Steps to Create a User-Defined Exception
 
 Step 1
 
---Create a class that extends Exception
+--Create a class that extends Exception // to create a custom checked exception
+
+or
+
+--Create a class that extends RuntimeException // to create a custom unchecked exception
+
 
 Step 2
 
 
 --Define a parameterrized constructor inside that class by taking String as an argument, and pass that String to its parent class constructor.
 
-//or
+--Optionally: We can put a zero argument constructor also to make it flexibale.
 
---Override the toString() or getMessage() method
+--Optinally: We can have a toString() method also
+
+
+
+Example: Unchecked exception category
+
+
+public class InvalidAgeException extends  RuntimeException {
+
+    //optional
+    public InvalidAgeException(){
+
+    }
+
+
+    //recomended
+    public InvalidAgeException(String message){
+            super(message);
+    }
+
+    //optional
+    @Override
+    public String toString() {
+        return  "Invalid Age Exception: ";
+    }
+}
+
+
+
+
+
 
 
 
@@ -1028,7 +1190,7 @@ Password checking example:
 
 
 
-InvalidPasswordException.Java:
+InvalidPasswordException.java:
 ------------------------------
 
 class InvalidPasswordException extends Exception {
@@ -1086,235 +1248,13 @@ class Demo {
 
 
 
-Constructor Throwing Checked Exception:
-------------------------------------
 
+Layered Architechture:
 
-Rule
 
---If a constructor of a class declares a checked exception, then creating an object of that class must either:
+User input --->Controller layer ---> Service layer--->Repository layer---->DB  
 
---handle the exception using try-catch, or
 
---declare the exception using throws.
-
---Because of this, we cannot directly create the object as an instance member of another class without handling the exception.
-
-Example
-
-class A {
-
-    A() throws Exception {
-        System.out.println("Constructor of A");
-    }
-
-}
-
-Now consider another class:
-
-class B {
-
-    A a1 = new A();   // Compile Time Error
-
-}
-
-
-Why Error?
-
-A() throws a checked exception, but instance variable initialization cannot handle the exception directly.
-
-Compiler error:
-
-Unhandled exception type Exception
-
-
-Correct Approach
-----------------
-
-Create the object inside the constructor of the class.
-
-class B {
-
-    A a1;
-
-    B() throws Exception {
-        a1 = new A();
-    }
-
-}
-
-Or handle it using try-catch.
-
-
-Java 7 Features:
----------------
-
-1. Single Catch Block for Multiple Exceptions (Java 7 Feature)
-
-It allows one catch block to handle multiple exceptions.
-
-Syntax
-
-Exceptions are separated using the pipe symbol |.
-
-catch(ClassNotFoundException | IOException e) {
-    e.printStackTrace();
-}
-
-
-Example
-
-import Java.io.*;
-
-class Demo {
-
-    public static void main(String[] args) {
-
-        try {
-
-            int x = 10 / 0;
-
-            Class.forName("Test");
-
-        }
-        catch(ArithmeticException | ClassNotFoundException e) {
-
-            System.out.println(e);
-
-        }
-
-    }
-
-}
-
-
-Important Point
-
---In a multi-catch block, the exception variable becomes implicitly final.
-
---So we cannot reassign it.
-
-Example (Not Allowed):
-
-catch(IOException | ClassNotFoundException e) {
-
-    e = new IOException();   // Compile-time error
-
-}
-
-
-Another Rule
-
---We cannot catch exceptions from the same hierarchy together.(no parent-child relationships)
-
-Example (Invalid):
-
-catch(Exception | IOException e) {
-
-}
-
-
-IOException -> child of Exception
-
-So IOException is already covered by Exception, making the second one redundant.
-
-This produces a compile-time error.
-
-
-
-but this is possible:
-
-try {
-    // risky code
-}
-catch(SQLException | IOException e) {
-    System.out.println("Common Error handling for IOE and SQLE");
-}
-catch(Exception e) {
-    System.out.println("Other Error handling..");
-}
-
-
-
-2. Try-With-Resources
-
-
---try-with-resources is a special try statement used to automatically close resources after execution.
-
---A resource is an object that must be closed after use.
-
-Examples:
-
-File streams
-
-Database connections
-
-Network connections
-
-Scanner objects
-
-
-Syntax
-
-
-try(Resource resource = new Resource()) {
-
-    // code using resource
-
-}
-catch(Exception e) {
-
-}
-
-Java automatically calls: resource.close(); when execution finishes.
-
-
-Example:
-
-import Java.io.*;
-
-class Demo {
-
-    public static void main(String[] args) {
-
-        try(FileInputStream fis = new FileInputStream("data.txt")) {
-
-            System.out.println("File opened");
-
-        }
-        catch(Exception e) {
-            System.out.println(e);
-        }
-
-    }
-
-}
-
-
-Requirement for Try-With-Resources:
-
-
-The object must implement: Java.lang.AutoCloseable Interface.
-
-AutoCloseable Interface
------------------------
-
-It contains only one method:
-
-public void close() throws Exception;
-
-Any class implementing this interface can be used in try-with-resources.
-
-Example:
-
-
-FileInputStream
-
-BufferedReader
-
-Scanner
-
-Connection
 
 
 
@@ -1568,5 +1508,8 @@ catch (SQLException e) {
 
     throw new PaymentException("Payment could not be completed", e);
 }
+
+
+
 
 
