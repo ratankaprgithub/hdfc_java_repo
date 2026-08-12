@@ -83,7 +83,7 @@ interface MyInterface {
 	//private instance method
     }   
 
-    private static void show4(){
+    private static void show5(){
 	//private static method
     }   
 
@@ -225,7 +225,7 @@ Note: To use the Annonymous inner class, interface need not be a functional. but
 Rules to use Lambda Expression:
 ------------------------------
 
---Lambda Expression is a imlementation of a functional interface (using Lambda Expression we can provide the implementation of a Functional Interface in much more easier way).
+--Lambda Expression is a implementation of a functional interface (using Lambda Expression we can provide the implementation of a Functional Interface in much more easier way).
 
 --Lambda Expression comprises 3 things:
 
@@ -323,7 +323,7 @@ Example:
 Lambda Expression with parameter:
 ---------------------------------
 
-
+@FunctionalInterface
 interface Add {
     void sum(int a, int b);
 }
@@ -412,7 +412,7 @@ public class Demo {
 
 	public static void main(String[] args) {
 
-		Intr i1 = (s) ->  {
+		Intr i1 = s ->  {
 
 				System.out.println("Roll is: "+s.getRoll());
 				System.out.println("Name is: "+s.getName());
@@ -433,9 +433,10 @@ public class Demo {
 With return type:
 ----------------
 
+@FunctionalInterface
 interface X{
 
-boolean isPositive(int num);
+	boolean isPositive(int num);
 
 }
 
@@ -490,11 +491,14 @@ Student task:
 
 --implement the following interface using the lambda expression:
 
+@FunctionalInterface
 interface Square {
     int getSquare(int x);
 }
 
-
+1. using external class
+2. using annonymous inner class
+3. using LE
 
 
 
@@ -563,6 +567,8 @@ public class A{
 --Using Lambda expression we need not write the seperate implementation classes for the funtional interface.
 
 
+	//Intr i1 = (n1,n2) -> System.out.println("Result is: "+(n1+n2));
+	//a1.funA(i1);
 
 	a1.funA((n1,n2) -> System.out.println("Result is: "+(n1+n2)));
 
@@ -581,6 +587,10 @@ public class A{
 		System.out.println("Inside funA of A class");
 
 		if("admin".equals(username) && "12345".equals(password)){
+
+			//Intr i1 = new IntrImpl();
+			//return i1;
+
 			return (n1,n2) -> System.out.println("Result is: "+(n1+n2)); 
 		}
 
@@ -696,7 +706,7 @@ Collections.sort(students, (s1,s2) -> {
 
 		return result;
 
-);
+});
 
 
 
@@ -771,7 +781,7 @@ Types of Method Reference:
 | Type            | Syntax                |
 | --------------- | --------------------- |
 | Static method   | ClassName::methodName |
-| Instance method | object::methodName    |
+| Instance method | object::methodName    |--Bounded type
 | Constructor     | ClassName::new        |
 
 
@@ -883,7 +893,7 @@ public class Demo {
 	
 
 	//static method
-	public static void fun2(String s) {
+	public static void greet2(String s) {
 		
 		System.out.println("Using a static method");
 		System.out.println("Good morning :"+s);		
@@ -924,6 +934,8 @@ public class Demo {
 
 
 
+
+
 Example2: 
 
 
@@ -935,8 +947,8 @@ NumIntr.java:
 @FunctionalInterface
 public interface NumIntr {
 	 
-	int getTheNumber(String number);
-
+	int getTheNumber(String number);   
+ 
 }
 
 
@@ -979,7 +991,7 @@ public class Demo {
 		
 		
 		//Using Lambda expression
-		NumIntr i2 = s ->  Integer.parseInt(s);
+		NumIntr i2 = s ->  Integer.parseInt(s.trim());
 		int number2= i2.getTheNumber("70");		
 		System.out.println(number2+10);
 		
@@ -1035,16 +1047,16 @@ public class Demo {
 	
 			
 		//Using an external class
-		NumIntr i1 = new NumIntrImpl();
+		PrintIntr i1 = new PrintIntrImpl();
 		i1.printOnConsole("Hello");
 
 		
 		//Using a Lambda expression
-		NumIntr i2 = s -> System.out.println(s);		
+		PrintIntr i2 = s -> System.out.println(s);		
 		i2.printOnConsole("Welcome");
 		
 		//Using Method reference 
-		NumIntr i3 = System.out::println;
+		PrintIntr i3 = System.out::println;
 		i3.printOnConsole("Using MR, Welcome");
 		
 		// Here we are referening the existing println(String s) method of PrintStream object
@@ -1228,9 +1240,9 @@ becomes:
 Note: This type of method reference is called an "Unbound Instance Method Reference" because we are referring to an instance method of a class without creating or specifying a particular object.
 
 
---On which object of String class the getName() method will be called will act as a parameter of the convert() method of NameIntr interface.
+--On which object of String class the toUpperCase() method will be called will act as a parameter of the convert() method of NameIntr interface.
 
---And since the return type of convert() method is String and getName() also return String then it will be matched. 
+--And since the return type of convert() method is String and toUpperCase() also return String then it will be matched. 
 
 
 
@@ -1249,7 +1261,11 @@ String getStudentName(Student student);
 
 matches with:
 
-String Student.getName();
+String s3.getName();
+
+
+Student::getName;
+
 
 because:
 
@@ -1500,7 +1516,7 @@ public class Demo {
 Example:
 
 
-List<Integet> numbers = new ArrayList<>(List.of(10,20,5,3,50,15,17,30));
+List<Integer> numbers = new ArrayList<>(List.of(10,20,5,3,50,15,17,30));
 
 
 Predicate<Integer> even = n -> n % 2 == 0;
@@ -1517,6 +1533,10 @@ All even numbers will be removed because Predicate returned true for them.
 
 
 Example: From the List of Students, remove all the students whose marks is less than 500.
+
+--Create Student bean class : roll, name, marks
+--Create a List with 6 students with diff properties
+
 
 
 Demo.java:
@@ -1593,13 +1613,15 @@ Combine:
 
 Predicate<Employee> result = ageCheck.and(salaryCheck);
 
+employees.removeIf(ageCheck);
+
 
 Example2: Filter the students whose marks is greater than 500 and less than 700.
 
 
-Predicate<Integer> greaterThan500 = s -> s.getMarks() > 500;
+Predicate<Student> greaterThan500 = s -> s.getMarks() > 500;
 
-Predicate<Integer> lessThan700 = s -> s.getMarks() < 700;
+Predicate<Student> lessThan700 = s -> s.getMarks() < 700;
 
 students.removeIf(greaterThan500.and(lessThan700));
 
@@ -1616,9 +1638,9 @@ Example:
 Filter the students whose marks is greater than 500 or name is Rahul.
 
 
-Predicate<Integer> greaterThan500 = s -> s.getMarks() > 500;
+Predicate<Student> greaterThan500 = s -> s.getMarks() > 500;
 
-Predicate<String> isRahul = s -> s.getName().equals("Rahul");
+Predicate<Student> isRahul = s -> s.getName().equals("Rahul");
 
 students.removeIf(greaterThan500.or(isRahul));
 
@@ -2031,7 +2053,7 @@ public class Demo {
 		
 		
 		//Supplier of Student
-		Supplier<Student> s2 = () -> new Student(10, "n1", 780); // Lazy initialization, here actual object is not created in the memory
+		Supplier<Student> s2 = () -> new Student(10, "n1", 780); // Lazy initialization, here actual Student object is not created in the memory
 		System.out.println(s2.get()); // object will be created only when get() method is called.
 
 	
@@ -2113,6 +2135,17 @@ Example 3:
 Input  : Integer
 Action : Find Square
 Output : Integer
+
+
+Example 4:
+
+Input  : Application form
+Action : Verify the form
+Output : Passport
+
+
+
+
 
 
 Whenever You Need:
@@ -2251,7 +2284,7 @@ public class Demo {
 
 
 
-Example3: //To get the name of the Student.
+Example3: To get the name of the Student.
 
 
 Using LE:
@@ -2264,8 +2297,678 @@ Function<Student,String> f = Student::getName;
 
 
 
+Example4: To get the length of a String
+
+
+Using LE:
+
+Function<String,Integer> f1 = s -> s.length();
+System.out.println(f1.apply("Welcome"));
+  
+
+Using MR:
+
+Function<String,Integer> f2 = String::length;
+System.out.println(f1.apply("Welcome"));
+
+
+
+Funny Example: Converting Student to the Employee:
+
+
+
+Student.java:
+------------
+
+class Student{
+
+
+private int roll;
+private String name;
+private double marks;
+
+//Constructors + getters and setters
+
+
+} 
+
+
+Employee.java:
+--------------
+
+class Employee{
+
+private int empId;
+private String name;
+private double salary;
+
+//Constructors + getters and setters
+
+}
+
+
+--Convert the Student object to the Employee object where:
+
+roll will become empId
+
+and
+
+the Employee salary will be student obtained marks * 100
+
+
+
+
+    Function<Student, Employee> f1= s -> new Employee(s.getRoll(), s.getName(), s.getMarks()*100);
+
+
+    Employee emp= f1.apply(new Student(10,"Rohit",800));
+
+    System.out.println(emp.getSalary());
+
+
+
+
+
 Function Chaining:
 -----------------
+
+
+--Function interface provides two very important default methods:
+
+1. public default Function andThen(Function f);
+
+2. public default Function compose(Function f);
+
+
+andThen():
+---------
+
+Meaning:
+
+First Function
+Then Another Function
+
+
+Example:
+
+Function<String,String> upper = s -> s.toUpperCase();
+
+Function<String,String> welcome = s -> "Welcome " + s;
+
+
+Combine:
+
+Function<String,String> result = upper.andThen(welcome);
+
+System.out.println(result.apply("raj"));
+
+Flow:
+
+raj ->RAJ -> Welcome RAJ
+
+Output:
+
+Welcome RAJ
+
+
+Example2: Find the square of a number then multiply by 10.
+
+
+Function<Integer,Integer> square = n -> n * n;
+
+Function<Integer,Integer> multiplyBy10 = n -> n * 10;
+
+
+Combine:
+
+Function<Integer,Integer> result = square.andThen(multiplyBy10);
+
+System.out.println(result.apply(5));
+
+Output: 250
+
+
+Example 3: Get the salary of the Employee and apply the 10% tax and get the taxable amount:
+
+
+class Employee {
+
+    private String name;
+    private double salary;
+
+    // constructor + getter
+} 
+
+
+Get Salary:
+
+Function<Employee,Double> getSalary = Employee::getSalary;
+
+Convert Salary To Tax:
+
+Function<Double,Double> tax = salary -> salary * 0.1;
+
+
+Combine:
+
+Function<Employee,Double> salaryTax = getSalary.andThen(tax);
+
+
+double result= salaryTax.apply(new Employee("Raj", 50000));
+
+System.out.println(result);
+
+Output: 5000
+
+
+compose():
+------------
+
+Meaning:
+
+Execute Other Function First
+Then Current Function
+
+
+Example:
+
+Function<String,String> upper =  s -> s.toUpperCase();
+
+Function<String,String> welcome = s -> "Welcome " + s;
+
+
+Combine:
+
+Function<String,String> result = upper.compose(welcome);
+
+
+System.out.println(result.apply("raj"));
+
+Flow:
+
+raj ->Welcome raj -> WELCOME RAJ
+
+Output:
+
+WELCOME RAJ
+
+
+
+
+
+5. BiFunction<T,U,R>
+=====================
+
+
+--This interface is derived from Function interface. or we can say that it is the another varient of the Function interface.
+
+
+--As we know that a normal Function takes one input and one output:
+
+Function<T, R>
+
+--But if we need 2 input and 1 output then we need to use:
+
+BiFunction<T, U, R>
+
+--Take Two Inputs, Transform Them, Return One Result
+
+
+public interface BiFunction<T,U,R>{
+
+    R apply(T t, U u);
+
+}
+
+
+
+Example 1: Add Two Numbers
+
+Input1 : 10
+Input2 : 20
+
+Output : 30
+
+
+Example 2: Create Full Name
+
+Input1 : Raj
+Input2 : Kumar
+
+Output : Raj Kumar
+
+
+Whenever You Need
+
+Take Two Inputs
+Perform Some Logic
+Return Result
+
+
+Use: BiFunction<T,U,R>
+
+
+Where:
+
+T = First Input Type
+U = Second Input Type
+R = Return Type
+
+
+Example1: Add Two Numbers
+
+
+AddNumbers.java:
+-----------------
+
+import java.util.function.BiFunction;
+
+public class AddNumbers implements BiFunction<Integer,Integer,Integer>{
+
+    @Override
+    public Integer apply(Integer n1, Integer n2) {
+
+        return n1 + n2;
+
+    }
+}
+
+
+
+Demo.java:
+----------
+
+
+import java.util.function.BiFunction;
+
+public class Demo {
+
+    public static void main(String[] args) {
+
+        //Using External Class
+        BiFunction<Integer,Integer,Integer> b1 = new AddNumbers();
+        System.out.println(b1.apply(10,20));
+
+
+        //Using Lambda Expression
+        BiFunction<Integer,Integer,Integer> b2 = (a,b) -> a+b;
+        System.out.println(b2.apply(100,200));
+
+    }
+
+}
+
+
+
+Example 2: Create Full Name
+
+
+BiFunction<String,String,String> fullName = (first,last) -> first + " " + last;
+
+System.out.println(fullName.apply("Raj","Kumar"));
+
+
+
+Example 3: Calculate Salary
+
+BiFunction<Double,Double,Double> salary = (basic,bonus) -> basic + bonus;
+
+double totalSalary = salary.apply(50000.0,10000.0);
+
+
+Example 3: Login Validation
+
+
+BiFunction<String,String,Boolean> loginCheck = (user,pass) -> user.equals("admin") && pass.equals("1234");
+
+System.out.println(loginCheck.apply("admin", "1234"));
+
+
+
+6. UnaryOperator<T>:
+====================
+
+--This interface is the another variation of Function interface:
+
+Function<T,R>
+
+means:
+
+Input Type  = T
+Return Type = R
+
+Sometimes: If we want Input Type and Return Type are the SAME
+
+--In such cases Java provides special interfaces:
+
+UnaryOperator<T>
+
+BinaryOperator<T>
+
+These are specialized versions of:
+
+Function<T,R>
+
+
+BiFunction<T,U,R>
+
+
+
+public interface UnaryOperator<T>
+        extends Function<T,T> {
+
+}
+
+--Input and output types are the same.
+
+
+Meaning:
+
+Take One Input
+Perform Some Operation
+Return Same Type
+
+Instead of:
+
+Function<String,String>
+
+we can write:
+
+UnaryOperator<String>
+
+
+
+Example1: String, String
+
+Input: welcome
+Outout: WELCOME
+
+
+Example 2: Integer, Integer
+
+Input: 10
+Output: 100
+
+
+Example 3: Employee, Employee
+
+Input: Employee
+Output: Updated Employee
+
+
+Example: Convert String To Uppercase
+
+import java.util.function.UnaryOperator;
+
+public class Demo {
+
+    public static void main(String[] args) {
+
+	//Using LE
+        UnaryOperator<String> u1 = str -> str.toUpperCase();
+        System.out.println(u1.apply("raj"));
+
+	//Using MR
+	UnaryOperator<String> upper = String::toUpperCase;
+	System.out.println(upper.apply("raj"));
+    }
+
+}
+
+
+Exmaple2: Find square
+
+UnaryOperator<Integer> square = n -> n * n;
+
+System.out.println(square.apply(10));
+
+
+Example 3: Give 10% Salary Hike
+
+
+UnaryOperator<Employee> salaryHike = emp -> {
+
+            emp.setSalary(emp.getSalary() * 1.10);
+
+            return emp;
+        };
+
+
+
+7. BinaryOperator<T>:
+======================
+
+public interface BinaryOperator<T> extends BiFunction<T,T,T> {
+
+}
+
+Input1 = T
+Input2 = T
+Return = T
+
+--All three types are the same.
+
+
+Example:
+
+BinaryOperator<Integer> add = (a,b) -> a+b;
+
+System.out.println(add.apply(10,20));
+
+
+
+Example: Choose Employee With Higher Salary
+
+
+BinaryOperator<Employee> higherSalary = (e1,e2) -> e1.getSalary() > e2.getSalary() ? e1: e2;
+
+
+
+Comparator.comparing():
+========================
+
+The Problem Before Java 8
+
+Suppose we want to sort students by marks.
+
+--we can either make use of external class by implemeting the Comparator
+
+or
+
+--we can make use of annonymous inner class approach:
+
+But after from Java 8 we can make use of Lambda expression:
+
+students.sort( (s1,s2) -> Double.compare(s1.getMarks(),s2.getMarks()));
+
+
+--But Java 8 provides an even cleaner approach using: Comparator.comparing()
+
+
+--Comparator.comparing() is a static factory method of the Comparator interface that creates a Comparator based on a specific property (key) of an object.
+
+
+
+public static Comparator comparing(Function<T,U> keyExtractor)
+
+
+Here, keyExtractor
+
+means:
+
+--Which property should be used for sorting?
+
+For marks:
+
+Student::getMarks
+
+For name: 
+
+Student::getName
+
+For Roll:
+
+Student::getRoll
+
+
+Example1: Soring by Marks
+
+
+Using Lambda:
+
+	students.sort( (s1,s2) -> Double.compare(s1.getMarks(),s2.getMarks()));
+
+Using comparing():
+
+	students.sort(Comparator.comparing(Student::getMarks));
+
+Much cleaner.
+
+
+means:
+
+For every Student object,
+
+extract the marks
+
+and compare those marks.
+
+
+
+Example 2: Sort By Name
+
+
+Using Lambda:
+
+	students.sort((s1,s2) -> s1.getName().compareTo(s2.getName()));
+
+Using comparing():
+
+	students.sort(Comparator.comparing(Student::getName));
+
+
+Note: comparing() does NOT sort.
+
+It only creates a Comparator.
+
+Actual sorting is done by:
+
+Collections.sort()
+
+or
+
+List.sort()
+
+
+
+Example:
+
+Comparator<Student> cmp = Comparator.comparing(Student::getMarks);
+
+students.sort(cmp);
+
+
+thenComparing():
+----------------
+
+--Using this method we can chain the comparaing() methods.
+
+For Examaple: If the 2 students marks are same them sort them using their name:
+
+
+Using Lambda:
+
+students.sort((s1,s2)->{
+
+    int result = Double.compare(s1.getMarks(),s2.getMarks());
+
+    if(result == 0) {
+        return s1.getName().compareTo(s2.getName());
+    }
+
+    return result;
+
+}); 
+
+
+--Too much code:
+
+
+Using thenComparing():
+
+
+students.sort(Comparator.comparing(Student::getMarks).thenComparing(Student::getName));
+
+
+Multiple thenComparing():
+
+--We can keep chaining.
+
+
+students.sort(Comparator.comparing(Student::getMarks)
+    						.thenComparing(Student::getName)
+    						.thenComparing(Student::getRoll));
+
+
+reversed():
+-----------
+
+students.sort(Comparator.comparing(Student::getName));
+
+--It bydefault using Ascending order, to make it in descending order:
+
+students.sort(Comparator.comparing(Student::getName).reversed());
+
+
+Example: Sort By Marks Descending If Marks Same Sort By Name in ascending order:
+
+
+students.sort(Comparator.comparing(Student::getMarks)
+						    .reversed()
+    						    .thenComparing(Student::getName));
+
+
+
+
+
+
+
+Note: When we use:
+
+Comparator.comparing(Student::getRoll);
+
+--here getRoll() method returns the primitive type: int
+
+--Java internally converts it to Integer : Autoboxing, since Collection does not support the primitives.
+
+
+--To avoid this unnecessary boxing:
+
+Java provides:
+
+Comparator.comparingInt(...)
+
+Example:
+
+students.sort(Comparator.comparingInt(Student::getRoll));
+
+
+Similarly:
+
+comparingLong()
+comparingDouble()
+--
+
+--for better performace.
+
+--It is recommended to use:
+
+comparing(): for String comparison
+comparingXXX(): for primitive types
+
+
+
+
 
 
 
