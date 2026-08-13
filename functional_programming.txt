@@ -1427,7 +1427,7 @@ public class Demo {
 
 		
 		//using LE
-		Predicate<Integer> p2 = i ->  i >0;
+		Predicate<Integer> p2 = i ->  i >= 0;
 				
 		System.out.println(p2.test(10));
 
@@ -1613,7 +1613,7 @@ Combine:
 
 Predicate<Employee> result = ageCheck.and(salaryCheck);
 
-employees.removeIf(ageCheck);
+employees.removeIf(result);
 
 
 Example2: Filter the students whose marks is greater than 500 and less than 700.
@@ -1898,7 +1898,7 @@ forEach method:
 --This forEach() method is a default method present inside the Iterable interface, which is the super most interface in the collection hirarchy.
 
 
-pubilc default void forEach(Consumer c);
+pubilc default void forEach(Consumer<T> c);
 
 --forEach() internally takes a Consumer object and invokes its accept() method for every element of the collection.
 
@@ -2083,6 +2083,10 @@ public Student() {
 }
 
 
+
+
+
+
 then we can refer to this constructor also:
 
 Supplier<Student> supplier = Student::new;
@@ -2233,7 +2237,7 @@ Function<Integer,Integer> square = n -> n * n;
 System.out.println(square.apply(10));
 
 
-Example3: Getting a Student object and returning the result of the Student if marks is > 500 then pass otherwise fail.
+Example3: Getting a Student object and returning the result of the Student if marks is > 500 then Pass otherwise Fail.
 
 MyFunction.java:
 --------------------
@@ -2491,6 +2495,15 @@ raj ->Welcome raj -> WELCOME RAJ
 Output:
 
 WELCOME RAJ
+
+
+Predicate<T> : boolean test(T t)
+Consumer<T>  : void accept(T t)
+Supplier<T>  : T get()
+Function<T,R>: R apply(T t) 
+
+
+
 
 
 
@@ -2764,6 +2777,20 @@ BinaryOperator<Employee> higherSalary = (e1,e2) -> e1.getSalary() > e2.getSalary
 
 
 
+Sort:
+
+Collections.sort(list, Compartor)
+
+Comparable
+
+Comparator
+
+
+list.sort(Comparator.naturalOrder())
+
+
+
+
 Comparator.comparing():
 ========================
 
@@ -2857,7 +2884,8 @@ Collections.sort()
 
 or
 
-List.sort()
+list.sort()
+
 
 
 

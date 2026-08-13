@@ -1,0 +1,1953 @@
+Java Stream API:
+================
+
+
+--This API is also introduced in Java 1.8 version
+
+--This Stream API is differernt from the Java IO streams. In IO-Stream, we deal with low level data (binary data or charecter data)
+
+--Whereas this Stream API represents flow of data in the form of objects.
+
+--This Stream API belongs to "java.util.stream" package. where as IO-stream api belongs to java.io package.
+
+--The Stream API have one main interface called:
+
+java.util.stream.Stream(I)
+
+
+Note: object of the Stream interface represents elements in a flow/sequence of objects from a source like Collection object.
+
+
+Q/- Why Java Needed Streams?
+
+--Before Java 8, most collection processing looked like this:
+
+List<Student> passedStudents = new ArrayList<>();
+
+for(Student s : students){
+
+    if(s.getMarks() > 500){
+        passedStudents.add(s);
+    }
+
+}
+
+
+Now imagine:
+
+--filter students
+--sort them
+--convert names to uppercase
+--collect into another list
+
+
+Code becomes:
+
+for(...)
+{
+   if(...)
+   {
+      ...
+   }
+}
+
+
+Nested loops...
+temporary variables...
+extra collections...
+
+Very lengthy.
+
+
+--With the Stream we can process collection data in a more declarative way.
+
+
+Imperative vs Declarative Programming:
+--------------------------------------
+
+Imperative Style: Focuses on HOW to perform the task.
+
+
+You tell Java:
+
+Step-1
+Step-2
+Step-3
+Step-4
+
+Example:
+
+List<String> result = new ArrayList<>();
+
+for(String name : names){
+
+    if(name.length() > 3){
+        result.add(name.toUpperCase());
+    }
+
+}
+
+You are controlling every step.
+
+
+Declarative Style: Focuses on WHAT result is required.
+
+You tell Java:
+
+I want this result. 
+You figure out how.
+
+Example: Stream style
+
+List<String> result =
+        names.stream()
+             .filter(n -> n.length() > 3)
+             .map(String::toUpperCase)
+             .toList();
+
+
+
+Simple analogy:
+---------------
+
+Imagine you are a manager.
+
+You tell an employee: Imperative Style
+
+Go to room 101
+Open cupboard
+Take file
+Check date
+If date > 2025
+Put into another folder
+Sort the folder
+Print names
+
+--You are explaining every step.
+
+This is called: Imperative Programming
+
+
+Declarative Style:
+
+you simply say:
+
+Bring me all files after 2025 sorted by date.
+
+You only tell: WHAT you want
+
+You don't tell: HOW to do it
+
+This is called: Declarative Programming
+
+--Streams bring declarative programming to Java.
+
+
+Another example:
+
+List<Integer> numbers = new ArrayList<>(List.of(1,2,3,4,5,6,7,8,9,10));
+
+Requirement:
+
+Find even numbers
+Multiply by 10
+Print them
+
+Traditional Way: Imperative programming
+
+for(Integer n : numbers) {
+
+    if(n % 2 == 0) {
+
+        int result = n * 10;
+
+        System.out.println(result);
+    }
+}
+
+
+Problem With Imperative Style:
+
+--When requirements grow:
+
+Filter
+Sort
+Group
+Transform
+Aggregate
+Collect
+
+
+Code becomes:
+
+for(...)
+{
+   if(...)
+   {
+      ...
+   }
+}
+
+--Nested loops everywhere.
+
+--Difficult to read.
+
+
+Declarative Style Using Stream:
+
+numbers.stream()
+       .filter(n -> n % 2 == 0)
+       .map(n -> n * 10)
+       .forEach(System.out::println);
+
+
+Now we are describing:
+
+Filter
+Map
+Print
+
+--instead of manually controlling loops.
+
+
+
+Simple Defination of Stream:
+----------------------------
+
+--A Stream is a sequence of objects on which aggregate operations such as filtering, mapping, sorting and collecting can be performed.
+
+
+Imagine a water pipeline:
+
+Dirty Water -> Filter -> Purifier ->Storage Tank
+
+--Each stage performs one task.
+
+--Streams work exactly the same way.
+
+Collection Data -> filter() -> map() -> sorted() ->collect()
+
+--Stream is like a processing pipeline connected with a source like Collection.
+
+
+
+Important Point:
+----------------
+
+--A Stream does NOT store data.
+
+Example:
+
+List<Integer> numbers = List.of(10,20,30,40);
+
+--data stores here, i.e inside the numbers(List object)
+
+BUT,
+
+Stream<Integer> stream = numbers.stream(); 
+
+--Here stream object does not store the data, it just represents the flow of the data.
+
+Like,
+
+--Electric Wire does not store electricity.
+--Electric Wire only carries electricity.
+
+
+Similarly:
+
+--Stream does not store elements.
+--Stream only carries elements.
+
+
+--Just like a water pipe line..
+
+
+Characteristics of Streams:
+---------------------------
+
+1. Stream Does Not Store Data, It only represent the flow of the elements/data.
+
+--Data remains in source.
+
+Example:
+
+List<Integer> numbers = List.of(10,20,30);
+
+System.out.println(numbers); //actucal data is stored
+
+but,
+
+Stream<Integer> stream= numbers.stream();
+
+System.out.println(stream); //java.util.stream.ReferencePipeline$2@3feba861
+
+
+2. Stream Does Not Modify Source:
+
+--Operations (filtering/transforming/iterating, etc) performed on the Stream object does not modify its source.
+
+--Filtering a stream obtained from a source(collection object) produces a new stream object with the filtered elements rather than removing the elements from the source collection.
+
+
+Example:
+
+List<Integer> numbers = List.of(10,20,30,40);
+
+numbers.stream()
+    	.filter(n -> n > 20)
+    	.forEach(System.out::println);
+
+
+Result: [30,40]
+
+Original list: [10,20,30,40]
+
+--Original list is still unchanged.
+
+
+3. Stream Supports Functional Style:
+
+--It works beautifully with:
+
+Predicate
+Function
+Consumer
+Method Reference
+Lambda Expression
+
+
+4. Stream Can Be Consumed Only Once:
+
+--Once a stream is consumed by a terminal method, We are not allowed to use it again. it will cause a Runtime error:
+
+IllegalStateException:
+stream has already been operated upon or closed
+
+
+Example:
+
+Stream<Integer> stream = numbers.stream();
+
+stream.forEach(System.out::println);
+stream.forEach(System.out::println);
+
+
+IllegalStateException
+
+
+5. Streams Are Lazy:
+
+--Stream is by nature lazy, meaning:
+
+--It will not start the execution untill the terminal operation is called.
+
+Suppose:
+
+Stream<Integer> stream= numbers.stream()
+       				.filter(n -> {
+           				System.out.println("Checking " + n);
+           				return n % 2 == 0;
+       					});
+       
+
+
+
+Output: Nothing
+
+--Because no terminal operation exists.
+
+
+It says:
+
+I know WHAT to do.
+Tell me WHEN to start.
+
+--It will start execution only when the terminal operation is called.
+
+Stream<Integer> stream= numbers.stream()
+       				.filter(n -> {
+           				System.out.println("Checking " + n);
+           				return n % 2 == 0;
+       					});
+       
+long result = stream.count();
+
+
+Now execution starts. and stream will be consumed.
+
+--Once stream is consumed, we are not allowed to use it again.
+
+stream.count(); IllegalStateException
+
+
+
+
+
+Creating Streams:
+=================
+
+--We can get the Stream object in various ways:
+
+1. From Collection: (most common)
+
+--Collection Interface provides 2 methods to get a Stream(I) object.
+
+public Stream<E> stream();
+public Stream<E> parallelStream(); // this stream object is used to parallel processing the data by multiple threads.
+
+--So, we can get the Stream object from any of the Collection object (List, Set, Queue)
+
+
+Example:
+
+	List<String> names = List.of("Raj","Amit","Ravi");
+
+	Stream<String> stream = names.stream();
+
+--To get the Parallel Stream:
+
+	Stream<String> stream = names.parallelStream();
+
+
+
+
+2. From Array:
+
+Example:
+
+int[] arr = {10,20,30,40};
+
+IntStream stream = Arrays.stream(arr);
+
+
+--Similarly we have LongStream, DoubleStream.
+
+
+3. Using Stream.of()
+
+--Useful for quick testing.
+
+Stream<String> stream = Stream.of("Raj","Amit","Ravi");
+
+
+
+
+Methods Stream(I) interface:
+===========================
+
+
+There are 2 types of methods in the Stream interface:
+
+1. Intermediate methods
+2. Terminal methods
+
+
+Intermediate methods:
+--------------------
+
+--These methods returns a new Stream object instead of returning final output.
+
+--Using these methods we can chain one stream object with another stream object.
+
+--These methods never gives the final output.
+
+--Some of the commonly used intermediate methods are:
+
+filter()
+map()
+sorted()
+distinct()
+peek()
+limit()
+
+
+Terminal methods:
+-----------------
+
+--Stream object returns the final output only when we call the terminal methods.
+
+--These methods will consume the stream object also, and once a stream object is consumed then we can not reuse that stream object once again.
+
+--Some of the commonly used terminal methods are:
+
+forEach(Consumer action)
+collect()
+min()
+max()
+anyMatch()
+AllMatch()
+count()
+reduce()
+findFirst()
+
+//From Java 16 onwards:
+
+toList(): returns the unmodifiable List, Note that we don't have toSet() or toMap() as terminal methods.
+
+
+
+
+
+
+Source -> Intermediate -> Intermediate -> Terminal
+
+--Untill the terminal method is not called, we won't get the final output.
+
+
+Imagine a water purification plant:
+
+River Water -> Filter -> Cleaner -> Mineral -> Bottle Packing
+
+Until bottle packing happens: No final output
+
+
+
+Stream Pipeline:
+
+students.stream()
+        .filter(...)
+        .map(...)
+        .sorted(...)
+        .collect(...)
+
+
+--This complete chain is called a Stream pipeline.
+
+Note: The real purpose of Stream is to express data processing as a pipeline.
+
+
+
+
+
+Example:
+--------
+
+StreamDemo.java:
+-----------------
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
+
+public class StreamDemo {
+
+	public static void main(String[] args) {
+
+		List<String> cities = Arrays.asList("city1", "city2", "city3", "city4");
+
+		Stream<String> str = cities.stream();
+
+		str.forEach(city -> System.out.println(city)); // here stream will be consumerd.
+
+		//str.forEach(city -> System.out.println(city)); //Exception
+
+	}
+
+}
+
+
+
+Intermediate methods:
+-----------------------
+
+
+1. filter() method:
+----------------
+
+--It is one of the intermediate method:
+
+	Stream<T> filter(Predicate<T> condition)
+
+
+--This method takes a Predicate object as an argument, and filter the stream based on Predicate condition and returns the filtered elements in another stream object.
+
+Example1:
+
+
+FilterDemo.java:
+-----------------
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
+public class FilterDemo {
+
+	public static void main(String[] args) {
+
+	
+		List<Student> students = Arrays.asList(
+
+                new Student(10,"Raj",855),
+                new Student(12,"Simran",955),
+                new Student(14,"Rohit",450),
+                new Student(5,"Priya",555),
+                new Student(15,"Rahul",355),
+                new Student(18,"Ankita",485)
+        );
+
+		
+//		Stream<Student> str1= students.stream();
+//		
+//		Stream<Student> str2= str1.filter(s -> s.getMarks() < 500);
+//		
+//		str2.forEach(s -> System.out.println(s)); //calling the terminal method.
+		
+		
+		students.stream()
+			.filter(s -> s.getMarks() < 500)
+			.forEach(s -> System.out.println(s));
+
+	}
+
+}
+
+
+
+Example2: 
+
+--Creating another list based on filtered elements:
+
+
+List<Student> filteredStudents = students.stream()
+                				.filter(s -> s.getMarks() > 500)
+                				.collect(Collectors.toList());
+
+
+List<Student> filteredStudents = students.stream()
+                				.filter(s -> s.getMarks() > 500)
+                				.toList(); // to get the unmodifiable List from Java 16+
+
+
+
+
+filteredList.forEach(System.out::println);
+
+students.forEach(System.out::println); // Original list remains unchanged.
+
+
+
+Example3:
+
+--Get the List of all the even numbers from an existing List of Integers
+
+
+List<Integer> numbers = Arrays.asList(2,3,4,5,7,8,9,12,15,50,30); //Original list
+
+
+List<Integer> evenNumbers = numbers.stream()
+               				.filter(n -> n % 2 == 0)
+               				.collect(Collectors.toList());
+
+
+
+
+numbers.forEach(System.out::println); // Original list remains unchanged.
+
+evenNumbers.forEach(System.out::println); 
+
+
+
+
+
+2. map() method:
+----------------
+
+
+--It is also an intermediate method.
+
+--This method is used to transform the objects.
+
+--This method takes java.util.function.Function(I) object as a parameter
+
+	Stream<R> map(Function<T,R>)
+
+
+--It map/transform the elements to a new element and return the mapped or transformed element in another stream.
+
+
+Analogy:
+
+Raw Mango transform to  Mango Pickle
+
+--Object changed.
+
+
+Example1: Convert Student object to the String object:
+
+--Get the List of all the Student names from the List of Student object.
+
+
+Stream<Student> str1= students.stream(); //Getting the Stream
+		
+//Stream<String> str2= str1.map(s -> s.getName()); // Transforming the object (Student -> String)
+
+Stream<String> str2= str1.map(Student::getName); //Using Method Reference.
+
+List<String> names= str2.collect(Collectors.toList()); //Getting the result List of names
+
+//OR
+
+
+		
+List<String> names= students
+			.stream()
+			.map(Student::getName)
+			.collect(Collectors.toList());
+		
+names.forEach(System.out::println);
+
+
+
+Example2: Getting the List of name for only those students whose marks is greater than 500 (passed student names).
+
+Here we need to use: filter() and map() both methods
+
+
+
+List<String> passedNames=  students.stream()
+                                         .filter(s -> s.getMarks() > 500)
+                                         .map(Student::getName)
+                                         .collect(Collectors.toList());
+
+passedNames.forEach(System.out::println);
+
+
+
+Real-world example:
+--------------------
+
+--Converting the bean class/ database entity class objects to the DTO class objects.
+
+
+--In real-world applications, we often do not send the actual entity objects directly to the client/UI. Instead, we create DTO (Data Transfer Object) classes that contain only the required data.
+
+Why DTO?
+
+--Hide unnecessary business data.
+--Improve security by exposing only required fields.
+--Reduce the amount of data transferred over the network.
+--Create a client-specific view of the data.
+
+
+
+
+
+class StudentDTO{
+
+private int rollNumber;
+private double marks;
+
+//Zero argument constructor
+//Parameterized constructor
+//getters and setters
+//toString()
+
+}
+
+
+
+Student object converted to StudentDTO 
+
+
+List<StudentDTO> dtos=  students.stream()
+					.map(s -> new StudentDTO(s.getRoll(),s.getMarks()))
+					.collect(Collectors.toList());
+
+
+dtos.forEach(System.out::println); 
+
+
+--This process is called Entity-to-DTO Mapping and is very common in Spring Boot, REST APIs, and Microservices applications.
+
+
+--If we place the following constructor inside the StudentDTO class:
+
+    public StudentDTO(Student s){
+        this.rollNumber = s.getRoll();
+        this.marks= s.getMarks();
+    }
+
+then: 
+
+
+List<StudentDTO> dtos=  students.stream()
+					.map(StudentDTO::new)
+					.collect(Collectors.toList());
+
+--Method reference with constructor.
+
+
+Think of map(StudentDTO::new) as:
+
+.map(student -> new StudentDTO(student))
+
+--So the stream element type and constructor parameter type must match.
+
+
+In many Spring Boot projects, developers use libraries like:
+
+ModelMapper
+MapStruct
+
+Example with MapStruct:
+
+StudentDTO dto = mapper.toDTO(student);
+
+--These libraries can automatically copy fields with the same names, but plain Java Streams and constructor references do not perform automatic field mapping based on names.
+
+
+
+Student task:
+---------------
+
+Funny Example: Convert each Student to Employeye
+
+
+--map/convert the List of Student to the List of Employee.
+
+roll--> empId
+name--> empName
+marks--> salary (marks * 100)
+
+
+
+Employee.java:
+--------------
+
+public class Employee{
+
+private int empId;
+private String empName;
+private double salary;
+
+
+//Zero argument constructor
+//Parameterized constructor
+//getters and setters
+//toString()
+
+
+}
+
+
+
+
+3. sorted() method:
+--------------------
+
+--It is also an intermediate method.
+
+For natural sorting:
+
+	public Stream<T> sorted()
+
+For Custom sorting:
+
+	Stream<T> sorted(Comparator<T>)
+
+
+Example1: Natural sorting order: Elements must be comparable.
+
+
+
+     List<Integer> numbers = Arrays.asList(10,2,5,12,6,30,5,7);
+
+     numbers.stream()
+		.sorted()
+		.forEach(System.out::println);
+
+
+Example2: Custom sorting order:
+
+//students.stream()
+//		.sorted()
+//		.forEach(System.out::println); // Student class must be comparable otherwise: ClassCastException
+
+
+
+students.stream()
+		.sorted(Comparator.comparing(Student::getMarks))
+		.forEach(System.out::println);
+
+
+Sorting in descending order:
+
+
+        students.stream()
+			.sorted(
+				Comparator
+					.comparing(Student::getMarks)
+					.reversed())
+			.forEach(System.out::println);
+
+
+
+Multiple Sorting:
+
+--If marks same then sort them using their name:
+
+
+students.stream()
+                .sorted(Comparator
+                        .comparing(Student::getMarks)
+                        .thenComparing(Student::getName))
+                .forEach(System.out::println);
+
+
+
+
+
+4. distinct() method:
+---------------------
+
+--It is also an intermediate method.
+
+--It remove the duplicates.
+
+public Stream<T> distinct()
+
+
+Example:
+
+List<Integer> nums = List.of(10,20,10,30,20,40);
+
+nums.stream()
+    .distinct()
+    .forEach(System.out::println);
+
+
+Output:
+
+10
+20
+30
+40
+
+
+Note: distinct() method removes the duplicates based on the equals() and hashCode() method.
+
+--Therefore, if we have a custom/user-defined classes are there inside the List then
+
+--That user-defined class must override equals() and hashCode() method internally.
+
+
+
+Example:
+
+students.stream()
+        .distinct()
+        .collect(Collectors.toList());
+
+--Here Student class must override equals() and hashCode() method to work properly.
+
+
+
+5. peek() method:
+-----------------
+
+--It is also an intermediate method.
+
+	public Stream<T> peek(Consumer<T>)
+
+
+
+--This method is mainly used for: Debugging, Logging and Monitoring purpose.
+
+
+Example:
+
+List<Student> filteredStudents= students.stream()
+        					.peek(s -> System.out.println("Before Filter : " +s.getName()))
+        					.filter(s -> s.getMarks() > 500)
+        					.collect(Collectors.toList());
+
+
+Output:
+
+Before Filter : Raj
+Before Filter : Amit
+Before Filter : Ravi
+
+
+
+Important Warning:
+
+Many developers misuse: peek() method to modify data.
+
+
+Bad Practice:
+
+students.stream().peek(s -> s.setMarks(999));
+
+
+Avoid this.
+
+Use: map() for transformation.
+
+
+Use: peek() only for observation/debugging purpose.
+
+
+Complete Example:
+
+
+List<String> names = students.stream()
+				.filter(s -> s.getMarks() > 500)
+            			.peek(s -> System.out.println("Passed : " +s.getName()))
+            			.map(Student::getName)
+		           	.sorted()
+ 			        .distinct()
+				.collect(Collectors.toList());
+
+
+
+
+
+
+6. limit() method:
+-------------------
+
+--The limit() method is an intermediate operation used to restrict the number of elements in a stream.
+
+Syntax
+
+public Stream<T> limit(long maxSize)
+
+
+Example:
+
+List<Integer> nums = List.of(10, 20, 30, 40, 50);
+
+nums.stream()
+    .limit(3)
+    .forEach(System.out::println);
+
+
+
+--It returns a stream containing at most maxSize elements.
+--If the stream has fewer elements than the specified limit, all elements are returned.
+--Commonly used for pagination, sampling data, and processing only the first N records.
+
+
+Example2: 
+
+students.stream()
+        .filter(s -> s.getMarks() > 500)
+        .limit(5)
+        .forEach(System.out::println);
+
+--This processes only the first 5 students who scored more than 500 marks.
+
+
+
+
+
+
+
+
+
+
+
+
+Till now we discussed about:
+
+filter()
+map()
+sorted()
+distinct()
+peek()
+limit()
+
+--these are the intermediate methods:
+
+--Lets now discuss in datails about some terminal methods:
+
+Terminal Operations:
+====================
+
+
+1. collect()
+2. count()
+3. findFirst()
+4. anyMatch()
+5. allMatch()
+6. noneMatch()
+7. reduce()
+8. min()
+9. max()
+
+
+--they produce the final result and consume the stream.
+
+
+
+1. count() method:
+------------------
+
+--It returns the number of elements in the form of long data type.
+
+	public long count();
+
+
+Example: count the number of Student whose marks is greater than 500.
+
+
+long count = students.stream()
+                		.filter(s -> s.getMarks() > 500)
+                		.count();
+
+System.out.println(count);
+
+
+2. findFirst() method:
+----------------------
+
+--It returns the first element from the stream in the form of Optional object.
+
+
+public Optional<T> findFirst();
+
+
+--Optional class is introduced in Java 8 to avoid the NullPointerException
+
+
+Example: Find first student with marks > 500
+
+
+Optional<Student> opt = students.stream()
+                			.filter(s -> s.getMarks() > 500)
+                			.findFirst();
+
+
+--To get the original value from the Optional class we use get() method:
+
+Example:
+
+Student student= opt.get();
+
+Safer version:
+
+	opt.ifPresent(System.out::println);
+
+
+
+4. anyMatch() method:
+---------------------
+
+--It checks if at least one element satisfies the condition.
+
+	public boolean anyMatch(Predicate p)
+
+
+
+Example:
+
+
+boolean result = students.stream()
+                		.anyMatch(s -> s.getMarks() > 800);
+
+System.out.println(result);
+
+
+Suppose:
+
+450
+650
+850
+550
+
+Output: true
+
+because: 850 > 800 // One record matches..(Need any one)
+
+
+
+Note: As soon as one match is found: Stream stops processing
+
+--This is called: Short Circuiting
+
+
+5. allMatch() method:
+----------------------
+
+--Returns true only if every element satisfies the condition.
+
+public boolean allMatch(Predicate p)
+
+
+Example:
+
+boolean result = students.stream()
+                		.allMatch(s -> s.getMarks() >= 350);
+
+
+Suppose:
+
+450
+650
+850
+550
+
+Output:
+
+true
+
+Suppose:
+
+450
+650
+250
+850
+
+Output:
+
+false
+
+
+
+6. noneMatch() method:
+----------------------
+
+--Returns true only if no element satisfies the condition.
+
+public boolean noneMatch(Predicate)
+
+
+Example:
+
+boolean result = students.stream()
+                		.noneMatch(s -> s.getMarks() < 0); //No negative marks.
+
+Suppose:
+
+450
+650
+850
+550
+
+Output:
+
+true
+
+
+Suppose:
+
+450
+650
+-5
+850
+
+Output:
+
+false
+
+anyMatch vs allMatch vs noneMatch:
+----------------------------------
+
+| Method    | Meaning       |
+| --------- | ------------- |
+| anyMatch  | At least one  |
+| allMatch  | Every element |
+| noneMatch | No element    |
+
+
+
+7. reduce() method:
+---------------------
+
+--This is the most powerful terminal operation.
+
+--The reduce() method is a terminal operation used to combine all elements of a stream into a single result.
+
+Think of it as:
+
+"Take many values and reduce them into one value."
+
+
+--It is useful when you want to compute:
+
+Sum
+Product
+Maximum
+Minimum
+Concatenation
+Any custom aggregation
+
+
+
+Example:
+
+--Suppose you have these numbers:
+
+10, 20, 30, 40
+
+--If you keep adding them:
+
+10 + 20 + 30 + 40 = 100
+
+--Many values became one value (100).
+
+--This is exactly what reduce() does.
+
+
+--We can use 2 overloaded reduce() method:
+
+1. reduce with Identity
+
+	T reduce(T identity, BinaryOperator<T> accumulator)
+
+2. reduce without Identity
+
+	Optional<T> reduce(BinaryOperator<T> accumulator)
+
+
+
+Example: With Identity Value:
+
+
+--Sum of Numbers
+
+List<Integer> nums = List.of(10, 20, 30, 40);
+
+int sum = nums.stream() .reduce(0, (a, b) -> a + b);
+
+System.out.println(sum); // 100
+
+How it works internally
+
+	.reduce(0, (a, b) -> a + b)
+
+Identity: 0 will act as an initial value of 'a'.
+
+Steps:
+
+a=0,  b=10  -> 10
+a=10, b=20  -> 30
+a=30, b=30  -> 60
+a=60, b=40  -> 100
+
+Final result:
+
+100
+
+
+
+
+Finding Maximum Value:
+
+int max = nums.stream()
+              .reduce(Integer.MIN_VALUE, (a,b) -> a > b ? a : b);
+
+
+//OR
+
+int max = nums.stream()
+              .reduce(Integer.MIN_VALUE, Integer::max);
+
+
+
+
+System.out.println(max); // 40
+
+
+
+Multiplication Example:
+
+
+int product = nums.stream()
+ 	                 .reduce(1, (a,b) -> a*b);
+
+
+
+
+Calculation:
+
+1 × 10 × 20 × 30 × 40
+
+
+
+
+
+Example: Without Identity Value:
+--------------------------------
+
+Optional<T> result = stream.reduce((a,b) -> a+b);
+
+
+System.out.println(result.get());
+
+
+Why Optional?
+
+--What if the stream is empty?
+
+List<Integer> nums = List.of();
+
+Then there is no answer.
+
+So Java returns:
+
+Optional.empty()
+
+--instead of throwing an exception.
+
+
+
+
+Finding Maximum Value:
+
+
+Optional<Integer> result = nums.stream()
+            			.reduce(Integer::max);
+
+
+result.ifPresent(System.out::println);
+
+
+
+
+
+
+Real time example:
+------------------
+
+Calculate the total salary of all Employees:
+
+
+double totalSalary = employees.stream()
+                 			.map(Employee::getSalary)
+                 			.reduce(0.0, (n1,n2) -> n1+n2);
+
+
+
+//OR
+
+double totalSalary = employees.stream()
+                 			.map(Employee::getSalary)
+                 			.reduce(0.0,Double::sum);
+
+
+
+
+String Joining Example:
+
+List<String> names = List.of("Raj","Priya","Amit");
+
+
+String result = names.stream()
+             			.reduce("", (a,b) -> a + " " + b);
+
+System.out.println(result); //Raj Priya Amit
+
+
+
+
+--The reduce() method combines all elements of a stream into a single result by repeatedly applying an accumulator function.
+
+stream.reduce(identity, accumulator);
+
+
+
+
+
+
+8. min() and max() method:
+---------------------------
+
+
+--These are also terminal methods.
+
+--Both methods accepts the Comparator object using which it decides the minimum and maximum object.
+
+--It returns the min and max object in the form of Optional object.
+
+
+Example1:
+
+
+ Optional<Student> opt= students.stream()
+					.max(Comparator.comparing(Student::getMarks));
+
+if(opt.isPresent()){
+    Student highestMarksstudent= opt.get();
+    System.out.println(highestMarksstudent);
+}else{
+    System.out.println("List is empty..");
+}
+
+
+// opt.ifPresnt(System.out::println);
+
+
+Example2: 
+
+List<Integer> nums = Arrays.asList(10,20,30,40);
+
+Optional<Integer> opt=   nums.stream()
+				.min(Comparator.naturalOrder());
+opt.ifPresent(System.out::println);
+
+
+
+
+
+9. collect():
+-------------
+
+--This is the most commonly used terminal operation.
+
+--It will give the final result.
+
+Example:
+
+
+List<Student> passedStudents = students.stream()
+                				.filter(s -> s.getMarks() > 500)
+                				.collect(Collectors.toList());
+
+
+Note: collec() method can return:
+
+List
+Set
+Map
+String
+Custom Collections
+
+also..
+
+
+
+--This collect() method takes the 'Collector' object as parameter.
+
+Collector:
+----------
+
+--A Collector is an object that tells Stream: How should the final result be collected?
+
+Most Common Collector:
+
+Collectors.toList()
+Collectors.toSet()
+Collectors.joining()
+Collectors.toMap()
+Collectors.groupingBy()
+
+
+Collectors.toList():
+---------------------
+
+--This is the most commonly used collector.
+
+Example
+
+Get names of passed students.
+
+List<String> names = students.stream()
+                		.filter(s -> s.getMarks() > 500)
+                		.map(Student::getName)
+                		.collect(Collectors.toList());
+
+Result:
+
+[Raj, Amit, Ravi]
+
+
+
+Collectors.toSet(): 
+------------------
+
+--Collects data into a Set. To remove duplicates.
+
+Example:
+
+List<String> cities = List.of("Delhi", "Mumbai", "Delhi", "Pune","Mumbai");
+
+
+Set<String> uniqueCities =cities.stream()
+              				.collect(Collectors.toSet());
+
+
+Difference between distinct() and toSet() method:
+-------------------------------------------------
+
+distinct(): It is an intermediate method.
+
+--Removes duplicates inside Stream.
+
+stream.distinct()
+
+toSet(): It is used in terminal method collect().
+
+--Removes duplicates while collecting.
+
+stream.collect(Collectors.toSet())
+
+
+Both use: equals() and hashCode() methods.
+
+
+
+Collectors.joining():
+---------------------
+
+--This collecto is very popular method.
+
+--It used to join multiple strings into one string.
+
+
+Example:
+
+List<String> names = List.of("Raj", "Amit", "Ravi");
+
+String result = names.stream()
+             			.collect(Collectors.joining());
+
+Output:
+
+RajAmitRavi
+
+
+
+Example2: Joining With Delimiter
+
+String result = names.stream()
+             		.collect(Collectors.joining(", "));
+
+Output:
+
+Raj, Amit, Ravi
+
+
+Collectors.toMap():
+-------------------
+
+--One of the most important collector.
+
+--Used heavily in real projects.
+
+--It used to convert Stream into Map.
+
+
+Example: roll-> name
+
+Map<Integer, String> map = students.stream()
+                			.collect(Collectors.toMap(Student::getRoll, Student::getName));
+
+
+System.out.println(map);
+
+
+
+Note: if duplicate keys are there then it will throw IllegalStateException.
+
+
+
+Collectors.groupingBy():
+------------------------
+
+--It groups objects based on a key.
+
+Example:
+
+School students:
+
+Raj: CSE
+Amit: ECE
+Ravi: CSE
+Priya: ECE
+Karan: IT
+
+Need:
+
+CSE -> Raj,Ravi
+ECE -> Amit,Priya
+IT  -> Karan
+
+This is grouping.
+
+Example:
+
+class Student{
+
+    private String name;
+    private String branch;
+
+    // getters and setters
+
+}
+
+
+
+Map<String,List<Student>> result = students.stream()
+        					.collect(Collectors.groupingBy(Student::getBranch));
+
+
+
+Output:
+
+{
+ CSE=[Raj,Ravi],
+ ECE=[Amit,Priya],
+ IT=[Karan]
+}
+
+Example2: Count students branch-wise.
+
+
+Map<String,Long> result = students.stream()
+        				.collect(Collectors.groupingBy(Student::getBranch,Collectors.counting()));
+
+
+
+
+
+Q/- Does Stream Process Data Row-by-Row or Operation-by-Operation?
+
+Consider:
+
+List<Integer> nums = List.of(1,2,3,4,5);
+
+
+Pipeline:
+
+nums.stream()
+	.filter(n -> {
+        System.out.println("Filter " + n);
+        return n % 2 == 0;
+    })
+    .map(n -> {
+        System.out.println("Map " + n);
+        return n * 10;
+    })
+    .forEach(System.out::println);
+
+
+Many people think:
+
+Filter all elements first
+Then
+Map all elements
+Then
+Print all elements
+
+Wrong.
+
+
+Actual Execution
+
+Filter 1
+
+Filter 2
+Map 2
+20
+
+Filter 3
+
+Filter 4
+Map 4
+40
+
+Filter 5
+
+
+Note: 
+
+Stream processes: One element at a time from the pipeline.
+
+
+1: Filter -> Reject
+
+2: Filter -> Map -> Print
+
+3: Filter -> Reject
+
+4: Filter -> Map -> Print
+
+5: Filter -> Reject
+
+
+
+This is called: Pipeline Processing
+
+--and is one reason Streams are efficient.
+
+
+
+Parallel Streams:
+=================
+
+--Suppose you have:
+
+List<Integer> numbers
+
+containing: 1 Crore Numbers
+
+--And you want to calculate: Square of each number
+
+Using normal stream:
+
+List<Integer> result= numbers.stream()
+       				.map(n -> n * n)
+       				.collect(Collectors.toList());
+
+Processing happens using: Single Thread
+
+
+
+Analogy:
+
+Imagine:
+
+--1000 Answer Sheets are there to evaluate.
+
+Sequential Processing: 
+
+--One teacher checks all copies.
+
+Teacher-1: 1000 Copies
+
+Time: High
+
+
+
+Parallel Processing:
+
+Five teachers check copies.
+
+Teacher1 -> 200
+
+Teacher2 -> 200
+
+Teacher3 -> 200
+
+Teacher4 -> 200
+
+Teacher5 -> 200
+
+Time: Much Lower
+
+--This is the basic idea of Parallel Streams.
+
+
+
+Creating Parallel Stream:
+-------------------------
+
+Method 1:
+
+	list.parallelStream()
+
+Example:
+
+List<Integer> nums = List.of(1,2,3,4,5);
+
+nums.parallelStream()
+    		.forEach(System.out::println);
+
+Method 2: 
+
+--Convert existing stream to the parallel stream.
+
+nums.stream()
+    .parallel()
+    .forEach(System.out::println);
+
+
+--Normal(sequential) stream handled by single thread.
+whereas
+--Parallel stream is handled by multiple thread.
+
+
+
+Example:
+
+nums.parallelStream()
+    .forEach(n -> {
+
+       System.out.println(Thread.currentThread().getName()+ " : " + n);
+
+    });
+
+
+Output:
+
+ForkJoinPool.commonPool-worker-1 2
+ForkJoinPool.commonPool-worker-2 1
+main 3
+ForkJoinPool.commonPool-worker-3 5
+ForkJoinPool.commonPool-worker-4 4
+
+
+Note: Here output order may change.
+
+Because: Multiple Threads are running simultaneously.
+
+
+
+If Order Is Required: 
+
+Use:
+
+forEachOrdered()
+
+instead of 
+
+forEach();
+
+
+Example:
+
+nums.parallelStream()
+    .forEachOrdered(System.out::println);
+
+
+Internally Java uses:
+
+ForkJoin Framework to handle parallel stream which is introduced in: Java 7
+
+
+--Parallel Streams are built on top of: ForkJoinPool
+
+
+ForkJoin:
+=========
+
+
+Fork -> Split Task -> Join -> Merge Result
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
