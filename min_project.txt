@@ -1,0 +1,1491 @@
+Smart E-Commerce Order Management System:
+=========================================
+
+
+--In this project, we will build a simplified E-Commerce Order Management System similar to Amazon or Flipkart.
+
+--We will apply the concepts learned so far:
+
+Classes & Objects
+Encapsulation
+Inheritance
+Polymorphism
+Collections API
+Factory Pattern
+Builder Pattern
+Strategy Pattern
+Exception Handling
+Lambda Expressions
+Stream API
+
+
+
+--At the end of the project, the application should be able to:
+
+Create Products
+Create Customers
+Create Orders
+Apply Different Discount Strategies
+Generate Order Summary
+Use Stream API for Reporting and Analytics
+
+
+
+Folder structure:
+-----------------
+
+EcommerceMiniApp
+
+
+src
+|
+|-- com.hdfc.model
+|     |-- Product.java
+|     |-- ElectronicsProduct.java
+|     |-- BookProduct.java
+|     |-- GroceryProduct.java
+|     |-- Customer.java
+|     |-- OrderItem.java
+|     |-- Order.java
+|
+|-- com.hdfc.factory
+|     |-- ProductFactory.java
+|
+|-- com.hdfc.strategy
+|     |-- DiscountStrategy.java
+|     |-- NoDiscountStrategy.java
+|     |-- FestivalDiscountStrategy.java
+|     |-- PremiumDiscountStrategy.java
+|
+|-- com.hdfc.builder
+|     |-- OrderBuilder.java // incase of sepeate Builder class
+|
+|-- com.hdfc 
+|      |--App.java
+|
+
+
+
+
+Task 1: Create Product bean Class:
+
+Requirements
+
+--Create a Product class with:
+
+int id
+String name
+double price
+
+All fields must be private
+Zero argument constructor
+Parameterized constructor
+Getters and setters
+toString()
+
+
+
+Task 2: Create Customer Class:
+
+Requirements
+
+Create Customer with:
+
+int customerId
+String customerName
+String email
+
+All fields must be private
+Zero argument constructor
+Parameterized constructor
+Getters and setters
+toString()
+
+
+
+Task 3: Create Product Hierarchy:
+
+Requirements
+
+--Convert Product into an Abstract Class.
+
+Create the following child of the Product class: 
+
+ElectronicsProduct
+BookProduct
+GroceryProduct
+
+Each should return category name.
+
+
+
+Solution:
+---------
+
+Product.java:
+
+
+package com.hdfc.model;
+
+public abstract class Product {
+
+    private int id;
+    private String name;
+    private double price;
+
+//Zero arg constructor
+//Parameterized constructor
+//Getters and setters
+//toString
+
+
+    public abstract String getCategory();
+
+
+    }
+}
+
+
+Q/- Can we create object of Product?
+
+Product p = new Product(1,"Laptop",50000);
+
+Answer: NO
+
+--Because Product is abstract.
+
+
+
+ElectronicsProduct.java:
+
+
+package com.hdfc.model;
+
+public class ElectronicsProduct extends Product {
+
+    public ElectronicsProduct(
+            int id,
+            String name,
+            double price) {
+
+        super(id, name, price);
+    }
+
+    @Override
+    public String getCategory() {
+        return "Electronics";
+    }
+}
+
+
+BookProduct.java
+
+package com.hdfc.model;
+
+public class BookProduct
+        extends Product {
+
+    public BookProduct(
+            int id,
+            String name,
+            double price) {
+
+        super(id, name, price);
+    }
+
+    @Override
+    public String getCategory() {
+        return "Stationary";
+    }
+}
+
+
+
+GroceryProduct.java
+
+package model;
+
+public class GroceryProduct
+        extends Product {
+
+    public GroceryProduct(
+            int id,
+            String name,
+            double price) {
+
+        super(id, name, price);
+    }
+
+    @Override
+    public String getCategory() {
+        return "Grocery";
+    }
+}
+
+
+
+Inside the App.java: 
+
+If we create:
+
+Product p = new ElectronicsProduct(1, "Laptop", 70000);
+
+System.out.println(p.getCategory()); // Electronics
+
+
+This is:
+
+Runtime Polymorphism
+Dynamic Dispatch
+
+
+Creating 3 products:
+
+Laptop
+Java Book
+Basmati Rice
+
+And Printing them with their category name.
+
+
+
+
+
+
+Task 4: Create Product Factory class
+
+Requirements
+
+Create:
+
+ProductFactory
+
+Method:
+
+Product createProduct(String type, int id, String name, double price)
+
+
+--Factory should create the correct product class based on the name of product.
+
+
+
+
+Solution:
+
+
+package com.hdfc.factory;
+
+import model.*;
+
+public class ProductFactory {
+
+    public static Product createProduct(
+            String type,
+            int id,
+            String name,
+            double price) {
+
+        switch (type.toUpperCase()) {
+
+            case "ELECTRONICS":
+                return new ElectronicsProduct(
+                        id,
+                        name,
+                        price);
+
+            case "BOOK":
+                return new BookProduct(
+                        id,
+                        name,
+                        price);
+
+            case "GROCERY":
+                return new GroceryProduct(
+                        id,
+                        name,
+                        price);
+
+            default:
+                throw new IllegalArgumentException(
+                        "Invalid Product Type");
+        }
+    }
+}
+
+
+
+
+Inside App.java:
+---------------
+
+Product laptop =
+        ProductFactory.createProduct(
+                "electronics",
+                1,
+                "Laptop",
+                75000
+        );
+
+System.out.println(laptop);
+
+
+
+--Here is the main benifit of the Factory pattern is:
+
+--Object creation is centralized.
+
+--If tomorrow if we want to add a new Product like:
+
+MobileProduct
+
+--Then no need to change the client code.
+
+
+
+
+
+Task 5: Create OrderItem class:
+
+
+Requirements
+
+Product product
+int quantity
+
+Method:
+
+getProduct()
+getQuantity()
+getTotalPrice()
+
+
+Example:
+
+Amazon Order:
+
+Laptop * 1
+Mouse * 2
+Keyboard * 3
+
+--It is not an order.
+--It is just order items 
+
+Order = Multiple OrderItems
+
+
+
+Solution:
+---------
+
+package com.hdfc.model;
+
+public class OrderItem {
+
+    private Product product;
+    private int quantity;
+
+    public OrderItem(Product product,
+                     int quantity) {
+
+        this.product = product;
+        this.quantity = quantity;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public double getTotalPrice() {
+
+        return product.getPrice() * quantity;
+    }
+
+    @Override
+    public String toString() {
+
+        return product.getName() +
+                " * " +
+                quantity +
+                " = Rs: " +
+                getTotalPrice();
+    }
+}
+
+
+
+Testing:
+--------
+
+Product laptop =
+        ProductFactory.createProduct(
+                "electronics",
+                1,
+                "Laptop",
+                75000
+        );
+
+OrderItem item =
+        new OrderItem(
+                laptop,
+                2
+        );
+
+System.out.println(item);
+
+
+Output:
+
+Laptop * 2 = RS: 150000
+
+
+
+
+
+Task 6: Create Order Class
+
+Requirements
+
+Fields:
+
+int orderId
+Customer customer
+List<OrderItem> items
+
+Constructor:
+
+public Order(int orderId, Customer customer) {
+
+        this.orderId = orderId;
+        this.customer = customer;
+	this.items = new ArrayList<>();
+    }
+
+
+
+Methods:
+
+void addItem(OrderItem item)
+double calculateTotal()
+
+
+
+
+Solution:
+---------
+
+package com.hdfc.model;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Order {
+
+    private int orderId;
+
+    private Customer customer;
+
+    private List<OrderItem> items;
+
+    public Order(int orderId, Customer customer) {
+
+        this.orderId = orderId;
+        this.customer = customer;
+	this.items = new ArrayList<>();
+    }
+
+    public void addItem(OrderItem item) {
+
+        items.add(item);
+    }
+
+    public double calculateTotal() {
+
+        double total = 0;
+
+        for (OrderItem item : items) {
+
+            total += item.getTotalPrice();
+        }
+
+        return total;
+    }
+
+    public List<OrderItem> getItems() {
+        return items;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public int getOrderId() {
+        return orderId;
+    }
+}
+
+
+
+
+
+Testing Order:
+-------------
+
+Customer customer = new Customer(1, "Dinesh Kumar", "dinesh@gmail.com");
+
+Product laptop = ProductFactory.createProduct("electronics", 1, "Laptop", 75000);
+
+Product mouse = ProductFactory.createProduct("electronics", 2, "Mouse", 1500);
+
+
+OrderItem item1 = new OrderItem(laptop,1);
+
+OrderItem item2 = new OrderItem(mouse,2);
+
+
+Order order = new Order(101,customer);
+
+order.addItem(item1);
+
+order.addItem(item2);
+
+
+System.out.println(order.calculateTotal());
+
+
+Output:
+
+78000
+
+
+
+Task7: 
+
+Create method:
+
+void printSummary()
+
+inside Order class.
+
+
+Output:
+
+Order Id
+
+Customer: Name
+
+All Items
+
+Total
+
+
+
+
+Solution
+
+Add inside Order.java:
+
+
+public void printSummary() {
+
+    System.out.println("ORDER SUMMARY");
+
+    System.out.println("Order Id : " + orderId);
+
+    System.out.println(
+            "Customer : " + customer.getCustomerName());
+
+    System.out.println("Items:");
+
+    for (OrderItem item : items) {
+
+        System.out.println(item);
+    }
+
+    System.out.println("Total : Rs: " + calculateTotal());
+}
+
+
+
+Testing:
+
+order.printSummary();
+
+
+
+
+Task 8: Implement Strategy Pattern
+
+
+Suppose company has some discount rules like:
+
+Festival Sale = 10% Discount
+Premium Customer = 20% Discount
+Regular days: No Discount
+
+
+--If we try to write these discount strategy inside our Order class like :
+
+
+if(type.equals("FESTIVAL")){
+   ...
+}
+else if(type.equals("PREMIUM")){
+   ...
+}
+else if(type.equals("VIP")){
+   ...
+}
+
+--For each new discount, we need to modify the Order class.
+
+--This is the violation of OCP principle.
+
+--So lets design the Strategy pattern:
+
+Requirements
+
+Create:
+
+DiscountStrategy interface
+
+with the following method:
+
+double applyDiscount(double amount);
+
+
+Implement:
+
+NoDiscountStrategy
+FestivalDiscountStrategy
+PremiumDiscountStrategy
+
+
+
+
+
+Solution:
+---------
+
+DiscountStrategy.java:
+
+package com.hdfc.strategy;
+
+public interface DiscountStrategy {
+
+    double applyDiscount(double amount);
+}
+
+
+
+NoDiscountStrategy.java:
+
+
+package com.hdfc.strategy;
+
+public class NoDiscountStrategy
+        implements DiscountStrategy {
+
+    @Override
+    public double applyDiscount(double amount) {
+
+        return amount;
+    }
+}
+
+
+
+FestivalDiscountStrategy.java:
+
+
+package com.hdfc.strategy;
+
+public class FestivalDiscountStrategy
+        implements DiscountStrategy {
+
+    @Override
+    public double applyDiscount(double amount) {
+
+        return amount * 0.90;
+    }
+}
+
+
+
+PremiumDiscountStrategy.java
+
+
+package strategy;
+
+public class PremiumDiscountStrategy
+        implements DiscountStrategy {
+
+    @Override
+    public double applyDiscount(double amount) {
+
+        return amount * 0.80;
+    }
+}
+
+
+
+
+
+Task 8: Apply Discount Strategy in Order class
+
+Requirements
+
+Modify the Order class
+
+Add:
+
+DiscountStrategy strategy
+
+Method:
+
+void setStrategy(Strategy strategy)
+double calculateFinalAmount()
+
+
+
+
+
+
+Solution:
+
+
+public double calculateFinalAmount() {
+
+    double total = calculateTotal();
+
+    if(strategy == null) {
+        return total;
+    }
+
+    return strategy
+            .applyDiscount(total);
+}
+
+
+
+Task 10:
+
+Update Order Summary
+
+
+Modify:
+
+printSummary() to Show:
+
+Total
+
+Final Amount
+
+
+
+
+Solution:
+---------
+
+public void printSummary() {
+
+    System.out.println("ORDER SUMMARY");
+
+    System.out.println("Order Id : "+ orderId);
+
+    System.out.println("Customer : "+ customer.getCustomerName());
+
+    System.out.println("Items:");
+
+    for(OrderItem item : items){
+
+        System.out.println(item);
+    }
+
+    System.out.println("Total : Rs: " + calculateTotal());
+
+    System.out.println("Final Amount : Rs: " + calculateFinalAmount());
+}
+
+
+
+
+Testing:
+--------
+
+Inside App.java:
+
+
+order.setStrategy(new FestivalDiscountStrategy());
+
+order.printSummary();
+
+
+Output:
+
+Total : Rs: 78000
+Final Amount : Rs: 70200
+
+
+
+Tomorrow if we want to replace Festival Discount with Premium Discount.
+
+Without changing Order class.
+
+Solution:
+
+order.setStrategy(new PremiumDiscountStrategy());
+
+order.printSummary();
+
+
+
+Task 11: create StudentDiscountStrategy for giving 15% discount..
+
+and now using this strategy call the printSummary()  method.
+
+
+
+
+
+
+
+
+Task 10: Implement Builder Pattern
+
+
+--Right now we are creating the Order class object by passing only 2 parameters inside the constructor:
+
+Order order =new Order(101,customer); 
+
+
+Now tommorow requirements says that:
+
+Add:
+
+Shipping Address
+Payment Mode
+Coupon Code
+Gift Wrap: optional
+Delivery Type
+Order Notes: optional
+
+Then we need to create constructor like
+
+new Order(
+        101, // mandatory
+        customer, //mandatory
+        items,
+        "Mohali",
+        "UPI",
+        "SALE20",
+        true,
+        "EXPRESS",
+        "Deliver after 6 PM" //optional
+);
+
+--For the optional fields we need to put null value.
+
+--It is a constructor telescoping problem.
+
+
+
+--Add the following fields inside the Order class:
+
+
+private String shippingAddress;
+
+private String paymentMode;
+
+private String couponCode;
+
+private boolean giftWrap;
+
+
+--Create a builder pattern: create OrderBuilder class(static inner class)
+
+OrderBuilder
+
+Methods:
+
+orderId()
+
+customer()
+
+shippingAddress()
+
+paymentMode()
+
+couponCode()
+
+giftWrap()
+
+build()
+
+
+
+--Create the Order object using :
+
+Customer customer = new Customer(1,"Ratan Kumar","ratan@gmail.com");
+
+Order order = new Order.OrderBuilder()
+                .orderId(101)
+                .customer(customer)
+                .shippingAddress("Mohali")
+                .paymentMode("UPI")
+                .couponCode("SALE20")
+                .giftWrap(true)
+                .build();
+
+
+System.out.println(order);
+
+
+
+
+
+
+
+Solution:
+---------
+
+package com.hdfc.model;
+
+public class Order {
+
+    private int orderId;
+    private Customer customer;
+    private String shippingAddress;
+    private String paymentMode;
+    private String couponCode;
+    private boolean giftWrap;
+
+    // Private Constructor
+    private Order(OrderBuilder builder) {
+
+        this.orderId = builder.orderId;
+        this.customer = builder.customer;
+        this.shippingAddress = builder.shippingAddress;
+        this.paymentMode = builder.paymentMode;
+        this.couponCode = builder.couponCode;
+        this.giftWrap = builder.giftWrap;
+    }
+
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public String getShippingAddress() {
+        return shippingAddress;
+    }
+
+    public String getPaymentMode() {
+        return paymentMode;
+    }
+
+    public String getCouponCode() {
+        return couponCode;
+    }
+
+    public boolean isGiftWrap() {
+        return giftWrap;
+    }
+
+    @Override
+    public String toString() {
+
+        return "Order{" +
+                "orderId=" + orderId +
+                ", customer=" + customer +
+                ", shippingAddress='" + shippingAddress + '\'' +
+                ", paymentMode='" + paymentMode + '\'' +
+                ", couponCode='" + couponCode + '\'' +
+                ", giftWrap=" + giftWrap +
+                '}';
+    }
+
+    // ===========================
+    // INNER STATIC BUILDER CLASS
+    // ===========================
+
+    public static class OrderBuilder {
+
+        // Required Fields
+        private int orderId;
+        private Customer customer;
+
+        // Optional Fields
+        private String shippingAddress;
+        private String paymentMode;
+        private String couponCode;
+        private boolean giftWrap;
+
+        public OrderBuilder orderId(int orderId) {
+
+            this.orderId = orderId;
+            return this;
+        }
+
+        public OrderBuilder customer(Customer customer) {
+
+            this.customer = customer;
+            return this;
+        }
+
+        public OrderBuilder shippingAddress(
+                String shippingAddress) {
+
+            this.shippingAddress = shippingAddress;
+            return this;
+        }
+
+        public OrderBuilder paymentMode(
+                String paymentMode) {
+
+            this.paymentMode = paymentMode;
+            return this;
+        }
+
+        public OrderBuilder couponCode(
+                String couponCode) {
+
+            this.couponCode = couponCode;
+            return this;
+        }
+
+        public OrderBuilder giftWrap(
+                boolean giftWrap) {
+
+            this.giftWrap = giftWrap;
+            return this;
+        }
+
+        public Order build() {
+
+            if (orderId <= 0) {
+                throw new IllegalStateException(
+                        "Invalid Order Id");
+            }
+
+            if (customer == null) {
+                throw new IllegalStateException(
+                        "Customer is required");
+            }
+
+            return new Order(this);
+        }
+    }
+}
+
+
+
+
+
+Task 12: Update the Order summery:
+
+
+inside the printSummer() method:
+
+show: 
+
+Shipping Address
+
+Payment Mode
+
+Coupon
+
+Gift Wrap
+
+also...
+
+Expected Output:
+
+ORDER SUMMARY
+
+Order Id : 101
+Customer : Ratan Kumar
+Address : Mohali
+Payment : UPI
+Coupon : SALE20
+Gift Wrap : true
+Items
+Laptop * 1
+Mouse * 2
+Total : Rs:78000
+Final Amount : Rs:70200
+
+
+
+
+
+Solution:
+---------
+
+System.out.println(
+        "Address : "
+                + shippingAddress);
+
+
+System.out.println(
+        "Payment : "
+                + paymentMode);
+
+
+
+System.out.println(
+        "Coupon : "
+                + couponCode);
+
+
+
+System.out.println(
+        "Gift Wrap : "
+                + giftWrap);
+
+
+
+
+
+Task 11: Create Multiple Products inside App.java class
+
+
+Create at least 10 products.
+
+Example:
+
+Laptop
+Mouse
+Keyboard
+Monitor
+Java Book
+Spring Book
+Rice
+Sugar
+Milk
+Oil
+
+Store inside:
+
+List<Product> products
+
+
+
+Solution:
+---------
+
+
+
+List<Product> products = List.of(
+
+        ProductFactory.createProduct(
+                "electronics",
+                1,
+                "Laptop",
+                75000
+        ),
+
+        ProductFactory.createProduct(
+                "electronics",
+                2,
+                "Mouse",
+                1500
+        ),
+
+        ProductFactory.createProduct(
+                "electronics",
+                3,
+                "Keyboard",
+                2500
+        ),
+
+        ProductFactory.createProduct(
+                "electronics",
+                4,
+                "Monitor",
+                18000
+        ),
+
+        ProductFactory.createProduct(
+                "stationary",
+                5,
+                "Java Book",
+                900
+        ),
+
+        ProductFactory.createProduct(
+                "stationary",
+                6,
+                "Spring Boot Book",
+                1200
+        ),
+
+        ProductFactory.createProduct(
+                "grocery",
+                7,
+                "Rice",
+                1000
+        ),
+
+        ProductFactory.createProduct(
+                "grocery",
+                8,
+                "Sugar",
+                500
+        ),
+
+        ProductFactory.createProduct(
+                "grocery",
+                9,
+                "Milk",
+                60
+        ),
+
+        ProductFactory.createProduct(
+                "grocery",
+                10,
+                "Oil",
+                250
+        )
+);
+
+
+
+
+Q/- Print All Product Names Using Stream
+
+
+
+
+Solution:
+---------
+
+
+products.stream()
+        .map(Product::getName)
+        .forEach(System.out::println);
+
+
+
+Q/- Find Products Costing More Than Rs:5000
+
+
+
+Solution:
+---------
+
+
+
+products.stream()
+        .filter(product ->
+                product.getPrice() > 5000)
+        .forEach(System.out::println);
+
+
+
+Q/- Find total value of all products.
+
+
+Solution:
+----------
+
+
+double totalValue = products.stream()
+ 		              .mapToDouble(Product::getPrice)
+                	      .sum();
+
+System.out.println(totalValue);
+
+
+
+
+
+Q/- Group Products By Category
+
+Requirements
+
+Use:
+
+Collectors.groupingBy()
+
+
+Solution:
+---------
+
+
+Map<String, List<Product>> groupedProducts =products.stream()
+                					.collect(Collectors.groupingBy(Product::getCategory));
+
+
+groupedProducts.forEach(
+        (category, list) -> {
+
+            System.out.println(
+                    category + " -> " + list
+            );
+        }
+);
+
+
+
+
+Q/- Find Most Expensive Product
+
+
+Solution:
+----------
+
+
+Product expensiveProduct =products.stream()
+			.max(Comparator.comparing(Product::getPrice))
+                        .orElse(null);
+
+System.out.println(expensiveProduct);
+
+
+
+
+
+Task 14: Create Multiple Orders
+
+
+Create:
+
+Order 1
+Order 2
+Order 3
+Order 4
+Order 5
+
+Store in:
+
+List<Order> orders
+
+
+
+Example:
+
+List<Order> orders =
+        List.of(
+                order1,
+                order2,
+                order3,
+                order4,
+                order5
+        );
+
+
+
+Task 15: Calculate Total Revenue
+
+--Find total sales revenue.
+
+
+Solution:
+---------
+
+double revenue =
+
+        orders.stream()
+                .mapToDouble(
+                        Order::calculateFinalAmount
+                )
+                .sum();
+
+System.out.println(revenue);
+
+
+
+
+
+Task 16: Generate Sales Report
+
+Create a class: SalesReportService
+
+Method:
+
+ public static void generateReport(List<Order> orders) {
+
+
+
+Solution:
+---------
+
+public class SalesReportService {
+
+    public static void generateReport(
+            List<Order> orders) {
+
+        double revenue =
+
+                orders.stream()
+                        .mapToDouble(
+                                Order::calculateFinalAmount
+                        )
+                        .sum();
+
+        double highest =
+
+                orders.stream()
+                        .mapToDouble(
+                                Order::calculateFinalAmount
+                        )
+                        .max()
+                        .orElse(0);
+
+        double average =
+
+                orders.stream()
+                        .mapToDouble(
+                                Order::calculateFinalAmount
+                        )
+                        .average()
+                        .orElse(0);
+
+        System.out.println(
+                "\n===== SALES REPORT =====");
+
+        System.out.println(
+                "Total Orders : "
+                        + orders.size());
+
+        System.out.println(
+                "Revenue : Rs:"
+                        + revenue);
+
+        System.out.println(
+                "Highest Order : Rs:"
+                        + highest);
+
+        System.out.println(
+                "Average Order : Rs:"
+                        + average);
+    }
+}
+
+
+
+
+
+Expected Final Output:
+
+===== SALES REPORT =====
+
+
+Total Orders : 5
+Revenue : Rs:245000
+Highest Order : Rs:78000
+Average Order : Rs:49000
+
+
+
+
+
+
+

@@ -622,7 +622,7 @@ List<Student> filteredStudents = students.stream()
 
 
 
-filteredList.forEach(System.out::println);
+filteredStudents.forEach(System.out::println);
 
 students.forEach(System.out::println); // Original list remains unchanged.
 
@@ -1315,6 +1315,8 @@ int sum = nums.stream() .reduce(0, (a, b) -> a + b);
 
 System.out.println(sum); // 100
 
+  int sum = nums.stream() .reduce(0, Integer::sum);
+
 How it works internally
 
 	.reduce(0, (a, b) -> a + b)
@@ -1373,7 +1375,7 @@ Calculation:
 Example: Without Identity Value:
 --------------------------------
 
-Optional<T> result = stream.reduce((a,b) -> a+b);
+Optional<Integer> result = stream.reduce((a,b) -> a+b);
 
 
 System.out.println(result.get());
@@ -1453,6 +1455,8 @@ stream.reduce(identity, accumulator);
 
 
 
+
+
 8. min() and max() method:
 ---------------------------
 
@@ -1508,7 +1512,7 @@ List<Student> passedStudents = students.stream()
                 				.collect(Collectors.toList());
 
 
-Note: collec() method can return:
+Note: collect() method can return:
 
 List
 Set
@@ -1593,7 +1597,7 @@ Both use: equals() and hashCode() methods.
 Collectors.joining():
 ---------------------
 
---This collecto is very popular method.
+--This collector is very popular method.
 
 --It used to join multiple strings into one string.
 
@@ -1645,6 +1649,23 @@ Note: if duplicate keys are there then it will throw IllegalStateException.
 
 
 
+Example2:
+
+Map<Integer,Student> map= students
+				.stream().collect(Collectors.toMap(
+                						Student::getRoll,
+                						s -> s
+        							));
+System.out.println(map);
+
+
+
+
+
+
+
+
+
 Collectors.groupingBy():
 ------------------------
 
@@ -1670,35 +1691,56 @@ This is grouping.
 
 Example:
 
-class Student{
 
-    private String name;
-    private String branch;
+public class Employee {
 
-    // getters and setters
+    private String empID;
+    private String empName;
+    private String deprtment;
+
+
+//Constructor
+//Getters and setters
+//toString
 
 }
 
 
 
-Map<String,List<Student>> result = students.stream()
-        					.collect(Collectors.groupingBy(Student::getBranch));
+  List<Employee> emps= Arrays.asList(
+
+                new Employee("101","Raj","sales"),
+                new Employee("102","Simran","sales"),
+                new Employee("103","Rohit","hr"),
+                new Employee("104","Dinesh","marketing"),
+                new Employee("105","Priya","marketing")
+
+        );
+
+
+        Map<String, List<Employee>> map=  emps.stream().collect(Collectors.groupingBy(Employee::getDeprtment));
+
+        for(Map.Entry<String, List<Employee>> set: map.entrySet()){
+
+            System.out.println("Department Name: "+set.getKey());
+            set.getValue().forEach(System.out::println);
+
+            System.out.println("=======================");
+        }
 
 
 
-Output:
-
-{
- CSE=[Raj,Ravi],
- ECE=[Amit,Priya],
- IT=[Karan]
-}
-
-Example2: Count students branch-wise.
 
 
-Map<String,Long> result = students.stream()
-        				.collect(Collectors.groupingBy(Student::getBranch,Collectors.counting()));
+
+
+
+
+Example2: Count employees department-wise.
+
+
+Map<String,Long> result = emps.stream()
+        				.collect(Collectors.groupingBy(Employee::getDepartment,Collectors.counting()));
 
 
 
@@ -1778,6 +1820,13 @@ This is called: Pipeline Processing
 
 Parallel Streams:
 =================
+
+
+--A Parallel Stream is a special type of stream that divides the data into multiple parts and processes those parts simultaneously using multiple threads.
+
+--Instead of one thread doing all the work, multiple CPU cores work together.
+
+
 
 --Suppose you have:
 
@@ -1919,28 +1968,183 @@ ForkJoin:
 Fork -> Split Task -> Join -> Merge Result
 
 
+Example:
+
+Task = Sum 1 to 100
+
+Fork:
+
+1-50
+51-100
+
+Process:
+
+Thread-1 -> 1-50
+Thread-2 -> 51-100
+
+Join:
+
+Result = Part1 + Part2
+
+
+
+Benchmark Example:
+------------------
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class BenchmarkDemo {
+
+    public static void main(String[] args) {
+
+        List<Integer> numbers = new ArrayList<>();
+
+        for (int i = 1; i <= 10_000_000; i++) {
+            numbers.add(i);
+        }
+
+        // Sequential Stream
+        long start1 = System.currentTimeMillis();
+
+        List<Long> result1 = numbers.stream()
+                .map(n -> (long) n * n)
+                .toList();
+
+        long end1 = System.currentTimeMillis();
+
+        System.out.println("Sequential Time = "
+                + (end1 - start1) + " ms");
+
+        // Parallel Stream
+        long start2 = System.currentTimeMillis();
+
+        List<Long> result2 = numbers.parallelStream()
+                .map(n -> (long) n * n)
+                .toList();
+
+        long end2 = System.currentTimeMillis();
+
+        System.out.println("Parallel Time = "
+                + (end2 - start2) + " ms");
+    }
+}
+
+
+Expected Output:
+
+Sequential Time = 1800 ms
+
+Parallel Time = 700 ms
+
+
+
+Another Example:
+
+Sequential Version:
+
+
+long start = System.currentTimeMillis();
+
+
+long sum =
+        LongStream.rangeClosed(1, 100_000_000)
+                  .map(n -> n * 2)
+                  .sum();
+
+
+long end = System.currentTimeMillis();
+
+
+System.out.println(
+        "Sequential = " + (end - start)
+);
+
+
+Parallel Version:
+
+
+long start = System.currentTimeMillis();
+
+
+long sum =
+        LongStream.rangeClosed(1, 100_000_000)
+                  .parallel()
+                  .map(n -> n * 2)
+                  .sum();
+
+
+long end = System.currentTimeMillis();
+
+
+System.out.println(
+        "Parallel = " + (end - start)
+);
 
 
 
 
+When Parallel Streams Work Best:
+---------------------------------
+
+--Parallel streams are beneficial when:
+
+1. Large Data Set
+
+	Millions of records
+
+2. CPU Intensive Task
+
+	map(this::performComplexMath)
+
+3. Independent Operations
+
+--Each element can be processed independently.
+
+map()
+filter()
+reduce()
+
+
+When Parallel Streams May Be Slower:
+------------------------------------
+
+1. Small Data:
+
+
+List<Integer> nums = List.of(1,2,3,4,5);
+
+--Creating and managing threads adds overhead.
+
+--Parallel may be slower than sequential.
 
 
 
+2. I/O Operations
 
 
+parallelStream().map(this::callDatabase)
+
+or
+
+parallelStream().map(this::callApi)
+
+Reason:
+
+--Threads spend most time waiting.
 
 
+3. Shared Mutable State
 
+List<Integer> result = new ArrayList<>();
 
+nums.parallelStream().forEach(result::add);
 
+Can produce:
 
-
-
-
-
-
-
-
+Race Conditions
+Data Corruption
+Unexpected Results
 
 
 
