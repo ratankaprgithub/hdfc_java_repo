@@ -1297,7 +1297,7 @@ Solution:
 
 
 double totalValue = products.stream()
- 		              .mapToDouble(Product::getPrice)
+ 		              .map(Product::getPrice)
                 	      .sum();
 
 System.out.println(totalValue);
@@ -1482,6 +1482,22 @@ Total Orders : 5
 Revenue : Rs:245000
 Highest Order : Rs:78000
 Average Order : Rs:49000
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
