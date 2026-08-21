@@ -1,0 +1,4074 @@
+What is Competitive Programming (CP) Mindset?
+==============================================
+
+
+--Competitive Programming Mindset is the ability to analyze a problem, identify patterns, choose the most suitable algorithm or data structure, and design an efficient solution within given constraints.
+
+OR								
+
+--CP Mindset is a way of thinking in which a programmer focuses on understanding the problem, finding the hidden pattern, and solving it in the most efficient way rather than immediately writing code.
+
+--In Simple term, CP Mindset is the habit of thinking before coding.
+
+
+A student with CP mindset does not ask:
+
+--Which code should I write?
+
+Instead, they ask:
+
+-- What is the problem asking?
+-- What pattern does it follow?
+-- What is the fastest/efficient way to solve it?
+
+
+
+Real-Life Analogy:
+------------------
+1.
+
+--Imagine you want to travel from A to B point.
+
+You have multiple options:-
+- Walking
+- Bicycle
+- Car
+- Train
+- Flight
+
+A normal person may choose any option.
+
+A smart person first analyzes:
+
+- Distance
+- Time available
+- Budget
+
+Then selects the best option.
+
+
+2.
+
+You have toolbox:
+
+- Hammer
+- Screwdriver
+- Wrench
+- Pliers
+
+If you want to tighten a bolt, you would not use a hammer. Otherwise you will damage the bolt.
+
+--As it is you should not use the wrong algorithm or data structure to solve a problem. Choosing the right tool is important.
+
+So:
+
+DSA = Tools
+
+CP Mindset = The skill of identifying the right tool for a problem.
+				
+OR
+
+--The ability to choose the right algorithm or data structure after understanding a problem.
+
+
+
+Competitive Programming (CP) Problem Solving Pipeline:
+------------------------------------------------------
+
+--One of the biggest mistakes students make is:
+
+
+--Read Problem
+Then
+--Start Coding Immediately
+
+This approach usually leads to:
+
+- Wrong Answers
+- Time Limit Exceeded (TLE)
+- Confusion
+- Debugging Nightmares
+
+
+Complete Pipeline
+-----------------
+
+Problem Statement
+        |
+Understand Problem
+        |
+Analyze Constraints
+        |
+Manual Simulation
+        |
+Brute Force Solution
+        |
+Complexity Analysis
+        |
+Pattern Recognition
+        |
+   Optimization
+        |
+Implementation
+        |
+Testing & Edge Cases
+        |
+   Submission
+
+
+
+Step 1: Understand the Problem
+-------------------------------
+Before thinking about algorithms ask:
+- What is Input?
+- What is Output?
+- What exactly is being asked?
+
+
+Example
+
+Problem:
+
+--Given an array, find the maximum element.
+
+Input:
+Array
+
+Output:
+Maximum Value
+
+Questions Students Should Ask:
+
+- What are the inputs?
+- What should I return?
+- Can elements be negative?
+- Can duplicates exist?
+- Can the array be empty?
+
+
+
+Step 2: Analyze Constraints
+----------------------------
+
+--This is where CP actually begins.
+
+Example 1
+	N ≤ 100
+
+Possible:
+	O(N²)
+	O(N³)
+
+Example 2
+	N ≤ 100000  10^5 
+
+
+Need:
+	O(N)
+	or
+	O(N log N) 
+
+
+Golden Rule:
+
+	Constraints Decide Algorithm
+			NOT
+	Algorithm Decides Constraints
+
+
+Step 3: Solve Manually
+----------------------
+
+Before coding:
+Solve on paper.
+
+Example
+---------
+Array:
+	2 5 8 1 9
+Maximum?
+
+Manual process:
+	Current Max = 2
+
+ 5 > 2
+	Max = 5
+ 8 > 5
+	Max = 8
+ 1 < 8
+
+ 9 > 8
+	Max = 9
+
+Observe:
+- Only one traversal needed.
+
+Why Manual Simulation?
+- Because algorithms are hidden inside manual thinking.
+
+
+Step 4: Create Brute Force Solution
+------------------------------------
+
+- This is the most neglected step.
+- Brute Force is the simplest correct solution without worrying about efficiency.
+
+Example
+
+Pair Sum
+
+Find pair whose sum = K
+
+Brute Force:
+	for(i)
+	{
+    		for(j)
+    		{
+        		check pair
+    		}
+	}
+
+Complexity:
+	O(N²)
+
+Why Brute Force First?
+
+--Because Optimization starts from a correct solution.
+
+
+
+Step 5: Analyze Complexity
+--------------------------
+
+Ask:
+- Will this pass?
+
+Example
+
+Constraint:
+ N <= 1_00_000
+
+Brute Force: O(N²)
+
+
+Operations:
+100000 × 100000 = 10¹⁰
+
+Not possible.
+Need optimization.
+
+
+Step 6: Pattern Recognition
+----------------------------
+- This is where CP Mindset develops.
+- CP Experts Don't See Problems
+- They see patterns.
+
+
+Pattern 1: Hashing
+	Keywords:
+	- Frequency
+	- Duplicate
+	- Lookup
+	- Pair Sum (If not sorted)
+
+Pattern 2: Two Pointers
+	Keywords:
+	- Sorted Array
+	- Partition
+	- Pair Sum
+	- Opposite Ends
+
+Pattern 3: Sliding Window
+	Keywords:
+	- Subarray
+	- Consecutive
+	- Window Size
+
+Pattern 4: Binary Search
+
+	Keywords:
+	- Minimum Possible
+	- Maximum Possible
+	- Search Space
+
+Pattern 5: Dynamic Programming
+
+	Keywords:
+	- Optimal Answer
+	- Repeated Subproblems
+
+
+Step 7: Optimization
+----------------------
+- Now improve the brute force.
+
+Example
+
+Pair Sum
+
+Brute Force:
+	O(N²)
+
+Observation:
+	Need fast lookup
+
+Use:
+	HashSet
+
+Complexity:
+	O(N)
+
+
+
+Step 8: Implementation
+----------------------
+Only now start coding.
+
+Before coding:
+- Input Format?
+- Output Format?
+- Data Types?
+- Edge Cases?
+
+Step 9: Dry Run
+---------------
+- Always test manually.
+
+Step 10: Edge Case Testing
+---------------------------
+- Most Wrong Answers happen here.
+
+Check:
+Some Examples:-
+- Single Element
+
+- Empty Input (if allowed)
+
+- All Same Values
+
+- Negative Numbers (if allowed)
+
+- Large Values
+
+- Sorted Input
+
+- Reverse Sorted Input
+
+Step 11: Submit
+---------------
+
+Only after:
+- Dry Run Done
+- Edge Cases Checked
+- Complexity Verified
+
+
+
+CP Mindset Formula:
+------------------
+
+--A beginner thinks:
+
+	Problem
+	↓
+	Code
+
+--A competitive programmer thinks:
+
+	Problem
+	↓
+	Understand
+	↓
+	Constraints
+	↓
+	Brute Force
+	↓
+	Complexity
+	↓
+	Pattern
+	↓
+	Optimization
+	↓
+	Code
+	↓
+	Test
+
+
+
+---CP Problem Solving Pipeline is a systematic approach that starts with understanding the problem, analyzing constraints, building a brute-force solution, recognizing patterns, optimizing the solution, and finally implementing and testing it to produce an efficient and correct program.
+
+Golden Rule
+-------------
+- Don't start coding when you understand 20% of the problem.
+- Start coding when you understand 80% of the solution.
+
+
+
+
+How to Choose an Algorithm Using Constraints:
+=============================================
+
+
+Golden Assumption:
+-----------------
+
+--In Competitive Programming and Coding Interviews, we roughly assume:
+
+--A modern computer can perform approximately:
+
+10^8 operations per second
+
+= 100,000,000 operations: 8 zero
+= 100 million operations
+= 10 crore operations
+
+ 
+--Therefore, while solving a problem, we try to choose an algorithm whose total operations are roughly around or below 10^8.
+
+Note:
+
+--This is only a rule of thumb, not an exact law.
+
+
+Examples:
+
+
+1. O(N!)
+--------
+
+Suppose:
+
+N = 10
+
+Then:
+
+10!
+=
+10 × 9 × 8 × ... × 1
+=
+3,628,800: Around 36 lakh operations.
+
+Manageable.
+
+But:
+
+15!
+=
+1,307,674,368,000
+
+More than 1 trillion operations.
+
+Impossible.
+
+Conclusion:
+
+O(N!) is practical only when N ≤ 10
+
+Examples:
+
+Generating all permutations
+Traveling Salesman (Brute Force)
+Permutation-based Backtracking
+
+
+
+2. O(2^N)
+---------
+
+Suppose:
+
+N = 20
+
+Then:
+
+2^20
+=
+1,048,576
+
+About 1 million operations.
+
+Manageable.
+
+But:
+
+N = 30
+
+Then:
+
+2^30
+=
+1,073,741,824 
+
+More than 1 billion operations.
+
+Impossible.
+
+Conclusion:
+
+O(2^N) is practical only when N ≤ 20 
+
+
+Examples:
+
+Subset Generation
+Backtracking
+Recursive Brute Force
+Bitmask DP
+
+
+3. O(N³)
+---------
+
+Suppose:
+
+N = 100
+
+Then:
+
+100³
+=
+100 × 100 × 100
+=
+1,000,000
+=
+10^6
+
+Very easy.
+
+But:
+
+N = 1000
+
+1000³ = 10^9
+
+
+Greater than 10^8.
+
+TLE.
+
+Conclusion:
+
+For N = 100, O(N³) is acceptable.
+
+For N = 1000, O(N³) is too slow.
+
+Therefore when:
+
+N ≤ 100
+
+we can usually choose:
+
+O(N³)
+O(N²)
+O(N log N)
+O(N)
+O(log N)
+O(1)
+
+Examples:
+
+Floyd Warshall
+Matrix Multiplication (Naive)
+
+
+
+
+4. O(N²)
+---------
+
+Suppose:
+
+N = 1,000,000 (1million) = 10^6
+
+Then:
+
+N²
+=
+10^12
+
+Impossible.
+
+
+Suppose:
+
+N = 100,000
+=
+10^5
+
+Then:
+
+N²
+=
+10^10
+
+Still impossible.
+
+
+
+Suppose:
+
+N = 10,000
+=
+10^4
+
+Then:
+
+N²
+=
+10^8
+
+--Approximately equal to the allowed limit.
+
+Manageable.
+
+Conclusion:
+
+O(N²) is practical only up to roughly N = 10^4
+
+So, If:
+
+N = 10^5
+
+then avoid O(N²).
+
+Choose:
+
+O(N log N)
+O(N)
+O(√N)
+O(log N)
+O(1)
+
+
+
+Examples:
+
+Bubble Sort
+Selection Sort
+Comparing all pairs
+Simple DP solutions
+
+
+
+5. O(N log N)
+--------------
+
+Suppose:
+
+N = 100,000
+=
+10^5
+
+Then:
+
+log₂(100000)
+≈ 17
+
+
+Operations:
+
+N log N
+=
+100000 × 17
+=
+1,700,000
+
+Only 1.7 million operations.
+
+Very easy.
+
+Suppose:
+
+N = 1,000,000 : 1 million
+=
+10^6
+
+Then:
+
+log₂(1000000)
+≈ 20
+
+Operations:
+
+10^6 × 20
+=
+20,000,000
+
+Still manageable.
+
+
+
+Suppose:
+
+N = 1,000,0000 : 10 million
+=
+10^7
+
+Then:
+
+log₂(10000000)
+≈ 23
+
+Operations:
+
+10^8 × 2.3
+
+≈ 230 million operations.
+
+This is larger than our rough limit:
+
+2.3 × 10^8 > 10^8
+
+
+
+Conclusion:
+
+O(N log N) works comfortably for N up to 10^5 and even 10^6 in many cases.
+
+Examples:
+
+Merge Sort
+Heap Sort
+Quick Sort (Average Case)
+
+
+
+
+6. O(N)
+--------
+
+Suppose:
+
+N = 1,000,000
+=
+10^6
+
+Operations:
+
+10^6
+
+Only 1 million.
+
+Very easy.
+
+
+Suppose:
+
+N = 100,000,000
+=
+10^8
+
+Operations:
+
+10^8
+
+--Still around the limit.
+
+Conclusion:
+
+O(N) is ideal for very large inputs.
+
+Examples:
+
+Array Traversal
+Prefix Sum
+Sliding Window
+Two Pointers
+
+
+7. O(√N)
+---------
+
+Suppose:
+
+N = 10^12
+
+Then:
+
+√N
+=
+10^6
+
+Only 1 million operations.
+
+Very efficient.
+
+Conclusion:
+
+O(√N) can handle extremely large numbers.
+
+Examples:
+
+Prime checking
+Divisor counting
+Number theory problems
+
+
+8. O(log N)
+-----------
+
+Suppose:
+
+N = 1,000,000,000 : 1 billion(100 crore)
+=
+10^9
+
+Then:
+
+log₂(10^9)
+≈ 30
+
+Only about 30 operations.
+
+Extremely fast.
+
+
+Conclusion:
+
+O(log N) can handle very large inputs.
+
+Examples:
+
+Binary Search
+Tree operations
+Divide and Conquer
+
+
+9. O(1)
+-------
+
+--Operations never depend on input size.
+
+Examples:
+
+int x = arr[5];
+
+Conclusion:
+
+O(1) is the fastest possible complexity.
+
+
+Complexity Comparison:
+---------------------
+
+--As we move downward, algorithms become slower.
+
+
+ O(1)
+   ↓
+O(log N)
+   ↓
+ O(√N)
+   ↓
+ O(N)
+   ↓
+O(N log N)
+   ↓
+ O(N²)
+   ↓
+ O(N³)
+   ↓
+ O(2^N)
+   ↓
+ O(N!)
+
+
+
+
+Golden Rule for constraints (If possible optimized more):
+---------------------------------------------------------
+
+| Input Size (N)          | Usually Safe Complexity |
+| ----------------------- | ----------------------- |
+| N ≤ 10                  | O(N!), O(2ᴺ)            |
+| N ≤ 20                  | O(2ᴺ)                   |
+| N ≤ 100                 | O(N³)                   |
+| N ≤ 1,000               | O(N²)                   |
+| N ≤ 100,000 (10⁵)       | O(N log N)              |
+| N ≤ 1,000,000 (10⁶)     | O(N) or O(N log N)      |
+| N ≤ 10,000,000 (10⁷)    | O(N)                    |
+| N ≥ 1,000,000,000 (10⁹) | O(log N)                |
+
+
+
+
+
+IMPORTANT CP FORMULA SHEET:
+===========================
+
+1. Sum of First N Natural Numbers
+-----------------------------------
+1 + 2 + 3 + ... + n
+
+Formula:
+n(n + 1) / 2
+
+
+2. Sum of First N Odd Numbers
+-----------------------------
+1 + 3 + 5 + ... + (2n - 1)
+
+Formula:
+n²
+
+3. Sum of First N Even Numbers
+------------------------------
+2 + 4 + 6 + ... + 2n
+
+Formula:
+n(n + 1)
+
+
+4. Sum of Squares
+------------------
+1² + 2² + 3² + ... + n²
+
+Formula:
+n(n + 1)(2n + 1) / 6
+
+
+5. Sum of Cubes
+----------------
+1³ + 2³ + 3³ + ... + n³
+
+Formula:
+[n(n + 1) / 2]²
+
+6. Number of Pairs
+-------------------
+Choosing any 2 elements from N elements
+
+Formula:
+n(n - 1) / 2
+
+
+7. Number of Subarrays
+------------------------
+For an array of size N
+
+Formula:
+n(n + 1) / 2
+
+8. Number of Subsets
+---------------------
+For N elements
+
+Formula:
+2^n -1 (If we are not considering empty set)
+
+
+9. Number of Permutations
+--------------------------
+For N distinct elements
+
+Formula:
+n!
+
+
+10. Harmonic Series
+---------------------
+1 + 1/2 + 1/3 + 1/4 + ... + 1/n
+
+Approximation:
+	log n
+
+Used in:
+- Nested Loop Analysis
+
+11. Geometric Series
+-----------------------
+1 + 2 + 4 + 8 + ... + 2^n
+
+Formula:
+2^(n + 1) - 1
+
+
+12. Sum of First N Odd Squares
+-------------------------------
+1² + 3² + 5² + ... + (2n-1)²
+
+Formula:
+n(2n-1)(2n+1) / 3
+
+
+13. Logarithm Identities
+-------------------------
+log(ab) = log(a) + log(b)
+
+log(a/b) = log(a) - log(b)
+
+log(a^b) = b log(a)
+
+log a base a = 1
+
+
+14. Factorial
+---------------
+n! = n × (n-1) × (n-2) × ... × 1
+
+Examples:
+
+5! = 120
+
+6! = 720
+
+7! = 5040
+
+
+15. Total Number of Comparisons in Nested Loop
+------------------------------------------------
+1 + 2 + 3 + ... + n
+
+Formula:
+n(n + 1) / 2
+
+Complexity:
+O(N²)
+
+16. Binary Search Iterations
+----------------------------
+Formula:
+log₂(n)
+
+Examples:
+
+n = 1024
+
+Iterations = 10
+
+n = 1,000,000 (1 million)
+
+Iterations ≈ 20
+
+
+
+
+Data:
+=====
+
+--Data refers to raw facts, figures, values, or information such as number, string, object, image, that can be processed by a computer.
+
+Examples:
+--A student's name ("Alice")
+--Age (20)
+--Grades (85, 90, 88)
+
+--Data is like raw ingredients in a kitchen, ready to be organized and processed.
+
+
+
+Data Structure:
+===============
+
+--A Data Structure is a way of organizing, storing, and managing data in memory so that it can be accessed and modified efficiently.
+
+In simple words:
+
+--A Data Structure is a special format used to store data in a computer so that operations like searching, inserting, deleting, and updating can be performed efficiently.
+
+
+Imagine a library.
+
+--A library contains thousands of books.
+
+--If all books are thrown randomly on the floor, finding a book becomes very difficult.
+
+--But if books are arranged properly:
+
+Subject-wise
+Author-wise
+Shelf-wise
+
+--then finding a book becomes easy and fast.
+
+Similarly, in programming:
+
+Data = Books
+Data Structure = Arrangement of books
+
+--The better the arrangement, the faster the operations.
+
+
+
+Types of Data Structure:
+========================
+
+Data Structure can be classified in the following 3 categories:
+
+1. Primitive data structure 
+
+2. Linear Data Structure
+
+3. Non linear Data Structure
+
+
+
+
+1. Primitive data structure 
+---------------------------
+
+--These are built-in data types provided by programming languages.
+
+Examples:
+
+int
+float
+double
+char
+boolean
+
+Example:
+
+int age = 25;
+char grade = 'A';
+
+
+
+
+
+
+2. Linear Data Structures
+-------------------------
+
+--In linear data structures, elements are arranged sequentially.
+
+--Each element has a unique predecessor and successor (except first and last).
+
+Example:
+
+10 -> 20 -> 30 -> 40 -> 50
+
+
+
+Types of Linear Data Structures:
+--------------------------------
+
+1. Array:
+---------
+
+--Stores elements in contiguous memory locations.
+
+Example:
+
+int[] arr = {10,20,30,40,50};
+
+Memory:
+
+Index:  0   1   2   3   4
+Value: 10  20  30  40  50
+
+Advantages:
+
+--Fast access using index (O(1))
+--Simple implementation
+
+Disadvantages:
+
+--Fixed size
+--Insertion and deletion in the middle are costly (O(N))
+
+
+
+
+
+2. Linked List:
+---------------
+
+--Elements are connected using links.
+
+Example:
+
+10 → 20 → 30 → 40
+
+Each node contains:
+
+Data + Address(reference) of Next Node
+
+Advantages:
+
+--Dynamic size.
+--Easy insertion and deletion.
+
+Disadvantages:
+
+--Extra memory for links.
+--Slower random access.
+
+3. Stack:
+---------
+
+
+Follows:
+
+LIFO
+Last In First Out
+
+Real-life example:
+
+--Plate stack in a hotel.
+
+Push(10)
+Push(20)
+Push(30)
+
+
+Top
+ ↓
+30
+20
+10
+
+
+Removing:
+
+Pop()
+
+30 removed first
+
+
+Examples:
+
+--Browser Back Button
+--Undo/Redo Feature
+--Function Call Stack
+
+
+
+
+4. Queue
+--------
+
+Follows:
+
+FIFO
+First In First Out
+
+Real-life example:
+
+--Ticket counter queue.
+
+Front 10 → 20 → 30 → 40 Rear
+
+Removing:
+
+10 removed first
+
+
+Examples:
+
+--CPU Scheduling
+--Printer Queue
+--Customer Service Queue
+
+
+
+
+3. Non-Linear Data Structures:
+-------------------------------
+
+--Elements are not arranged sequentially.
+
+--One element may be connected to multiple elements.
+
+Examples:
+
+Tree:
+-----
+
+Hierarchical structure.
+
+Example:
+
+        A
+      /   \
+     B     C
+    / \     \
+   D   E     F
+
+Applications:
+
+--File systems
+--Database indexing
+--Organization hierarchy
+
+Advantages:
+
+--Efficient searching, insertion, and deletion (in balanced trees)
+--Hierarchical representation.
+
+Graph:
+-------
+
+--Collection of nodes and edges.
+
+Example:
+
+A ----- B
+|       |
+|       |
+C ----- D----E
+
+
+Applications:
+
+--Social networks
+--Google Maps
+--Network routing
+
+Examples:
+
+--Facebook Friends
+--Instagram Followers
+--Road Networks
+
+
+Hash Table (HashMap):
+---------------------
+
+--A Hash Table is a special type of data structure that stores data in Key-Value pairs.
+
+--It uses a Hash Function to convert a key into an index where the value is stored.
+
+Stores data as:
+
+Key -> Value
+
+Example:
+
+Map<Integer,String> map = new HashMap<>();
+
+
+map.put(101,"Amit");
+map.put(102,"Rahul");
+
+Stored as:
+
+101 -> Amit
+102 -> Rahul
+
+
+Advantages:
+
+--Very fast searching.
+--Average O(1) lookup.
+
+Applications:
+
+--Caching
+--Databases
+--Authentication systems
+
+
+
+Note: A data structure itself does not solve a problem.
+
+--It provides an efficient way to organize data.
+
+The combination of:
+
+Data Structure + Algorithm
+
+--helps us solve problems efficiently.
+
+For example:
+
+Array + Binary Search gives: O(log N) search time.
+
+Whereas:
+
+Array + Linear Search gives: O(N) search time.
+
+
+
+
+
+
+
+DSA: (Data Structure and Algorithm):
+====================================
+
+--It is the study of how data is organized and how problems can be solved efficiently using that data.
+
+--Data Structures help us store and manage data efficiently.
+
+--Algorithms help us process that data efficiently.
+
+--Together, DSA helps us write faster, optimized, and scalable programs.
+
+
+
+Examples:
+
+Google Search
+Amazon Recommendations
+Instagram Feed
+GPS Navigation
+Online Banking Systems
+
+--All use DSA internally.
+
+
+Relationship Between Data, Data Structure, Algorithm and DSA:
+============================================================
+
+Data
+↓
+Data Structure
+↓
+Algorithm
+↓
+Efficient Solution
+
+
+
+Example:
+
+Student Records
+      ↓
+Array / HashMap
+      ↓
+Searching Algorithm
+      ↓
+Fast Retrieval of Student Information
+
+
+
+Introduction to Algorithms:
+===========================
+
+--An Algorithm is a finite sequence of well-defined instructions used to solve a specific problem or perform a specific task.
+
+In simple words:
+
+--An Algorithm is a step-by-step procedure for solving a problem and producing the desired output.
+
+
+Real-Life Example:
+
+--Suppose you want to make a cup of tea.
+
+Steps:
+
+1. Boil water.
+2. Add tea leaves.
+3. Add sugar.
+4. Add milk.
+5. Boil for a few minutes.
+6. Filter and serve.
+
+--These steps are performed in a specific order to achieve a desired result.
+
+--This is an algorithm.
+
+
+Another Example:
+
+Problem:
+
+--Find the sum of two numbers.
+
+Algorithm:
+
+Step 1: Start
+Step 2: Read number A
+Step 3: Read number B
+Step 4: Calculate Sum = A + B
+Step 5: Display Sum
+Step 6: Stop
+
+Input:
+
+A = 10
+B = 20
+
+Output:
+
+30
+
+
+Why Do We Need Algorithms?
+--------------------------
+
+Without an algorithm:
+
+--Problems become difficult to solve.
+--Programs become slow and inefficient.
+--Different developers may solve the same problem differently.
+
+Algorithms help us:
+
+--Solve problems systematically.
+--Improve performance.
+--Reduce execution time.
+--Reduce memory usage.
+--Build scalable applications.
+
+
+--Imagine you’re trying to find a specific book in a messy library:
+
+Without an Algorithm: You randomly check every shelf, which could take hours.
+
+With an Algorithm: You follow a method, like checking the catalog or searching by category, making the process faster and organized.
+
+
+Characteristics of a Good Algorithm:
+------------------------------------
+
+--A good algorithm should have the following properties:
+
+1. Input
+
+--An algorithm should accept zero or more inputs.
+
+Example:
+
+A = 10
+B = 20
+
+
+2. Output
+
+--An algorithm must produce at least one output.
+
+Example:
+
+Output = 30
+
+
+3. Definiteness
+
+--Every step must be clear and unambiguous.
+
+Good:
+
+--Add A and B
+
+Bad:
+
+--Do some calculation
+
+
+4. Finiteness
+
+--The algorithm must terminate after a finite number of steps.
+
+Good:
+
+--Count from 1 to 10
+
+Bad:
+
+--Count forever
+
+
+
+5. Effectiveness
+
+--Every step must be simple and executable.
+
+Example:
+
+Multiply two numbers
+
+--should be practically possible.
+
+
+
+
+
+Algorithm vs Data Structure:
+---------------------------
+
+Data Structure
+
+--Stores and organizes data.
+
+Examples:
+
+Array
+Linked List
+Stack
+Queue
+Tree
+Graph
+HashMap
+
+
+Algorithm
+
+Processes the data.
+
+Examples:
+
+Searching
+Sorting
+Traversal
+Shortest Path
+Binary Search
+
+
+
+Suppose:
+
+int[] arr = {10,20,30,40,50};
+
+--Here, Array is the Data Structure.
+
+--Binary Search is the Algorithm.
+
+Together:
+
+Data Structure + Algorithm = Efficient Solution
+
+
+
+
+
+Algorithm vs Program:
+---------------------
+
+| Feature                  | Algorithm                                            | Program                                                         |
+| ------------------------ | ---------------------------------------------------- | --------------------------------------------------------------- |
+|   Definition             | A step-by-step procedure to solve a problem.         | An implementation of an algorithm using a programming language. |
+|   Purpose                | Provides the logic or approach to solve a problem.   | Executes the logic on a computer.                               |
+|   Nature                 | Conceptual and logical.                              | Practical and executable.                                       |
+|   Language               | Written in plain English, pseudocode, or flowcharts. | Written in programming languages like Java, Python, C++, etc.   |
+|   Execution              | Cannot be executed directly by a computer.           | Can be compiled/interpreted and executed by a computer.         |
+|   Focus                  | Focuses on solving the problem efficiently.          | Focuses on implementing the solution correctly.                 |
+|   Development Phase      | Design phase.                                        | Implementation (coding) phase.                                  |
+|   Readability            | Easy to understand even by non-programmers.          | Requires knowledge of the programming language.                 |
+|   Error Checking         | Logical mistakes are identified manually.            | Syntax, compile-time, and runtime errors can be detected.       |
+|   Performance Analysis   | Analyzed using Time Complexity and Space Complexity. | Measured using actual execution time and memory consumption.    |
+|   Portability            | Independent of programming language.                 | Depends on the programming language and runtime environment.    |
+|   Example                | Steps to add two numbers.                            | Java/Python code to add two numbers.                            |
+
+
+
+
+Example
+
+Algorithm:
+
+1. Read A and B
+2. Add A and B
+3. Display result
+
+
+Java Program:
+
+int a = 10;
+int b = 20;
+System.out.println(a + b);
+
+
+
+Types of Algorithms:
+--------------------
+
+--Algorithms can be categorized in many ways, each suited for specific problems.
+
+--Types of Algorithms classify algorithms based on the task they perform.
+
+Think of it as: Algorithm Type = What the algorithm does
+
+
+Some common categories are:
+
+
+1. Searching Algorithms:
+
+--Used to find an element.
+
+Examples:
+
+Linear Search
+Binary Search
+
+
+
+2. Sorting Algorithms
+
+--Used to arrange data.
+
+Examples:
+
+Bubble Sort
+Selection Sort
+Insertion Sort
+Merge Sort
+Quick Sort
+Heap Sort
+
+
+3. Recursion Algorithms
+
+--An algorithm that calls itself.
+
+Example:
+
+Factorial
+Fibonacci
+Tree Traversal
+
+
+4. Divide and Conquer Algorithms
+
+--Break the problem into smaller subproblems.
+
+Examples:
+
+Merge Sort
+Quick Sort
+Binary Search
+
+
+5. Greedy Algorithms:
+
+--Make the best choice at every step.
+
+Examples:
+
+Activity Selection
+Huffman Coding
+Kruskal Algorithm
+Prim Algorithm
+
+
+6. Dynamic Programming Algorithms
+
+--Store previously computed results to avoid repeated work.
+
+Examples:
+
+Fibonacci DP
+Knapsack Problem
+Longest Common Subsequence
+
+
+7. Graph Algorithms
+
+--Used on graph data structures.
+
+Examples:
+
+BFS
+DFS
+Dijkstra
+Floyd Warshall
+
+
+
+8. String Algorithms
+
+Purpose:
+
+--Process strings
+
+Examples:
+
+KMP
+Rabin-Karp
+Z Algorithm
+
+
+9. Numerical Algorithms
+
+Purpose:
+
+--Mathematical computation
+
+Examples:
+
+GCD
+Fast Exponentiation
+
+
+
+Problem Solving Paradigm:
+==========================
+
+Paradigm: Differernt type of thinking pattern to solve a problem.
+
+--It tells us: "How should we approach solving this problem?"
+
+--A Problem Solving Paradigm is a general strategy or methodology used to design efficient algorithms for solving problems.
+
+--Different problems may require different thinking patterns, and these thinking patterns are called Problem Solving Paradigms.
+
+
+Common Problem Solving Paradigms:
+--------------------------------
+
+1. Brute Force:
+
+--Try all possible solutions and choose the correct one.
+
+Real-Life Example
+
+Suppose the password of a lock is:
+
+1234
+
+You try:
+
+0000
+0001
+0002
+0003
+...
+1234
+
+until the lock opens.
+
+--This approach is called Brute Force.
+
+Characteristics:
+
+--Very simple to implement.
+--Usually the first solution that comes to mind.
+--Often inefficient for large inputs.
+--Tries every possible case.
+
+Examples
+
+--Linear Search
+--Generating all subsets
+--Generating all permutations
+--Password cracking
+
+
+
+
+2. Divide and Conquer
+
+
+--Divide a large problem into smaller subproblems, solve them independently, and combine their results.
+
+Real-Life Example
+
+--Suppose you want to find a word in a dictionary.
+
+You do not start searching from page 1.
+
+Instead:
+
+Open the dictionary from the middle.
+
+If the word comes before that page:
+    Search the left half.
+
+Otherwise:
+    Search the right half.
+
+--Repeat until the word is found.
+
+--At every step, the search space becomes smaller.
+
+
+
+Characteristics:
+
+--Break the problem into smaller parts.
+--Solve each part separately.
+--Combine the results.
+--Often leads to very efficient algorithms.
+
+Examples
+
+--Binary Search
+--Merge Sort
+--Quick Sort
+--Closest Pair of Points
+
+
+
+
+
+3. Greedy
+
+--Choose the best possible option at the current step without worrying about future consequences.
+
+Real-Life Example
+
+--Suppose you have: Rs100
+
+--and want to buy multiple useful items.
+
+A greedy approach may be:
+
+--Choose the most useful item available now.
+--Then choose the next best option.
+--Continue until money is exhausted.
+
+At every step, we make the locally optimal choice.
+
+
+Characteristics:
+
+--Makes the best decision at the current moment.
+--Does not reconsider previous decisions.
+--Fast and simple.
+--Works only when the problem satisfies the greedy property.
+
+Examples
+
+--Activity Selection
+--Huffman Coding
+--Prim's Algorithm
+--Kruskal's Algorithm
+--Fractional Knapsack
+
+
+
+4. Dynamic Programming
+
+--Store the results of previously solved subproblems and reuse them whenever needed.
+
+--don't perform the same calculation again and again.
+
+--Save the result and reuse that result.
+
+Suppose you are calculating Fibonacci numbers.
+
+Without DP:
+
+fib(5)
+
+calls fib(4) and fib(3)
+
+fib(4) again calls fib(3)
+
+fib(3) gets calculated multiple times
+
+--This causes unnecessary work.
+
+With DP:
+
+Calculate fib(3) once.
+Store the result.
+Reuse it whenever needed.
+
+Characteristics:
+
+--Avoids repeated calculations.
+--Saves previously computed results.
+--Improves performance significantly.
+--Useful when overlapping subproblems exist.
+
+Examples
+
+--Fibonacci DP
+--0/1 Knapsack
+--Longest Common Subsequence (LCS)
+--Longest Increasing Subsequence (LIS)
+--Matrix Chain Multiplication
+
+
+
+5. Backtracking
+
+--Try a solution, and if it does not work, undo the choice and try another possibility.
+
+
+Imagine solving a maze.
+
+--Choose a path.
+
+--If the path is blocked:
+    Go back.
+
+--Try another path.
+
+--Repeat until the destination is found.
+
+--This process of trying and undoing choices is called Backtracking.
+
+Characteristics:
+
+--Explores all possible solutions.
+--Rejects invalid choices early.
+--Uses recursion extensively.
+--Often used in constraint-based problems.
+
+Examples:
+
+--N-Queens Problem
+--Sudoku Solver
+--Rat in a Maze
+--Permutations
+--Word Search
+
+
+6. Two Pointer Technique:
+
+
+--Use two indices (pointers) to traverse data efficiently.
+
+For Example:
+
+--Suppose two people are standing at opposite ends of a line.
+
+One starts from the left.
+One starts from the right.
+
+--Move them according to the condition.
+
+--Instead of checking every pair, two pointers help reduce unnecessary work.
+
+Characteristics:
+
+--Often used with sorted arrays.
+--Reduces time complexity.
+--Eliminates nested loops in many problems.
+
+Examples
+
+--Pair Sum
+--Remove Duplicates from Sorted Array
+--Container With Most Water
+--Trapping Rain Water
+
+
+
+
+
+7. Sliding Window Technique
+
+--Maintain a window of elements and slide it across the data instead of recomputing everything repeatedly.
+
+For example,
+
+Suppose you want to find the maximum sales of any 7 consecutive days.
+
+--Instead of recalculating the sum of all 7 days every time:
+
+Remove the first day's sale.
+Add the next day's sale.
+
+--The window keeps moving.
+
+Characteristics:
+
+--Efficient for subarray and substring problems.
+--Avoids repeated calculations.
+--Usually converts O(N²) solutions into O(N).
+
+
+Examples:
+
+--Maximum Sum Subarray of Size K
+--Longest Unique Substring
+--Minimum Window Substring
+--Longest Repeating Character Replacement
+
+
+Note: A Problem Solving Paradigm does not solve a problem directly.
+
+--It provides a thinking strategy for designing an algorithm.
+
+
+Problem
+    ↓
+Choose Paradigm
+    ↓
+Design Algorithm
+    ↓
+Write Program
+    ↓
+Get Solution
+
+
+
+
+
+
+Importance of Algorithm analysis:
+---------------------------------
+
+--There are many algorithm to solve a problem
+
+--Requirement is to find the most effective algorithm to solve the problem.
+
+--This efficiency we find in the term of Time and space consumption.
+
+For example:
+
+For 100 items inside an array:
+
+Linear search will take maximum 100 comparision
+
+Binary serach will take only 7 comparision
+
+
+100 -> 50 -> 25 -> 12 -> 6 -> 3 -> 1
+
+
+--Suppose 1 comparision is taking 1ms then:
+
+Linear search:
+
+100 items : 100ms
+
+1 billion items: 1 billion ms -> 11 days
+
+
+Binary search:
+
+100 items : 7ms
+
+1 billion items: 30 comparision -> 30ms
+
+
+
+The Big O notation:
+-------------------
+
+--It is a way to describe the performance of an algorithm w.r.t to the input size.
+
+
+--The performance of an algorithm means, how fast an algorithm is:
+
+1. How much time 
+2. How much memory space 
+
+--it takes to execute
+
+
+Q/- Why Do We Need Big O?
+
+Suppose there are two Java methods that solve a problem.
+
+Method A:
+
+public static void printArray(int[] arr) {
+
+
+    for(int i=0; i<arr.length; i++) {
+        System.out.println(arr[i]);
+    }
+}
+
+
+
+Method B:
+
+public static void printPairs(int[] arr) {
+
+
+    for(int i=0; i<arr.length; i++) {
+
+
+        for(int j=0; j<arr.length; j++) {
+
+
+            System.out.println(arr[i] + " " + arr[j]);
+        }
+    }
+}
+
+
+
+Question: Which method is faster?
+
+--To answer this, we need to know:
+
+How much time it takes
+How much memory it takes
+
+This is called: Performance Analysis
+
+
+Time complexity:
+----------------
+
+--Time Complexity is the measure of how the number of operations performed by an algorithm grows as the input size increases.
+
+It does NOT say
+	"How many seconds"
+It says
+	"How many operations."
+
+
+
+
+
+
+
+
+Problem with Measuring Actual Time:
+-----------------------------------
+
+--Suppose we execute the same Java program on different machines.
+
+Machine 1: Execution Time = 2 seconds
+
+Machine 2: Execution Time = 0.5 second
+
+Machine 3: Execution Time = 5 seconds
+
+
+--The execution time depends on:
+
+CPU speed
+RAM
+Operating System
+JVM Version
+Background Processes
+
+Therefore:
+
+--Actual time is not a reliable way to compare algorithms.
+
+Instead, we count:
+
+--How many operations are performed?
+
+--This gives us a hardware-independent comparison.
+
+
+Big O measures: Growth Rate
+
+It tells us:
+
+If the input size increases,
+how fast does the amount of work increase?
+
+Big O does NOT tell:
+
+--Exact execution time in seconds
+
+Instead it tells:
+
+--How the number of operations grows.
+
+
+Example: Linear Search
+
+
+--Consider the following Java method:
+
+
+public static int linearSearch(int[] arr, int target) {
+
+    for(int i=0; i<arr.length; i++) {
+
+        if(arr[i] == target) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+
+Worst Case
+
+Suppose:
+
+int[] arr = {10,20,30,40,50};
+int target = 100;
+
+--Target does not exist.
+
+--Therefore every element must be checked.
+
+Number of Comparisons:
+
+
+| Number of Elements | Comparisons |
+| ------------------ | ----------- |
+| 10                 | 10          |
+| 100                | 100         |
+| 1000               | 1000        |
+| 1,000,000          | 1,000,000   |
+| n                  | n           |
+
+
+
+Input double => Comparisons double
+Input becomes 10 times larger => Comparisons become 10 times larger
+
+
+--The work grows at the same rate as the input.
+
+Therefore:
+
+Linear Search = O(n)
+
+This is called: Linear Growth
+
+
+Example: Constant Time
+
+Consider:
+
+public static int getFirstElement(int[] arr) {
+
+    return arr[0];
+}
+
+--No matter how large the array becomes:
+
+10 elements  => 1 operation
+100 elements => 1 operation
+1 million    => 1 operation
+
+
+--The amount of work never changes.
+
+Therefore:
+
+O(1)
+
+Called: Constant Time Complexity
+
+
+Example: Binary Search
+
+--Consider a sorted array:
+
+int[] arr = {10,20,30,40,50,60,70,80,90,100};
+
+--Binary Search repeatedly divides the search space into half.
+
+Example:
+
+
+public static int binarySearch(int[] arr, int target) {
+
+    int left = 0;
+    int right = arr.length - 1;
+
+    while(left <= right) {
+
+        int mid = left + (right - left) / 2;
+
+        if(arr[mid] == target) {
+            return mid;
+        }
+
+        if(target < arr[mid]) {
+            right = mid - 1;
+        }
+        else {
+            left = mid + 1;
+        }
+    }
+
+    return -1;
+}
+
+
+Suppose:
+
+100 elements
+
+Binary Search performs roughly:
+
+100 -> 50 -> 25 -> 12 -> 6 -> 3 -> 1
+
+Only about 7 comparisons.
+
+
+Operation Count:
+
+
+| Number of Elements | Comparisons |
+| ------------------ | ----------- |
+| 10                 | 4           |
+| 100                | 7           |
+| 1000               | 10          |
+| 1,000,000          | 20          |
+| 1,000,000,000      | 30          |
+| n	             | ?           |
+
+Notice for 1 billion items
+it takes only about 30 comparisons.
+
+
+
+100 item -> 50 -> 25 -> 12 -> 6 -> 3 -> 1
+
+n item -> n/2  -> n/2^2 -> n/2^3 -> n/2^4 .....n/2^k
+
+so, 
+
+n/2ᵏ = 1
+
+n = 2ᵏ
+
+2ᵏ = n
+
+k = log₂(n)
+
+
+Runtime of binary serach: O(log n)
+
+
+--It means if the size of input increases, the number of operation increases logritmically.
+
+--This is called: Logarithmic Growth
+
+
+Comparing Growth Rates:
+-----------------------
+
+Suppose:
+
+n = 1,000,000 -> 10^6 
+
+| Complexity | Approx Operations |
+| ---------- | ----------------- |
+| O(1)       | 1                 |
+| O(log n)   | 20                |
+| O(n)       | 1,000,000         |
+| O(n²)      | 10^6 * 10^6=10^12 |
+
+
+Notice:
+
+20 operations
+vs
+1 trillion operations
+
+--Huge difference.
+
+
+
+Common Big O Complexities: (Best to Worst)
+--------------------------
+
+| Complexity | Name         |
+| ---------- | ------------ |
+| O(1)       | Constant     |
+| O(log n)   | Logarithmic  |
+| O(n)       | Linear       |
+| O(n log n) | Linearithmic |
+| O(n²)      | Quadratic    |
+| O(n³)      | Cubic        |
+| O(2ⁿ)      | Exponential  |
+| O(n!)      | Factorial    |
+
+
+
+
+
+
+Function in Time Complexity:
+=============================
+
+- A function is a rule that takes an input and produces an output.
+
+Simply remember:
+
+Input
+  ↓
+Function
+  ↓
+Output
+
+Example
+	f(x)=2x+3
+
+- The function tells us how the output changes when the input changes.
+
+
+
+
+Time Function:
+--------------
+
+- A Time Function is a mathematical function that represents the number of basic operations performed by an algorithm as a function of the input size n.
+			or
+- A Time Function tells us how the number of operations changes when the input size changes.
+
+- Mostly time we denoted Time Function as f(n).
+
+f(n)=2n+3   
+
+- It shows total how many operation performs.
+
+
+
+Time Function vs Time Complexity
+================================
+
+
+--This is where many people get confused.
+
+
+Time Function				Time Complexity
+----------------------------------------------------------------
+Exact mathematical expression		Simplified growth rate
+Includes constants			Ignores constants
+Includes lower-order terms		Ignores lower-order terms
+Example: 3n² + 2n + 1			Example: O(n²)
+
+
+
+The Most Important Idea: Dominant Term
+---------------------------------------
+
+Example:
+
+--When the input becomes very large:
+
+f(n) = 5n + 10
+
+--The constant 10 becomes insignificant.
+
+The dominant term is: 5n
+
+Therefore: O(n)
+
+
+Another example:
+
+f(n) = n² + 100n + 50
+
+For very large values of n:
+
+n² dominates
+
+Therefore: O(n²)
+
+
+The Dominant Term Rule:
+-----------------------
+
+
+--Whenever you see an expression, ask:
+
+If n becomes extremely large, 
+which term grows the fastest?
+
+--the fastest growing term dominates all other terms.
+
+--That term determines the Big O complexity.
+
+
+Example:
+
+f(n) = n² + 100n + 50
+
+Let's compare the terms.
+
+For n = 10
+
+n²     = 100
+100n   = 1000
+50     = 50
+
+Here 100n looks larger.
+
+But Big O is interested in: Very Large n
+
+Suppose:
+
+n = 1,000,000 
+
+Then
+
+n²     = 1,000,000,000,000
+100n   = 100,000,000
+50     = 50
+
+Now clearly: n² dominates everything.
+
+
+Therefore: n² + 100n + 50 = O(n²)
+
+
+Q/- Why Constants are Ignored
+
+Consider:
+
+5n
+
+and
+
+5000n
+
+Which grows faster?
+
+--Both grow linearly.
+
+If n doubles:
+
+5n doubles
+
+5000n also doubles
+
+--Growth pattern is identical.
+
+
+Therefore:
+
+O(5n) = O(n)
+
+O(5000n) = O(n)
+
+Rule:
+
+--Ignore constant multipliers.
+
+
+Examples:
+
+3n     = O(n)
+
+100n   = O(n)
+
+0.5n   = O(n)
+
+99999n = O(n)
+
+All become: O(n)
+
+
+
+Q/- Why Lower Order Terms are Ignored
+
+Example:
+
+n² + n
+
+As n becomes large:
+
+n² grows much faster than n
+
+Therefore:
+
+O(n²+n) = O(n²)
+
+
+Another example:
+
+n³ + n² + n + 1
+
+Largest power: n³
+
+Therefore: O(n³)
+
+
+Shortcut Rule: 
+
+For a polynomial:
+
+--Take the highest power of n.
+--Ignore everything else.
+
+
+
+Examples:
+
+
+| Function  | Big O |
+| --------- | ----- |
+| 5n+10     | O(n)  |
+| n²+100n   | O(n²) |
+| n³+n²+n   | O(n³) |
+| 7n⁵+3n²+1 | O(n⁵) |
+| n⁸+100n⁴  | O(n⁸) |
+
+
+
+
+Frequency Count Method:-
+=======================
+
+- The Frequency Count Method is a technique used to determine the time complexity of an algorithm by counting how many times each statement is executed.
+
+					OR
+
+- Frequency Count Method means counting the number of times each line of code executes.
+
+
+Step by step counting steps and Taking how many operations perform by a code and derivate a function f(n):
+---------------------------------------------------------------------------------------------------------
+
+Note: Each operation will take 1 unit of time.
+
+
+
+Example 1: Single Loop
+-----------------------
+
+for(int i = 0; i < n; i++)
+      (1)     (n+1)   (n)
+{
+    System.out.println(i);
+          (n)
+}
+
+Time Function f(n) = 1 + (n+1) + n + n = 3n + 2  
+
+f(n) = 3n + 2;
+
+
+Big-Oh = O(n)
+
+
+
+Example 2: Double Loop
+-----------------------
+
+for(int i = 0; i < n; i++)
+      (1)     (n+1)   (n)
+{
+    System.out.println(i);
+          (n)
+}
+
+
+for(int i = 0; i < n; i++)
+      (1)     (n+1)   (n)
+{
+    System.out.println(i);
+          (n)
+}
+
+
+Time Function f(n) =  3n + 2 + 3n + 2 = 6n+4 
+Big-Oh = O(n)
+
+
+
+
+Example 3: Sum of Array:
+------------------------
+
+int sum = 0;
+    (1)
+
+for(int i = 0; i < n; i++)
+      (1)      (n+1)  (n)
+{
+    sum += arr[i];
+          (n)
+}
+
+Time Function f(n) = 1 + 1 + (n+1) + n + n = 3n + 3
+Big-Oh = O(n)
+
+
+
+
+
+
+Example 4: Nested Loops
+------------------------
+
+for(int i = 0; i < n; i++)
+      (1)   	(n+1)  (n)
+{
+    for(int j = 0; j < n; j++)
+          (n)      n(n+1)  n²
+    {
+        System.out.println("*");
+               (n²)
+    }
+}
+
+Time Function T(n) = 1 + (n+1) + n + n + n(n+1) + n² + n² ≈ 3n² + 4n + 2
+Big-Oh = O(n²)
+
+
+
+
+Example 5: Triangular Loop:
+---------------------------
+
+for(int i = 0;      i < n; 	i++)
+           (1)      (n+1)  	(n)
+{
+    for(int j = 0; j < i; j++)
+              (n)    ?     ?
+    {
+        System.out.println("*");
+             0+1+2+...+(n−1)
+    }
+}
+
+- derive how many steps or how many time a statment gets execute:
+
+0+1+2+...+(n−1) = n(n−1)/2
+
+Therefore
+
+Time Function f(n) ≈ n²-n/2
+Big-Oh = O(n²)
+
+
+
+Example 6: Logarithmic Loop
+---------------------------
+
+for(int i = 1;        i < n;         i *= 2)
+         (1)         (log₂n + 1)     (log₂n)
+{
+    System.out.println(i);
+               (log₂n)
+}
+
+
+Values of i:
+
+1
+2
+4
+8
+16
+...
+
+After k iterations:
+
+i=2^k
+
+Loop stops when:
+
+2^k ≥ n
+
+Taking log:
+
+k≈ log₂n
+
+ 
+Time Function f(n) = 1 + (log n + 1) + log n + log n = 3log n + 2
+Big-Oh = O(log n)
+
+
+
+
+
+Example 7: Constant Time
+-------------------------
+
+int a = 10; (1)
+int b = 20; (1)
+int c = a + b; (1)
+System.out.println(c); (1)
+
+T(n)= 1+1+1+1 = 4
+
+Big-O = O(1)
+
+
+
+Example 8: Loop with 2n Iterations:
+-----------------------------------
+
+for(int i = 0; i < 2*n;    i++)
+     (1)        (2n + 1)    (2n)
+{
+    System.out.println(i);
+	(2n)
+}
+
+
+T(n)=1+(2n+1)+2n+2n
+T(n)=6n+2
+
+Big-O = O(n)
+
+
+
+
+Example 9: Half Loop:
+----------------------
+
+
+for(int i = 0;  i < n/2;     i++)
+	(1)      (n/2 +1)    (n/2)
+{
+    System.out.println(i);
+	(n/2)
+}
+
+
+T(n)= 1 + (n/2 + 1) + n/2 + n/2
+
+T(n) = 3n/2 + 2
+
+Big-O = O(n)
+
+
+
+
+Example 10: Two Different Loops
+--------------------------------
+
+for(int i = 0; i < n; i++)
+{
+    System.out.println(i);
+}
+
+for(int j = 0; j < n*n; j++)
+{
+    System.out.println(j);
+}
+
+
+First loop: 3n+2
+
+Second loop: 3n² + 2
+
+
+
+T(n)= 3n+2 + 3n² + 2
+
+T(n) = 3n² + 3n + 4
+
+Big-O = O(n²)
+
+
+
+
+Example 11: Nested Rectangular Loop:
+-----------------------------------
+
+for(int i = 0; i < n; i++)
+{
+    for(int j = 0; j < m; j++)
+    {
+        System.out.println("*");
+    }
+}
+
+
+
+
+--Here inner statements runs n * m times
+
+
+Therefore:
+
+T(n)= O(nm)
+
+If: m = n
+
+then
+
+O(nm)= O(n²)
+
+
+Example 12: Triple Nested Loop:
+-------------------------------
+
+
+for(int i = 0; i < n; i++)
+{
+    for(int j = 0; j < n; j++)
+    {
+        for(int k = 0; k < n; k++)
+        {
+            System.out.println("*");
+        }
+    }
+}
+
+
+
+
+T(n) = n*n*n 
+
+Big-O = O(n³)
+
+
+
+Example 13: Logarithmic + Linear
+---------------------------------
+
+for(int i = 1; i < n; i *= 2)
+{
+    System.out.println(i);
+}
+
+for(int j = 0; j < n; j++)
+{
+    System.out.println(j);
+}
+
+
+First Loop: O(logn)
+Second Loop: O(n)
+
+Total: O(logn+n)
+
+Dominant term: O(n)
+
+Big-O = O(n)
+
+
+Example 14: Outer Linear, Inner Logarithmic:
+-------------------------------------------
+
+for(int i = 0; i < n; i++)
+{
+    for(int j = 1; j < n; j *= 2)
+    {
+        System.out.println("*");
+    }
+}
+
+
+
+Outer Loop: O(n)
+Inner Loop: O(logn)
+
+Total: n×logn
+
+Big-O =O(nlogn)
+
+
+Example 15:  Square Root Loop
+-----------
+
+for(int i = 1; i * i <= n; i++)
+{
+    System.out.println(i);
+}
+
+
+Loop condition:
+
+i² ≤ n
+
+i ≤ √n
+
+So the loop executes approximately:
+
+√n
+
+times.
+
+so, 
+
+f(n) = 1 + (√n + 1) + √n + √n
+=
+3√n + 2
+
+
+Therefore:
+
+Big-Oh = O(√n)
+
+
+
+
+Asymptotic Notations:
+=====================
+
+
+- Why Do We Need Asymptotic Notations?
+
+	f(n) = 3n² + 2n + 1
+
+- Is it necessary to carry this entire expression forever?
+
+What is Asymptotic Analysis?
+-----------------------------
+
+- Asymptotic Analysis is the study of an algorithm's growth as the input size becomes very large (n → ∞).
+
+
+- What Does "Asymptotic" Mean?
+
+"Asymptotic" simply means:
+	- Looking at the behavior when n becomes extremely large.
+
+For example,
+
+n = 10 is small.
+
+n = 1000000 is large.
+
+- Asymptotic analysis only cares about the second case.
+
+
+- Asymptotic Notations are mathematical tools used to describe the growth rate of an algorithm's time or space complexity for very large input sizes.
+				OR
+- Asymptotic Notations tell us how fast an algorithm grows as the input size (N) increases.
+
+- Asymptotic Notations don't tell us the exact running time, they tell us how the running time grows as the input size becomes very large.
+
+
+
+
+
+--They help us compare algorithms without depending on:
+
+- CPU speed
+- RAM
+- Operating System
+- Programming Language
+
+Instead of measuring exact execution time,
+we measure growth rate.
+
+The three most important asymptotic notations are:
+
+1. Big-O      O() Upper Bound
+
+2. Big-Omega  Ω() Lower Bound
+
+3. Big-Theta  Θ() Tight Bound
+
+
+
+
+
+Big-Oh (O)
+==========
+
+- Big-O Notation is a mathematical notation used to describe the upper bound (worst-case growth) of an algorithm's time or space complexity as the input size approaches infinity.
+OR
+- Big-O Notation is an asymptotic notation that represents the upper bound of an algorithm's growth rate by ignoring constants and lower-order terms.
+
+- The letter "O" stands for:
+	- Order of Growth
+
+
+--It tells us the maximum growth rate of an algorithm.
+
+In simple words:
+
+--Big-O describes how bad the running time can become.
+
+Example:
+
+Linear Search
+
+Array:
+10 20 30 40 50
+
+Target:
+100
+
+Target does not exist.
+
+Every element must be checked.
+
+Comparisons = n
+
+Therefore:
+
+Linear Search = O(n)
+
+
+
+
+Formal defination of Big O Notation:
+------------------------------------
+
+--Assuming f(n) and g(n) are non negetive functions 
+
+f(n) = O(g(n)) 
+
+--if only f(n) <= c.g(n) for all values of n where n >= n₀ 
+
+and c and n₀ are positive constants).
+
+--Here c and n₀ can not be negetive or zero.
+
+
+Means, f(n) can not grow more than c time g(n) after some point n₀ 
+
+--growth rate of g(n) must be greater than the growth rate of f(n) after some point n₀
+  
+
+--In the graph we can observe that for all values of n, greter than equal to n₀, c time g(n) always either equal or greater than f(n)
+
+
+--g(n) is asymptotically bigger than f(n) : f(n) = O(g(n))
+
+--Here g(n) can be called as tight upper bound of f(n)
+
+
+
+Proof Examples: Big-O:
+======================
+
+Suppose,
+
+f(n) = 5n +50
+
+Question: Can we say
+
+5n +50 = O(n)
+
+Let's verify using the definition.
+
+Step1: 
+
+- Actual Function
+	f(n) = 5n+50
+
+- Reference Function
+	g(n)=n
+
+
+Is f(n) = O(g(n)) ?
+
+--Can we say that g(n) is asymptotically bigger than f(n)
+
+
+Need to prove
+------------
+- 5n+50 ≤ c⋅n for n≥n₀ and c>0
+
+
+--At first sight it is looking like f(n) is greater than g(n), because g(n) is just n
+
+--But is there any chance after n₀ if we multiply some constant c to g(n) then c*g(n) will always greater than f(n)
+
+Here,
+
+f(n)= 5n + 50 
+
+--In this expression there are 2 terms and the leading term is 5n where as 50 is just a constant.
+
+--notice 5n is always not leading than 50, but for a large n value the 5n is always leading term, so we can ignore the constant 50.
+
+f(n) = 5n
+
+
+--In order to proof that g(n) is an upper bound of f(n) 
+OR
+--g(n) is aymptotically bigger than f(n), we can take some constant which is grater than 5 so that if it multiply by n there can be a chance g(n) become greater than f(n)
+
+So, lets take:
+
+c = 6
+
+so,
+
+6*g(n) => 6n
+
+Now need to check is there any chance at some point 6n become greater than 5n+50
+
+
+	 5n + 50 | 6n
+
+For n=10	   100   |  60  
+For n=20        150   |  120
+For n=50        300   |  300
+For n=51        305   |  306
+
+
+So now we can say that for after a certain point n₀ the f(n) is always smaller than c.g(n)
+
+Here:
+
+c = 6
+n₀ = 50
+
+5n + 50 = O(n) for c=6 and n >= 50
+
+Note: It is not like n is bigger than 5n+50, It is just asymptotically bigger than 5n+50 only c= 6 and n₀ >=50
+
+
+Trick: 
+
+--We can also simply find out the n₀ value for the above expression if c = 6
+
+5n+50 <= 6n
+
+--substract/remove 5n from both side.
+
+50 <= n
+
+means 
+
+n >= 50
+
+--then inequality will be true, hence
+
+c = 6 and  n₀ = 50
+
+
+--Here O(n) is the tight upper bound of f(n) because O(n^2) or O(n^3) can be considered as upper bound of f(n), but the nearest/least or tight upper bound is O(n) only.
+
+
+Remember: To proof Big O, we do not find exact answer instead we try to find a bigger blanket(c*n) which will cover all the terms of an expression.
+
+
+Example2: 
+
+Prove: 
+
+f(n) = 2n + 3  =  O(n)
+
+
+Here:
+
+f(n) = 2n + 3
+g(n) = n
+
+
+
+Solution:
+
+Step1: Defination
+
+2n+3 <= c*n
+
+step2: let's choose c = 3 
+
+2n+3 <= 3n 
+
+step3: substract 2n from both side
+
+
+3 <= n
+
+n >= 3
+
+so,  n₀ = 3
+
+
+verify
+
+	 2n + 3 | 3n
+
+For n=1	  5     |  3  
+For n=2        7     |  6
+For n=3        9     |  9
+For n=4        11   |  12
+
+
+
+Therefore, 2n + 3 = O(n)
+
+for c = 3 and n₀ = 3
+
+
+
+Example3: 
+
+Prove: 7n+ 100 = O(n)
+
+Here,
+
+f(n) = 7n +100
+g(n) = n
+
+Step1: Defination
+
+7n+100 <= c*n
+
+
+step2: let's choose c = 8 
+
+7n+100 <= 8n 
+
+step3: substract 7n from both side
+
+100 <= n
+
+n >= 100
+
+so,  n₀ = 100 when c= 8
+
+
+
+Important Observation:
+
+--Many students think:
+
+n > 5n+50
+
+This is wrong.
+
+Big O never says:
+
+g(n) > f(n)
+
+It says:
+
+c·g(n) > f(n)
+
+for sufficiently large n at a certain point n₀ .
+
+
+Q/- How to Select c Quickly
+----------------------------
+
+For expressions like: 5n+50
+
+Take: c = 6
+
+because: 6 > 5
+
+
+For: 7n+100
+
+Take: c = 8
+
+because: 8 > 7
+
+
+General Rule: Choose c slightly bigger than the leading coefficient.
+
+
+When proving: f(n)=O(g(n))
+
+--we are trying to find:
+
+A positive constant c
+
+and
+
+A starting point n₀
+
+such that:
+
+f(n) ≤ c·g(n)
+
+--for every n ≥ n₀
+
+
+Example: 
+
+Prove: n² + 10 = O(n²)
+
+
+Given:
+
+f(n) = n²+10
+g(n) = n²
+
+Need to prove:
+
+n²+10 = O(n²)
+
+Method 1 (Direct Proof):
+
+Step 1
+
+Definition:
+
+n²+10 ≤ c·n²
+
+
+Step 2
+
+Choose: c=2
+
+Then:
+
+n²+10 ≤ 2n²
+
+
+Step 3
+
+Subtract n² from both sides.
+
+10 ≤ n²
+
+
+Step 4
+
+n ≥ √10
+n ≥ 3.16
+
+Input size is usually integer.
+
+Therefore:
+
+n₀ = 4
+
+
+
+Step 5
+
+Conclusion
+
+n²+10 = O(n²)
+
+for c = 2
+and n₀ = 4
+
+
+Verification:
+
+| n | n²+10 | 2n² |
+| - | ----- | --- |
+| 1 | 11    | 2   |
+| 2 | 14    | 8   |
+| 3 | 19    | 18  |
+| 4 | 26    | 32  |
+| 5 | 35    | 50  |
+
+
+
+Notice:
+
+From n=4 onwards
+
+the inequality always holds.
+
+
+
+
+
+Method 2 (Universal Coefficient Trick):
+
+--This is the fastest method for exams.
+
+
+Step1: Identify the largest power
+Step2: Convert all the terms to this largest power
+Step3: Add all the Coefficients
+Step4: That result will be the value of c 
+Step5: Usually n₀ = 1 will work...
+
+
+
+
+Suppose:
+
+f(n)=n²+10
+
+
+Largest power: n²
+
+Convert every term into: n²
+
+Observe:
+
+10 ≤ 10n²
+
+for
+
+n ≥ 1
+
+Therefore:
+
+n²+10 ≤ n²+10n²
+
+n²+10 ≤ 11n²
+
+Hence:
+
+c=11
+n₀=1
+
+--The sum of coefficients becomes c.
+
+
+
+verify: if c = 10
+
+	      n² + 10 | 10*n²
+
+For n=1		11    |  10
+For n=2		14    |  40  
+
+Here if c = 10 then our  n₀ = 2
+
+But if c = 11 then n₀ = 1
+
+
+	     n^2 + 10 | 11*n^2
+
+For n=1		11    |  11
+For n=2		14    |  44  
+
+
+
+
+Example
+
+Prove:
+
+3n²+5n+7 = O(n²)
+
+Largest power: n²
+
+Therefore:
+
+3n²+5n+7 ≤ 3n²+5n²+7n²
+
+≤ 15n²
+
+Hence:
+
+c=15
+n₀=1
+
+Therefore:
+
+3n²+5n+7 = O(n²)
+
+
+
+
+Example
+
+Prove:
+
+4n³+2n²+7n+10 = O(n³)
+
+Step 1: 
+
+Largest power: n³
+
+Step 2:
+
+Convert all terms into n³.
+
+For:
+
+n ≥ 1
+
+4n³ ≤ 4n³
+2n² ≤ 2n³
+7n ≤ 7n³
+10 ≤ 10n³
+
+Step 3 Add coefficients.
+
+4+2+7+10 =23
+
+Therefore:
+
+4n³+2n²+7n+10 ≤ 23n³
+
+Step 4
+
+Conclusion
+
+c=23
+
+n₀=1
+
+Hence:
+
+4n³+2n²+7n+10 = O(n³)
+
+
+
+Constant Functions: O(1)
+-------------------------
+
+Example:
+
+f(n)=300
+
+Question:
+
+Find upper bound.
+
+
+A constant function does not grow.
+
+Therefore:
+
+300 = O(1)
+
+Formal Proof
+
+Definition:
+
+300 ≤ c·1
+
+Choose: c=300
+
+Then:
+
+300 ≤ 300
+
+for every: n ≥ 1
+
+Thus: 300 = O(1)
+
+
+
+Final trick:
+-------------
+
+Whenever you see a polynomial:
+
+Step 1: Find largest power.
+
+Example:
+
+7n⁸+3n²+10
+
+Largest power: n⁸
+
+Step 2
+
+Answer immediately.
+
+O(n⁸)
+
+Step 3: If proof is required:
+
+Add coefficients.
+
+7+3+10 =20
+
+Thus:
+
+7n⁸+3n²+10 ≤ 20n⁸
+
+for:
+
+n ≥1
+
+Therefore:
+
+c=20
+n₀=1
+
+Done.
+
+
+
+
+Important point:
+
+For a time function:
+
+f(n) = 5n + 50
+
+We already proved: f(n) = O(n)
+
+Here,
+
+f(n) = O(n²)
+5n + 50 = O(n³)
+5n + 50 = O(n⁴)
+5n + 50 = O(n¹⁰)
+
+are all correct.
+
+--But they can be considerd as loose upper bound.
+
+--We only prefer O(n) because:
+
+It is the smallest meaningful upper bound (tight upper bound).
+
+It describes the growth most accurately.
+
+
+--The smallest meaningful upper bound is called the Tight Upper Bound.
+
+
+
+
+
+Big-Omega (Ω) : Lower bound
+=============
+
+- Big-Ω (Omega) Notation is a mathematical notation used to describe the lower bound of an algorithm's time or space complexity as the input size approaches infinity.
+
+OR
+
+--It tells us the minimum growth rate of an algorithm.
+
+In simple words:
+
+--Big-Omega describes the best guarantee.
+
+
+Example:
+
+Linear Search
+
+Best Case:
+
+Target found at first position.
+
+Only one comparison.
+
+Therefore:
+
+Ω(1)
+
+
+
+Definition:
+-----------
+
+f(n)=Ω(g(n))
+
+if there exist positive constants:
+
+c
+n₀
+
+such that
+
+f(n) ≥ c·g(n)
+
+for all
+
+n ≥ n₀
+
+
+
+
+Simple meaning:
+
+f(n) ≥ c·g(n)
+
+
+--means After some sufficiently large input n₀, the actual running time f(n) always stays above a constant multiple of g(n).
+
+- In other words, For large values of n, the actual running time never grows slower than Constant × Reference Function.
+
+- Or simply, The algorithm will take at least this much time for sufficiently large inputs.
+
+
+Example: 
+
+- Suppose
+	f(n) = 3n + 5
+
+Question
+---------
+- Can we say 3n + 5 =  Ω(n) ?
+
+- Let's verify using the definition.
+
+Step 1
+-------
+- Actual Function
+
+	f(n) = 3n + 5
+
+- Reference Function
+
+	g(n) = n
+
+Need to prove
+-------------
+	 3n + 5 ≥ c*n	for all n ≥ n₀ and c > 0
+
+Step 2
+------
+- Find suitable constants.
+- Suppose
+	c = 3 , here take the same cofficient value of the bigger term.
+- Now check
+	
+	3n + 5 ≥ 3n
+
+- Is this true?
+	Yes.
+
+- Because 3n + 5 is always greater than 3n.
+
+- Therefore this inequality is true for every positive value of n.
+
+- Choose
+
+	c = 3
+
+	n₀ = 1
+
+(Any positive value of n₀ also works.)
+
+- Therefore
+	3n + 5 =  Ω(n)
+
+- Big-Ω does not tell us the exact running time. It only guarantees that the algorithm cannot grow slower than a constant multiple of the reference function after some sufficiently large input size. It represents the minimum asymptotic growth of the function.
+
+
+
+- Suppose
+	f(n)=n
+- Then
+	f(n) = Ω(n)
+	is the tightest lower bound.
+
+- However, since Big-Ω only provides a lower bound, every function that grows equal to or slower than n is also a valid lower bound.
+
+- Therefore,
+	f(n) ∈ Ω(n)
+
+	f(n) ∈ Ω(√n)
+
+	f(n) ∈ Ω(log n)
+
+	f(n) ∈ Ω(log log n)
+
+	f(n) ∈ Ω(1)
+	are all mathematically correct.
+
+- But, Ω(n) is preferred because it is the largest (tightest) or closest lower bound.
+
+For example: If the cost of a house is 15 lakh then 
+
+then we can say that:
+
+Cost ≥ 10 lakh : valid
+Cost ≥ 5 lakh  : valid
+Cost ≥ 1 lakh  : valid
+
+
+But
+
+Cost ≥ 14 lakh : (closer lower bound)
+Cost ≥ 15 lakh : (tightest lower bound)
+Cost ≥ 16 lakh : Invalid
+
+
+
+Big-Theta Notation:
+===================
+
+- Big-Theta (Θ) Notation is a mathematical notation used to describe the tight bound (exact asymptotic growth) of an algorithm's time or space complexity as the input size approaches infinity.
+
+OR
+
+
+--Big-Theta represents both upper bound and lower bound.
+
+--It gives the exact asymptotic growth rate.
+
+Definition:
+-----------
+
+f(n)=Θ(g(n))
+
+if there exist positive constants:
+
+c₁
+c₂
+n₀
+
+such that
+
+c₁·g(n) ≤ f(n) ≤ c₂·g(n)
+
+for all
+
+n ≥ n₀
+
+Simple Interpretation of the Equation
+-----------------------------------
+- The equation
+
+	c₁·g(n) ≤ f(n) ≤ c₂·g(n)
+
+- means After some sufficiently large input n₀, the actual running time f(n) always stays between two constant multiples of g(n).
+
+- In other words, For large values of n, the actual running time grows at the same rate as the reference function.
+
+- Or simply, The actual function is neither much faster nor much slower than the reference function.
+
+
+
+Prove:
+
+4n³+2n²+7n+10 = Θ(n³)
+
+Already proved:
+
+	4n³+2n²+7n+10 ≤ 23n³
+
+Therefore: O(n³)
+
+Also:
+
+4n³+2n²+7n+10 ≥ 4n³
+
+Therefore: Ω(n³)
+
+Since both are true: Θ(n³)
+
+
+
+Relationship Between Big-O, Big-Ω and Big-Θ:
+============================================
+
+Q/- Why Do We Need Three Notations?
+
+A/- When analyzing an algorithm, we often want to know:
+
+How much can it take at most? → Big-O
+How much will it take at least? → Big-Ω
+What is its actual growth rate? → Big-Θ
+
+
+House Construction Example:
+---------------------------
+
+--Suppose the actual cost of building a house is: 15 lakh
+
+Upper Bound (Big-O):
+
+If someone says:
+
+"The house will cost at most ₹20 lakh."
+
+This is correct because: 15 lakh ≤ 20 lakh
+
+This is an upper bound.
+
+Similarly, in algorithms:
+
+f(n) ∈ O(g(n))
+
+means:
+
+--The function will not grow faster than g(n).
+
+
+
+Lower Bound (Big-Ω):
+
+If someone says:
+
+"The house will cost at least 10 lakh."
+
+--This is also correct because:
+
+15 lakh ≥ 10 lakh
+
+This is a lower bound.
+
+Similarly:
+
+f(n) ∈ Ω(g(n))
+
+means:
+
+--The function will grow at least as fast as g(n).
+
+
+
+Tight Bound (Big-Θ):
+
+--If someone says:
+
+"The house will cost around 15 lakh."
+
+--This is the closest and most accurate estimate.
+
+Similarly:
+
+f(n) ∈ Θ(g(n))
+
+means:
+
+--The function grows exactly like g(n) (asymptotically).
+
+--Big-Θ gives the tightest description of the growth rate.
+
+
+
+
+
+
+
+
+
+
+
+
