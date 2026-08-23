@@ -3249,9 +3249,9 @@ so,
 Now need to check is there any chance at some point 6n become greater than 5n+50
 
 
-	 5n + 50 | 6n
+	      5n + 50 | 6n
 
-For n=10	   100   |  60  
+For n=10	100   |  60  
 For n=20        150   |  120
 For n=50        300   |  300
 For n=51        305   |  306
@@ -4063,12 +4063,2116 @@ means:
 
 
 
+So, If:
+
+f(n)=Θ(g(n))
+
+then automatically
+
+f(n)=O(g(n))
+
+and
+
+f(n)=Ω(g(n))
+
+--because Theta is both an upper bound and a lower bound.
+
+
+For example: 
+
+--For Binary Search:
+
+Upper Bound  = O(log n)
+Lower Bound  = Ω(log n)
+Exact Growth = Θ(log n)
+
+Hence we usually say:
+
+Binary Search = Θ(log n)
+
+--because Θ(log n) is the tightest description of its asymptotic growth.
+
+
+
+
+Space complexity:
+=================
+
+
+--Space Complexity is the amount of memory (RAM) an algorithm requires to execute as the input size grows.
+
+In simple words:
+
+--Space Complexity tells us how much memory an algorithm needs.
+
+--Just like Time Complexity measures time, Space Complexity measures memory usage.
+
+
+Why Do We Need Space Complexity?
+
+--Modern computers are fast, but memory is still a limited resource.
+
+Suppose:
+
+A program runs very fast.
+But it requires 100 GB of RAM.
+
+--Most computers cannot run it.
+
+--Therefore, while designing algorithms, we must consider:
+
+How much time it takes.
+How much memory it uses.
+
+--Both are equally important.
+
+
+Real-Life Analogy:
+
+--Imagine you are cooking in a kitchen.
+
+Time Complexity
+
+Measures: How much time is needed to cook the food?
+
+Space Complexity
+
+Measures: How much kitchen space and how many utensils are needed?
+
+
+Example:
+
+Method 1
+
+Use:
+
+1 pan
+1 spoon
+
+Needs less space.
+
+Method 2
+
+Use:
+
+10 bowls
+5 pans
+3 trays
+
+Needs more space.
+
+--Even if both methods take the same time, the second method requires more space.
+
+--Similarly, algorithms consume memory.
+
+
+Types of Memory Used by a Program:
+------------------------------
+
+--When a program runs, memory is used for several things:
+
+1. Input Space
+
+--Memory used to store the input.
+
+Example:
+
+int[] arr = new int[n];
+
+--The array itself occupies memory.
+
+
+2. Auxiliary Space
+
+--Extra memory used by the algorithm apart from the input.
+
+Example:
+
+int sum = 0;
+
+--The variable sum is auxiliary space.
+
+
+Total Space Complexity: 
+
+
+Total Space = Input Space + Auxiliary Space
+
+Example:
+
+int[] arr = new int[n];
+
+int sum = 0;
+
+Input Space: O(n)
+
+Auxiliary Space: O(1)
+
+Total: O(n)
+
+
+
+Note: When discussing space complexity, we usually mean:
+
+--Auxiliary Space Complexity
+
+
+Suppose an array of size n is given.
+
+int[] arr = new int[n];
+
+--The algorithm did not create this array.
+
+--The input was already provided.
+
+Therefore we usually talk about:
+
+--How much extra memory does your algorithm require?
+
+This extra memory is called: Auxiliary Space
+
+
+Example 1: Find the sum of n number 
+
+
+algo findSum(int i)
+{
+	int sum = 0;
+
+	for(int i = 0; i < n; i++)
+	{
+    		sum += i;
+	}
+
+print(sum);
+
+}
+
+
+In this algo total extra Memory used: 2
+
+1. sum
+2. i
+
+--Only two variables.
+
+--No matter how large n becomes:
+
+2 variables remain 2 variables.
+
+Therefore:
+
+Space Complexity = O(1)
+
+This is called: Constant Space Complexity
+
+
+
+Note: When calculating Space Complexity, always ask:
+
+"What extra memory grows as the input size grows?"
+
+--If memory does not grow with n: O(1)
+
+If memory grows linearly with n: O(n)
+
+If memory grows quadratically: O(n²)
+
+
+
+Example 2: Array of Size n
+------------------------
+
+void printArray(int[] arr)
+{
+    for(int i = 0; i < arr.length; i++)
+    {
+        System.out.println(arr[i]);
+    }
+}
+
+
+1. Input Space
+
+--arr contains n elements
+
+Input Space: O(n)
+
+Auxiliary Space
+
+Extra variables: i
+
+--Only one variable.
+
+Therefore:
+
+Auxiliary Space = O(1)
+
+
+Total Space: Input Space + Auxiliary Space
+
+O(n) + O(1) = O(n)
+
+Usually we report:
+
+Auxiliary Space = O(1)
+
+
+Example 3: Creating Another Array
+
+
+void copyArray(int[] arr)
+{
+    int[] copy = new int[arr.length];
+
+    for(int i = 0; i < arr.length; i++)
+    {
+        copy[i] = arr[i];
+    }
+}
+
+
+Extra Memory:
+
+--copy array of size n
+
+Memory: n
+
+Therefore:
+
+Space Complexity = O(n)
+
+
+
+Example 4: Function Taking a Matrix
+
+void printMatrix(int[][] matrix)
+{
+    for(int i = 0; i < matrix.length; i++)
+    {
+        for(int j = 0; j < matrix[i].length; j++)
+        {
+            System.out.println(matrix[i][j]);
+        }
+    }
+}
+
+
+Assume matrix size: n × n
+
+
+Extra Memory
+
+Variables:
+
+i
+j
+
+--Only two variables.
+
+Therefore:
+
+Auxiliary Space = O(1)
+
+
+Even though the time complexity is: O(n²)
+
+the space complexity remains: O(1)
+
+
+Example 5: Creating Another Matrix
+
+
+void createMatrix(int n)
+{
+    int[][] matrix = new int[n][n];
+}
+
+
+Total cells: n × n = n²
+
+Therefore: Space Complexity = O(n²)
+
+
+Example 6: Nested Loops
+
+
+for(int i=0;i<n;i++)
+{
+    for(int j=0;j<n;j++)
+    {
+
+    }
+}
+
+
+Time Complexity: O(n²)
+
+But memory used:
+
+i
+j
+
+Only two variables.
+
+Therefore:
+
+Space Complexity = O(1)
+
+
+
+Example 7:
+
+for(int i=0;i<n;i++)
+{
+    arr[i] *= 2;
+}
+
+
+--The original array is modified.
+
+--No extra array created.
+
+Therefore:
+
+Auxiliary Space = O(1)
+
+
+
+Guess the space complexity of the following program:
+---------------------------------------------------
+
+1.
+
+void test(int n)
+{
+    for(int i = 0; i < n; i++)
+    {
+        int[] temp = new int[100];
+    }
+}
+
+
+
+
+Ans: Space Complexity = O(1)
+
+--because for every iteration it is creating an array of 100 contant space.
+
+
+
+
+2. 
+
+
+void test(int n)
+{
+    for(int i = 0; i < n; i++)
+    {
+        int[] temp = new int[n];
+    }
+}
+
+
+
+Ans: Space Complexity = O(n)
+
+Because: At each iteration
+
+--One array of size n exists.
+
+Therefore:
+
+Space Complexity = O(n)
+
+
+
+
+Example of Bubble sort:
+-----------------------
+
+bubbleSort(arr);
+
+Time: O(N²)
+
+Space: O(1)
+
+--Because this algorithm does not create a new array, instead it only perform swapping internally.
+
+
+
+
+Recursive function:
+====================
+
+
+--A recursive function is a function that calls itself.
+
+In simple words:
+
+--A recursive function solves a problem by asking a smaller version of the same problem to solve itself.
+
+--A problem keeps breaking into smaller versions of itself until a "stopping condition" is reached.
+
+
+The Most Important Part: Base Case
+
+--Every recursive function must have a stopping condition.
+
+This stopping condition is called the: Base Case
+
+--Without a base case, recursion never stops.
+
+Example Without Base Case:
+
+
+public static void fun() {
+
+    System.out.println("Hello");
+
+    fun();
+}
+
+
+
+--The function keeps calling itself forever.
+
+--Eventually the program crashes with: StackOverflowError
+
+
+First Recursive Function Example:
+-------------------------------
+
+public static void countdown(int n) {
+
+    if(n == 0) {
+        return;
+    }
+
+    System.out.println(n);
+
+    countdown(n - 1);
+}
+
+
+Calling: 
+
+countdown(5);
+
+
+Output:
+
+5
+4
+3
+2
+1
+
+
+Visual view:
+
+
+
+countdown(5)
+      ↓
+countdown(4)
+      ↓
+countdown(3)
+      ↓
+countdown(2)
+      ↓
+countdown(1)
+      ↓
+countdown(0)
+
+
+--Base case reached.
+
+--Now execution starts returning back.
+
+
+
+6. Another Example: Factorial
+
+5! = 5 × 4 × 3 × 2 × 1
+
+
+Recursive idea:
+
+5! = 5 × 4!
+
+4! = 4 × 3!
+
+3! = 3 × 2!
+
+2! = 2 × 1!
+
+1! = 1
+
+
+Example:
+
+
+public static long factorial(int n) {
+
+    if(n == 1)
+        return 1;
+
+    return n * factorial(n - 1);
+}
+
+
+Calling:
+
+factorial(5)
+
+
+--Recursion is useful when a problem can naturally be divided into smaller versions of itself.
+
+Examples:
+
+Factorial:
+
+n! = n × (n-1)!
+
+
+Fibonacci:
+
+fib(n) = fib(n-1) + fib(n-2)
+
+
+Binary Search:
+
+--Search one half of the array.
+
+
+Merge Sort:
+
+--Sort the left half.
+
+--Sort the right half.
+
+--Merge them.
+
+
+
+Tree Traversal:
+
+--Visit a node.
+
+--Recursively visit its children.
 
 
 
 
 
+Key Components of Every Recursive Function:
 
+--Every recursive function has two parts:
+
+Part 1: Base Case
+
+if(n == 0)
+    return;
+
+Stops recursion.
+
+
+Part 2: Recursive Case
+
+countdown(n - 1);
+
+--Calls itself with a smaller problem.
+
+
+Whenever you see a recursive function, always ask:
+
+Question 1: What is the base case?
+
+Question 2 How is the problem becoming smaller?
+
+
+
+
+Call Stack:
+==========
+
+--Whenever a function is called, the JVM creates a memory block for that function.
+
+This memory block is called a:
+
+Stack Frame
+
+or
+
+Activation Record
+
+--These stack frames are stored in a special memory area called: 
+
+Call Stack
+
+
+--Each function call gets its own stack frame.
+
+A stack frame typically contains:
+
+1. Parameters
+
+countdown(int n)
+
+Value of: n
+
+2. 2. Local Variables
+
+Example:
+
+int sum = 0;
+
+--Stored inside the stack frame.
+
+
+3. Return Address
+
+The JVM remembers:
+
+"After this function finishes, where should execution continue?"
+
+--This location is called the return address.
+
+
+Function Call Example:
+
+ref: call_stack pic
+
+
+
+Recursive Function Example:
+
+
+Consider:
+
+public static void countdown(int n) {
+
+    if(n == 0)
+        return;
+
+    System.out.println(n);
+
+    countdown(n - 1);
+}
+
+
+
+calling: countdown(3);
+
+
+Stack:
+
+-----------------
+|    countdown(0)      |
+-----------------
+|    countdown(1)      |
+-----------------
+|    countdown(2)      |
+-----------------
+|    countdown(3)      |
+-----------------
+
+
+Base case reached.
+
+
+--Function calls are added to the stack in:
+
+LIFO Order (LAST IN FIRST OUT)
+
+
+--Returning Back
+
+Now: return;
+
+removes: countdown(0)
+
+Then:
+
+countdown(1) finishes. Removed.
+
+Then:
+
+countdown(2) finishes. Removed.
+
+Then:
+
+countdown(3) finishes. Removed.
+
+
+
+
+Recursive Depth:
+----------------
+
+--Maximum number of active recursive calls present in the call stack at the same time.
+
+Example:
+
+countdown(5)
+
+Maximum active calls:
+
+countdown(5)
+countdown(4)
+countdown(3)
+countdown(2)
+countdown(1)
+countdown(0)
+
+Total:
+
+6 calls
+
+
+Depth ≈ n
+
+
+
+--That number determines the stack memory usage.
+
+--Sice every recursive call creates a new stack frame.
+
+Therefore 
+
+--recursion consumes memory.
+
+--This memory is called:
+
+Call Stack Memory
+
+or
+
+Recursion Stack Space
+
+
+
+
+Head Recursion and Tail Recursion:
+================================
+
+Head Recursion:
+
+--A recursive function in which the recursive call happens before the main processing statement.
+
+Example:
+
+public static void printAscending(int n)
+{
+    if(n == 0)
+        return;
+
+    printAscending(n - 1);  // Recursive call first
+
+    System.out.println(n);
+}
+
+
+Calling
+
+printAscending(5);
+
+Output:
+
+
+1
+2
+3
+4
+5
+
+
+--After reaching the base case, printing happens while returning back.
+
+
+
+Tail Recursion:
+
+--A recursive function in which the recursive call is the last statement executed.
+
+Example:
+
+
+public static void printDescending(int n)
+{
+    if(n == 0)
+        return;
+
+    System.out.println(n);
+
+    printDescending(n - 1);  // Recursive call last
+
+}
+
+
+Calling:
+
+printDescending(5);
+
+
+Output
+5
+4
+3
+2
+1
+
+
+--Printing happens before making the next recursive call.
+
+
+
+
+Find Time Complexity and Space Complexity of Recursive Functions:
+============================================================
+
+Whenever you see recursion, ask two separate questions:
+
+
+1. How much total work is being done?
+
+Answer: Time Complexity
+
+2. How much memory is being used?
+
+Answer: How much memory is being used?
+
+
+
+Finding Time Complexity: 
+-----------------------
+
+Time Complexity measures:
+
+--Total amount of work performed.
+
+
+Example 1: Countdown
+
+
+void countdown(int n)
+{
+    if(n == 0)
+        return;
+
+    System.out.println(n);
+
+    countdown(n - 1);
+}
+
+
+How Many Calls?
+
+
+countdown(n)
+countdown(n-1)
+countdown(n-2)
+...
+countdown(0)
+
+
+Total calls: n + 1
+
+
+Work Per Call: 
+
+--Each call performs:
+
+1 print statement
+
+Constant work: O(1)
+
+Total Work: (n+1) × O(1)
+
+Result: O(n)
+
+
+
+Finding Space Complexity:
+------------------------
+
+--Space Complexity measures:
+
+--Maximum memory used.
+
+
+Space Complexity = (Maximum Recursion Depth) *  (Space Used Per Stack Frame)
+
+
+--For recursion, the first thing to check is:
+
+Call Stack Depth
+
+Stack:
+
+countdown(n)
+countdown(n-1)
+countdown(n-2)
+...
+countdown(0)
+
+
+Maximum active calls: n + 1
+
+Depth = n+1 
+
+Therefore:
+
+Space = O(n)
+
+
+
+
+Example 2: Factorial
+
+
+long factorial(int n)
+{
+    if(n == 1)
+        return 1;
+
+    return n * factorial(n - 1);
+}
+
+
+
+Time Complexity: 
+
+Calls:
+
+factorial(n)
+factorial(n-1)
+factorial(n-2)
+...
+factorial(1)
+
+
+
+Number of calls: n
+
+Work per call: 1 multiplication (constant)
+
+
+Result:
+
+Time = O(n)
+
+
+
+Space Complexity:
+
+Maximum stack:
+
+factorial(n)
+factorial(n-1)
+...
+factorial(1)
+
+
+Depth: n
+
+Result:
+
+Space = O(n)
+
+
+
+Example 3: Binary Search
+
+
+int binarySearch(...)
+{
+    ...
+
+    return binarySearch(...half...);
+}
+
+
+
+--Every call reduces problem size by half.
+
+n
+n/2  n/2^1
+n/4  n/2^2
+n/8  n/2^3
+...
+1    n/2^k
+
+
+How Many Levels?
+
+Solve:
+
+n / 2^k = 1
+
+Therefore:
+
+k = log₂ n
+
+
+Time Complexity
+
+Number of calls: log n
+
+Work per call: O(1)
+
+
+Result: O(log n)
+
+
+Space Complexity:
+
+--Maximum stack depth: log n
+
+Result: O(log n)
+
+
+Example 4: Fibonacci
+
+int fib(int n)
+{
+    if(n <= 1)
+        return n;
+
+    return fib(n-1) + fib(n-2);
+}
+
+
+
+
+Recursion Tree:
+
+For:
+
+fib(5)
+
+we get:
+
+
+
+               fib(5)
+             /            \
+        fib(4)        fib(3)
+        /    \             /    \
+fib(3) fib(2)    fib(2) fib(1)
+
+
+Notice:
+
+--Many repeated calls.
+
+--Each node creates approximately: 2 children
+
+--The recursion tree grows exponentially.
+
+Result: O(2^n)
+
+Space Complexity: 
+
+
+Depth: n
+
+Therefore:
+
+Space = O(n)
+
+
+
+Recurrence Relations:
+====================
+
+--For iterative algorithms, complexity is often easy to calculate.
+
+Example:
+
+
+for(int i=0; i<n; i++)
+{
+    System.out.println(i);
+}
+
+
+We can immediately say: n iterations
+
+Therefore:
+
+Time Complexity = O(n)
+
+
+--But recursion is different.
+
+Example:
+
+factorial(n)
+
+calls:
+
+factorial(n-1)
+
+which calls:
+
+factorial(n-2)
+
+and so on.
+
+--The execution depends on itself.
+
+
+--Therefore we need a mathematical equation to describe this behavior.
+
+That equation is called a: Recurrence Relation
+
+
+Definition of Recurrence Relation:
+--------------------------------
+
+--A recurrence relation is an equation that expresses the cost of a problem of size n in terms of smaller subproblems.
+
+In simple words:
+
+--A recurrence relation is an equation which tells us how the current problem depends on smaller versions of itself.
+
+
+Usually we write recurrence relation using : T(n)
+
+where:
+
+T(n) = Time required to solve a problem of size n
+
+
+For example:
+
+T(100)
+
+means:
+
+--Time needed for input size 100
+
+
+
+Example: Factorial:
+-----------------
+
+long factorial(int n)
+{
+    if(n == 1)
+        return 1;
+
+    return n * factorial(n-1);
+}
+
+
+
+Step 1: Recursive Calls
+
+How many recursive calls?
+
+1
+
+
+Step 2: Size of Recursive Call?
+
+n-1
+
+
+Step 3: Current Work
+
+Multiplication: 1 operation
+
+Constant work. O(1)
+
+
+Step 4: Recurrence relation
+
+T(n) = 1T(n-1) + 1
+
+=
+
+T(n) = T(n-1) + 1
+
+
+
+
+Meaning,
+
+
+Time for size n = Time for size (n-1) + Current work
+
+
+Example: Binary Search
+
+Code idea:
+
+binarySearch(...)
+
+--searches only one half.
+
+
+Problem size: n
+
+becomes: n/2
+
+
+Current work:
+
+mid calculation + comparison
+
+Constant. O(1)
+
+
+
+Recurrence relation:
+
+T(n) = T(n/2) + 1
+
+
+
+Meaning:
+
+Current problem = Half-size problem + Current work
+
+
+
+Example: Fibonacci
+
+fib(n)
+{
+    return fib(n-1) + fib(n-2);
+}
+
+
+Recursive calls:
+
+fib(n-1)
+fib(n-2)
+
+Two calls.
+
+
+
+Current work:
+
++
+return
+
+Which is Constant. O(1)
+
+
+Recurrence:
+
+T(n) = T(n-1) + T(n-2) + 1
+
+
+Example: Merge Sort
+
+Pseudo Code:
+
+mergeSort(left)
+mergeSort(right)
+merge(left,right)
+
+
+Recursive calls: 2
+
+Problem size: n/2 for each call.
+
+
+Current work:
+
+merge operation
+
+Merge touches all n elements.
+
+Therefore: O(n)
+
+
+Recurrence:
+
+T(n) =  2T(n/2) + n
+
+or
+
+T(n)=T(n/2)+T(n/2)+n
+
+
+Important Formula:
+==================
+
+--Most divide-and-conquer recurrences look like:
+
+T(n) = aT(n/b) + f(n)
+
+Where:
+
+a: Number of recursive calls.
+
+b: How much the problem size shrinks.
+
+f(n): Current work performed outside recursion.
+
+
+
+
+How to Solve Recurrence Relations:
+================================
+
+
+--Once we have a recurrence relation, how do we find the final Big-O complexity?
+
+--For this, we need methods to solve recurrence relations.
+
+--The first and most important method is:
+
+Expansion Method
+
+Also called:
+
+Iteration Method
+
+
+The Main Idea:
+
+--Suppose we have:
+
+T(n) = T(n-1) + 1
+
+--Instead of guessing the answer, we keep replacing T(n-1).
+
+This process is called: Expansion
+
+
+Example 1: Factorial / Countdown
+
+Recurrence:
+
+T(n) = T(n-1) + 1
+
+Base Case:
+
+T(1) = 1
+
+
+Expansion
+
+1. First expansion:
+
+T(n) = T(n-1)+1
+
+T(5) = T(4) + 1
+
+Replace T(n-1):
+
+T(n) = [T(n-2)+1] + 1
+
+
+Simplify:
+
+T(n) = T(n-2)+2
+
+Expand again:
+
+T(n) = [T(n-3)+1] + 2
+
+
+Result: T(n) = T(n-3)+3
+
+Pattern appears:
+
+T(n) = T(n-k)+k
+
+Find k: 
+
+Stop when: n-k = 1
+
+Therefore:
+
+k= n-1
+
+Substitute:
+
+T(n) = T(1)+(n-1)
+
+
+Since: T(1) = 1
+
+we get:
+
+T(n) = n
+
+Therefore: O(n)
+
+
+
+
+Example 2: Binary Search
+
+Recurrence:
+
+T(n)=T(n/2)+1
+
+Base Case: T(1)=1
+
+Expansion
+
+First:
+
+T(n) = T(n/2)+1
+
+Replace:
+
+T(n/2) = T(n/4)+1
+
+Therefore:
+
+T(n) = T(n/4)+2
+
+
+Again: T(n)= T(n/8)+3
+
+Again: T(n) = T(n/16)+4
+
+
+Pattern: T(n) = T(n/2^k)+k
+
+
+Find k: 
+
+Stop when: n/2^k=1
+
+k=log₂ n
+
+Substitute:
+
+T(n) = T(1)+log n
+
+Result: O(log n)
+
+
+
+
+Example 3
+
+Recurrence: T(n)=T(n-1)+n
+
+Expand:
+
+T(n) = T(n-1)+n
+
+Replace:
+
+T(n-1) = T(n-2)+(n-1)
+
+Therefore:
+
+T(n) = T(n-2) + (n-1) + n
+
+Expand again:
+
+T(n) =  T(n-3) + (n-2) + (n-1) + n
+
+Eventually:
+
+T(n) = 1+2+3+...+n
+
+We know:
+
+1+2+3+...+n = n(n+1)/2
+
+Result:
+
+T(n)= O(n²)
+
+
+Example 4
+
+Recurrence: T(n)=T(n-1)+n²
+
+
+Expansion:
+
+T(n) = n² + (n-1)² + (n-2)² + ... + 1²
+
+Known formula:
+
+1²+2²+...+n² = n(n+1)(2n+1)/6
+
+Leading term: n³
+
+Therefore: O(n³)
+
+
+What About Fibonacci?
+
+Recurrence:
+
+T(n) = T(n-1) + T(n-2) + 1
+
+
+--Here we can not expand this easily
+
+--Because two different recursive branches are created every time.
+
+--Expansion becomes messy.
+
+--The recurrence grows like a tree.
+
+--For Fibonacci, the Recursion Tree Method is more useful.
+
+
+Recursion Tree method:
+---------------------
+
+--A recursion tree is a visual representation of recursive calls.
+
+--Instead of looking at one recurrence equation, we draw all recursive calls as a tree.
+
+
+Example: Fibonacci
+
+Recurrence:
+
+T(n)= T(n-1) + T(n-2) + 1
+
+Let's draw: T(5)
+
+
+                  T(5)
+                /      \
+            T(4)      T(3)
+           /   \           /   \
+       T(3)  T(2)  T(2)  T(1)
+       / \
+    T(2) T(1)
+
+
+
+How Many Nodes?
+
+Let's simplify.
+
+--Suppose every node creates: 2 children
+
+Then:
+
+Level 0: 1 node
+
+Level 1: 2 nodes
+
+Level 2: 4 nodes
+
+Level 3: 8 nodes
+
+Level 4: 16 nodes
+
+Pattern:
+
+1
+2
+4
+8
+16
+...
+
+
+This is:
+
+2^0
+2^1
+2^2
+2^3
+...
+
+Therefore:
+
+Time Complexity = O(2^n)
+
+
+Space Complexity?
+
+Look at the deepest path:
+
+T(n)
+↓
+T(n-1)
+↓
+T(n-2)
+↓
+...
+1
+
+Depth: n
+
+Therefore:
+
+Space = O(n)
+
+
+Example: Merge Sort
+
+Recurrence: T(n)=2T(n/2)+n
+
+Let's draw the tree.
+
+Level 0: One problem:
+
+Size = n
+Work = n
+             
+n + n = 2n = n
+
+Level 1 Two subproblems:
+
+n/2
+n/2
+
+Work per node:
+
+n/2
+
+Total: n
+
+          n
+        /   \
+    n/2   n/2
+
+
+Level 2: Four subproblems:
+
+n/4
+n/4
+n/4
+n/4
+
+Total work:
+
+4 × n/4 = n
+
+
+          n
+        /   \
+      n/2   n/2
+      / \     / \
+ n/4 ...
+
+
+At every level:
+
+Total Work =  n
+
+Level 0: n
+
+Level 1: n
+
+Level 2: n
+
+Level 3: n
+
+
+How Many Levels?
+
+We keep dividing by 2:
+
+n
+n/2
+n/4
+n/8
+...
+1
+
+Solve: n/2^k = 1
+
+Therefore:
+
+k = log₂ n
+
+
+Total Work
+
+--Each level contributes: n
+
+Number of levels: log n
+
+Therefore:
+
+n * log n
+
+Result: O(n log n)
+
+
+
+
+Using Recursion Tree :
+
+--Instead of memorizing formulas, we can literally see:
+
+Work per Level * Number of Levels
+
+
+Recursion Tree vs Expansion:
+---------------------------
+
+Expansion Method
+
+Good for:
+
+T(n)=T(n-1)+1
+T(n)=T(n-1)+n
+
+
+
+Recursion Tree
+
+Good for:
+
+T(n)=2T(n/2)+n
+T(n)=3T(n/2)+n
+T(n)=T(n-1)+T(n-2)
+
+
+Master Theorem:
+==============
+
+--Master Theorem is basically a shortcut.
+
+--Instead of drawing a recursion tree every time, Master Theorem directly tells us the answer.
+
+--Master Theorem was invented because drawing recursion trees repeatedly becomes slow.
+
+
+When Can We Use Master Theorem?
+
+--Only for recurrences of the form:
+
+T(n)=aT(n/b)+f(n)
+
+Where,
+
+T(n): Total work for input size n
+
+a: Number of recursive calls
+
+b: Factor by which problem size shrinks
+
+f(n): Work done at current level (outside recursive calls)
+
+
+Master Theorem does NOT work for:
+
+T(n)=T(n-1)+1 :  Here we use expansion method
+
+Because this is NOT: aT(n/b)+f(n)
+
+Master Theorem does NOT work for:
+
+T(n)=T(n-1)+T(n-2) : Here we can use recursion tree method 
+
+(Fibonacci)
+
+--Because subproblem sizes are different. 
+
+
+
+Example: Merge Sort: T(n)=2T(n/2)+n
+
+Here:
+
+a = 2
+
+b = 2
+
+f(n) = n
+
+
+Example: Binary Search: T(n)=T(n/2)+1
+
+Here:
+
+a = 1
+
+b = 2
+
+f(n) = 1
+
+
+
+
+Note: Master Theorem always compares:
+
+f(n)
+
+with
+
+n^(log_b(a))
+
+
+Example: Merge Sort:
+
+a=2
+b=2
+
+Therefore:
+
+log₂(2)=1
+
+So:
+
+n^(log₂2) = n¹ = n
+
+--This becomes our reference value.
+
+Master Theorem Cases:
+--------------------
+
+There are 3 cases.
+
+CASE 1
+
+When:
+
+f(n)
+
+is smaller than:
+
+n^(log_b(a))
+
+Result:
+
+T(n)=Θ(n^(log_b(a)))
+
+
+--Recursion work dominates.
+--Current-level work is tiny.
+
+
+Example:
+
+T(n)=2T(n/2)+1
+
+Step 1
+
+a=2
+b=2
+
+
+Step 2
+
+n^(log₂2) = n
+
+
+Step 3:
+
+Compare:
+
+f(n)=1 with n
+
+Clearly:
+
+1 < n
+
+So:
+
+Case 1
+
+Answer: Θ(n)
+
+
+
+CASE 2
+
+When:
+
+f(n) = n^(log_b(a))
+
+Result:
+
+T(n) = Θ(n^(log_b(a)) log n)
+
+
+Example: Merge Sort
+
+T(n)=2T(n/2)+n
+
+Step 1
+
+a=2
+b=2
+
+Step 2
+
+n^(log₂2) = n
+
+Step 3
+
+Compare:
+
+f(n)=n with n
+
+Same.
+
+Therefore:
+
+Case 2
+
+Answer: Θ(n log n)
+
+
+
+CASE 3: 
+
+When:
+
+f(n) is larger than: n^(log_b(a))
+
+Result: T(n)=Θ(f(n))
+
+Current-level work dominates.
+Recursive work becomes relatively insignificant.
+
+
+Example:
+
+T(n)=2T(n/2)+n²
+
+Step 1
+
+a=2
+b=2
+
+Step 2
+
+n^(log₂2) = n
+
+Step 3
+
+Compare: n² with n
+
+Clearly:
+
+n² > n
+
+Case 3
+
+Answer: Θ(n²)
+
+
+
+Amortized Analysis:
+===================
+
+--Amortized Analysis is a technique used to find the average cost per operation over a sequence of operations.
+
+In simple words:
+
+--Some operations may be expensive, but they happen very rarely.
+
+--Amortized Analysis spreads that expensive cost over many cheap operations.
+
+--So, instead of looking at the worst-case cost of a single operation, we look at the cost of many operations together.
+
+
+
+Real-Life Example:
+
+
+--Imagine you are filling water bottles.
+
+Most of the time:
+
+Fill bottle -> 1 minute
+
+But occasionally:
+
+Need to clean the tank first -> 20 minutes
+
+If you fill 100 bottles:
+
+99 * 1 minute
++
+1 * 20 minutes
+=
+119 minutes
+
+Average cost:
+
+119 / 100 ≈ 1.19 minutes
+
+--Although one operation took 20 minutes, the average cost is still very small.
+
+--This is the idea behind amortized analysis.
+
+
+Consider Java's ArrayList.
+
+Initially:
+
+ArrayList<Integer> list = new ArrayList<>();
+
+Suppose capacity is:
+
+4
+
+Insertions
+
+[ ]
+[1]
+[1,2]
+[1,2,3]
+[1,2,3,4]
+
+
+All insertions take: O(1)
+
+--because we simply place the element.
+
+Now insert:
+
+5
+
+Current array is full:
+
+[1,2,3,4]
+
+ArrayList creates a larger array:
+
+[1,2,3,4,_,_,_,_]
+
+and copies all elements.
+
+Work done:
+
+Copy 4 elements
++
+Insert new element
+
+Cost: O(n)
+
+
+Does add() become O(n) ?
+
+No.
+
+Because resizing happens very rarely.
+
+Most insertions are:
+
+O(1)
+
+Only occasional insertions are:
+
+O(n)
+
+--When we average the cost across many insertions:
+
+Amortized Cost = O(1)
+
+
+--Amortized Analysis is a method of analyzing an algorithm where the total cost of a sequence of operations is averaged over all operations, guaranteeing an average cost per operation even if some individual operations are expensive.
 
 
 
