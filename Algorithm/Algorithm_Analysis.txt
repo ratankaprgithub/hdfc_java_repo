@@ -4769,13 +4769,13 @@ calling: countdown(3);
 Stack:
 
 -----------------
-|    countdown(0)      |
+| countdown(0)  |
 -----------------
-|    countdown(1)      |
+| countdown(1)  |
 -----------------
-|    countdown(2)      |
+| countdown(2)  |
 -----------------
-|    countdown(3)      |
+| countdown(3)  |
 -----------------
 
 
@@ -5086,13 +5086,27 @@ Space = O(n)
 Example 3: Binary Search
 
 
-int binarySearch(...)
-{
-    ...
+ public static int binarySearch(int[] arr, int low, int high, int target) {
 
-    return binarySearch(...half...);
-}
+        // Base Case
+        if (low > high) {
+            return -1;
+        }
 
+        int mid = low + (high - low) / 2;
+
+        if (arr[mid] == target) {
+            return mid;
+        }
+
+        // Search Left Half
+        if (target < arr[mid]) {
+            return binarySearch(arr, low, mid - 1, target);
+        }
+
+        // Search Right Half
+        return binarySearch(arr, mid + 1, high, target);
+    }
 
 
 --Every call reduces problem size by half.
@@ -5373,9 +5387,19 @@ Example: Merge Sort
 
 Pseudo Code:
 
-mergeSort(left)
-mergeSort(right)
-merge(left,right)
+
+public static void mergeSort(int[] arr, int left, int right) {
+
+    if(left >= right)
+        return;
+
+    int mid = (left + right) / 2;
+
+    mergeSort(arr, left, mid);
+    mergeSort(arr, mid + 1, right);
+
+    merge(arr, left, mid, right);
+}
 
 
 Recursive calls: 2
