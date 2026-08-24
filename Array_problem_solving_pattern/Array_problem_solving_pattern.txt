@@ -1,0 +1,3599 @@
+Arrays in Java:
+==============
+
+--For the basics of Arrays in Java, refer to the Day 3 class notes, where we covered:
+
+One-Dimensional Arrays
+Two-Dimensional Arrays
+Jagged Arrays
+Arrays of Objects
+Arrays Utility Class
+
+--We also discussed the limitations of arrays and implemented a custom Dynamic Array class as a simple simulation of Java's ArrayList.
+
+
+What is an Array?
+------------------
+
+--An Array is a collection of elements of the same data type stored in contiguous memory locations.
+
+int[] arr = {10, 20, 30, 40, 50};
+
+
+Memory Representation
+
+
+Value : 10   20   30   40   50
+Index :  0    1    2    3    4
+
+All values are stored continuously in memory.
+
+This allows very fast access to any element.
+
+
+
+Advantages:
+
+Fast access: index based
+Easy traversal
+Cache friendly
+
+
+
+Array Access is O(1):
+---------------------
+
+
+Example:
+
+System.out.println(arr[3]);
+
+--The JVM can directly calculate the memory location of the required element using its index.
+
+--No searching required.
+
+
+Example:
+
+arr[0]
+arr[50]
+arr[999]
+
+--All of the above operations take approximately the same amount of time.
+
+Therefore:
+
+Access Time Complexity = O(1)
+
+
+--This is one of the biggest advantages of Arrays.
+
+
+
+
+Traversing an Array:
+--------------------
+
+--Traversal means visiting every element of the array one by one.
+
+--There are several ways to traverse an array.
+
+
+
+Example 1: Using normal for loop
+
+int[] arr = {10,20,30,40,50};
+
+for(int i=0;i<arr.length;i++){
+    System.out.println(arr[i]);
+}
+
+
+
+Example2: Using enhanced for loop
+
+
+for(int i: arr){
+
+System.out.println(i);
+
+}
+
+
+Example3: Using a while loop
+
+int[] arr = {10, 20, 30, 40, 50};
+
+int i = 0;
+
+while(i < arr.length){
+    System.out.println(arr[i]);
+    i++;
+}
+
+
+
+Example4: Using a do-while loop:
+
+
+int[] arr = {10, 20, 30, 40, 50};
+
+int i = 0;
+
+do{
+    System.out.println(arr[i]);
+    i++;
+}while(i < arr.length);
+
+
+Example 5: Traversing in Reverse Order:
+
+int[] arr = {10, 20, 30, 40, 50};
+
+for(int i = arr.length - 1; i >= 0; i--){
+    System.out.println(arr[i]);
+}
+
+
+Example 6: Using Java Streams (Java 8+)
+
+
+import java.util.Arrays;
+
+int[] arr = {10, 20, 30, 40, 50};
+
+Arrays.stream(arr)
+      .forEach(System.out::println);
+
+
+Example 7: Using Arrays.toString() (Not Actual Traversal)
+
+int[] arr = {10, 20, 30, 40, 50};
+
+System.out.println(Arrays.toString(arr));
+
+
+Note: This is not actual traversal from the programmer's perspective.
+
+--Internally, Java traverses the array to generate the string representation, but we do not get access to individual elements.
+
+
+Example 8: Recursive Traversal
+
+public static void traverse(int[] arr, int index){
+
+    if(index == arr.length){
+        return;
+    }
+
+    System.out.println(arr[index]);
+
+    traverse(arr, index + 1);
+}
+
+Calling:
+
+traverse(arr, 0);
+
+
+
+
+Best Overall Choice:
+
+1. Normal for Loop:
+
+for(int i = 0; i < arr.length; i++) {
+    System.out.println(arr[i]);
+}
+
+Because: 
+
+--Gives access to both index and value
+--Can traverse forward or backward
+--Can modify elements
+--Most common in DSA and interviews
+--No extra memory
+
+
+
+2. Best for Read-Only Traversal: 
+
+Enhanced for-each
+
+
+for(int value : arr) {
+    System.out.println(value);
+}
+
+Advantages:
+
+Cleaner syntax
+Less chance of index-related bugs
+
+Limitation:
+
+for(int value : arr){
+    value = value * 2; // Does not modify array
+}
+
+--The array remains unchanged.
+--Use it when you only want to read values.
+
+
+3. Worst Choice
+
+
+Recursion
+
+traverse(arr, 0);
+
+Problems:
+
+--Uses extra call stack memory: O(n)
+--Risk of StackOverflowError for large arrays
+--Slower than loops
+--No advantage over iterative solutions
+
+
+
+4. For Best Utitlity 
+
+Arrays.toString(arr);
+
+--Useful for debugging and quick visualization.
+
+
+
+Real-Life Example:
+-------------------
+
+
+--Suppose HDFC Life stores policy premiums in an array:
+
+
+int[] policies = {5000,7000,8000,12000};
+
+To calculate total premium:
+
+int total = 0;
+
+for(int amount : policies){
+    total += amount;
+}
+
+--Traversal is required whenever we need to calculate:
+
+Sum
+Average
+Maximum
+Minimum
+Count
+Search Operations
+
+
+
+
+The Biggest Limitation of Arrays:
+--------------------------------
+
+
+--Arrays are fast.
+
+--However, arrays are not flexible because their size is fixed once created.
+
+
+Example:
+
+
+If we have:
+
+int[] arr = {10,20,30,40,50};
+
+then the array length is fixed at 5.
+
+Index : 0   1   2   3   4
+Value : 10  20  30  40  50
+
+--There is no extra space available to store another element.
+
+If you try:
+
+arr[5] = 60;
+
+you will get:
+
+ArrayIndexOutOfBoundsException
+
+--because valid indexes are only 0 to 4.
+
+
+So how do we insert 25?
+
+
+
+Inserting an Element into a Fixed-Size Array:
+---------------------------------------------
+
+--Since arrays have a fixed size, insertion requires creating a new array with one extra space.
+
+int[] newArr = new int[arr.length + 1];
+
+
+Case 1: Insert at Beginning
+
+Suppose:
+
+10 20 30 40 50
+
+Insert:
+
+5
+
+at the beginning.
+
+Expected Output:
+
+5 10 20 30 40 50
+
+
+Step 1:
+
+--Create a new array of size n + 1.
+
+Step 2:
+
+--Place the new element at index 0.
+
+Step 3:
+
+--Shift all old elements one position to the right.
+
+
+Code:
+
+int[] arr = {10,20,30,40,50};
+int value = 5;
+
+int[] newArr = new int[arr.length + 1];
+
+newArr[0] = value;
+
+for(int i=0;i<arr.length;i++){
+    newArr[i+1] = arr[i];
+}
+
+
+Output:
+
+5 10 20 30 40 50
+
+Time Complexity: O(n)
+
+Space Complexity: O(n)
+
+
+
+Case 2: Insert at End
+
+Suppose:
+
+10 20 30 40 50
+
+Insert:
+
+60
+
+at the end.
+
+Expected Output:
+
+10 20 30 40 50 60
+
+
+
+Step 1:
+
+--Create a new array of size n + 1.
+
+Step 1
+
+--Copy all existing elements.
+
+Step 2
+
+--Place the new value at the last index.
+
+
+
+Code:
+
+
+int[] arr = {10,20,30,40,50};
+int value = 60;
+
+int[] newArr = new int[arr.length+1];
+
+for(int i=0;i<arr.length;i++){
+    newArr[i] = arr[i];
+}
+
+newArr[arr.length] = value;
+
+
+
+Output:
+
+10 20 30 40 50 60
+
+Time Complexity: O(n)
+
+Space Complexity: O(n)
+
+
+
+Case 3: Insert at a Specific Index
+
+
+Suppose:
+
+10 20 30 40 50
+
+Insert:
+
+25
+
+at index:
+
+2
+
+Expected Output:
+
+10 20 25 30 40 50
+
+
+
+Implement the following method:
+
+public static insertElementAtIndex(int[] arr, int value, int index)
+
+
+Step 1:
+
+--Create a new array of size n + 1.
+
+Step 2:
+
+--Copy elements before the insertion position.
+
+for(int i=0;i<position;i++){
+    newArr[i] = arr[i];
+}
+
+
+Step 3:
+
+--Insert the new value.
+
+newArr[position] = value;
+
+
+Step 4:
+
+Copy remaining elements one position ahead.
+
+for(int i=position;i<arr.length;i++){
+    newArr[i+1] = arr[i];
+}
+
+
+Solution:
+
+
+
+public static int[] insertElementAtIndex(int[] arr,int value,int index){
+
+    int[] newArr = new int[arr.length+1];
+
+    for(int i=0;i<index;i++){
+        newArr[i] = arr[i];
+    }
+
+    newArr[index] = value;
+
+    for(int i=index;i<arr.length;i++){
+        newArr[i+1] = arr[i];
+    }
+
+    return newArr;
+}
+
+
+
+
+Deleting an Element from an Array:
+==================================
+
+--Arrays should not contain gaps.
+
+Suppose:
+
+10 20 30 40 50
+
+Delete:
+
+30
+
+After deletion:
+
+10 20 _ 40 50
+
+--The gap must be filled by shifting elements to the left.
+
+
+Case 1: Delete from Beginning
+
+Suppose:
+
+10 20 30 40 50
+
+Delete:
+
+10
+
+Expected Output:
+
+20 30 40 50
+
+
+Step1: 
+
+--Create a new array of size n - 1.
+
+
+Step2: 
+
+--Copy all elements except the first.
+
+
+int[] arr = {10,20,30,40,50};
+
+int[] newArr = new int[arr.length-1];
+
+for(int i=1;i<arr.length;i++){
+    newArr[i-1] = arr[i];
+}
+
+
+
+Time Complexity: O(n)
+Space Complexity: O(n)
+
+
+Case 2: Delete from End
+
+
+Suppose:
+
+10 20 30 40 50
+
+Delete:
+
+50
+
+Expected Output:
+
+10 20 30 40
+
+
+Step1: 
+
+--Create a new array of size n - 1.
+
+Step2: 
+
+--Simply copy all elements except the last.
+
+
+int[] arr = {10,20,30,40,50};
+
+int[] newArr = new int[arr.length-1];
+
+for(int i=0;i<arr.length-1;i++){
+    newArr[i] = arr[i];
+}
+
+
+Output:
+
+10 20 30 40
+
+Time Complexity: O(n)
+
+Space Complexity: O(n)
+
+
+
+Case 3: Delete from a Specific Index
+
+Suppose:
+
+10 20 30 40 50
+
+Delete element at index:
+
+2
+
+Expected Output:
+
+10 20 40 50
+
+
+Implement the following method:
+
+
+public static int[] deleteAtIndex(int[] arr,int index)
+
+
+
+
+Step1: 
+
+--Create a new array of size n - 1.
+
+Step 2:
+
+--Copy elements before the deletion index.
+
+for(int i=0;i<index;i++){
+    newArr[i] = arr[i];
+}
+
+
+Step 2
+
+--Skip the deleted element and copy remaining elements.
+
+
+for(int i=index+1;i<arr.length;i++){
+    newArr[i-1] = arr[i];
+}
+
+
+final solution:
+---------------
+
+public static int[] deleteAtIndex(int[] arr,int index){
+
+    int[] newArr = new int[arr.length-1];
+
+    for(int i=0;i<index;i++){
+        newArr[i] = arr[i];
+    }
+
+    for(int i=index+1;i<arr.length;i++){
+        newArr[i-1] = arr[i];
+    }
+
+    return newArr;
+}
+
+
+
+
+Note: For deletion, creating another array is not always required.
+
+There are actually two approaches for deletion from an array:
+
+1. The above approach, by creating a new array.
+
+2. Delete In-Place (No New Array)
+
+--With Delete In-Place the space complexity will become O(1)
+
+--In a fixed-size Java array, you cannot truly remove an element and reduce the array's length.
+
+--because array length is immutable.
+
+You can only:
+
+--Shift elements and maintain a logical size
+
+--That's exactly why classes like ArrayList were introduced. They hide all this resizing logic from the programmer.
+
+--This is the technique used internally by many array-based data structures.
+
+
+Example:
+
+
+int[] arr = {10,20,30,40,50};
+
+int size = 5;
+
+int index = 2; // delete 30
+
+
+Shift elements to the left:
+
+for(int i=index;i<size-1;i++){
+    arr[i] = arr[i+1];
+}
+
+size--;
+
+
+Physical array becomes:
+
+10 20 40 50 50
+
+But logically:
+
+10 20 40 50
+
+because size = 4.
+
+Printing:
+
+for(int i=0;i<size;i++){
+    System.out.print(arr[i] + " ");
+}
+
+
+
+Output:
+
+10 20 40 50
+
+Complexity
+
+Time  : O(n)
+Space : O(1)
+
+
+
+
+
+Student task:
+--------------
+
+1. Update an Element: 
+
+--initialize an int array with 5 elements:
+
+--ask the user to pass the index number to get the element.
+
+--if the index is out of bound show the error message, otherwise print the element at that index.
+
+
+
+2. print the array in reverse order.
+
+
+3. find the sum of all the elements inside an array
+
+4. find the maximum and minimum element inside an array
+
+5. count the odd and even number inside an array.
+
+6. Replace All Negative Numbers With 0
+
+7. Find Second Largest Element from an unsorted array ?
+
+8. Search an element inside an array using Linear search and by using binary serach
+
+
+
+
+Find Second Largest Element:
+
+Solution
+---------
+
+int largest = Integer.MIN_VALUE;
+int secondLargest = Integer.MIN_VALUE;
+
+for(int num : arr){
+
+    if(num > largest){
+
+        secondLargest = largest;
+        largest = num;
+    }
+    else if(num > secondLargest && num != largest){
+
+        secondLargest = num;
+    }
+}
+
+System.out.println(secondLargest);
+
+
+Complexity:
+
+Time  : O(n)
+Space : O(1)
+
+
+
+Student Home Work:
+
+1D Array Good Problems:
+
+1. Find Maximum and Minimum
+2. Reverse the Array
+3. Left Rotate by K
+4. Frequency of Elements (0 to n-1)
+5. Move Zeros to End
+6. Find Second Largest Element
+7. Check if Array is Palindrome
+
+
+
+2D array representation:
+=========================
+
+
+A 2D Array is an array of arrays.
+
+It is used to store data in the form of rows and columns, similar to a table or matrix.
+
+Example:
+
+int[][] matrix = {
+    {10, 20, 30},
+    {40, 50, 60},
+    {70, 80, 90}
+};
+
+
+Number of Rows = 3
+Number of Columns = 3
+Total Elements = 9
+
+
+
+Printing all the elements in the matrix form:
+---------------------------------------------
+
+
+for(int row = 0; row < matrix.length; row++) {
+
+    for(int col = 0; col < matrix[row].length; col++) {
+
+        System.out.print(matrix[row][col] + " ");
+    }
+
+    System.out.println();
+}
+
+
+Using enhanced for loop:
+
+
+for(int[] row : matrix) {
+
+    for(int value : row) {
+
+        System.out.print(value + " ");
+    }
+
+    System.out.println();
+}
+
+
+Time Complexity = O(R × C)
+
+
+
+Printing the elements column wise:
+----------------------------------
+
+
+--Normally, we print row by row:
+
+10 20 30
+40 50 60
+70 80 90
+
+--For column-wise traversal, we visit one column completely before moving to the next column.
+
+
+for(int col = 0; col < matrix[0].length; col++) {
+
+    for(int row = 0; row < matrix.length; row++) {
+
+        System.out.print(matrix[row][col] + " ");
+    }
+
+    System.out.println();
+}
+
+
+
+Student Home Work:
+
+2D Array Good Problems:
+
+1. Input and Print 2D Array
+2. Print Transpose of Matrix
+3. Sum of All Elements
+4. Row-wise and Column-wise Sum
+5. Search an Element in Matrix
+6. Diagonal Sum of Square Matrix
+7. Rotate Matrix by 90 Degrees Clockwise
+8. Spiral Order Print
+10. Set Matrix Zero
+
+
+
+Transpose of Matrix:
+-------------------
+
+--The transpose of a matrix is obtained by converting all rows into columns and all columns into rows.
+
+Example
+
+Original Matrix:
+
+1  2  3
+4  5  6
+
+Transpose Matrix:
+
+1  4
+2  5
+3  6
+
+
+Rotate Matrix by 90 Degrees Clockwise:
+--------------------------------------
+
+Original Matrix:
+
+1 2 3
+4 5 6
+7 8 9
+
+After 90° Clockwise Rotation:
+
+7 4 1
+8 5 2
+9 6 3
+
+
+
+Two Pointer technique:
+======================
+
+--In Java, a pointer simply means an index variable.
+
+--The Two Pointer Technique is a problem-solving approach where we use two variables (pointers/indexes) to traverse a data structure, usually an array or string.
+
+--Instead of using nested loops, we often use two pointers to process data more efficiently.
+
+--Often reducing the time complexity from O(n2) to O(n).
+
+
+Example
+
+int[] arr = {10,20,30,40,50};
+
+int left = 0;
+int right = arr.length - 1;
+
+Here:
+
+left  -> points to first element
+right -> points to last element
+
+Visualization:
+
+Index : 0   1   2   3   4
+Value :10  20  30  40  50
+        ↑              ↑
+      left           right
+
+
+Consider this problem:
+
+--Find if a sorted array contains two numbers whose sum is 70.
+
+
+int[] arr = {10,20,30,40,50};
+
+
+
+Brute Force Approach:
+--------------------
+
+--Check every pair.
+
+for(int i=0;i<arr.length;i++){
+
+    for(int j=i+1;j<arr.length;j++){
+
+        if(arr[i] + arr[j] == 70){
+            System.out.println("Found");
+        }
+    }
+}
+
+
+Time Complexity = O(n²)
+
+--For large arrays, this becomes slow.
+
+
+
+Idea Behind Two Pointers:
+-------------------------
+
+--Instead of checking every pair:
+
+10 20 30 40 50
+ ↑           ↑
+left      right
+
+Check:
+
+10 + 50 = 60
+
+Too small?
+
+--Move left forward.
+
+20 + 50 = 70
+
+Found.
+
+--Only a few comparisons were needed.
+
+Complexity: O(n)
+
+--Much better than O(n²).
+
+
+When Should We Use Two Pointers?
+--------------------------------
+
+Common clues:
+
+1. Sorted Array
+
+Examples:
+
+int[] arr = {1,3,5,7,9,11};
+
+
+2. Pair Problems
+
+Examples:
+
+Pair Sum
+Pair Difference
+Closest Pair
+
+
+
+3. Reversing
+
+Examples:
+
+Reverse Array
+Reverse String
+
+
+4. Palindrome Problems
+
+Examples:
+
+Check palindrome string
+Check palindrome array
+
+5. Removing Duplicates
+
+Examples:
+
+Remove duplicates from sorted array
+
+
+Types of Two Pointer Technique:
+===============================
+
+--There are two major patterns.
+
+Type 1: Opposite Direction
+----------------------------
+
+--Pointers start from opposite ends.
+
+--Usually used when the array is sorted
+
+
+
+left        right
+ ↓           ↓
+10 20 30 40 50
+
+Usually used for:
+
+Pair Sum
+Reverse Array
+Palindrome
+Container With Most Water
+
+
+
+Type 2: Same Direction
+----------------------
+
+--Both pointers move from start to end, useful in sliding window or prefix sum type problems.
+
+slow
+ ↓
+fast
+ ↓
+ 10 20 30 40 50
+
+--Usually used for:
+
+Remove Duplicates
+Move Zeroes
+Partitioning Problems
+Subarray problems
+Longest Substring
+
+
+
+Misconceptions:
+---------------
+
+--"Two pointers only work on sorted arrays" - False. It works best for opposite direction problems if the array is sorted. For same direction, array need not be sorted (e.g., sliding window, subarrays).
+
+
+Problem 1: Reverse an Array:
+----------
+
+--Reverse the array without using another array.
+
+  public static void reverse(int[] arr)
+
+
+IDEA:
+
+[10,20,30,40,50]
+
+--Swap first and last element.
+
+10 <--> 50
+20 <--> 40
+
+Move both pointers toward center.
+
+
+Solution:
+
+ public static void reverse(int[] arr){
+
+        int left = 0;
+        int right = arr.length - 1;
+
+        while(left < right){
+
+            int temp = arr[left];
+            arr[left] = arr[right];
+            arr[right] = temp;
+
+            left++;
+            right--;
+        }
+    }
+
+
+Problem 2: Check Palindrome String
+
+--A palindrome reads the same from both directions.
+
+Examples:
+
+madam
+level
+racecar
+
+
+public static boolean isPalindrome(String str)
+
+
+IDEA:
+
+Compare:
+
+First character
+Last character
+
+If equal:
+
+Move inward
+
+If not equal:
+
+Not palindrome
+
+
+Solution:
+---------
+
+ public static boolean isPalindrome(String str){
+
+        int left = 0;
+        int right = str.length() - 1;
+
+        while(left < right){
+
+            if(str.charAt(left) != str.charAt(right)){
+                return false;
+            }
+
+            left++;
+            right--;
+        }
+
+        return true;
+    }
+
+
+
+Problem 3: Pair Sum in Sorted Array:
+
+--Find if there exist two numbers in a sorted array that sum up to the target.
+
+Input: int[] arr = {10,20,30,40,50}, target = 70
+
+Output: true (20 + 50)
+
+public static boolean pairSum(int[] arr,int target)
+
+
+
+Solution:
+
+public static boolean pairSum(int[] arr,int target){
+
+    int left = 0;
+    int right = arr.length - 1;
+
+    while(left < right){
+
+        int sum = arr[left] + arr[right];
+
+        if(sum == target){
+            return true;
+        }
+        else if(sum < target){
+            left++;
+        }
+        else{
+            right--;
+        }
+    }
+
+    return false;
+}
+
+
+Complexity:
+
+Time  : O(n)
+Space : O(1)
+
+Without Two Pointers: O(n²)
+
+
+
+Binary Search using 2 pointer:
+------------------------------
+
+--Binary Search also uses a form of two pointers.
+
+
+The two pointers are:
+
+low
+high
+
+--These pointers represent the current search range.
+
+Example:
+
+int[] arr = {10,20,30,40,50,60,70,80,90};
+
+int target = 60;
+
+Initially:
+
+Index : 0  1  2  3  4  5  6  7  8
+Value :10 20 30 40 50 60 70 80 90
+        |                       |
+       low                     high
+     
+
+
+Example:
+
+
+public static int binarySearch(int[] arr, int target) {
+
+    int low = 0;
+    int high = arr.length - 1;
+
+    while(low <= high) {
+
+        int mid = low + (high - low) / 2;
+
+        if(arr[mid] == target) {
+            return mid;
+        }
+        else if(arr[mid] < target) {
+            low = mid + 1;
+        }
+        else {
+            high = mid - 1;
+        }
+    }
+
+    return -1;
+}
+
+
+
+Note: Even though Binary search uses a two pointer technique (2 indexes low and high) to define a search range, However, in DSA, when people say "Two Pointer Technique", they usually mean:
+
+left/right moving toward each other
+or
+slow/fast moving together
+
+-Binary Search uses two boundary indexes (low and high).
+
+--But in DSA interviews, Binary Search and Two Pointer Technique are usually treated as different patterns.
+
+Problem 4: Separate 0s and 1s
+------------------------------
+
+
+Input:
+
+[0,1,0,1,1,0,0,1]
+
+Output:
+
+[0,0,0,0,1,1,1,1]
+
+
+Idea:
+
+--Left pointer searches for 1: left should stop on a wrong 1.
+
+--Right pointer searches for 0: right should stop on a wrong 0.
+
+When found: Swap
+
+
+public static void separate(int[] arr)
+
+
+
+
+
+Solution:
+---------
+
+ public static void separate(int[] arr){
+
+        int left = 0;
+        int right = arr.length - 1;
+
+        while(left < right){
+
+            while(left < right && arr[left] == 0){
+                left++;
+            }
+
+            while(left < right && arr[right] == 1){
+                right--;
+            }
+
+            if(left < right){ //prevents this unnecessary swap.
+
+                int temp = arr[left];
+                arr[left] = arr[right];
+                arr[right] = temp;
+
+                left++;
+                right--;
+            }
+        }
+    }
+
+
+
+Time Complexity = O(n)
+
+Space Complexity = O(1)
+
+
+Problem 5: Given a sorted array, remove duplicates in-place and keep only unique elements.
+
+Input
+
+int[] arr = {1,1,2,2,2,3,4,4,5};
+
+Output
+
+1 2 3 4 5
+
+
+We use:
+
+slow pointer
+fast pointer
+
+Responsibilities: 
+
+slow
+
+--Points to the last unique element.
+
+fast
+
+--Scans the array.
+
+Example
+
+int[] arr = {1,1,2,2,2,3,4,4,5};
+
+Initial:
+
+1 1 2 2 2 3 4 4 5
+S F
+
+
+
+
+Step 1
+
+Move fast.
+
+1 1 2 2 2 3 4 4 5
+S F
+
+Compare:
+
+arr[slow] == arr[fast]
+
+
+1 == 1
+
+Duplicate found. 
+
+Do nothing.
+
+
+
+Step 2
+
+Move fast.
+
+1 1 2 2 2 3 4 4 5
+S   F
+
+Compare:
+
+1 != 2
+
+New unique element found.
+
+Move slow forward.
+
+slow++;
+
+
+Copy:
+
+arr[slow] = arr[fast];
+
+Array becomes:
+
+1 2 2 2 2 3 4 4 5
+  S
+      F
+
+
+Step 3
+
+Fast moves.
+
+1 2 2 2 2 3 4 4 5
+  S F
+
+Duplicate.
+
+Ignore.
+
+
+Step 4
+
+Fast moves.
+
+1 2 2 2 2 3 4 4 5
+  S   F
+
+Duplicate.
+
+Ignore.
+
+
+Step 5
+
+Fast reaches 3.
+
+1 2 2 2 2 3 4 4 5
+  S       F
+
+New value.
+
+Move slow.
+
+1 2 3 2 2 3 4 4 5
+    S     F
+
+
+Continue similarly.
+
+Final array:
+
+1 2 3 4 5 _ _ _ _
+
+Unique count:
+
+--slow will point to the last index 
+
+Final element count = slow+1;
+
+
+
+
+Example:
+
+public static int removeDuplicates(int[] arr){
+
+    if(arr.length == 0){
+        return 0;
+    }
+
+    int slow = 0;
+
+    for(int fast = 1; fast < arr.length; fast++){
+
+        if(arr[slow] != arr[fast]){
+
+            slow++;
+
+            arr[slow] = arr[fast];
+        }
+    }
+
+    return slow + 1;
+}
+
+
+
+
+Student Task: (Same Direction pointer)
+
+1. Move Zeroes to the End
+
+--Given an array, move all zeroes to the end while maintaining the relative order of the non-zero elements.
+
+Example
+Input:
+
+[1,0,2,0,3,0,4]
+
+Output:
+
+[1,2,3,4,0,0,0]
+
+
+Important Points:
+
+--All non-zero elements should remain in their original order.
+
+--Do not use another array.
+
+--Perform the operation in-place.
+
+
+
+2. Pair Sum in Sorted Array (Return Indices)
+
+
+Problem Statement:
+
+--Given a sorted array and a target value, return the indices of two numbers whose sum equals the target.
+
+--Use the 2 pointer approach.
+
+Example
+
+Input:
+
+int[] arr = {10,20,30,40,50};
+
+target = 70;
+
+Output:
+
+[1,4]
+
+Because:
+
+arr[1] + arr[4]
+
+20 + 50 = 70
+
+
+Implement the following method.
+
+public static int[] pairSumIndices(int[] arr, int target)
+
+
+
+
+Subarray:
+==========
+
+--A subarray is a contiguous (continuous) part of an array.
+
+
+Important points:
+
+--Elements must be adjacent.
+--Order remains the same.
+--A subarray is defined by a start index and an end index.
+--Every subarray occupies a continuous range of indexes.
+
+Example:
+
+int[] arr = {1, 2, 3};
+
+
+Possible subarrays:
+
+[1]
+[2]
+[3]
+
+[1,2]
+[2,3]
+
+[1,2,3]
+
+Invalid Subarray:
+
+[1,3]
+
+Because 2 is skipped.
+
+--A subarray must be continuous.
+
+
+
+Total Number of Subarrays:
+
+--For an array of length n: ==> n*(n+1)/2 subarrays.
+
+Example:
+
+Array: [1, 2, 3] ->  n=3
+
+Total subarrays = 3*(3+1)/2 = 6
+
+
+
+
+Subsequence:
+-----------
+
+--Elements may not be contiguous, but the order is preserved.
+
+Example:
+
+For arr = [1, 2, 3]
+
+Possible subsequences:
+
+[], [1], [2], [3]
+
+[1,2], [1,3], [2,3]
+
+[1,2,3]
+
+--All subarrays are subsequences, but not all subsequences are subarrays.
+
+
+
+
+
+Subset:
+-------
+
+--A subset is any combination of elements from a set or array without considering the order and regardless of their position.
+
+--Order does NOT matter
+
+--Indexes do NOT matter
+
+
+Example:
+
+For arr = [1, 2, 3]
+
+Subsets:
+
+{}, {1}, {2}, {3}
+
+{1,2}, {1,3}, {2,3}
+
+{1,2,3}
+
+
+--In DSA problems, subsets and subsequences sometimes overlap, but mathematically, they are different. 
+
+--Total subsets of size n is 2^n
+
+
+
+
+
+
+Q/- For a given array of size (n) how many subarrays are possible ?
+
+n=5;
+
+arr=[10,20,30,40,50]
+
+
+Length 1: [10], [20], [30], [40], [50] == 5
+
+Length 2: [10,20], [20,30], [30,40], [40,50] ==4
+
+Length 3: [10,20,30],[20,30,40], [30,40,50] ==3
+
+Length 4: [10,20,30,40], [20,30,40,50] ==2
+
+Length 5: [10,20,30,40,50] ==1
+
+
+Total subarrays = n*(n+1)/2
+
+= 5*(5+1)/2
+
+= 5×6/2 = 15
+
+
+
+Number of Subarrays of Length K:
+--------------------------------
+
+Formula: 
+
+n - k + 1
+
+
+Example:
+
+n = 5
+k = 2
+
+5 - 2 + 1 = 4
+
+
+Problem 1: Printing all the subarrays(Brute force):
+---------------------------------------------------
+
+public static void printSubArrays(int[] arr)
+
+
+
+Approach
+
+Choose:
+
+Start Index
+End Index
+Print elements between them
+
+Solution:
+
+
+public static void printSubArrays(int[] arr){
+
+    for(int start=0; start<arr.length; start++){
+
+        for(int end=start; end<arr.length; end++){
+
+            for(int k=start; k<=end; k++){
+                System.out.print(arr[k] + " ");
+            }
+
+            System.out.println();
+        }
+    }
+}
+
+
+
+For Array: {1, 2, 3};
+
+Output:
+
+1
+1 2
+1 2 3
+2
+2 3
+3
+
+
+Time Complexity : O(n³)
+Space Complexity : O(1)
+
+
+Start Loop ->  O(n)
+
+End Loop  -> O(n)
+
+Printing  -> O(n)
+
+Therefore:
+
+O(n × n × n)
+
+= O(n³)
+
+
+
+Problem 2: Count Total Subarrays:
+---------------------------------
+
+Input:
+
+{10,20,30,40}
+
+Output:
+
+10
+
+n*(n+1)/2 = 4*5/2 = 10
+
+Brute Force Solution:
+----------------------
+
+public static int countSubarrays(int[] arr){
+
+    int count = 0;
+
+    for(int start=0; start<arr.length; start++){
+
+        for(int end=start; end<arr.length; end++){
+
+            count++;
+        }
+    }
+
+    return count;
+}
+
+
+Time Complexity: O(n²)
+
+
+
+Better Mathematical Solution:
+
+public static int countSubarrays(int[] arr){
+
+    int n = arr.length;
+
+    return n * (n + 1) / 2;
+}
+
+
+Time Complexity: O(1)
+
+
+
+
+
+
+
+
+Problem 3: Find Sum of Every Subarray
+
+Sum of Every Subarray : Brute force
+-----------------------
+
+--This is one of the most important subarray problems.
+
+
+
+    public static void printSubArraySums(int[] arr) {
+
+        for (int start = 0; start < arr.length; start++) {
+            
+            for (int end = start; end < arr.length; end++) {
+                
+                int sum = 0;
+
+                for (int k = start; k <= end; k++) {
+                    System.out.print(arr[k] + " ");
+                    sum += arr[k];
+                }
+
+                System.out.println("Sum is: " + sum);
+            }
+        }
+    }
+
+
+
+Output:
+
+1 Sum is: 1
+1 2 Sum is: 3
+1 2 3 Sum is: 6
+2 Sum is: 2
+2 3 Sum is: 5
+3 Sum is: 3
+
+
+
+Here, For every subarray:
+
+First loop chooses starting index.
+Second loop chooses ending index.
+Third loop calculates the sum of that subarray.
+
+
+Time complexity:  O(n³)
+Space Complexity : O(1)
+
+
+Optimized Brute force Approach: 
+-------------------------------
+
+--Instead of recalculating the sum every time, we keep extending the subarray and update the sum incrementally.
+
+
+
+public static void printSubArraySums(int[] arr){
+
+    for(int start = 0; start < arr.length; start++){
+
+        int sum = 0;
+
+        for(int end = start; end < arr.length; end++){
+
+            sum += arr[end];
+
+            System.out.println(sum);
+        }
+    }
+}
+
+
+
+For Array: {1,2,3}
+
+Output:
+
+1
+3
+6
+2
+5
+3
+
+
+Complexity:
+
+Time Complexity : O(n²)
+Space Complexity : O(1)
+
+
+
+Why it is faster ?:
+-----------------
+
+Consider:
+
+[1]
+[1,2]
+[1,2,3]
+[1,2,3,4]
+
+Brute Force:
+
+1
+1+2
+1+2+3
+1+2+3+4
+
+The same elements are added again and again.
+
+
+Optimized Version:
+
+sum = 1
+sum = sum + 2
+sum = sum + 3
+sum = sum + 4
+
+Each element is added only once while extending the window.
+
+-- We are reusing a previously computed result:
+-- Instead of recomputing the entire subarray sum.
+
+Note: You can think of it as using a DP-like idea, but it is usually not classified as Dynamic Programming. 
+
+
+Q/- Why it is NOT usually called DP:
+
+Dynamic Programming typically involves:
+
+Defining states.
+Finding a recurrence relation.
+Storing solutions to subproblems.
+Reusing those stored solutions multiple times.
+
+
+
+
+
+Maximum Subarray Sum (Brute Force)
+-----------------------------------
+
+Problem:
+
+--Find the contiguous subarray having the largest sum.
+
+Example:
+
+
+int[] arr = {-2,1,-3,4,-1,2,1,-5,4};
+
+
+Answer: 6
+
+Subarray: [4,-1,2,1]
+
+
+
+Code: 
+
+
+public static int maxSubArrayBrute(int[] arr){
+
+    int result = Integer.MIN_VALUE;
+
+    for(int start=0; start<arr.length; start++){
+
+        int sum = 0;
+
+        for(int end=start; end<arr.length; end++){
+
+            sum += arr[end];
+
+            result = Math.max(result, sum);
+        }
+    }
+
+    return result;
+}
+
+
+Complexity:
+
+Time Complexity : O(n²)
+Space Complexity : O(1)
+
+
+
+Kadane's Algorithm (Most Important):
+------------------------------------
+
+Used to find:
+
+Maximum Sum Subarray in: O(n)
+
+public static int maxSubArray(int[] arr){
+
+    int currentSum = 0;
+    int maxSum = Integer.MIN_VALUE;
+
+    for(int num : arr){
+
+        currentSum += num;
+
+        maxSum = Math.max(maxSum, currentSum);
+
+        if(currentSum < 0){
+            currentSum = 0;  // reset currentSum to 0, Whenever the running sum becomes too bad, we should throw it away and start fresh.
+        }
+    }
+
+    return maxSum;
+}
+
+
+
+Time Complexity : O(n)
+Space Complexity : O(1)
+
+
+
+Student task:
+--------------
+
+Problem Statement: Use the kadane algoritm:
+
+--Given an integer array, find the contiguous subarray having the maximum sum.
+
+Print:
+
+The maximum sum.
+The subarray that produces this maximum sum.
+
+
+
+Sliding Window Technique:
+=========================
+
+What is Sliding Window?
+
+--Imagine you are looking through a train window.
+
+The train window has a fixed size.
+
+As the train moves forward:
+
+One scenery goes out of the window.
+One new scenery comes into the window.
+
+--You don't need to look at everything again from the beginning.
+
+
+You simply:
+
+Remove the old thing.
+Add the new thing.
+
+This idea is called the Sliding Window Technique.
+
+
+Real Life Analogy:
+-----------------
+
+--Suppose there are students sitting in a row:
+
+[10, 20, 30, 40, 50, 60]
+
+--And your camera can capture only 3 students at a time.
+
+Window-1:
+
+[10, 20, 30]
+
+--Move camera one step right:
+
+[20, 30, 40]
+
+Move again:
+
+[30, 40, 50]
+
+Move again:
+
+[40, 50, 60]
+
+--The camera is the sliding window.
+
+
+
+Q/- Why Do We Need Sliding Window?
+
+--Many problems which involve:
+
+Subarrays
+Substrings
+Continuous elements
+
+Examples:
+
+Maximum sum subarray
+Minimum sum subarray
+Longest substring
+Count distinct elements
+Find anagrams
+Find longest unique substring
+
+--Instead of recalculating everything repeatedly, Sliding Window helps us reuse previous work.
+
+--Sliding Window is primarily used for subarray and substring problems, or any problem involving a continuous range of elements.
+
+Rule: If the problem talks about a continuous segment, think about Sliding Window.
+
+
+Example:
+
+Maximum sum subarray of size k
+
+Minimum sum subarray of size k
+
+Count distinct elements in every window of size k
+
+Longest substring without repeating characters
+
+Longest subarray with sum k
+
+
+
+
+
+
+The Main Problem:
+
+Suppose:
+
+int[] arr = {1,2,3,4,5,6};
+
+Find sum of every subarray of size 3.
+
+Possible windows:
+
+[1,2,3]
+[2,3,4]
+[3,4,5]
+[4,5,6]
+
+
+A beginner usually does:
+
+Calculate first window: 1+2+3
+
+Calculate second window: 2+3+4
+
+Calculate third window: 3+4+5
+
+Calculate fourth window: 4+5+6
+
+
+Notice:
+
+2 and 3 are being added repeatedly.
+
+3 and 4 are being added repeatedly.
+
+4 and 5 are being added repeatedly.
+
+Lots of unnecessary work.
+
+Sliding Window Idea
+
+Instead of recalculating everything:
+
+Suppose
+
+Window 1
+
+1 + 2 + 3 = 6
+
+Move window right
+
+New window:
+
+2 + 3 + 4
+
+We already know:
+
+Previous Sum = 6
+
+So:
+
+New Sum 
+= 
+Previous Sum
+  - Outgoing Element
+  + Incoming Element
+
+= 6 - 1 + 4
+= 9
+
+
+Next window:
+
+3 + 4 + 5
+
+= 9 - 2 + 5
+= 12
+
+Next:
+
+4 + 5 + 6
+
+= 12 - 3 + 6
+= 15
+
+--No need to calculate from scratch.
+
+
+
+Types of Sliding Window:
+========================
+
+
+There are 2 major types:
+
+1. Fixed Size Window:
+---------------------
+
+--Window size is already given.
+
+Example:
+
+Find maximum sum subarray of size k.
+
+Here:
+
+k = 4
+
+--Window size never changes.
+
+
+
+Examples:
+
+Maximum sum subarray of size K
+Minimum sum subarray of size K
+Average of every window of size K
+Count distinct elements in every window of size K
+
+
+
+2. Variable Size Window:
+------------------------
+
+--Window size is NOT given.
+
+--We need to discover it.
+
+Examples:
+
+Longest substring without repeating characters
+Smallest subarray with sum >= X
+Longest subarray with sum <= K
+Longest substring containing K unique characters
+
+Window keeps:
+
+Expanding
+Shrinking
+Expanding
+Shrinking
+
+dynamically.
+
+
+
+Advantages of Sliding Window:
+----------------------------
+
+
+Without Sliding Window
+
+Many problems:
+
+O(N²)
+O(N*K)
+O(N³)
+
+With Sliding Window
+
+Usually become:
+
+O(N)
+
+or
+
+O(N log N)
+
+
+
+
+Fixed Size Sliding Window:
+=========================
+
+
+Problem 1:
+
+--Find Sum of Every Subarray of Size K
+
+Array:
+
+int[] arr = {2,3,4,5,6};
+
+k: 2
+
+Possible subarrays of size 2:
+
+[2,3] = 5
+[3,4] = 7
+[4,5] = 9
+[5,6] = 11
+
+
+Approach 1: Brute Force
+-----------------------
+
+
+Idea:
+
+For every possible starting index:
+Create a window of size k
+Calculate its sum
+Print the sum
+
+
+public class Demo {
+
+    public static void main(String[] args) {
+
+        int[] arr = {2, 3, 4, 5, 6};
+
+        int k = 2;
+
+        for (int i = 0; i <= arr.length - k; i++) {
+
+            int sum = 0;
+
+            for (int j = i; j < i + k; j++) {
+                sum += arr[j];
+            }
+
+            System.out.println(sum);
+        }
+    }
+}
+
+
+Here,
+
+--Outer loop decides the starting index of each window.
+
+--Inner loop calculating the sum of each window.
+
+
+Time Complexity:
+
+For every window: k additions
+
+Number of windows: n-k+1
+
+
+
+Total: O((n-k+1) × k)
+=
+O(n*k)
+
+
+
+Now we will learn how Sliding Window reduces it to: TC = O(n)
+
+Using Sliding window:
+---------------------
+
+
+--Suppose you are calculating the total marks of 4 students.
+
+Window-1:
+
+10 + 20 + 30 + 40 = 100
+
+Now teacher says:
+
+Move one student right
+
+New window:
+
+20 + 30 + 40 + 50
+
+Do we need to calculate everything again?
+
+No.
+
+We already know:
+
+Previous Sum = 100
+
+Just:
+
+Remove 10
+Add 50
+
+New sum:
+
+100 - 10 + 50 = 140
+
+This is the core idea of Sliding Window.
+
+
+
+
+Approach 2: Sliding Window
+---------------------------
+
+
+Step 1
+
+--Calculate the first window sum.
+--store it in windowSum variable.
+
+
+Step 2
+
+--Move the window one step right.
+--Remove the outgoing element
+--Add the incoming element
+
+
+Whenever the window moves:
+
+newWindowSum = oldWindowSum - outgoingElement + incomingElement
+
+
+
+
+
+public class Demo {
+
+    public static void main(String[] args) {
+
+        int[] arr = {2, 3, 4, 5, 6};
+
+        int k = 2;
+
+        int windowSum = 0;
+
+        // First Window Sum
+
+        for (int i = 0; i < k; i++) {
+            windowSum += arr[i];
+        }
+
+        System.out.println(windowSum);
+
+        // Slide Window
+
+        for (int i = k; i < arr.length; i++) {
+
+            windowSum =
+                    windowSum
+                    - arr[i - k]
+                    + arr[i];
+
+            System.out.println(windowSum);
+        }
+    }
+}
+
+
+
+
+Time complexity:
+
+Step 1:
+
+Calculate first window sum: O(k)
+
+Step 2:
+Slide window across remaining elements: O(n-k)
+
+Total: O(k + n-k) = O(n)
+
+
+
+Problem 2: Maximum Sum Subarray of Size K
+-----------------------------------------
+
+Given an array and a window size k.
+
+Find the maximum sum among all subarrays of size k.
+
+
+int[] arr = {2, 1, 5, 1, 3, 2};
+
+int k = 3;
+
+Possible windows:
+
+[2,1,5] = 8
+
+[1,5,1] = 7
+
+[5,1,3] = 9
+
+[1,3,2] = 6
+
+Maximum: 9
+
+
+
+Real-Life Analogy:
+
+--Suppose a company wants to give a bonus to a team of 3 consecutive employees.
+
+Employee performance scores:
+
+[2,1,5,1,3,2]
+
+--Only 3 consecutive employees can be selected who having the best team score.
+
+
+
+
+Approach 1: Brute Force:
+
+Idea:
+
+--Generate every subarray of size k.
+
+For every subarray:
+
+Calculate its sum.
+Compare with maximum.
+Update answer.
+
+
+code:
+
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        int[] arr = {2, 1, 5, 1, 3, 2};
+
+        int k = 3;
+
+        int maxSum = Integer.MIN_VALUE;
+
+        for (int i = 0; i <= arr.length - k; i++) {
+
+            int sum = 0;
+
+            for (int j = i; j < i + k; j++) {
+
+                sum += arr[j];
+            }
+
+            maxSum = Math.max(maxSum, sum);
+        }
+
+        System.out.println(maxSum);
+    }
+}
+
+
+Time Complexity
+
+Outer loop: n-k+1
+
+Inner loop: k
+
+Total: O(n × k)
+
+
+
+Problem with Brute Force:
+
+Notice:
+
+Window 1: [2,1,5]
+
+Next:
+
+Window 2: [1,5,1]
+
+We are recalculating:
+
+1 and 5
+
+
+again.
+
+This repeated work is unnecessary.
+
+
+
+Approach 2: Sliding Window
+--------------------------
+
+Core Idea:
+
+--Instead of calculating every window from scratch:
+
+Previous Sum 
+-
+Outgoing Element
++
+Incoming Element
+
+
+
+Code:
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        int[] arr = {2, 1, 5, 1, 3, 2};
+
+        int k = 3;
+
+        int windowSum = 0;
+
+        // Calculate first window sum
+
+        for (int i = 0; i < k; i++) {
+
+            windowSum += arr[i];
+        }
+
+        int maxSum = windowSum;
+
+        // Slide the window
+
+        for (int i = k; i < arr.length; i++) {
+
+            windowSum =
+                    windowSum
+                    - arr[i - k]
+                    + arr[i];
+
+            maxSum = Math.max(maxSum, windowSum);
+        }
+
+        System.out.println(maxSum);
+    }
+}
+
+
+
+
+
+
+
+Time Complexity:
+
+First Window:
+
+for(int i=0;i<k;i++)
+
+Cost: O(k)
+
+Sliding:
+
+for(int i=k;i<n;i++)
+
+Cost: O(n-k)
+
+Total: O(k + n-k)
+
+= O(n)
+
+
+
+
+Variable Size Sliding Window:
+============================
+
+
+--In Variable Size Sliding Window:
+
+--Window size is NOT given.
+
+--We need to find it ourselves.
+
+
+
+
+Examples:
+
+Longest Substring Without Repeating Characters
+
+Smallest Subarray With Sum >= X
+
+Longest Subarray With Sum <= K
+
+Longest Substring With K Unique Characters
+
+
+
+
+Real-Life Analogy:
+-------------------
+
+--Suppose you are filling a water tank.
+
+Goal:
+
+--Collect at least 20 litres of water.
+
+Buckets arriving:
+
+5 3 7 4 8 2
+
+You keep adding buckets: 
+
+5: Not enough.
+
+5 + 3 = 8: Not enough.
+
+5 + 3 + 7 = 15: Still not enough.
+
+5 + 3 + 7 + 4 = 19: Still not enough.
+
+5 + 3 + 7 + 4 + 8 = 27 Now enough.
+
+At this point:
+
+Window becomes too large.
+
+So you start removing buckets from the left.
+
+Remove 5
+
+Now: 22
+
+Still enough.
+
+Remove 3:
+
+Now: 19 Not enough.
+
+--Stop shrinking.
+
+--This is exactly how Variable Sliding Window works.
+
+
+
+Core Difference:
+
+Fixed Window:
+
+--Window size never changes.
+
+Variable Window:
+
+--Window size changes dynamically.
+
+Expand
+Expand
+Expand
+Shrink
+Expand
+Shrink
+
+Example:
+
+[2]
+
+[2,3]
+
+[2,3,4]
+
+[3,4]
+
+[3,4,5]
+
+[4,5]
+
+Size is not fixed.
+
+
+Note: Variable Sliding Window almost always uses: Two pointers
+
+
+int left = 0;
+int right = 0;
+
+
+0 1 2 3 4 5
+A B C D E F
+
+L
+R
+
+
+1. Expanding Window:
+
+--Move right pointer.
+
+L
+ R
+
+--Window becomes bigger.
+
+--Move again.
+
+L
+   R
+
+--Window grows further.
+
+
+2. Shrinking Window:
+
+--Move left pointer.
+
+  L
+   R
+
+--Window becomes smaller.
+
+
+
+Golden Rule:
+
+--Most Variable Sliding Window problems follow:
+
+Expand Right Pointer
+
+Check Condition
+
+If condition invalid:
+    Shrink Left Pointer
+
+Repeat
+
+
+
+
+Generic Template:
+------------------
+
+
+int left = 0;
+
+for(int right = 0; right < n; right++) {
+
+    // include arr[right]
+
+    while(condition is invalid) {
+
+        // remove arr[left]
+
+        left++;
+    }
+
+    // update answer
+}
+
+
+
+If question says:
+
+Longest
+
+Smallest
+
+Minimum Length
+
+Maximum Length
+
+At Most K
+
+At Least K
+
+then think:
+
+--Variable Size Sliding Window
+
+--because the window size is something we must discover.
+
+
+
+Problem1: Smallest Subarray With Sum ≥ X
+-----------------------------------------
+
+--Find the length of the smallest contiguous subarray whose sum is greater than or equal to 7.
+
+
+int[] arr = {2,3,1,2,4,3};
+
+int target = 7;
+
+
+For the above array:
+
+Possible subarrays:
+
+[2,3,1,2] = 8
+Length = 4
+
+[3,1,2,4] = 10
+Length = 4
+
+[1,2,4] = 7
+Length = 3
+
+[2,4,3] = 9
+Length = 3
+
+[4,3] = 7
+Length = 2
+
+
+Answer: 2
+
+because:
+
+[4,3]
+
+--is the shortest subarray whose sum is at least 7.
+
+
+
+Real-Life Analogy:
+------------------
+
+
+--Suppose you are collecting donations.
+
+Target: 1000
+
+Donations arriving:
+
+200 300 100 200 400 300
+
+You keep collecting until:
+
+Total >= 1000
+
+Once achieved:
+
+Try removing donations from the beginning
+
+to see if you can still maintain:
+
+Total >= 1000
+
+while making the group smaller.
+
+--This is exactly the idea behind this problem.
+
+
+
+In Fixed Sliding Window, Window size K was fixed.
+
+Example:
+
+K = 3
+
+But here:
+
+We do not know the answer.
+
+The answer might be:
+
+2
+3
+4
+5
+
+We must discover it.
+
+Hence:
+
+Variable Size Sliding Window
+
+
+
+Approach 1: Brute Force:
+-------------------------
+
+Idea:
+
+Generate all possible subarrays.
+
+For each subarray:
+	
+	Calculate sum
+	Check if sum >= target
+	Update minimum length
+
+
+
+Code:
+
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        int[] arr = {2,3,1,2,4,3};
+
+        int target = 7;
+
+        int minLength = Integer.MAX_VALUE;
+
+        for(int i=0; i<arr.length; i++) {
+
+            int sum = 0;
+
+            for(int j=i; j<arr.length; j++) {
+
+                sum += arr[j];
+
+                if(sum >= target) {
+
+                    minLength = Math.min(minLength, j-i+1);
+
+                    break;
+                }
+            }
+        }
+
+        if(minLength == Integer.MAX_VALUE)
+            System.out.println(0);
+        else
+            System.out.println(minLength);
+    }
+}
+
+
+Time Complexity
+
+Outer Loop: O(n)
+
+Inner Loop: O(n)
+
+Total: O(n²)
+
+
+Approach 2: Variable Sliding Window 
+-----------------------------------
+
+
+Core Rule:
+
+
+If Sum < Target
+
+Expand.
+
+right++;
+
+
+If Sum >= Target
+
+Try shrinking.
+
+left++;
+
+--because we want the smallest window.
+
+
+Array:
+
+[2,3,1,2,4,3]
+
+Target: 7
+
+
+Step 1
+
+Window: [2]
+
+Sum: 2
+
+Not enough.
+
+Expand.
+
+Step 2
+
+Window: [2,3]
+
+Sum: 5
+
+Not enough.
+
+Expand.
+
+Step 3
+
+Window: [2,3,1]
+
+Sum: 6
+
+Not enough.
+
+Expand.
+
+Step 4
+
+Window: [2,3,1,2]
+
+Sum: 8
+
+Condition satisfied.
+
+Length: 4
+
+Current answer: 4
+
+Now shrink.
+
+Shrink
+
+Remove: 2
+
+New Window: [3,1,2]
+
+Sum: 6
+
+Condition broken.
+
+Expand again.
+
+Expand
+
+Add: 4
+
+Window: [3,1,2,4]
+
+Sum: 10
+
+Condition satisfied.
+
+Length: 4
+
+Shrink again.
+
+Remove: 3
+
+Window: [1,2,4]
+
+Sum: 7
+
+Still valid.
+
+Length: 3
+
+Update answer.
+
+minLength = 3
+
+Shrink again.
+
+Remove: 1
+
+Window: [2,4]
+
+Sum: 6
+
+Invalid.
+
+Expand.
+
+Add: 3
+
+Window: [2,4,3]
+
+Sum: 9
+
+Valid.
+
+Length: 3
+
+Shrink.
+
+Remove: 2
+
+Window: [4,3]
+
+Sum: 7
+
+Valid.
+
+Length: 2
+
+Update answer.
+
+minLength = 2
+
+Remove: 4
+
+Window: [3]
+
+Sum: 3
+
+Invalid.
+
+Stop.
+
+Final Answer: 2
+
+
+Code:
+
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        int[] arr = {2,3,1,2,4,3};
+
+        int target = 7;
+
+        int left = 0;
+
+        int sum = 0;
+
+        int minLength = Integer.MAX_VALUE;
+
+        for(int right = 0; right < arr.length; right++) {
+
+            sum += arr[right];
+
+            while(sum >= target) {
+
+                minLength = Math.min(minLength, right-left+1);
+
+                sum -= arr[left];
+
+                left++;
+            }
+        }
+
+        if(minLength == Integer.MAX_VALUE)
+            System.out.println(0);
+        else
+            System.out.println(minLength);
+    }
+}
+
+
+
+Time Complexity
+
+Right pointer: Moves N times
+
+Left pointer: Moves N times
+
+Total: O(2N)
+
+which becomes: O(N)
+
+
+This pattern is used in:
+
+Smallest Subarray ≥ X
+Minimum Window Substring
+Shortest Unique Window
+Smallest Covering Range
+
+
+
+
+
+Problem2: Longest Subarray With Sum ≤ K
+---------------------------------------
+
+Given an array of positive integers and a value K.
+
+Find the length of the longest contiguous subarray whose sum is less than or equal to K.
+
+
+
+int[] arr = {4,1,1,1,2,3,5};
+
+int k = 5;
+
+
+
+Possible subarrays:
+
+[4]  Sum = 4
+
+[4,1]  Sum = 5
+
+[1,1,1,2]  Sum = 5
+
+[2,3]  Sum = 5
+
+[5]    Sum = 5
+
+Among all valid subarrays: [1,1,1,2]
+
+has the largest length.
+
+Length: 4
+
+Answer: 4
+
+
+Brute Force Approach:
+---------------------
+
+Idea:
+
+Generate every subarray.
+
+For each subarray:
+
+	Calculate sum
+	If sum ≤ k
+	Update maximum length
+
+
+Code:
+
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        int[] arr = {4,1,1,1,2,3,5};
+
+        int k = 5;
+
+        int maxLength = 0;
+
+        for(int i=0; i<arr.length; i++) {
+
+            int sum = 0;
+
+            for(int j=i; j<arr.length; j++) {
+
+                sum += arr[j];
+
+                if(sum <= k) {
+
+                    maxLength = Math.max( maxLength, j-i+1);
+                }
+            }
+        }
+
+        System.out.println(maxLength);
+    }
+}
+
+
+
+
+
+Time Complexity
+
+Outer Loop: O(n)
+
+Inner Loop: O(n)
+
+Total: O(n²)
+
+
+
+Sliding Window Observation: 
+
+Array: [4,1,1,1,2,3,5]
+
+K: 5
+
+As long as:
+
+sum ≤ k
+
+the window is valid.
+
+We should:
+
+Keep expanding
+
+because we want a larger length.
+
+When:
+
+sum > k
+
+window becomes invalid.
+
+We must:
+
+Shrink from left
+
+until it becomes valid again.
+
+
+Sliding Window Algorithm:
+-------------------------
+
+Rule 1
+
+Expand.
+
+sum += arr[right];
+
+
+Rule 2
+
+If invalid:
+
+while(sum > k)
+
+Shrink.
+
+
+Rule 3
+
+Once valid:
+
+sum <= k
+
+Update maximum length.
+
+
+
+Code:
+
+
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        int[] arr = {4,1,1,1,2,3,5};
+
+        int k = 5;
+
+        int left = 0;
+
+        int sum = 0;
+
+        int maxLength = 0;
+
+        for(int right = 0;right < arr.length; right++) {
+
+            sum += arr[right];
+
+            while(sum > k) {
+
+                sum -= arr[left];
+
+                left++;
+            }
+
+            maxLength = Math.max(maxLength, right-left+1);
+        }
+
+        System.out.println(maxLength);
+    }
+}
+
+
+Student task:
+-------------
+
+Find the largest subarray whose sum is x?
+
+

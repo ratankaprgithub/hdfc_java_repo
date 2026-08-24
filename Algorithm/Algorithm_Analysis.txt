@@ -3157,6 +3157,12 @@ Therefore:
 Linear Search = O(n)
 
 
+3n^2 + 5n + 100 = O(n^2)
+
+
+f(n) = 5n + 100 = O(n)
+g(n) = n
+
 
 
 Formal defination of Big O Notation:
@@ -3226,6 +3232,10 @@ Need to prove
 Here,
 
 f(n)= 5n + 50 
+
+
+
+
 
 --In this expression there are 2 terms and the leading term is 5n where as 50 is just a constant.
 
@@ -3330,12 +3340,12 @@ so,  n₀ = 3
 
 verify
 
-	 2n + 3 | 3n
+		 2n + 3 | 3n
 
-For n=1	  5     |  3  
+For n=1	  	5    |  3  
 For n=2        7     |  6
 For n=3        9     |  9
-For n=4        11   |  12
+For n=4        11    |  12
 
 
 
@@ -3689,9 +3699,9 @@ Thus: 300 = O(1)
 Final trick:
 -------------
 
-Whenever you see a polynomial:
-
-Step 1: Find largest power.
+Whenever 
+Step 1: Find largest powyou see a polynomial:
+er.
 
 Example:
 
@@ -3756,6 +3766,27 @@ It describes the growth most accurately.
 
 
 --The smallest meaningful upper bound is called the Tight Upper Bound.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4235,7 +4266,7 @@ This extra memory is called: Auxiliary Space
 Example 1: Find the sum of n number 
 
 
-algo findSum(int i)
+algo findSum(int n)
 {
 	int sum = 0;
 
@@ -4722,7 +4753,7 @@ countdown(int n)
 
 Value of: n
 
-2. 2. Local Variables
+2. Local Variables
 
 Example:
 
@@ -4837,7 +4868,7 @@ Depth ≈ n
 
 --That number determines the stack memory usage.
 
---Sice every recursive call creates a new stack frame.
+--Since every recursive call creates a new stack frame.
 
 Therefore 
 
@@ -4941,8 +4972,7 @@ Answer: Time Complexity
 
 2. How much memory is being used?
 
-Answer: How much memory is being used?
-
+Answer: Space complexity (In the term of stack frame used inside the call stack)
 
 
 Finding Time Complexity: 
@@ -5171,10 +5201,10 @@ we get:
 
 
                fib(5)
-             /            \
-        fib(4)        fib(3)
-        /    \             /    \
-fib(3) fib(2)    fib(2) fib(1)
+             /      \
+        fib(4)     fib(3)
+        /    \     /    \
+   fib(3) fib(2)  fib(2) fib(1)
 
 
 Notice:
@@ -5195,6 +5225,9 @@ Depth: n
 Therefore:
 
 Space = O(n)
+
+
+ 
 
 
 
@@ -5277,7 +5310,7 @@ long factorial(int n)
 {
     if(n == 1)
         return 1;
-
+	
     return n * factorial(n-1);
 }
 
@@ -5453,7 +5486,7 @@ How to Solve Recurrence Relations:
 
 --The first and most important method is:
 
-Expansion Method
+1. Expansion Method
 
 Also called:
 
@@ -5669,7 +5702,7 @@ Let's draw: T(5)
                   T(5)
                 /      \
             T(4)      T(3)
-           /   \           /   \
+           /   \     /   \
        T(3)  T(2)  T(2)  T(1)
        / \
     T(2) T(1)
@@ -5763,7 +5796,7 @@ Total: n
 
           n
         /   \
-    n/2   n/2
+    n/2     n/2
 
 
 Level 2: Four subproblems:
@@ -5935,7 +5968,8 @@ with
 n^(log_b(a))
 
 
-Example: Merge Sort:
+Example: Merge Sort:  T(n)=2T(n/2)+n
+
 
 a=2
 b=2
@@ -6194,6 +6228,8 @@ O(n)
 --When we average the cost across many insertions:
 
 Amortized Cost = O(1)
+
+
 
 
 --Amortized Analysis is a method of analyzing an algorithm where the total cost of a sequence of operations is averaged over all operations, guaranteeing an average cost per operation even if some individual operations are expensive.
