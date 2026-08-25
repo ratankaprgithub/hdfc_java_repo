@@ -758,6 +758,8 @@ Student task:
 
 1. Update an Element: 
 
+
+2. 
 --initialize an int array with 5 elements:
 
 --ask the user to pass the index number to get the element.
@@ -824,7 +826,7 @@ Student Home Work:
 3. Left Rotate by K
 4. Frequency of Elements (0 to n-1)
 5. Move Zeros to End
-6. Find Second Largest Element
+6. Find third Largest Element
 7. Check if Array is Palindrome
 
 
@@ -1151,6 +1153,10 @@ Misconceptions:
 --"Two pointers only work on sorted arrays" - False. It works best for opposite direction problems if the array is sorted. For same direction, array need not be sorted (e.g., sliding window, subarrays).
 
 
+
+
+
+
 Problem 1: Reverse an Array:
 ----------
 
@@ -1458,7 +1464,6 @@ S F
 
 
 
-
 Step 1
 
 Move fast.
@@ -1496,6 +1501,10 @@ Move slow forward.
 
 slow++;
 
+1 1 2 2 2 3 4 4 5
+  S F
+
+
 
 Copy:
 
@@ -1505,7 +1514,7 @@ Array becomes:
 
 1 2 2 2 2 3 4 4 5
   S
-      F
+    F
 
 
 Step 3
@@ -1513,7 +1522,7 @@ Step 3
 Fast moves.
 
 1 2 2 2 2 3 4 4 5
-  S F
+  S   F
 
 Duplicate.
 
@@ -1525,7 +1534,7 @@ Step 4
 Fast moves.
 
 1 2 2 2 2 3 4 4 5
-  S   F
+  S     F
 
 Duplicate.
 
@@ -1542,6 +1551,20 @@ Fast reaches 3.
 New value.
 
 Move slow.
+
+slow++
+
+1 2 2 2 2 3 4 4 5
+    S     F
+
+
+Copy:
+
+arr[slow] = arr[fast];
+
+Array becomes:
+
+
 
 1 2 3 2 2 3 4 4 5
     S     F
@@ -2136,13 +2159,12 @@ public static int maxSubArray(int[] arr){
 }
 
 
-
 Time Complexity : O(n)
 Space Complexity : O(1)
 
 
 
-Student task:
+Student task: Home work
 --------------
 
 Problem Statement: Use the kadane algoritm:
@@ -2497,6 +2519,7 @@ O(n*k)
 
 
 
+
 Now we will learn how Sliding Window reduces it to: TC = O(n)
 
 Using Sliding window:
@@ -2572,7 +2595,7 @@ public class Demo {
 
         int k = 2;
 
-        int windowSum = 0;
+        int windowSum = 0; //5
 
         // First Window Sum
 
@@ -3355,12 +3378,14 @@ public class Main {
 
         for(int right = 0; right < arr.length; right++) {
 
+	    //Expading 
             sum += arr[right];
 
             while(sum >= target) {
 
                 minLength = Math.min(minLength, right-left+1);
 
+		//Shrinking
                 sum -= arr[left];
 
                 left++;
@@ -3595,5 +3620,9 @@ Student task:
 -------------
 
 Find the largest subarray whose sum is x?
+Array contains only positive integers.
+
+
+
 
 
