@@ -2425,17 +2425,6 @@ slow == fast
 
 then: Cycle Exists
 
-If:
-
-fast == null
-
-or
-
-fast.next == null
-
-then: No Cycle
-
-because the list ended.
 
 
 full code:
@@ -2531,7 +2520,7 @@ Cycle:
            ↑         ↓
             ← ← ← ← ←
 
-Suppose meeting occurs at: 40 (It can meet at any element within that cycle)
+Suppose meeting occurs at: 40 (It can meet at 40 also)
 
 
 --Now both slow and fast are at 40.

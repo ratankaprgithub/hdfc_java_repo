@@ -1,0 +1,4438 @@
+Introduction to Stack:
+=======================
+
+
+--A Stack is a linear data structure that follows the:
+
+LIFO (Last In First Out) principle.
+
+This means:
+
+The element inserted last is removed first.
+The element inserted first is removed last.
+
+
+
+Real Life Analogy:
+-----------------
+
+
+Stack of Plates:
+
+Imagine a stack of plates in a restaurant.
+
+      [50]  ← Top
+      [40]
+      [30]
+      [20]
+      [10]
+
+When a new plate arrives:
+
+      [60]  ← Top
+      [50]
+      [40]
+      [30]
+      [20]
+      [10]
+
+It is placed on the top.
+
+When a plate is removed:
+
+      [50]  ← Top
+      [40]
+      [30]
+      [20]
+      [10]
+
+The top plate is removed first.
+
+You cannot directly remove the bottom plate.
+
+This is exactly how a Stack works.
+
+
+Another Analogy: Books Stack
+
+Imagine books kept one over another.
+
+      Java
+      Spring
+      SQL
+      Linux
+
+If you want the Linux book (bottom book),
+
+you must first remove:
+
+Java
+Spring
+SQL
+
+one by one.
+
+Again:
+
+Last In → First Out
+
+
+Applications of Stack:
+----------------------
+
+--Stacks are useful whenever we need to remember the most recent thing first.
+
+Common applications include:
+
+1. Undo Feature
+
+Type A
+Type B
+Type C
+
+Undo removes: C first.
+
+
+2. Browser Back Button
+
+
+Google
+ ↓
+YouTube
+ ↓
+GitHub
+
+Press Back: GitHub removed first
+
+--because it was visited last.
+
+
+
+3. Expression Evaluation
+
+(1 + 2) * 3
+
+--Stacks are heavily used while evaluating mathematical expressions.
+
+
+4. Syntax Checking
+
+--Compilers use stacks to verify:
+
+()
+{}
+[]
+
+are properly balanced.
+
+
+
+5. Function Call Stack
+
+--Whenever a method is called:
+
+main()
+ |--funA()
+      |--funB()
+
+
+--Java stores function calls in a stack.
+
+--The most recently called function returns first.
+
+
+Stack ADT:
+==========
+
+ADT = Abstract Data Type
+
+An ADT describes:
+
+What operations are available.
+What behavior is expected.
+
+--It does not describe how the data structure is implemented internally.
+
+For example:
+
+--A Stack can be implemented using:
+
+Array
+Linked List
+
+--But from the user's perspective:
+
+push()
+pop()
+peek()
+
+always behave the same.
+
+
+Core Operations of Stack:
+
+1. push(item)
+
+--Add an element on top of the stack.
+
+Time Complexity: O(1)
+
+
+2. pop()
+
+--Remove the top element.
+
+Time Complexity: O(1)
+
+
+3. peek()
+
+--View the top element without removing it.
+
+peek()
+
+returns: 40
+
+Stack remains unchanged.
+
+Time Complexity: O(1)
+
+
+4. isEmpty()
+
+--Check whether the stack contains any elements.
+
+returns: true
+
+--if stack contains no elements.
+
+Time Complexity: O(1)
+
+
+Important Terms: 
+
+1. Top
+
+--The topmost element of the stack.
+
+Top
+ |
+[50]
+[40]
+[30]
+
+Current top element: 50
+
+
+2. Stack Overflow
+
+--Occurs when we try to push into a full stack.
+
+Example:
+
+Capacity = 5
+
+[50]
+[40]
+[30]
+[20]
+[10]
+
+Trying: push(60)
+
+causes: Stack Overflow
+
+
+
+3. Stack Underflow
+
+--Occurs when we try to pop from an empty stack.
+
+Example:
+
+pop()
+
+on:
+
+Empty Stack
+
+causes: Stack Underflow
+
+
+Student Task:
+
+--Draw the stack after the following operations:
+
+push(10)
+push(20)
+push(30)
+pop()
+push(40)
+peek()
+
+Find:
+
+1. Current Stack
+2. Top Element
+3. Stack Size
+
+
+
+Array-Based Stack Implementation:
+=================================
+
+
+Designing the Stack Class:
+---------------------------
+
+
+public class ArrayStack {
+
+    private int[] items;
+    private int top;
+
+    public ArrayStack(int capacity) {
+
+        items = new int[capacity];
+        top = -1;
+    }
+
+    // Other methods for stack related operations.
+
+
+}
+
+
+
+
+ArrayStack stack = new ArrayStack(5); // initial capacity
+
+
+[][][][][]
+
+
+--We keep track of the top element using a variable called: top
+
+
+Initial State:
+
+top = -1;
+
+Because:
+
+--No element exists yet.
+
+
+Note:
+
+The 'top' variable serves two purposes:
+
+1. Identifies the current top element.
+2. Helps calculate the size of the stack.
+
+size = top + 1
+
+
+
+
+Example:
+
+
+1. Implementing size() method:
+
+
+
+public int size() {
+
+        return top + 1;
+}
+
+
+
+2. Implementing isEmpty() method:
+
+
+public boolean isEmpty(){
+
+	return top == -1;
+
+}
+
+
+
+3. Implementing isFull() method:
+
+
+public boolean isFull(){
+
+	return top == items.length-1;
+
+}
+
+
+
+4. Implementing push() method:
+
+
+  public void push(int item) {
+
+        if (isFull()) {
+
+            throw new IllegalStateException("Stack Overflow: Stack is full");
+        }
+
+        items[++top] = item;
+    }
+
+
+5. Implementing pop() method:
+
+
+ public int pop() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Stack Underflow: Stack is empty");
+        }
+
+        return items[top--];
+    }
+
+
+Important:
+
+--The removed value may still physically exist inside the array.
+
+--However, after top is decremented, that position is considered outside the logical boundary of the stack and is no longer
+accessible through stack operations.
+
+
+
+
+
+6. Implementing peek() method:
+
+
+ public int peek() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Stack Underflow: Stack is empty");
+        }
+
+        return items[top];
+    }
+
+
+7. Implementing display() method: For just display all the elements inside the Stack
+
+
+Note: This is the optional method, just for viewing all the elements inside stack.
+
+
+
+public void display(){  
+
+	if (isEmpty()) {
+
+           System.out.println("Stack is Underflow: Empty");
+
+        }else{
+
+	 
+	   System.out.println("Stack elements (Top to Down)");
+
+	   for(int i= size()-1; i>=0; i--){
+
+		System.out.println(items[i]);
+	   }
+
+
+
+	}
+
+
+}
+
+
+Time complexity: O(n)
+
+
+
+
+full code:
+----------
+
+ArrayStack.java:
+-----------------
+
+package com.hdfc.stack;
+public class ArrayStack {
+
+    private int[] items;
+    private int top;
+
+    public ArrayStack(int capacity) {
+
+        items = new int[capacity];
+        top = -1;
+    }
+
+
+    public int size() {
+
+        return top + 1;
+    }
+
+
+    public boolean isEmpty() {
+
+        return top == -1;
+
+    }
+
+    public boolean isFull() {
+
+        return top == items.length - 1;
+
+    }
+
+    public void push(int item) {
+
+        if (isFull()) {
+
+            throw new IllegalStateException("Stack Overflow: Stack is full");
+        }
+
+        items[++top] = item;
+    }
+
+    public int pop() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Stack Underflow: Stack is empty");
+        }
+
+        return items[top--];
+    }
+
+    public int peek() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Stack Underflow: Stack is empty");
+        }
+
+        return items[top];
+    }
+
+    public void display() {
+
+        if (isEmpty()) {
+
+            System.out.println("Stack is Underflow: Empty");
+            return;
+        }
+
+        System.out.println("Stack elements (Top to Down)");
+        for (int i = size() - 1; i >= 0; i--) {
+            System.out.println(items[i]);
+        }
+
+
+    }
+
+    public static void main(String[] args) {
+
+        ArrayStack stack = new ArrayStack(5);
+
+        stack.push(50);
+        stack.push(40);
+        stack.push(30);
+        stack.push(20);
+        stack.push(10);
+
+        //stack.display();
+
+       //System.out.println("Top element: "+stack.peek());
+
+        //System.out.println("Remove the top element from the statck"+ stack.pop());
+        //stack.display();
+
+        System.out.println("Processing each element from the stack:");
+
+        while (!stack.isEmpty()) {
+            System.out.println("Processed elements:  " + stack.pop());
+        }
+
+        System.out.println("After processing all Elements: ");
+        stack.display();
+
+    }
+}
+
+
+
+
+
+Advantages of Array implementation of  Stack:
+---------------------------------------------
+
+
+1. Simple Implementation
+
+Only:
+
+array + top
+
+
+2. Fast Operations
+
+push → O(1)
+pop  → O(1)
+peek → O(1)
+
+
+3. Cache Friendly
+
+--Elements are stored continuously in memory.
+
+--This is usually faster than Linked Lists implementation.
+
+
+Limitations of Array implementation of  Stack:
+---------------------------------------------
+
+1. Fixed Capacity
+
+Example:
+
+new ArrayStack(5);
+
+Maximum: 5 elements
+
+
+
+2. Stack Overflow
+
+Trying: push()
+
+--on a full stack causes overflow.
+
+3. Resizing Problem
+
+--If capacity is too small:
+
+--Need larger array.
+
+--This is one reason Linked List based stacks exist.
+
+
+
+Note: We can overcome the limitations of above Array based Stack implementation using ArrayList instead of using normal array:
+
+
+ArrayList<Integer> items = new ArrayList<>();
+
+--which grows dynamically as elements are added.
+
+So why do we still learn Linked List Stack?
+
+Reason 1: No Array Resizing Required
+
+--When an ArrayList becomes full, it creates a larger array and copies all existing elements into it.
+
+Old Array
+     ↓
+Create Bigger Array
+     ↓
+Copy Elements
+     ↓
+Insert New Element
+
+This resizing operation takes: O(n)
+
+time for that insertion. (amortized O(1))
+
+Where as, a Linked List Stack never resizes.
+
+--Each push simply creates a new node and links it to the stack.
+
+Create Node
+     ↓
+Attach Node
+
+Cost: O(1)
+
+
+Reason 2: Educational and Interview Importance
+
+--Linked List Stack helps us understand:
+
+How stacks work on linked structures.
+Node manipulation.
+Dynamic memory allocation.
+
+--It is also a very common interview question:
+
+
+
+Practical Reality:
+
+--For Stack operations, modern Java applications usually prefer:
+
+Deque<Integer> stack = new ArrayDeque<>();
+
+instead of either:
+
+Stack<Integer>
+
+or
+
+LinkedList<Integer>
+
+
+because it is:
+
+Fast
+Memory efficient
+Cache friendly
+
+
+--ArrayDeque internally uses a resizable circular array.
+
+--Its main advantage over ArrayList is not dynamic resizing (both resize automatically), 
+--but efficient O(1) insertion and removal at both ends without shifting elements.
+
+
+Conclusion:
+
+--ArrayList removes the fixed-capacity limitation by resizing dynamically, but resizing occasionally requires allocating a new array and copying elements. 
+--A Linked List Stack grows node by node without resizing. 
+--However, for Stack operations, ArrayList (or ArrayDeque) is usually preferred in practice because it is more memory-efficient and cache-friendly.
+
+
+
+ArrayList Stack:
+
++ Dynamic size
++ Memory efficient
++ Cache friendly
+- Occasional resizing cost
+
+Linked List Stack:
+
++ No resizing required
++ Truly dynamic growth
+- Extra memory for node references
+- Usually slower in practice
+
+
+Implementing Stack using Linked List:
+--------------------------------------
+
+Core Idea
+
+--A Stack always performs operations at the top.
+
+Therefore, in a Linked List Stack:
+
+Push  → Insert at Head
+Pop   → Remove from Head
+Peek  → Read Head Data
+
+--We never need to traverse the list.
+
+--Although a stack is conceptually "top-based",
+
+--in a singly linked list implementation the top is usually mapped to the head node because insertion and deletion at the head take O(1) time.
+
+
+
+Note: Here no need to maintain a tail pointer, but we can maintain the size variable to track the count of the elements inside the stack.
+
+
+Example:
+
+push(10):
+
+head
+|
+10 -> null
+
+push(20):
+
+head
+|
+20 -> 10 -> null
+
+push(30):
+
+
+head
+|
+30 -> 20 -> 10 -> null
+
+
+pop():
+
+head
+|
+20 -> 10 -> null
+
+pop();
+
+
+head
+|
+10 -> null
+
+
+
+Node class:
+------------
+
+public class Node {
+
+    int data;
+    Node next;
+
+    Node(int data) {
+
+        this.data = data;
+    }
+}
+
+
+--Same idea as singly Linked List.
+
+
+LinkedListStack class:
+---------------------
+
+public class LinkedListStack {
+
+    private Node head;
+    private int size;
+
+    // Other methods for stack related operations
+
+}
+
+
+
+Complete code:
+--------------
+
+package com.hdfc.stack;
+
+public class LinkedListStack {
+
+
+    private Node head;
+    private int size;
+
+    public boolean isEmpty() {
+
+        return head == null;
+    }
+
+    public void push(int data) {
+
+        Node newNode = new Node(data);
+
+        newNode.next = head;
+
+        head = newNode;
+
+        size++;
+    }
+
+    public int pop() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Stack Underflow");
+        }
+
+        int removedValue = head.data;
+
+        head = head.next;
+
+        size--;
+
+        return removedValue;
+    }
+
+
+    public int peek() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Stack Underflow");
+        }
+
+        return head.data;
+    }
+
+    public int size() {
+
+        return size;
+    }
+
+
+    public void display() {
+
+        if (isEmpty()) {
+            System.out.println("Stack underflow: stack is empty");
+            return;
+        }
+
+
+        System.out.println("Stack elements (Top to Down)");
+        Node current = head;
+
+        while (current != null) {
+            System.out.println(current.data);
+            current = current.next;
+        }
+
+
+    }
+
+
+    public static void main(String[] args) {
+
+        LinkedListStack stack = new LinkedListStack();
+
+        stack.push(50);
+        stack.push(40);
+        stack.push(30);
+        stack.push(20);
+        stack.push(10);
+
+        stack.display();
+
+    }
+}
+
+
+Array Stack vs Linked List Stack:
+---------------------------------
+
+| Feature         | Array Stack      | Linked List Stack |
+|-----------------|------------------|-------------------|
+| Push            | O(1)             | O(1)              |
+| Pop             | O(1)             | O(1)              |
+| Peek            | O(1)             | O(1)              |
+| Dynamic Growth  | No (fixed array) | Yes               |
+| Resizing Needed | Yes              | No                |
+| Overflow Risk   | Fixed Capacity   | Memory Dependent  |
+| Memory Overhead | Low              | Higher            |
+| Cache Friendly  | Yes              | No                |
+
+
+
+
+
+
+Balanced Parentheses Checker Using Stack:
+=========================================
+
+
+public static boolean isBalanced(String str)
+
+
+
+
+
+Q/- What is a Balanced Expression?
+
+--A balanced expression is one where:
+
+--Every opening bracket has a corresponding closing bracket.
+
+--Brackets are properly nested (correct order).
+
+
+Examples:
+
+(1+2)
+
+{[()()]}
+
+<{(2+3)*[5]}>
+
+
+Where the followings are not balanced:
+
+
+(1+2 : (missing ))
+
+(1+2] : (mismatched ])
+
+((1+2) : (extra opening)
+
+){1+2} : (wrong order)
+
+
+
+Real-life analogy:
+-------------------
+
+Think of brackets as doors:
+
+--When you open a door ((, {, <, [), you must close it in the reverse order.
+
+--If you open multiple doors, you close the most recent one first (LIFO principle → use Stack).
+
+Example:
+
+Suppose, 
+
+({[]})
+
+
+Read left to right:
+
+(
+{
+[
+
+--The most recent opening bracket is: [
+
+Therefore:
+
+]
+
+must close first.
+
+This is exactly:
+
+Last Opened
+First Closed
+
+--which matches Stack behavior.
+
+
+
+Core Idea:
+
+Whenever we see:
+
+(
+{
+[
+
+--Push it into the stack.
+
+Whenever we see:
+
+)
+}
+]
+
+--Check whether it matches the bracket on top of the stack.
+
+If it matches:
+
+pop()
+
+Otherwise:
+
+Invalid
+
+
+Algorithm:
+----------
+
+
+1. Traverse expression character by character.
+
+2. If you see an opening bracket, push it on the stack.
+
+3. If you see a closing bracket:
+
+--If the stack is empty →  unbalanced.
+
+--Otherwise pop from the stack and check if it matches.
+
+4. After traversing, if the stack is empty →  balanced.
+
+
+
+full code: 
+----------
+
+public static boolean isBalanced(String str) {
+
+
+    // legecy Java class implementation
+    //Stack<Character> stack = new Stack<>();
+
+    //Linked list implementation
+    //Deque<Character> stack = new LinkedList<>();
+
+
+   // Recommended for realtime applications
+      Deque<Character> stack = new ArrayDeque<>();
+
+    for (int i = 0; i < str.length(); i++) {
+
+        char ch = str.charAt(i);
+
+        if (ch == '(' || ch == '{' || ch == '[') {
+
+            stack.push(ch);
+        }
+
+        else if (ch == ')' || ch == '}' || ch == ']') {
+
+            if (stack.isEmpty()) {
+
+                return false;
+            }
+
+            char top = stack.pop();
+
+            if ((ch == ')' && top != '(') ||
+                (ch == '}' && top != '{') ||
+                (ch == ']' && top != '[')) {
+
+                return false;
+            }
+        }
+    }
+
+    return stack.isEmpty();
+}
+ 
+
+
+
+
+Complexity Analysis
+
+Let:
+
+n = length of string
+
+Time Complexity: O(n)
+
+--Each character is processed once.
+
+Space Complexity: O(n)
+
+
+--Worst case:
+
+(((((((
+
+--All opening brackets are stored.
+
+
+
+Refactoring the above bracket matching application:
+--------------------------------------------------
+
+--In the previous solution, bracket matching was done using multiple conditions:
+
+if ((ch == ')' && top != '(') ||
+    (ch == '}' && top != '{') ||
+    (ch == ']' && top != '[')) {
+
+    return false;
+}
+
+
+--This works correctly, but it becomes harder to maintain when new bracket types are added.
+
+Example:
+
+<>
+
+requires modifying the comparison logic.
+
+Better Approach: Using a Map
+-----------------------------
+
+--Instead of writing multiple conditions, we can store the bracket relationships in a map.
+
+Example:
+
+')' → '('
+'}' → '{'
+']' → '['
+'>' → '<'
+
+--Now whenever a closing bracket is encountered, we simply look up the corresponding opening bracket from the map.
+
+
+Advantages of Using a Map:
+--------------------------
+
+1. Easier to Extend
+
+--To support a new bracket type:
+
+<>
+
+simply add:
+
+'>', '<'
+
+to the map.
+
+--No other code changes are required.
+
+
+2. Cleaner Code
+
+--Instead of multiple comparisons:
+
+if ((ch == ')' && top != '(') ||
+    (ch == '}' && top != '{') ||
+    (ch == ']' && top != '['))
+
+
+we can write:
+
+if (stack.peek() != brackets.get(ch))
+
+which is much simpler.
+
+
+3. Better Maintainability
+
+--The bracket matching rules are stored in a single location:
+
+Map<Character, Character> brackets
+
+--making future modifications easier.
+
+
+full refactored code:
+--------------------
+
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Map;
+
+public class BracketDemo {
+
+    public static boolean isBalanced(String str) {
+
+        Deque<Character> stack = new ArrayDeque<>();
+
+        Map<Character, Character> brackets = Map.of(
+                ')', '(',
+                '}', '{',
+                ']', '[',
+                '>', '<'
+        );
+
+        for (char ch : str.toCharArray()) {
+
+            // Opening bracket
+            if (ch == '(' ||
+                ch == '{' ||
+                ch == '[' ||
+                ch == '<') {
+
+                stack.push(ch);
+            }
+
+            // Closing bracket
+            else if (brackets.containsKey(ch)) {
+
+                if (stack.isEmpty() ||
+                    stack.peek() != brackets.get(ch)) {
+
+                    return false;
+                }
+
+                stack.pop();
+            }
+        }
+
+        return stack.isEmpty();
+    }
+
+    public static void main(String[] args) {
+
+        String str1 = "{<(1+2)>}";
+        String str2 = "{(1+2]>}";
+        String str3 = "a+(b*c)-{d/e}";
+
+        System.out.println(isBalanced(str1) ? "Balanced" : "Not Balanced");
+
+        System.out.println(isBalanced(str2) ? "Balanced" : "Not Balanced");
+
+        System.out.println(isBalanced(str3) ? "Balanced" : "Not Balanced");
+
+    }
+}
+
+
+
+
+
+Note: The Stack algorithm remains exactly the same for the previous application:
+
+1. Opening bracket → push
+
+2. Closing bracket:
+      compare with top
+      pop if matched
+
+3. Stack must be empty at the end
+
+Only the bracket-matching logic has been improved using a Map.
+
+
+
+Time Complexity:
+
+Each character is processed once: O(n)
+
+Map lookup: O(1)
+
+Overall: O(n)
+
+Space Complexity: 
+
+Worst case: (((((((
+
+All opening brackets are stored in the stack: O(n)
+
+Although the Map uses additional memory, its size is fixed: 4 pairs
+and does not grow with the input.
+
+Therefore: O(1) (Constant Space)
+
+O(n) + O(1)
+
+which simplifies to: O(n)
+
+
+
+
+Postfix Expression Evaluation Using Stack:
+==========================================
+
+
+--Use a Stack to evaluate mathematical expressions written in Postfix Notation
+  (also called Reverse Polish Notation - RPN).
+
+Examples:
+
+2 3 +
+
+Result: 5
+
+
+5 1 2 + 4 * + 3 -
+
+Result: 14
+
+
+How Postfix Expressions are Evaluated:
+--------------------------------------
+
+Important Rule:
+
+--Whenever an operator is encountered:
+
+1. Take the two operands immediately before it.
+2. Apply the operator.
+3. Treat the result as a single new operand.
+4. Continue until the entire expression is processed.
+
+--This is exactly what a Stack helps us do efficiently.
+
+
+
+Postfix Expression:
+
+5 1 2 + 4 * + 3 -
+
+
+Step 1:
+
+1 2 +
+
+The '+' operator applies to the two values immediately before it:
+
+(1 + 2)
+
+Expression becomes conceptually:
+
+5 (1 + 2) 4 * + 3 -
+
+
+Step 2:
+
+(1 + 2) 4 *
+
+The '*' operator applies to these two operands:
+
+((1 + 2) * 4)
+
+Expression becomes:
+
+5 ((1 + 2) * 4) + 3 -
+
+
+Step 3:
+
+5 ((1 + 2) * 4) +
+
+The '+' operator applies to these two operands:
+
+(5 + ((1 + 2) * 4))
+
+Expression becomes:
+
+(5 + ((1 + 2) * 4)) 3 -
+
+
+Step 4:
+
+(5 + ((1 + 2) * 4)) 3 -
+
+The '-' operator applies to these two operands:
+
+((5 + ((1 + 2) * 4)) - 3)
+
+
+Final Infix Expression:
+-----------------------
+
+((5 + ((1 + 2) * 4)) - 3)
+
+
+Evaluation:
+-----------
+
+(1 + 2) = 3
+
+((1 + 2) * 4)
+= 3 * 4
+= 12
+
+(5 + 12)
+= 17
+
+(17 - 3)
+= 14
+
+
+Final Result:
+-------------
+
+14
+
+
+
+Why Do We Need Postfix?
+
+In infix expressions:
+
+2 + 3 * 4
+
+we must consider:
+
+Operator Precedence
+Parentheses
+Associativity
+
+
+--Computers often use Postfix (RPN) internally because it is easier to evaluate using a stack, without needing parentheses or complex precedence rules.
+
+
+
+In postfix expressions:
+
+2 3 4 * +
+
+the order of evaluation is already clear.
+
+No precedence rules are needed.
+
+This makes postfix evaluation very easy using a Stack.
+
+
+
+Why Stack?
+---------
+
+
+Consider:
+
+2 3 +
+
+Read left to right.
+
+Read 2
+
+Push into stack.
+
+[2]
+
+
+Read 3
+
+Push into stack.
+
+[2, 3]
+
+
+Read +
+
+Need two operands.
+
+The most recently seen operands are:
+
+3
+2
+
+These are exactly at the top of the stack.
+
+Pop:
+
+operand2 = 3
+operand1 = 2
+
+Calculate:
+
+2 + 3 = 5
+
+Push result:
+
+[5]
+
+Final answer:
+
+5
+
+
+Core Idea:
+
+--When reading the expression:
+
+If token is a number: 
+
+	push()
+
+
+If token is an operator"
+
+	Pop operand2
+	Pop operand1
+
+Compute:
+
+operand1 operator operand2
+
+Push result
+
+
+Algorithm:
+----------
+
+
+For each token:
+
+    If number:
+        push(number)
+
+    Else if operator:
+
+        operand2 = pop()
+        operand1 = pop()
+
+        result =
+            operand1 operator operand2
+
+        push(result)
+
+Answer = stack.pop()
+
+
+
+
+Example:
+
+String expression = "2 3 4 * +";
+
+Tokens are separated by spaces.
+Operands are integers.
+Supported operators:
++, -, *, /
+
+
+
+full code:
+----------
+
+
+
+import java.util.ArrayDeque;
+import java.util.Deque;
+
+public class PostfixCalculator {
+
+    public static int evaluatePostfix(String expression) {
+
+        Deque<Integer> stack = new ArrayDeque<>();
+
+        String[] tokens = expression.split(" "); // "\\s+" for multiple spaces
+
+        for (String token : tokens) {
+
+             if (! "+-*/".contains(token))  { // other then operators
+
+                stack.push(Integer.parseInt(token));
+            }
+
+            else {
+
+                int operand2 = stack.pop();
+                int operand1 = stack.pop();
+
+                int result = 0;
+
+                switch (token) {
+
+                    case "+":
+                        result = operand1 + operand2;
+                        break;
+
+                    case "-":
+                        result = operand1 - operand2;
+                        break;
+
+                    case "*":
+                        result = operand1 * operand2;
+                        break;
+
+                    case "/":
+                        result = operand1 / operand2;
+                        break;
+
+		   default:
+                	throw new IllegalArgumentException("Invalid Operator");
+			
+                }
+
+                stack.push(result);
+            }
+        }
+
+        return stack.pop();
+    }
+
+    public static void main(String[] args) {
+
+        String expression1 = "2 3 4 * +";
+
+        System.out.println(evaluatePostfix(expression1)); //14
+
+	String expression2 = "12 3 4 * +";
+
+        System.out.println(evaluatePostfix(expression2)); //24
+
+
+    }
+}
+
+
+
+Adding final Validation (Optional) to the above example:
+
+Current:
+
+return stack.pop();
+
+For a valid postfix expression, the stack should contain exactly one element.
+
+Optional improvement:
+
+int result = stack.pop();
+
+if (!stack.isEmpty()) {
+    throw new IllegalArgumentException( "Invalid Postfix Expression");
+}
+
+return result;
+
+This catches malformed expressions.
+
+Example:
+
+2 3 4
+
+--which leaves extra values in the stack.
+
+
+
+
+
+
+Student Task: (Homework)
+=============
+
+1. Next Greater Element (NGE):
+
+Problem Statement:
+------------------
+
+--You are given an array of numbers, e.g., arr = [4, 5, 2, 25].
+
+--For each element in the array, you need to find the first greater element to its right.
+
+--If there is no greater element to the right, return -1 for that element.
+
+Example:
+--------
+
+Input: arr = [4, 5, 2, 25]
+Output: [5, 25, 25, -1]
+
+
+Explanation:
+
+4 → next greater is 5
+
+5 → next greater is 25
+
+2 → next greater is 25
+
+25 → no greater element → -1
+
+
+
+Solution Approach1 using Stack:
+------------------------------
+
+--We can also solve this efficiently using a stack by traversing from right to left:
+
+1. Initialize an empty stack.
+
+2. Traverse the array from right to left.
+
+3. For each element current:
+
+--While the stack is not empty and stack.top() <= current → pop from the stack.
+
+--If the stack is empty → no greater element exists → result[i] = -1.
+
+--Else → stack.top() is the Next Greater Element → result[i] = stack.top().
+
+--Push current onto the stack.
+
+4. After traversal, the result array contains all NGEs.
+
+
+In summery:
+----------
+
+--The stack always keeps the “potential greater elements” from the right side.
+
+--If the stack’s top element is smaller than the current element, then it can never be the Next Greater Element (NGE) → so we remove (pop) it.
+
+--If a bigger element remains on the stack → that is the NGE for the current element.
+
+--If nothing is left in the stack → it means there is no greater element → put -1.
+
+
+
+Approach2: Left-to-Right Traversal (Using Stack of Indices)
+-----------------------------------------------------------
+
+--This approach is also very popular because it directly finds the NGE while scanning left to right.
+
+Idea:
+-----
+
+1. Traverse the array from left to right.
+
+2. Use a stack to store indices of elements for which the NGE hasn’t been found yet.
+
+3. For each new element: 
+
+--check if it’s greater than the element at the index on top of the stack.
+
+--If yes → this new element is the NGE for that index stored inside the top of the stack → update result and pop the stack.
+
+--Repeat until stack is empty or top element is greater than or equal to the current element.
+
+4. push the current element index onto the stack.
+
+
+--At the end, indices left in stack have no greater element → assign -1.
+
+
+
+
+Queue DataStructure:
+====================
+
+Until now we have studied:
+
+Stack = LIFO (Last In First Out)
+
+Now we move to:
+
+Queue = FIFO (First In First Out)
+
+--Queue is one of the most widely used data structures in:
+
+Scheduling
+BFS Traversal
+Producer-Consumer
+Task Processing
+Message Queues
+
+
+Real Life Analogy:
+--------------------
+
+The Ticket Counter Line: 
+
+--Imagine you’re at a movie ticket counter. People arrive one by one, stand in a line, and get served in the order they arrived. This is how a Queue works in programming.
+
+--First Come, First Served (FCFS) – or in another terms: FIFO (First In, First Out).
+
+
+Queue Terminology:
+
+Front
+Rear
+
+
+
+	Front		  Rear
+	--------------------
+     <-	A  B  C  D   E     <-
+	--------------------
+
+--Elements are inserted from the rear end and exit from Front end.
+
+Operation name:
+
+enqueue(): for insertion
+
+dequeue(): for deletion
+
+
+
+
+Types of Queues:
+----------------
+
+Like ticket lines, queues also come in different varieties (some normal, some "special customers only"):
+
+1. Simple Queue – Normal line, FIFO.
+
+2. Circular Queue: It connects the end of the queue back to the front, like a loop. This helps reuse the empty spaces left behind when elements are removed from the front.
+
+Example:
+
+--Think of a merry-go-round in an amusement park:
+--People sit in seats one after another.
+--When the last seat is taken, the next person doesn’t wait for a “new” ride — they can sit in the first seat again (if it’s empty).
+--The queue “wraps around” instead of wasting seats.
+
+
+3. Priority Queue: VIPs who always get tickets before normal people. (Annoying in real life, useful in code!)
+
+--A Priority Queue is a special kind of queue where each element has a priority.
+--Unlike a normal queue (FIFO), the highest priority element is served first, regardless of when it entered.
+--If two elements have the same priority, then FIFO order applies among them.
+
+Example:
+
+Airport Check-in Counter:
+
+--Normal passengers stand in a regular queue.
+--Suddenly a VIP passenger (first-class ticket holder) comes. The staff calls them first, even though they just arrived.
+--That’s exactly how a Priority Queue works — priority matters more than arrival order.
+
+
+
+4. Deque (Double Ended Queue): A Deque (pronounced “deck”) allows insertion and deletion from both ends — front and rear.
+
+Example:
+
+A Bus with Two Doors:
+
+--Imagine a long bus with two doors:
+
+--People can get in from the front door or the rear door.
+
+--People can also exit from both doors.
+
+That’s a Deque: entry and exit possible at both ends.
+
+
+
+
+
+Core Operations of Queue:
+========================
+
+1. enqueue(item) → Add an item to the back of the line. O(1)
+
+2. dequeue() → Remove an item from the front of the line. O(1)
+
+3. peek()/front() → See who’s at the front without removing. O(1)
+
+4. back()/rear() → See who’s at the back without removing. O(1)
+
+5. isEmpty() → Is the queue empty? O(1)
+
+6. isFull() → (For fixed-size queues) Is the queue full? O(1)
+
+7. display() → To traverse from front to rear: Optional O(n)
+
+
+Note: queue supports only restricted operations: you cannot access elements in the middle.
+
+
+
+Queue Implementation Using Array: (Linear Way):
+------------------------------------------------
+
+Suppose:
+
+int[] queue = new int[5];
+
+We maintain:
+
+front
+rear
+size
+
+Initial State:
+
+
+front = 0;
+rear = -1;
+size = 0;
+
+Visualization:
+
+Index
+
+
+
+   F 
+R
+↓  ↓
+   0  1  2  3  4
+   _  _  _  _  _
+
+
+
+enqueue():
+
+Idea:
+
+Move rear forward.
+
+Insert element at rear.
+
+Increase size.
+
+Algorithm
+
+rear++
+
+queue[rear] = value
+
+size++
+
+
+
+Dry Run
+
+Execute:
+
+enqueue(10)
+
+Result:
+
+
+
+   F 
+   R
+   ↓
+   0   1   2   3   4
+   10  _   _   _   _
+
+
+
+Execute:
+
+enqueue(20)
+
+Result:
+
+
+    
+   F   R
+   ↓   ↓
+   0   1   2   3   4
+   10  20  _   _   _
+
+
+Execute:
+
+enqueue(30)
+
+Result:
+
+
+   F       R
+   ↓       ↓
+   0   1   2   3   4
+   10  20  30  _   _
+
+
+dequeue():
+
+Move front:
+
+front++
+
+
+Step 1:
+
+Store queue[front]
+
+Step 2:
+
+front++
+
+Step 3:
+
+size--
+
+Step 4:
+
+Return removed value
+
+
+
+
+
+Result:
+
+
+       F   R
+       ↓   ↓
+   0   1   2   3   4
+   10  20  30  _   _
+
+
+Logical Queue:
+
+20 30
+
+Notice:
+
+10 still physically exists inside the original array.
+
+But logically it has been removed.
+
+
+Important Observation
+
+After:
+
+enqueue(10)
+enqueue(20)
+enqueue(30)
+
+dequeue()
+dequeue()
+dequeue()
+
+we get:
+
+front = 3
+rear = 2
+
+Queue is empty.
+
+
+When front > rear
+
+--This is one indication that all previously inserted
+--elements have been removed.
+
+
+
+Now insert:
+
+enqueue(40)
+enqueue(50)
+
+Result:
+
+10 20 30 40 50
+
+Array becomes full.
+
+Because:
+
+rear = array.length-1;
+
+
+But logically:
+
+Only 40 and 50 exist.
+
+Indices:
+
+0
+1
+2
+
+are unused.
+
+The Waste Problem:
+
+Consider:
+
+int[] queue = new int[5];
+
+State:
+
+front = 3
+rear = 4
+
+Array:
+
+10 20 30 40 50
+
+Logical Queue:
+
+40 50
+
+
+Now:
+
+enqueue(60)
+
+cannot happen because:
+
+rear == array.length - 1
+
+Even though:
+
+Indices 0,1,2 are available.
+
+
+This is the biggest drawback of a normal array queue.
+
+Queue Full Condition
+
+size == array.length
+
+or
+
+rear == array.length - 1
+
+(depending on implementation)
+
+
+Queue Empty Condition:
+
+size == 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+full code:
+-----------
+
+package com.hdfc.queue;
+
+public class ArrayQueue {
+
+    private int[] queue;
+
+    private int front;
+    private int rear;
+    private int size;
+
+    public ArrayQueue(int capacity) {
+
+        queue = new int[capacity];
+
+        front = 0;
+        rear = -1;
+        size = 0;
+    }
+
+    public boolean isEmpty() {
+
+        return size == 0;
+    }
+
+    public boolean isFull() {
+
+        //return size == queue.length;
+
+        return rear == queue.length - 1;
+
+    }
+
+    public void enqueue(int data) {
+
+        if (isFull()) {
+
+            throw new IllegalStateException("Queue Overflow");
+        }
+
+        rear++;
+
+        queue[rear] = data;
+
+        size++;
+    }
+
+    public int dequeue() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Queue Underflow");
+        }
+
+        int removedValue = queue[front];
+
+        front++;
+
+        size--;
+
+        return removedValue;
+    }
+
+    public int peek() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Queue Underflow");
+        }
+
+        return queue[front];
+    }
+
+    public int rear() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Queue Underflow");
+        }
+
+        return queue[rear];
+    }
+
+
+    public int size() {
+
+        return size;
+    }
+
+    public void display() {
+
+        if (isEmpty()) {
+
+            System.out.println("Queue is Empty: ");
+            return;
+        }
+
+        System.out.println("Queue: ");
+        for (int i = front; i <= rear; i++) {
+            System.out.println(queue[i]+" ");
+        }
+
+    }
+
+    public static void main(String[] args) {
+
+        ArrayQueue q = new ArrayQueue(5);
+
+        q.enqueue(10);
+        q.enqueue(20);
+        q.enqueue(30);
+        q.enqueue(40);
+        q.enqueue(50);
+
+        q.display();
+
+        System.out.println("Queue front is: " + q.peek());
+        System.out.println("Queue rear is: " + q.rear());
+        System.out.println("Queue size: " + q.size());
+
+        System.out.println("Front is processed: " + q.dequeue());
+
+        q.display();
+
+        //Even though size = 4, and Queue capacity is 5 but we can't enqueue another element
+        // q.enqueue(60);
+
+
+    }
+
+}
+
+
+
+--Here the problem is not that the array is full.
+
+--The problem is that rear has reached the end of the array.
+
+Even though free positions exist at the beginning of the array,
+
+the linear queue cannot reuse them.
+
+--This is exactly why Circular Queue was introduced.
+
+
+
+
+Circular Queue:
+===============
+
+Core Idea of Circular Queue:
+
+Instead of moving only forward:
+
+0 → 1 → 2 → 3 → 4
+
+--we connect the last index back to the first index.
+
+
+When we reach:
+
+4
+
+the next position becomes:
+
+0
+
+again.
+
+This is called:
+
+Wrap Around
+
+
+
+The magic formula is:
+
+(nextIndex) % capacity
+
+Example:
+
+(4 + 1) % 5
+
+Result: 0
+
+(2 + 1) % 5
+
+Result: 3
+
+
+Therefore:
+
+rear = (rear + 1) % queue.length;
+
+moves rear circularly.
+
+
+
+enqueue():
+
+Algorithm
+
+
+1. Check Full
+
+2. rear = (rear + 1) % capacity
+
+3. queue[rear] = value
+
+4. size++
+
+
+
+dequeue():
+
+Move front:
+
+front = (front + 1) % queue.length;
+
+
+Queue Full Condition:
+
+Since rear can wrap around:
+
+rear == queue.length - 1
+
+is no longer valid.
+
+Instead:
+
+size == queue.length
+
+
+Queue Empty Condition:
+
+size == 0
+
+
+update the diplay() method:
+
+public void display() {
+
+    if (isEmpty()) {
+
+        System.out.println("Queue is Empty");
+        return;
+    }
+
+    System.out.println("Queue:");
+
+    for (int i = 0; i < size; i++) {
+
+        int index = (front + i) % queue.length;
+
+        System.out.println(queue[index]);
+    }
+}
+
+
+
+Complete implementation = Circular array Queue
+
+
+CircularQueue.java:
+------------------
+
+
+package com.hdfc.queue;
+
+public class CircularQueue {
+
+    private int[] queue;
+
+    private int front;
+    private int rear;
+    private int size;
+
+    public CircularQueue(int capacity) {
+
+        queue = new int[capacity];
+
+        front = 0;
+        rear = -1;
+        size = 0;
+    }
+
+    public boolean isEmpty() {
+
+        return size == 0;
+    }
+
+    public boolean isFull() {
+
+        return size == queue.length;
+    }
+
+    public void enqueue(int data) {
+
+        if (isFull()) {
+
+            throw new IllegalStateException("Queue Overflow");
+        }
+
+        rear = (rear + 1) % queue.length;
+
+        queue[rear] = data;
+
+        size++;
+    }
+
+    public int dequeue() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Queue Underflow");
+        }
+
+        int removedValue = queue[front];
+
+        front = (front + 1) % queue.length;
+
+        size--;
+
+        return removedValue;
+    }
+
+    public int peek() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Queue Underflow");
+        }
+
+        return queue[front];
+    }
+
+    public int size() {
+
+        return size;
+    }
+
+    public int rear() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Queue Underflow");
+        }
+
+        return queue[rear];
+    }
+
+
+    public void display() {
+
+        if (isEmpty()) {
+
+            System.out.println("Queue is Empty");
+            return;
+        }
+
+        System.out.println("Queue:");
+
+        for (int i = 0; i < size; i++) {
+
+            int index = (front + i) % queue.length;
+
+            System.out.println(queue[index]);
+        }
+    }
+
+    public static void main(String[] args) {
+
+        CircularQueue q = new CircularQueue(5);
+
+        q.enqueue(10);
+        q.enqueue(20);
+        q.enqueue(30);
+        q.enqueue(40);
+        q.enqueue(50);
+
+        q.display();
+
+        System.out.println("Queue front is: " + q.peek());
+        System.out.println("Queue rear is: " + q.rear());
+        System.out.println("Queue size: " + q.size());
+
+        System.out.println("Front is processed: " + q.dequeue());
+
+        q.display();
+
+        //Now we can enqueue another element also
+        q.enqueue(60);
+
+        System.out.println("After enqueue: 60 ");
+
+        q.display();
+
+    }
+
+}
+
+
+
+
+Output:
+
+Queue:
+10
+20
+30
+40
+50
+Queue front is: 10
+Queue rear is: 50
+Queue size: 5
+Front is processed: 10
+Queue:
+20
+30
+40
+50
+After enqueue: 60 
+Queue:
+20
+30
+40
+50
+60
+
+Process finished with exit code 0
+
+
+
+Queue using Linked list:
+========================
+
+Using Circular Queue, we solved the wasted-space problem using:
+
+However, a Circular Queue still has one limitation:
+
+Fixed Capacity
+
+Example:
+
+CircularQueue queue = new CircularQueue(5);
+
+Maximum elements: 5
+
+What if we need:
+
+6
+7
+8
+100
+1000
+
+elements?
+
+We would need a larger array.
+
+
+A Linked List Queue grows dynamically.
+
+As long as memory is available,
+new nodes can be added.
+
+
+
+
+Consider:
+
+Front → 10 → 20 → 30 → Rear
+
+If:
+
+Front = Head
+Rear  = Tail
+
+Then:
+
+enqueue()
+
+Insert at tail. O(1)
+
+dequeue()
+
+Remove from head. O(1)
+
+
+Therefore:
+
+Head = Front
+
+Tail = Rear
+
+
+
+Node structure:
+
+public class Node {
+
+    int data;
+    Node next;
+
+    public Node(int data) {
+
+        this.data = data;
+    }
+}
+
+
+LinkedListQueue Structure:
+
+We maintain:
+
+head
+tail
+size
+
+Initial State:
+
+
+head = null;
+tail = null;
+size = 0;
+
+Queue is empty.
+
+
+full Code:
+----------
+
+LinkedListQueue.java
+----------------------
+
+public class LinkedListQueue {
+
+    private Node head;
+    private Node tail;
+    private int size;
+
+    private static class Node {
+
+        int data;
+        Node next;
+
+        Node(int data) {
+            this.data = data;
+        }
+    }
+
+    public boolean isEmpty() {
+
+        return size == 0;
+    }
+
+    public int size() {
+
+        return size;
+    }
+
+    public void enqueue(int data) {
+
+        Node newNode = new Node(data);
+
+        if (isEmpty()) {
+
+            head = newNode;
+            tail = newNode;
+        }
+
+        else {
+
+            tail.next = newNode;
+            tail = newNode;
+        }
+
+        size++;
+    }
+
+    public int dequeue() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Queue Underflow");
+        }
+
+        int removedValue = head.data;
+
+        head = head.next;
+
+        if (head == null) {
+
+            tail = null;
+        }
+
+        size--;
+
+        return removedValue;
+    }
+
+    public int peek() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Queue Underflow");
+        }
+
+        return head.data;
+    }
+
+    public int rear() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Queue Underflow");
+        }
+
+        return tail.data;
+    }
+
+    public void display() {
+
+        if (isEmpty()) {
+
+            System.out.println("Queue is Empty");
+            return;
+        }
+
+        System.out.print("Queue: ");
+
+        Node current = head;
+
+        while (current != null) {
+
+            System.out.print(current.data + " ");
+
+            current = current.next;
+        }
+
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+
+        LinkedListQueue q = new LinkedListQueue();
+
+        q.enqueue(10);
+        q.enqueue(20);
+        q.enqueue(30);
+        q.enqueue(40);
+
+        q.display();
+
+        System.out.println("Front element: " + q.peek());
+        System.out.println("Rear element: " + q.rear());
+        System.out.println("Queue size: " + q.size());
+
+        System.out.println("Dequeued: " + q.dequeue());
+
+        q.display();
+
+        q.enqueue(50);
+
+        System.out.println("After enqueue 50:");
+
+        q.display();
+
+        System.out.println("Front element: " + q.peek());
+        System.out.println("Rear element: " + q.rear());
+        System.out.println("Queue size: " + q.size());
+    }
+}
+
+
+
+
+Java Queue implementation:
+----------------------------
+
+Queue<Integer> q = new LinkedList<>();
+
+Queue<Integer> q = new ArrayDeque<>();
+
+
+
+
+
+Deque (Double Ended Queue):
+==========================
+
+
+A normal Queue allows:
+
+enqueue()  → Rear
+
+dequeue()  → Front
+
+
+
+You can:
+
+Insert only at Rear
+
+Remove only from Front
+
+
+What if we want:
+
+Insert at Front
+Insert at Rear
+
+Remove from Front
+Remove from Rear
+
+Then we use:
+
+Deque
+
+(pronounced "Deck")
+
+
+
+
+What is a Deque?
+
+Deque stands for:
+
+Double Ended Queue
+
+Meaning:
+
+Both ends are open.
+
+
+Real Life Analogy:
+-------------------
+A Bus with Two Doors
+
+Imagine a bus:
+
+
+
+Front Door        Rear Door
+
+Passengers can:
+
+Enter from Front
+Enter from Rear
+
+Exit from Front
+Exit from Rear
+
+--That is exactly how a Deque works.
+
+
+
+Supported Operations:
+---------------------
+
+Insert at Front: addFirst()
+
+Insert at Rear: addLast()
+
+Remove from Front: removeFirst()
+
+Remove from Rear: removeLast()
+
+View Front: peekFirst()
+
+View Rear: peekLast()
+
+
+Why Do We Need a Deque?
+------------------------
+
+
+--Because some problems require:
+
+Fast insertion and deletion
+from both ends.
+
+Examples:
+
+Sliding Window Maximum
+
+Palindrome Checking
+
+Undo / Redo Systems
+
+Browser History
+
+Task Scheduling
+
+
+Java Deque Interface:
+
+Java provides:
+
+Deque<E> interface
+
+Most commonly implemented using:
+
+ArrayDeque<E>
+
+
+import java.util.ArrayDeque;
+import java.util.Deque;
+
+Deque<Integer> deque = new ArrayDeque<>();
+
+
+Note: Java Provided Deque can behave like a Stack.
+
+deque.push(10);
+deque.push(20);
+
+deque.pop();
+
+This is one reason why:
+
+Stack
+
+is rarely used in modern Java.
+
+Instead:
+
+ArrayDeque
+
+is preferred.
+
+
+
+
+For Custom Deque implementation we prefer:
+
+Circular Array based Deque
+Doubly Linked list based Deque
+
+
+Deque requires:
+
+addFirst()
+addLast()
+
+removeFirst()
+removeLast()
+
+
+
+With Normal Array: Memory size waste issue will be there
+
+With a Singly Linked List:
+
+removeLast()
+
+would require traversal:
+
+O(n)
+
+A Doubly Linked List allows all Deque operations in:
+
+O(1)
+
+which is exactly what a Deque should provide.
+
+
+
+Custom Deque Implementation:
+=============================
+
+1. Circular Array based Deque
+
+--Here we need to circulate our array for:
+
+addFirst()
+addLast()
+removeFist()
+removeLast() 
+
+
+
+full code:
+----------
+
+public class CircularArrayDeque {
+
+    private int[] deque;
+
+    private int front;
+    private int rear;
+    private int size;
+
+    public CircularArrayDeque(int capacity) {
+
+        deque = new int[capacity];
+
+        front = 0;
+        rear = -1;
+        size = 0;
+    }
+
+    public boolean isEmpty() {
+
+        return size == 0;
+    }
+
+    public boolean isFull() {
+
+        return size == deque.length;
+    }
+
+    public int size() {
+
+        return size;
+    }
+
+    public void addFirst(int data) {
+
+        if (isFull()) {
+
+            throw new IllegalStateException("Deque Overflow");
+        }
+
+        front = (front - 1 + deque.length) % deque.length;
+
+        deque[front] = data;
+
+        size++;
+
+        if (size == 1) {
+
+            rear = front;
+        }
+    }
+
+    public void addLast(int data) {
+
+        if (isFull()) {
+
+            throw new IllegalStateException("Deque Overflow");
+        }
+
+        rear = (rear + 1) % deque.length;
+
+        deque[rear] = data;
+
+        size++;
+
+        if (size == 1) {
+
+            front = rear;
+        }
+    }
+
+    public int removeFirst() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Deque Underflow");
+        }
+
+        int removedValue = deque[front];
+
+        front = (front + 1) % deque.length;
+
+        size--;
+
+        return removedValue;
+    }
+
+    public int removeLast() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Deque Underflow");
+        }
+
+        int removedValue = deque[rear];
+
+        rear = (rear - 1 + deque.length) % deque.length;
+
+        size--;
+
+        return removedValue;
+    }
+
+    public int peekFirst() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Deque Underflow");
+        }
+
+        return deque[front];
+    }
+
+    public int peekLast() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Deque Underflow");
+        }
+
+        return deque[rear];
+    }
+
+    public void display() {
+
+        if (isEmpty()) {
+
+            System.out.println("Deque is Empty");
+            return;
+        }
+
+        System.out.print("Deque: ");
+
+        for (int i = 0; i < size; i++) {
+
+            int index = (front + i) % deque.length;
+
+            System.out.print(deque[index] + " ");
+        }
+
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+
+        CircularArrayDeque deque = new CircularArrayDeque(5);
+
+        deque.addLast(10);
+        deque.addLast(20);
+        deque.addLast(30);
+
+        deque.display();
+
+        deque.addFirst(5);
+
+        deque.display();
+
+        deque.addFirst(1);
+
+        deque.display();
+
+        System.out.println("First: " + deque.peekFirst());
+        System.out.println("Last: " + deque.peekLast());
+
+        System.out.println("Removed First: " + deque.removeFirst());
+
+        deque.display();
+
+        System.out.println("Removed Last: " + deque.removeLast());
+
+        deque.display();
+
+        System.out.println("Size: " + deque.size());
+    }
+}
+
+
+
+
+2. Doubly Linked list based Deque implementation:
+--------------------------------------------------
+
+
+Node Class structure:
+
+
+public class Node {
+
+    int data;
+
+    Node prev;
+    Node next;
+
+    public Node(int data) {
+        this.data = data;
+    }
+}
+
+
+
+public class LinkedListDeque {
+
+    private Node head;
+    private Node tail;
+    private int size;
+
+
+
+    public boolean isEmpty() {
+
+        return size == 0;
+    }
+
+    public int size() {
+
+        return size;
+    }
+
+    public void addFirst(int data) {
+
+        Node newNode = new Node(data);
+
+        if (isEmpty()) {
+
+            head = newNode;
+            tail = newNode;
+        }
+
+        else {
+
+            newNode.next = head;
+            head.prev = newNode;
+
+            head = newNode;
+        }
+
+        size++;
+    }
+
+    public void addLast(int data) {
+
+        Node newNode = new Node(data);
+
+        if (isEmpty()) {
+
+            head = newNode;
+            tail = newNode;
+        }
+
+        else {
+
+            tail.next = newNode;
+            newNode.prev = tail;
+
+            tail = newNode;
+        }
+
+        size++;
+    }
+
+    public int removeFirst() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Deque Underflow");
+        }
+
+        int removedValue = head.data;
+
+        if (head == tail) {
+
+            head = null;
+            tail = null;
+        }
+
+        else {
+
+            head = head.next;
+            head.prev = null;
+        }
+
+        size--;
+
+        return removedValue;
+    }
+
+    public int removeLast() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Deque Underflow");
+        }
+
+        int removedValue = tail.data;
+
+        if (head == tail) {
+
+            head = null;
+            tail = null;
+        }
+
+        else {
+
+            tail = tail.prev;
+            tail.next = null;
+        }
+
+        size--;
+
+        return removedValue;
+    }
+
+    public int peekFirst() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Deque Underflow");
+        }
+
+        return head.data;
+    }
+
+    public int peekLast() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Deque Underflow");
+        }
+
+        return tail.data;
+    }
+
+    public void displayForward() {
+
+        if (isEmpty()) {
+
+            System.out.println("Deque is Empty");
+            return;
+        }
+
+        System.out.print("Deque: ");
+
+        Node current = head;
+
+        while (current != null) {
+
+            System.out.print(current.data + " ");
+
+            current = current.next;
+        }
+
+        System.out.println();
+    }
+
+    public void displayBackward() {
+
+        if (isEmpty()) {
+
+            System.out.println("Deque is Empty");
+            return;
+        }
+
+        System.out.print("Deque (Reverse): ");
+
+        Node current = tail;
+
+        while (current != null) {
+
+            System.out.print(current.data + " ");
+
+            current = current.prev;
+        }
+
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+
+        LinkedListDeque deque = new LinkedListDeque();
+
+        deque.addLast(10);
+        deque.addLast(20);
+        deque.addLast(30);
+
+        deque.displayForward();
+
+        deque.addFirst(5);
+        deque.addFirst(1);
+
+        deque.displayForward();
+
+        System.out.println("First: " + deque.peekFirst());
+        System.out.println("Last : " + deque.peekLast());
+
+        System.out.println("Removed First: " + deque.removeFirst());
+
+        deque.displayForward();
+
+        System.out.println("Removed Last: " + deque.removeLast());
+
+        deque.displayForward();
+
+        deque.displayBackward();
+
+        System.out.println("Size: " + deque.size());
+    }
+}
+
+
+
+
+
+
+Priority Queue:
+===============
+
+
+--A Priority Queue is a special type of queue where:
+
+Priority matters more than arrival order.
+
+
+--Here each element is associated with a priority. 
+
+
+--Elements are removed based on their priority, not on the order in which they were inserted.
+
+--Higher-priority elements are served before lower-priority elements.
+
+--If two elements have the same priority, they are usually served according to their insertion order (implementation dependent).
+
+
+
+
+Real Life Analogy:
+------------------
+
+Hospital Emergency Room
+
+--Patients arrive in this order:
+
+Patient A → Fever
+Patient B → Heart Attack
+Patient C → Cold
+
+Normal Queue (FIFO):
+
+A → B → C
+
+would serve:
+
+A first
+
+which is dangerous.
+
+Priority Queue:
+
+Heart Attack  → Highest Priority
+Fever         → Medium Priority
+Cold          → Low Priority
+
+Service Order:
+
+B → A → C
+
+Even though:
+
+B arrived later.
+
+
+
+
+--A Priority Queue stores elements together with a priority.
+
+When removing elements:
+
+Highest Priority element
+is removed first.
+
+--Arrival order is ignored unless priorities are equal.
+
+
+
+Example
+
+Suppose we insert:
+
+Task A → Priority 2
+Task B → Priority 5
+Task C → Priority 1
+Task D → Priority 4
+
+Logical Priority Queue:
+
+Priority
+
+5 → Task B
+4 → Task D
+2 → Task A
+1 → Task C
+
+Removal order:
+
+Task B
+Task D
+Task A
+Task C
+
+
+
+Where Are Priority Queues Used?
+-------------------------------
+
+
+CPU Scheduling
+
+Hospital Triage
+
+Network Routing
+
+Dijkstra's Algorithm
+
+A* Path Finding
+
+Job Scheduling
+
+Event Simulation
+
+
+
+
+
+Types of Priority Queue:
+------------------------
+
+1. Max Priority Queue
+
+--Element with the highest priority is removed first.
+
+Example:
+
+10 20 30 40
+
+Priority:
+
+1  5  3  2
+
+Removal Order:
+
+20
+30
+40
+10
+
+
+2. Min Priority Queue
+
+--Element with the lowest priority is removed first.
+
+Example:
+
+Elements:
+
+10 20 30 40
+
+Priority:
+
+1  5  3  2
+
+Removal Order:
+
+10
+40
+30
+20
+
+
+
+
+We can implement the Priority Queue using multiple approches:
+
+
+Possible approaches:
+
+1. Array (sorted/unsorted)
+2. Linked List (sorted/unsorted)
+3. Heap (Most Common)
+
+
+1. Array Approach
+
+Insert: O(1)
+
+Finding highest priority: O(n)
+
+Removing highest priority: O(n)
+
+Not efficient.
+
+
+2. Sorted List Approach
+
+Insert: O(n)
+
+Remove highest priority: O(1)
+
+Still not ideal.
+
+
+
+Heap Approach:
+
+--This is what Java uses internally.
+
+In practice, Priority Queues are usually implemented using
+a Binary Heap because it provides efficient insertion
+and removal operations.
+
+
+
+
+Complexities:
+
+
+
+| Operation               | Complexity |
+| ----------------------- | ---------- |
+| Add                     | O(log n)   |
+| Remove Highest Priority | O(log n)   |
+| Peek Highest Priority   | O(1)       |
+
+
+
+
+
+Array based priority Queue implementation:
+------------------------------------------
+
+
+Element.java:
+-------------
+
+public class Element {
+
+        int data;
+        int priority;
+
+        Element(int data, int priority) {
+            this.data = data;
+            this.priority = priority;
+        }
+    }
+
+
+
+
+PriorityQueueArray.java:
+-------------------------
+
+
+public class PriorityQueueArray {
+
+    private Element[] queue;
+    private int size;
+
+    
+
+    public PriorityQueueArray(int capacity) {
+
+        queue = new Element[capacity];
+        size = 0;
+    }
+
+    public boolean isEmpty() {
+
+        return size == 0;
+    }
+
+    public boolean isFull() {
+
+        return size == queue.length;
+    }
+
+    public int size() {
+
+        return size;
+    }
+
+    public void insert(int data, int priority) {
+
+        if (isFull()) {
+
+            throw new IllegalStateException("Priority Queue Overflow");
+        }
+
+        queue[size] = new Element(data, priority);
+
+        size++;
+    }
+
+
+    //getting the highest priority element
+    public int peek() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Priority Queue Underflow");
+        }
+
+        int highestPriorityIndex = 0;
+
+        for (int i = 1; i < size; i++) {
+
+            if (queue[i].priority > queue[highestPriorityIndex].priority) {
+
+                highestPriorityIndex = i;
+            }
+        }
+
+        return queue[highestPriorityIndex].data;
+    }
+
+
+
+    public int remove() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Priority Queue Underflow");
+        }
+
+        int highestPriorityIndex = 0;
+
+        for (int i = 1; i < size; i++) {
+
+            if (queue[i].priority > queue[highestPriorityIndex].priority) {
+
+                highestPriorityIndex = i;
+            }
+        }
+
+        int removedValue = queue[highestPriorityIndex].data;
+
+        queue[highestPriorityIndex] = queue[size - 1];
+
+        queue[size - 1] = null;
+
+        size--;
+
+        return removedValue;
+    }
+
+
+    public void display() {
+
+        if (isEmpty()) {
+
+            System.out.println("Priority Queue is Empty");
+            return;
+        }
+
+        System.out.println("Data(Priority):");
+
+        for (int i = 0; i < size; i++) {
+
+            System.out.println(
+                    queue[i].data + "(" + queue[i].priority + ")");
+        }
+    }
+
+    public static void main(String[] args) {
+
+        PriorityQueueArray pq = new PriorityQueueArray(10);
+
+        pq.insert(10, 2);
+        pq.insert(20, 5);
+        pq.insert(30, 1);
+        pq.insert(40, 8);
+        pq.insert(50, 3);
+
+        pq.display();
+
+        System.out.println();
+
+        System.out.println("Highest Priority Element: " + pq.peek());
+
+        System.out.println("Removed: "+ pq.remove());
+
+        System.out.println();
+
+        pq.display();
+    }
+}
+
+
+
+
+
+Linked list based Priority Queue implementation:
+------------------------------------------------
+
+
+
+Node class structure:
+----------------------
+
+
+public class Node {
+
+        int data;
+        int priority;
+        Node next;
+
+        Node(int data, int priority) {
+            this.data = data;
+            this.priority = priority;
+        }
+    }
+
+
+
+
+PriorityQueueLinkedList.java:
+-----------------------------
+
+
+public class PriorityQueueLinkedList {
+
+    private Node head;
+    private int size;
+
+   
+
+    public boolean isEmpty() {
+
+        return size == 0;
+    }
+
+    public int size() {
+
+        return size;
+    }
+
+    public void insert(int data, int priority) {
+
+        Node newNode = new Node(data, priority);
+
+        newNode.next = head;
+        head = newNode;
+
+        size++;
+    }
+
+    public int remove() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Priority Queue Underflow");
+        }
+
+        Node current = head;
+        Node maxNode = head;
+
+        Node previous = null;
+        Node maxPrevious = null;
+
+        while (current != null) {
+
+            if (current.priority > maxNode.priority) {
+
+                maxNode = current;
+                maxPrevious = previous;
+            }
+
+            previous = current;
+            current = current.next;
+        }
+
+        if (maxPrevious == null) {
+
+            head = head.next;
+        }
+
+        else {
+
+            maxPrevious.next = maxNode.next;
+        }
+
+        size--;
+
+        return maxNode.data;
+    }
+
+    public int peek() {
+
+        if (isEmpty()) {
+
+            throw new IllegalStateException("Priority Queue Underflow");
+        }
+
+        Node current = head;
+        Node maxNode = head;
+
+        while (current != null) {
+
+            if (current.priority > maxNode.priority) {
+
+                maxNode = current;
+            }
+
+            current = current.next;
+        }
+
+        return maxNode.data;
+    }
+
+    public void display() {
+
+        if (isEmpty()) {
+
+            System.out.println("Priority Queue is Empty");
+            return;
+        }
+
+        Node current = head;
+
+        System.out.println("Data(Priority):");
+
+        while (current != null) {
+
+            System.out.println(
+                    current.data + "(" + current.priority + ")");
+
+            current = current.next;
+        }
+    }
+
+    public static void main(String[] args) {
+
+        PriorityQueueLinkedList pq = new PriorityQueueLinkedList();
+
+        pq.insert(10, 2);
+        pq.insert(20, 5);
+        pq.insert(30, 1);
+        pq.insert(40, 8);
+
+        pq.display();
+
+        System.out.println("Highest Priority Element: "+ pq.peek());
+
+        System.out.println("Removed: "+ pq.remove());
+
+        pq.display();
+    }
+}
+
+
+
+Java PriorityQueue;
+------------------
+
+Java provides:
+
+java.util.PriorityQueue class as an implementation of Queue interface
+
+It internally uses: Binary Heap
+
+
+PriorityQueue<Integer> pq = new PriorityQueue<>();
+
+creates a:
+
+Min Heap
+
+Meaning:
+
+Smallest element comes first.
+
+
+Core Operations:
+----------------
+
+
+1. offer()
+
+Insert element.
+
+	pq.offer(50);
+
+Complexity: O(log n)
+
+
+2. poll()
+
+--Removes and returns the element at the head of the Priority Queue.
+
+For Java's default Min Heap:
+The smallest element is removed.
+
+Complexity: O(log n)
+
+3. peek()
+
+View highest-priority element.
+
+	pq.peek();
+
+Complexity: O(1)
+
+4. isEmpty()
+
+	pq.isEmpty();
+
+Complexity: O(1)
+
+
+
+
+Example:
+-------
+
+import java.util.PriorityQueue;
+
+public class PQDemo {
+
+    public static void main(String[] args) {
+
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+
+        pq.offer(30);
+        pq.offer(10);
+        pq.offer(50);
+        pq.offer(20);
+
+        while (!pq.isEmpty()) {
+
+            System.out.println(pq.poll());
+        }
+    }
+}
+
+
+
+Note: For custom object: We need to make use of Comparable or Comparator concept.
+
+Example:
+
+
+Min Priority:
+
+PriorityQueue<Student> pq = new PriorityQueue<>(Comparator.comparing(Student::getMarks));
+
+Max Priority:
+
+PriorityQueue<Student> pq = new PriorityQueue<>(Comparator.comparing(Student::getMarks).reversed());
+
+
+
+
+
+BFS and DFS:
+============
+
+
+--When working with Trees and Graphs, we often need to visit (traverse) all nodes.
+
+Two famous traversal techniques are:
+
+1. BFS (Breadth First Search)
+2. DFS (Depth First Search)
+
+
+BFS (Breadth First Search):
+---------------------------
+
+--BFS visits nodes level-by-level.
+
+Example:
+
+        A
+      /   \
+     B     C
+    / \   / \
+   D   E F   G
+
+Traversal:
+
+A B C D E F G
+
+--BFS first visits all immediate neighbors, then moves to the next level.
+
+--BFS uses a Queue (FIFO).
+
+Applications:
+
+Level Order Traversal of Tree
+Shortest Path in Unweighted Graph
+Network Broadcasting
+
+
+DFS (Depth First Search):
+-------------------------
+
+--DFS explores as deep as possible along a branch before backtracking.
+
+Example:
+
+        A
+      /   \
+     B     C
+    / \   / \
+   D   E F   G
+
+One possible DFS traversal:
+
+A B D E C F G
+
+--DFS goes deep into one branch first, then returns back and explores other branches.
+
+--DFS uses a Stack (or Recursion, which internally uses the Call Stack).
+
+Applications:
+
+Path Finding
+Maze Solving
+Cycle Detection
+Topological Sorting
+
+
+BFS vs DFS:
+-----------
+
+BFS:
+    Uses Queue
+    Visits Level-by-Level
+
+DFS:
+    Uses Stack / Recursion
+    Visits Depth-wise
+
+
+Note:
+
+--In this Stack & Queue module, we are not studying Trees and Graphs in detail.
+
+--The purpose of discussing BFS and DFS is only to understand important real-world applications of Queue and Stack.
+
+--A detailed study of Trees, Graphs, BFS, and DFS belongs to a separate Data Structures module.
+
+
+
+
+
+BlockingQueue and Producer-Consumer:
+====================================
+
+
+--Until now we have studied queues in a single-threaded environment.
+
+Real-world applications often have:
+
+--One thread producing data
+
+--Another thread consuming data
+
+Examples:
+
+Order Processing Systems
+
+Message Queues
+
+Email Systems
+
+Print Queues
+
+Task Scheduling Systems
+
+
+
+This pattern is known as: Producer-Consumer Problem
+
+
+
+--Producer-Consumer is a common real-world application of Queue.
+
+Idea:
+
+Producer:
+    Creates data and inserts it into a queue.
+
+Consumer:
+    Removes data from the queue and processes it.
+
+Example:
+
+Chef prepares food.
+Waiter serves food.
+
+Chef    = Producer
+Waiter  = Consumer
+Counter = Queue
+
+
+Problem:
+
+If the queue becomes empty, the consumer should wait until new data arrives.
+
+If the queue becomes full, the producer should wait until free space becomes available.
+
+
+The Problem with a Normal Queue:
+
+Suppose we use:
+
+Queue<Integer> queue = new LinkedList<>();
+
+Problem 1:
+
+--Consumer tries to remove:
+
+queue.poll();
+
+--when queue is empty.
+
+--No data available.
+
+
+
+Problem 2:
+
+--Producer inserts data much faster than consumer.
+
+--Queue may grow excessively.
+
+Problem 3:
+
+--Multiple threads accessing the queue simultaneously may cause:
+
+Race Conditions
+
+--and inconsistent results.
+
+
+
+Solution:
+
+
+Java provides the:
+
+java.util.concurrent.BlockingQueue interface.
+
+Common implementations are:
+
+ArrayBlockingQueue
+
+LinkedBlockingQueue
+
+
+
+
+
+A BlockingQueue is:
+
+Thread Safe
+
+--and automatically handles synchronization.
+
+
+Common Methods:
+
+put(item)
+    Inserts an item.
+    If the queue is full, the producer waits.
+
+take()
+    Removes an item.
+    If the queue is empty, the consumer waits.
+
+
+
+What Does "Blocking" Mean?
+
+Case1: Suppose queue is empty.
+-----------------------------
+
+Consumer executes: take();
+
+Instead of failing:
+
+Consumer waits.
+
+until data becomes available.
+
+
+Case2: Suppose queue is full.
+-----------------------------
+
+
+Producer executes:
+
+put();
+
+Instead of overflowing:
+
+Producer waits.
+
+until space becomes available.
+
+This waiting behavior is called:
+
+Blocking
+
+
+
+Without BlockingQueue:
+----------------------
+
+
+Manual synchronization
+
+wait()
+
+notify()
+
+notifyAll()
+
+Locks
+
+would be required.
+
+
+
+
+--BlockingQueue handles everything internally.
+
+Thread Safety
+
+Waiting
+
+Synchronization
+
+automatically.
+
+
+
+
+
+
+Applications:
+
+Message Queues
+Order Processing Systems
+Task Scheduling Systems
+Print Queues
+Producer-Consumer Systems
+
+
+Note:
+
+BlockingQueue is mainly used in Multithreaded Programming.
+
+In this Stack & Queue module, we only study it as an important application of Queue.
+
+A detailed study of Threads, Producer-Consumer Problem, Synchronization, and BlockingQueue belongs to the Multithreading module.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
