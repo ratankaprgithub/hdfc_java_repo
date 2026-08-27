@@ -1,0 +1,3771 @@
+LinkedList in Java:
+===================
+
+A Linked List is a linear data structure where elements (called node) are connected using references.
+
+Each node contains:
+
+1. Data
+2. Address of Next Node
+
+--------------------
+| Data | Next      |
+--------------------
+
+Example:
+
+--------------------
+| 10   | Address   |
+--------------------
+
+Data: 10
+
+Next: Address of next node
+
+
+
+--Before Linked Lists existed, programmers mostly used Arrays.
+
+Imagine:
+
+int[] arr = {10, 20, 30, 40};
+
+Looks simple.
+
+--But suppose we want to insert 25 between 20 and 30.
+
+--We must shift elements:
+
+Before:
+10 20 30 40
+
+After:
+10 20 25 30 40
+
+--Several elements may need to move.
+
+--For large datasets this becomes expensive.
+
+
+Another problem with Array: 
+
+--Imagine an array of size 100.
+
+int[] arr = new int[100];
+
+--But you are using only:
+
+20 elements
+
+Remaining: 80 spaces wasted
+
+Memory waste.
+
+--OR If we need to store more than 100 items then also we need to create another array.
+
+
+Real World Requirement:
+-----------------------
+
+Software systems often need:
+
+Frequent insertions
+Frequent deletions
+Dynamic size
+
+Examples:
+
+Browser history
+Music playlist
+Undo/Redo
+Social media feeds
+Task schedulers
+
+--Arrays are not always the best choice.
+
+--This is where Linked Lists come into the picture.
+
+
+Q/- What is a Linked List?
+
+--A Linked List is a collection of nodes connected together using references.
+
+Unlike arrays:
+
+Array:
+10 20 30 40
+
+all elements are stored together.
+
+In Linked Lists:
+
+10 -> 20 -> 30 -> 40 -> NULL
+
+--nodes may be stored anywhere in memory.
+
+--The only thing connecting them is the reference to the next node.
+
+
+
+Real-time analogy:
+-----------------
+
+Imagine a train.
+
+Engine -> Coach -> Coach -> Coach
+
+Each coach contains:
+
+1. Passenger information (Data)
+2. Connector to the next coach (Referernce)
+
+Similarly:
+
+Node = Coach
+
+Next Reference = Connector
+
+Head = Engine
+
+--You can travel from one coach to the next coach.
+
+--But you cannot directly jump from coach 1 to coach 10.
+
+--Exactly the same thing happens in Linked Lists.
+
+
+
+Node Class in Java:
+-------------------
+
+
+public class Node {
+
+    int data;
+    Node next;
+
+   public Node(int data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+
+
+--When a Node object is created like:
+
+Node node = new Node(10);
+
+the node becomes:
+
+--------------
+| Data = 10  |
+--------------
+| Next = null|
+--------------
+
+
+Example:
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        Node first = new Node(10);
+
+        System.out.println(first.data); //10
+	System.out.println(first.next); //null
+    }
+}
+
+
+
+
+Creating multiple nodes:
+
+	Node n1 = new Node(10);
+	Node n2 = new Node(20);
+	Node n3 = new Node(30);
+
+Memory might look like:
+
+Address      Value
+
+100          10
+800          20
+350          30
+
+Notice: 
+
+100
+800
+350
+
+
+--Currently each nodes are independent.
+
+--There is no connections exist.
+
+--They are not together.
+
+--Nodes can be anywhere in memory
+
+--Now connect them using their reference:
+
+n1.next = n2;
+n2.next = n3;
+
+--It will look like:
+
+10 -> 20 -> 30 -> NULL
+
+
+--This is why Linked Lists do not require contiguous memory.
+
+
+Important terms in LinkedList:
+------------------------------
+
+
+1. Node: 
+
+--A single element inside Linked List.
+
+
+2. Head:
+
+--The Head is a reference that points to the first node.
+
+--Using the Head only we access the entire linked list.
+
+Head
+ |
+10 -> 20 -> 30 -> NULL
+
+
+Without head:
+
+--We cannot access the list.
+
+--Head is the entry gate to the Linked List.
+
+--With this Head pointer only we traverse the entire Linked List.
+
+Think of head as: The engine of a train
+
+
+2. Tail:
+
+--Tail refers to the last node.
+
+
+Head
+|
+10 -> 20 -> 30 -> 40 -> NULL
+                   |
+                  Tail
+
+--The tail node's next reference is always: NULL
+
+--because no node exists after it.
+
+--Tail helps perform certain operations faster.
+
+
+
+3. Null terminator: 
+
+-- It means "No further node exists.".
+
+--In Singly linked list last node always points to the Null value
+
+
+
+Example:
+
+10 -> 20 -> 30 -> NULL
+
+--When traversal reaches NULL: Stop
+
+--Linked List has ended.
+
+
+
+Array vs Linked List:
+----------------------
+
+| Feature             | Array      | Linked List    |
+| ------------------- | ---------- | -------------- |
+| Memory              | Contiguous | Non-Contiguous |
+| Size                | Fixed      | Dynamic        |
+| Insert at Beginning | O(n)       | O(1)           |
+| Delete at Beginning | O(n)       | O(1)           |
+| Random Access       | O(1)       | O(n)           |
+| Memory Usage        | Less       | More           |
+| Searching           | O(n)       | O(n)           |
+
+
+
+
+Advantages Over Arrays:
+-----------------------
+
+--Dynamic resizing (add/remove nodes easily). No resizing is required.
+--Efficient insertions/deletions (O(1) if position is known). just need to change the links, No Shifting required.
+--No memory waste (only allocate needed nodes).
+
+Disadvantages:
+---------------
+
+--No random access (O(n) to access nth element). i.e Must start from head and travel node-by-node.
+--Extra memory for pointers.
+--Since, Nodes are scattered in memory. CPU caching becomes less efficient than arrays.
+
+
+Simple Analogy:
+--------------
+
+Array:
+
+like, Apartment Building in which All flats are side-by-side.
+
+101 102 103 104
+
+Linked List:
+
+like, Friends living in different cities
+
+Each friend only knows:
+
+Who is the next friend.
+
+
+
+Questions:
+---------
+
+
+Q1. Why is Linked List called a dynamic data structure?
+
+--Because nodes are created and removed at runtime, so size can grow or shrink dynamically.
+
+Q2. Why is random access not possible in Linked List?
+
+--Because nodes are not stored continuously in memory and there is no indexing mechanism.
+
+Q3. What is the role of head?
+
+--Head stores the reference of the first node and acts as the entry point to the entire Linked List.
+
+Q3. Why is insertion at the beginning O(1)?
+
+--Because only a few references are updated and no traversal is required.
+
+Q4. What happens if the Head reference is lost?
+
+--The entire Linked List becomes inaccessible, causing all nodes to be effectively lost.
+
+
+
+
+
+
+
+
+
+Creating a LinkedList class:
+----------------------------
+
+--Generally we encapsulate everything inside a LinkedList class.
+
+public class MyLinkedList {
+
+    private Node head;
+
+    //All opeations will go here
+    
+
+}
+
+Later we may add:
+
+private Node tail;
+private int size;
+
+for optimization.
+
+
+
+Example:
+
+
+MyLinkedList list = new MyLinkedList();
+
+Here, initially:
+
+head = null;
+
+Which means Empty linked list.
+
+
+Note: We can write the Node class as a separate independent class or as a static inner class inside our Linked list class:
+
+
+Approach1: As a separate class 
+
+
+class Node
+{
+}
+
+class MyLinkedList
+{
+}
+
+
+Advantages:
+
+--Cleaner design
+--Reusable
+--Easy to understand
+--Industry friendly
+
+
+Approach2: As a static inner class 
+
+
+class MyLinkedList {
+
+    private static class Node {
+        
+	int data;
+        Node next;
+
+        Node(int data) {
+            this.data = data;
+        }
+    }
+
+
+    private Node head;
+
+    //Other methods of linked list class
+
+}
+
+
+
+
+Advantages:
+
+--Node hidden from outside world
+--Better encapsulation
+
+
+So, For freshers and learning:
+
+--Use separate Node class.
+
+For production-grade implementation:
+
+--static Inner Node class is often preferred.
+
+
+
+--In our session we use Node as a separate class.
+
+
+
+
+Traversing a Linked List:
+--------------------------
+
+Traversal means: Visiting every node one by one.
+
+--Typically to process or display data, starting from the head and following the next addresses.
+
+
+Example:
+
+Head
+|
+10 -> 20 -> 30 -> 40 -> NULL
+
+Output:
+
+10
+20
+30
+40
+
+
+Traversal Analogy: Imagine a treasure hunt.
+------------------
+
+--Start at the first clue (Head).
+--Read each clue (data) and follow the arrow (next address) to the next clue.
+--Stop when there’s no more clues (null).
+
+
+Clue1 -> Clue2 -> Clue3 -> Clue4 -> null
+
+
+Traversal Algorithm:
+---------------------
+
+
+Step 1: Start from head.
+
+	Node current = head;
+
+Step2:  Keep moving until NULL.
+
+	while(current != null)
+
+Step3: Process current node.
+
+	System.out.println(current.data);
+
+Step 4: Move forward.
+
+	current = current.next;
+
+
+
+Code:
+----
+
+public void display() {
+
+    Node current = head;
+
+    while (current != null) {
+
+        System.out.print(current.data + " -> ");
+
+        current = current.next;
+    }
+
+    System.out.println("null");
+}
+
+
+
+
+Time Complexity of Traversal:
+----------------------------
+
+Suppose there are: n nodes
+
+We visit: every node exactly once
+
+Therefore:
+
+Time Complexity = O(n)
+
+
+
+First Important Operation: Insert at Beginning
+-----------------------------------------------
+
+
+public void insertAtFront(int value)
+
+
+
+Step1: Create the Node class object by wrapping the actual data:
+
+
+Node newNode = new Node(10);
+
+Step2: 
+
+--If the LinkedList is empty: Assign this new node to the Head.
+
+
+ if (head == null) {
+        head = newNode;
+        return;
+ }
+
+
+--If the linked list already contains some nodes:
+
+Like: 
+
+Head
+ |
+20 -> 30 -> 40 -> NULL
+
+Now Insert:
+
+10
+
+Result:
+
+Head
+ |
+10 -> 20 -> 30 -> 40 -> NULL
+
+In this case:
+
+--Connect the new node's next with Head
+
+newNode.next = head;
+
+--Move the Head to the new node.
+
+head = newNode;
+
+
+
+Code:
+
+public void insertAtFront(int value) {
+
+    Node newNode = new Node(value);
+
+    if (head == null) {
+        head = newNode;
+        return;
+    }
+
+    newNode.next = head;
+    head = newNode;
+}
+
+
+Time Complexity: O(1)
+
+Reason:
+
+No traversal
+No loop
+Fixed number of operations
+
+--This is one of the biggest strengths of Linked Lists over the array.
+
+
+
+Full code:
+----------
+
+MyLinkedList.java:
+------------------
+
+
+package com.hdfc.linkedlist;
+
+public class MyLinkedList {
+
+    private Node head;
+
+
+    public void insertAtFront(int value) {
+
+        Node newNode = new Node(value);
+
+        if (head == null) {
+            head = newNode;
+            return;
+        }
+
+        newNode.next = head;
+        head = newNode;
+    }
+
+
+    public void display() {
+
+        Node current = head;
+
+        while (current != null) {
+
+            System.out.print(current.data + " -> ");
+
+            current = current.next;
+        }
+
+        System.out.println("null");
+    }
+
+    public static void main(String[] args) {
+
+        MyLinkedList llist = new MyLinkedList();
+
+        llist.insertAtFront(50);
+        llist.insertAtFront(40);
+        llist.insertAtFront(30);
+        llist.insertAtFront(20);
+        llist.insertAtFront(10);
+
+        llist.display();
+
+
+
+    }
+
+}
+
+
+
+Output:
+
+10 -> 20 -> 30 -> 40 -> 50 -> NULL
+
+
+Inserting the node at last:
+---------------------------
+
+Example: inserting 60 as a last node.
+
+
+public void insertAtLast(int value);
+
+
+
+
+Case1: If the list is empty:
+
+--Assign the newNode as head.
+
+Case2: If the list already contains the node:
+
+--Start from the head and move until the last node 
+
+	while(current.next != null)
+
+--Connect the newNode to the last node.
+
+
+
+Code:
+
+public void insertAtLast(int value) {
+
+    Node newNode = new Node(value);
+
+    // Empty List
+    if(head == null) {
+        head = newNode;
+        return;
+    }
+
+    Node current = head;
+
+    // Move untill the last node
+    while(current.next != null) {
+        current = current.next;
+    }
+
+
+    //Connecting at the last node
+    current.next = newNode;
+}
+
+
+
+Time Complexity:
+
+To insert at end:
+
+Need traversal
+
+Therefore: O(n)
+
+where n = number of nodes.
+
+
+
+Counting the number of nodes:
+------------------------------
+
+--Count the number of nodes available inside the linked list:
+
+	public int countNodes() 
+
+
+Steps:
+
+1. Create a variable count = 0.
+
+2. Traverse the list from Head till reaches to the null
+
+3. increment the count.
+
+ 
+
+Code:
+-----
+
+public int countNodes() {
+
+    int count = 0;
+
+    Node current = head;
+
+    while (current != null) {
+
+        count++;
+
+        current = current.next;
+    }
+
+    return count;
+}
+
+
+
+
+Time complexity: O(n)
+
+--Must traverse all the nodes.
+
+
+
+Introducing Tail Pointer:
+------------------------
+
+To optamize the above insertAtLast() and countNode() method to get O(1) instead of O(n):
+
+--We can introduce 2 more fields inside our Linked list class:
+
+1. private Node tail
+
+--Just like we keep track of Head, 
+--we can also keep track of Tail.
+
+
+2. private int size;
+
+--To maintain the count of nodes inside our linked list class
+
+Whenever we insert:
+
+size++;
+
+Whenever we delete:
+
+size--;
+
+
+Modified MyLinkedList class: 
+----------------------------
+
+
+public class MyLinkedList {
+
+    private Node head;
+    private Node tail;
+    private int size;
+
+
+    //Other methods....
+
+
+}
+
+
+
+Here:
+
+MyLinkedList llist = new MyLinkedList();
+
+
+Initial values:
+
+head = null
+tail = null
+size =0;
+
+
+Important points:
+
+1. If head and tail points to null: list is empty
+
+2. While adding any new node: size++
+
+3. While deleting any node: size--
+
+4. To get the number of nodes: 
+
+public int getSize(){
+
+	return size;
+
+}
+
+
+
+
+Modify the insertAtFront() method:
+----------------------------------
+
+public void insertAtFront(int value) {
+
+    Node newNode = new Node(value);
+
+    if (head == null) {
+
+        head = newNode;
+        tail = newNode;
+
+    } else {
+
+        newNode.next = head;
+
+        head = newNode;
+    }
+
+    size++;
+}
+
+
+
+
+Modify the insertAtLast() method:
+----------------------------------
+
+public void insertAtLast(int value) {
+
+    Node newNode = new Node(value);
+
+    if (head == null) {
+
+        head = newNode;
+        tail = newNode;
+
+    } else {
+
+        tail.next = newNode;
+
+        tail = newNode;
+    }
+
+    size++;
+}
+
+
+
+Time complexity: O(1)
+
+
+
+Modify the countNode() method: Rename as getSize()
+-------------------------------
+
+
+public int getSize() {
+
+    return size;
+}
+
+
+
+Time complexity: O(1)
+
+
+
+Complete Code:
+---------------
+
+MyLinkedList.java:
+------------------
+
+
+package com.hdfc.linkedlist;
+
+public class MyLinkedList {
+
+    private Node head;
+    private Node tail;
+    private int size;
+
+
+    public void insertAtFront(int value) {
+
+        Node newNode = new Node(value);
+
+        if (head == null) {
+
+            head = newNode;
+            tail = newNode;
+
+        } else {
+
+            newNode.next = head;
+
+            head = newNode;
+        }
+
+        size++;
+    }
+
+
+    public void insertAtLast(int value) {
+
+        Node newNode = new Node(value);
+
+        if (head == null) {
+
+            head = newNode;
+            tail = newNode;
+
+        } else {
+
+            tail.next = newNode;
+
+            tail = newNode;
+        }
+
+        size++;
+    }
+
+
+    public int getSize() {
+
+        return size;
+    }
+
+
+    public void display() {
+
+        Node current = head;
+
+        while (current != null) {
+
+            System.out.print(current.data + " -> ");
+
+            current = current.next;
+        }
+
+        System.out.println("null");
+    }
+
+
+    public static void main(String[] args) {
+
+        MyLinkedList llist = new MyLinkedList();
+
+        llist.insertAtFront(50);
+        llist.insertAtFront(40);
+        llist.insertAtFront(30);
+        llist.insertAtFront(20);
+        llist.insertAtFront(10);
+        llist.insertAtLast(60);
+
+        llist.display();
+
+
+        System.out.println("Total Nodes are: "+llist.getSize());
+
+
+    }
+
+}
+
+
+
+
+Implementing Search operation: 
+------------------------------
+
+--Find whether a particular value exists in the linked list or not.
+
+	public boolean contains(int value)
+
+
+Logic:
+
+--Start from head.
+
+--Check every node with the given value.
+
+
+Code:
+
+public boolean contains(int value) {
+
+    Node current = head;
+
+    while (current != null) {
+
+        if (current.data == value) {
+            return true;
+        }
+
+        current = current.next;
+    }
+
+    return false;
+}
+
+
+
+Time Complexity: O(n)
+
+--because we may visit all nodes.
+
+
+
+
+
+Implementing indexOf() method:
+------------------------------
+
+--Finding Position of an Element.
+
+--Unlike arrays, a linked list does not internally maintain indexes.
+
+--However, we can logically implement indexing by maintaining a counter while traversing the list.
+
+
+public int indexOf(int value)
+
+
+
+Logic:
+
+Initialize an index variable with 0.
+Start traversal from the head.
+Compare each node's data with the given value.
+If a match is found, return the current index.
+Move to the next node and increment the index.
+If the value is not found, return -1.
+
+
+
+
+code:
+-----
+
+
+public int indexOf(int value) {
+
+    int index = 0;
+
+    Node current = head;
+
+    while(current != null) {
+
+        if(current.data == value) {
+            return index;
+        }
+
+        current = current.next;
+        index++;
+    }
+
+    return -1;
+}
+
+
+Time complexity: O(n)
+
+
+
+Now, we can modify the earlier written: contains(int value) method as follows:
+
+
+
+
+public boolean contains(int value) {
+
+
+	return indexOf(value) != -1;
+
+}
+
+
+
+
+Insert a Node at Specific Position:
+-----------------------------------
+
+public void insertAt(int index, int value) 
+
+
+
+Current List:
+
+10 → 20 → 40 → 50 → NULL
+		
+
+Insert: 30
+
+at index: 2
+
+Expected:
+
+10 → 20 → 30 → 40 → 50 → NULL
+
+
+
+Important Rule:
+
+To insert at index: i
+
+we must reach: i - 1
+
+Because we need access to the previous node.
+
+--traverse the 'current' till: i-1
+
+
+10 → 20 -> i -> 40 → 50
+
+--Now to insert 30 at i:
+
+We need to perform two link changes.
+
+
+Step 1: Save old connection.
+
+newNode.next = current.next;
+
+30 → 40
+
+
+Step 2: Connect previous node to new node.
+
+current.next = newNode;
+
+
+Result:
+
+10 → 20 → 30 → 40 → 50
+
+
+Note: If we reverse the opration then Otherwise part of the list may be lost.
+
+
+Handle to edge case:
+
+
+Case 1: Insert at Beginning: index == 0
+
+insertAtFront(value);
+
+Case 2: Insert at End: index == size
+
+insertAtLast(value);
+
+
+Case 3: Invalid Index
+
+insertAt(-1, 10);
+
+or
+
+insertAt(100, 10);
+
+--These should throw an exception.
+
+
+
+full code:
+-----------
+
+public void insertAt(int index, int value) {
+
+    if(index < 0 || index > size) {
+
+        throw new IndexOutOfBoundsException("Invalid index: " + index);
+    }
+
+    if(index == 0) {
+
+        insertAtFront(value);
+        return;
+    }
+
+    if(index == size) {
+
+        insertAtLast(value);
+        return;
+    }
+
+    Node newNode = new Node(value);
+
+    Node current = head;
+
+    for(int i = 0; i < index - 1; i++) {
+
+        current = current.next;
+    }
+
+    newNode.next = current.next;
+
+    current.next = newNode;
+
+    size++;
+}
+
+
+Time complexity: O(n) wrost case..
+
+
+
+Deletion Operations:
+====================
+
+--Deletion is the opposite of insertion operation.
+
+Insertion: adds links.
+
+Deletion: removes links.
+
+--Most deletion operations are actually:
+
+Breaking one connection
+Creating another connection
+
+
+
+Implementing Delete from Front:
+-------------------------------
+
+public void deleteAtFront()
+
+
+
+Current List:
+
+head
+ |
+10 → 20 → 30 → 40 → NULL
+		|
+		Tail
+	     
+
+Delete first node.
+
+Expected:
+
+head
+ |
+20 → 30 → 40 → NULL
+           |
+	  Tail
+
+
+--Simply move head forward.
+
+
+
+Edge Case 1: Empty List
+
+Throw exception.
+
+Edge Case 2: Single Node
+
+Current:
+
+Head
+|
+10 → NULL
+|
+Tail
+
+
+--Make both head and tail: null
+
+
+
+Full code:
+----------
+
+public void deleteAtFront() {
+
+    //Empty list
+    if (head == null) {
+
+        throw new NoSuchElementException("Linked List is empty");
+    }
+
+    //only one item
+    if (head == tail) {
+
+        head = null;
+        tail = null;
+
+    } else {
+
+	//move the head forward
+        head = head.next;
+    }
+
+    size--;
+}
+
+
+
+Time Complexity: O(1)
+
+
+
+Deletion At Last:
+----------------
+
+--Delete last node.
+
+public void deleteAtLast();
+
+
+Current:
+
+head
+|
+10 → 20 → 30 → 40 → NULL
+                |
+              tail
+
+
+Expected:
+
+head
+|
+10 → 20 → 30 → NULL
+           |
+         tail
+
+
+
+
+Important point:
+
+--Deleting tail is NOT as easy as deleting head.
+
+--Because Singly Linked List cannot move backward.
+
+--To delete the last node: 40 
+
+we need its previous node (the node before tail) : 30
+
+
+Core Idea:
+
+--Find second last node: 30
+
+Make:
+
+secondLast.next = null;
+
+Point the tell to this secondLast node.
+
+tail = secondLast;
+
+Done.
+
+
+full code:
+-----------
+
+public void deleteAtLast() {
+
+    if (head == null) {
+
+        throw new NoSuchElementException("Linked List is empty");
+    }
+
+    if (head == tail) {
+
+        head = null;
+        tail = null;
+
+        size--;
+        return;
+    }
+
+    Node current = head;
+
+    while (current.next != tail) {  //current.next.next != null
+
+        current = current.next;
+    }
+
+
+
+    current.next = null;
+
+    tail = current;
+
+    size--;
+}
+
+
+
+Here, 
+
+while(current.next != tail)
+
+or 
+
+while(current.next.next != null)
+
+
+Suppose:
+
+10 → 20 → 30 → 40
+
+We want: 30 not 40
+
+because 30 is the second-last node.
+
+
+Time Complexity: O(n)
+
+
+
+Deletion at Specific Index:
+---------------------------
+
+public void deleteAt(int index)
+
+
+Current List:
+
+head
+|
+10 → 20 → 30 → 40 → 50
+		    |
+		   tail
+
+Delete node at:
+
+index = 2
+
+Expected:
+
+head
+|
+10 → 20 → 40 → 50
+               |
+	      tail
+
+
+IDEA:
+
+Before:
+
+10 → 20 → 30 → 40 → 50
+
+Reconnect:
+
+20 → 40
+
+Result:
+
+10 → 20 → 40 → 50
+
+
+full code:
+----------
+
+public void deleteAt(int index) {
+
+    if (index < 0 || index >= size) {
+
+        throw new IndexOutOfBoundsException("Invalid index: " + index);
+    }
+
+    if (index == 0) {
+
+        deleteAtFront();
+        return;
+    }
+
+    if (index == size - 1) {
+
+        deleteAtLast();
+        return;
+    }
+
+    Node current = head;
+
+    for (int i = 0; i < index - 1; i++) {
+
+        current = current.next;
+    }
+
+    //Reconnecting
+    current.next = current.next.next;
+
+    size--;
+}
+
+
+
+Time complexity: O(n)
+
+
+Reversing a Linked List (Iterative Approach):
+---------------------------------------------
+
+public void reverse() 
+
+
+
+Current List:
+
+head
+ |
+10 → 20 → 30 → 40 → NULL
+		|
+	       tail
+		
+After reversing:
+
+head
+ |
+40 → 30 → 20 → 10 → NULL
+                |
+	       tail
+
+
+Beginner approach:
+-------------------
+
+Take all values
+Store them in an array
+Reverse array
+Put values back
+
+
+Complexity:
+
+Time  : O(n)
+
+Space : O(n)
+
+
+Expected Solution:
+
+--Reverse the links.
+
+--Not the data.
+
+Before:
+
+head
+|
+10 → 20 → 30 → 40 → NULL
+                |
+	      tail
+After:
+
+       head
+	|
+NULL ← 10 ← 20 ← 30 ← 40
+                      |
+	             tail
+
+Then: change the pointer
+
+head
+|
+40 → 30 → 20 → 10 → NULL
+               |
+              tail
+
+
+
+The Biggest Challenge:
+
+Node prev = null;
+
+Suppose we start with:
+
+Original:
+raj -> rohit -> sunil -> null
+
+Reverse:
+
+
+sunil -> rohit -> raj -> null
+
+Logically equivallent to the following
+
+
+null <- raj <-  rohit <-  sunil 
+
+
+
+
+and we do:
+
+current.next = prev;
+
+Immediately.
+
+For node 10:
+
+10 → NULL
+
+Now:
+
+Where is 20?
+
+It will be lost: The rest of the list disappears.
+
+
+Rule:
+
+Before changing a link:
+
+--Always save the next node.
+
+This leads to the famous: Three Pointer Technique
+
+
+
+10 → 20 → 30 → NULL
+
+
+
+
+The Three Pointers:
+
+We use:
+
+prev
+current
+next
+
+
+
+
+prev: Stores previous node.
+
+ Initially NULL
+
+current: Node currently being processed.
+
+ Initially head
+
+next: Stores next node temporarily.
+
+ Used to prevent losing the list
+
+
+
+The Algorithm:
+
+For every node:
+
+Step 1: Save next node.
+
+next = current.next;
+
+Step 2: Reverse the link.
+
+current.next = prev;
+
+Step 3: Move prev forward.
+
+prev = current;
+
+
+Step 4: Move current forward.
+
+current = next;
+
+Repeat until:
+
+current == null
+
+
+
+full code:
+----------
+
+public void reverse() {
+
+
+    // Edge case: if one node or empty linked list
+    if(head == null || head.next == null) {
+
+        tail = head;
+        return;
+    }
+
+    
+
+    Node prev = null;
+
+    Node current = head;
+
+    while(current != null) {
+
+        Node next = current.next;
+
+        current.next = prev;
+
+        prev = current;
+
+        current = next;
+    }
+
+    head = prev;
+}
+
+
+
+
+Time complexity: O(n)
+
+Space complexity: O(1)
+
+No extra data structure used.
+
+
+
+
+
+Reversing a Linked List (Recursive Approach):
+---------------------------------------------
+
+public void reverseRecursive()
+
+
+
+Real Life Analogy:
+
+Imagine a line of people:
+
+Rahul → Mohit → Aman → Karan
+
+You tell Rahul:
+
+"Go ask Mohit to reverse the rest of the line."
+
+Mohit says:
+
+"First Aman should reverse the remaining line."
+
+Aman says:
+
+"First Karan should handle his part."
+
+
+Finally Karan says:
+
+"I am the last person."
+
+Now while returning back:
+
+Karan turns Aman around
+Aman turns Mohit around
+Mohit turns Rahul around
+
+--This is exactly how recursive reversal works.
+
+Suppose:
+
+10 → 20 → 30 → 40
+
+We tell node 10:
+
+Reverse everything after me.
+
+So recursion works on:
+
+20 → 30 → 40
+
+Then node 20 says:
+
+Reverse everything after me.
+
+Now recursion works on:
+
+30 → 40
+
+Then node 30 says:
+
+Reverse everything after me.
+
+Now recursion works on:
+
+40
+
+
+Base Case: What should stop recursion?
+
+When: Only one node remains
+
+Example:
+
+40 → NULL
+
+--A single node is already reversed.
+
+
+Therefore:
+
+if(head.next == null)
+{
+    return head;
+}
+
+
+With edge case: if list is empty:
+
+  if (head == null || head.next == null) {
+        return head;
+  }
+
+
+
+
+Visualization of Recursive Calls:
+
+Initial:
+
+10 → 20 → 30 → 40
+
+reverse(10)
+
+    reverse(20)
+
+        reverse(30)
+
+            reverse(40)
+
+Now:
+
+40
+
+returns.
+
+
+Note: Recursive calls go to the last node.
+
+but Actual reversal happens while returning.
+
+
+The Returning Phase:
+
+--This is where the actual reversal happens.
+
+
+Returning to Node 30
+
+Current:
+
+30 → 40 -> null;
+
+
+But we need: 
+
+40 → 30 -> null;
+
+Current node:
+
+head = 30
+
+
+Next node:
+
+head.next = 40
+
+Make:
+
+head.next.next = head;
+
+Meaning:
+
+40.next = 30;
+
+Result:
+
+40 → 30
+
+Now break old connection:
+
+head.next = null;
+
+Meaning:
+
+30.next = null;
+
+Result:
+
+40 → 30 → NULL
+
+
+Similarly after each recursive call this process it repeated.
+
+
+The entire reversal happens because of:
+
+head.next.next = head;
+
+--This is the most important line.
+
+
+
+Example:
+
+
+private Node reverse(Node head) {
+
+    if (head == null || head.next == null) {
+        return head;
+    }
+
+    Node newHead = reverse(head.next);
+
+    head.next.next = head;
+
+    head.next = null;
+
+    return newHead;
+}
+
+
+
+Note: we should not call reverse(head) method directly, that's way we marked it as private.
+
+instead we need to wrap this method inside a public method.
+
+full code:
+
+
+public void reverseRecursive() {
+
+    tail = head;
+
+    head = reverse(head);
+}
+
+
+--Here before getting the new head after recursion: 
+
+Marks the starting head as tail.
+
+--because for the final result: tail will become head.
+
+
+
+
+Time complexity: O(n)
+
+--Each node visited once.
+
+Space complexity: O(n)
+
+--Because recursive calls occupy stack memory.
+
+
+
+
+
+Slow & Fast Pointer Technique: Turtle and Rabbit 
+==============================
+
+--Many advanced Linked List problems can be solved using this technique
+
+
+
+Examples:
+
+Find Middle Node
+Floyd's Cycle Detection
+Palindrome Linked List
+Merge Sort on Linked List
+Detect Cycle Start
+Reorder List
+
+
+
+Imagine two friends running on a road.
+
+Friend 1: Slow Runner
+
+Moves: 1 step
+
+Friend 2: Fast Runner
+
+Moves: 2 steps
+
+
+The Slow and Fast Pointers
+
+Initialize:
+
+Node slow = head;
+Node fast = head;
+
+
+Movement:
+
+slow = slow.next;
+
+moves: 1 node
+
+Movement:
+
+fast = fast.next.next;
+
+moves:
+
+2 nodes
+
+
+
+
+
+
+
+Finding the Middle Node:
+=======================
+
+Given:
+
+10 → 20 → 30 → 40 → 50 → NULL
+
+Find:
+
+Middle Node = 30
+
+
+Another Example: 
+
+10 → 20 → 30 → 40 → 50 → 60 → NULL
+
+What should be the middle?
+
+--There are two common conventions:
+
+First Middle  = 30
+
+Second Middle = 40
+
+Most interview problems expect:
+
+Second Middle
+
+So answer: 40
+
+
+
+Note: If we are maintaining the size variable inside our linked list class then it will become very easy
+
+int length = getSize(); // 5
+
+int midIndex = length/2; // 2
+
+then traverse till this mid index
+
+ current = head;
+
+    for(int i = 0; i < middleIndex; i++) {
+
+        current = current.next;
+    }
+
+
+  System.out.println(current.data); // 30
+
+
+
+But, It is not always size variable is maintained inside the Linked list different implementation.
+
+--In such scenario, We traverse the list twice.
+
+Pass 1 → Count length
+
+Pass 2 → Find middle
+
+Time Complexity:
+
+O(n) + O(n)
+
+= O(n)
+
+Still O(n), but not optimal.
+
+
+--Using this slow and fast pointer technique we find the middle in a single traversal?
+
+
+--As we know, 
+
+slow pointer moves: one step
+fast pointer moves: 2 steps
+
+
+--When the fast runner reaches the end:
+
+--The slow runner automatically reaches the middle.
+
+
+
+Loop condition:
+---------------
+
+while(fast != null && fast.next != null)
+
+which means, Fast pointer can still move 2 steps.
+
+
+
+full code:
+-----------
+
+
+public Node getMiddle() {
+
+    if(head == null) {
+
+        throw new NoSuchElementException("Linked List is empty");
+    }
+
+    Node slow = head;
+
+    Node fast = head;
+
+    while(fast != null && fast.next != null) {
+
+        slow = slow.next;
+
+        fast = fast.next.next;
+    }
+
+    return slow;
+}
+
+
+
+In the main method:
+
+
+System.out.println(llist.getMiddle().data);
+
+
+Time complexity: O(n)
+
+Traversal: Only one pass
+
+
+
+
+
+Floyd's Cycle Detection Algorithm:
+==================================
+
+Q/- What is a Cycle?
+
+
+
+Normally a singly Linked List ends with: NULL
+
+Example:
+
+10 → 20 → 30 → 40 → NULL
+
+
+But Sometimes, due to a programming bug or a special problem, a node points back to an earlier node.
+
+Example:
+
+10 → 20 → 30 → 40
+           ↑    ↓
+            ← ← ← 
+
+Here:
+
+40.next = 30
+
+Now:
+
+30 → 40 → 30 → 40 → 30 ...
+
+The list never ends.
+
+This is called a:
+
+Cycle
+Loop
+Circular Reference
+
+
+--In this kind of situation: 
+
+
+
+public void display() {
+
+    Node current = head;
+
+    while(current != null) {
+
+        System.out.print(current.data + " ");
+
+        current = current.next;
+    }
+}
+
+
+calling this display() method
+
+
+Program never stops: Infinite Loop
+
+
+
+
+
+Given a Linked List:
+
+10 → 20 → 30 → 40
+           ↑    ↓
+            ← ← ← 
+
+--Determine whether a cycle exists.
+
+
+public boolean hasCycle()
+
+
+
+
+
+Beginner Solution: 
+------------------
+
+--Start visiting each node.
+
+--Store visited nodes in a HashSet.
+
+--If element is already present inside the HashSet then cycle found: return true.
+
+
+code:
+
+
+
+public boolean hasCycle()
+{
+
+HashSet<Node> visited = new HashSet<>();
+
+Node current = head;
+
+while(current != null) {
+
+    if(visited.contains(current)) {
+        return true;
+    }
+
+    visited.add(current);
+
+    current = current.next;
+}
+
+return false;
+
+}
+
+
+
+
+Problem:
+
+Extra memory required.
+
+Space complexity: O(n)
+
+
+
+
+Using Floyd's Cycle Detection Algorithm:
+----------------------------------------
+
+
+It Use:
+
+Slow Pointer
+Fast Pointer
+
+
+Real Life Analogy:
+
+--Imagine a circular running track.
+
+--Two runners start together.
+
+Runner 1: Turtle
+
+Moves: 1 step
+
+Runner 2: Rabbit
+
+Moves: 2 steps
+
+
+If they run forever on a circular track,
+
+will Rabbit eventually catch Turtle?
+
+YES
+
+--No matter where Turtle is,
+
+--Rabbit will eventually meet it.
+
+This is the entire idea behind Floyd's Algorithm.
+
+
+
+
+So, If
+
+slow == fast
+
+then: Cycle Exists
+
+If:
+
+fast == null
+
+or
+
+fast.next == null
+
+then: No Cycle
+
+because the list ended.
+
+
+full code:
+----------
+
+
+public boolean hasCycle() {
+
+    Node slow = head;
+
+    Node fast = head;
+
+    while(fast != null && fast.next != null) {
+
+        slow = slow.next;
+
+        fast = fast.next.next;
+
+        if(slow == fast) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+
+Time: O(n)
+
+Space: O(1)
+
+No extra data structure used.
+
+
+
+Detecting the Start of the Cycle:
+---------------------------------
+
+This is the advanced part.
+
+Interviewers often ask:
+
+Cycle exists.
+
+Now find the node
+where the cycle begins.
+
+
+Example
+
+10 → 20 → 30 → 40 → 50
+           ↑         ↓
+            ← ← ← ← ←
+
+
+
+Cycle starts at: 30
+
+Need to return: 30 instead of returning boolean
+
+
+Amazing Floyd Trick:
+
+--Suppose Slow and Fast meet.
+
+At the meeting point: Keep Slow there only.
+
+Create another pointer: start which will points to the head.
+
+Node start = head;
+
+
+Now move: both start and slow
+
+start = start.next;
+slow  = slow.next;
+
+--One step at a time.
+
+
+The point where they meet again is: Start of Cycle
+
+
+
+
+Let's check:
+
+
+Cycle:
+
+10 → 20 → 30 → 40 → 50
+           ↑         ↓
+            ← ← ← ← ←
+
+Suppose meeting occurs at: 40 (It can meet at any element within that cycle)
+
+
+--Now both slow and fast are at 40.
+
+Place:
+
+start = head
+
+at: 10
+
+
+so,
+
+start = 10
+slow = 40
+
+
+Move both one step.
+
+Step 1:
+
+	start = 20
+
+	slow = 50
+
+Step 2:
+
+	start = 30
+
+	slow = 30
+
+
+Meet again.
+
+Answer: 30
+
+
+full code:
+----------
+
+
+public Node findCycleStart() {
+
+    Node slow = head;
+
+    Node fast = head;
+
+    while(fast != null && fast.next != null) {
+
+        slow = slow.next;
+
+        fast = fast.next.next;
+
+        if(slow == fast) {
+
+            Node start = head;
+
+            while(start != slow) {
+
+                start = start.next;
+
+                slow = slow.next;
+            }
+
+            return start;
+        }
+    }
+
+    return null;
+}
+
+
+
+
+Circular Linked List:
+=====================
+
+
+Until now, every Linked List we studied ended with: NULL
+
+Example:
+
+10 → 20 → 30 → 40 → NULL
+
+The last node points to: NULL
+
+--This is called a normal Singly Linked List.
+
+
+In a Circular Linked List:
+
+--Last node does NOT point to NULL.
+
+Instead:
+
+--Last node points back to the first node.
+
+
+head           tail
+ ↓              ↓     
+10 → 20 → 30 → 40
+↑               ↓
+-----------------
+
+tail.next = head;
+
+
+This creates a circle.
+
+Hence the name: Circular Linked List
+
+
+Real Life Analogy:
+
+--Imagine children sitting in a circle playing: Passing The Parcel
+
+
+Rahul → Aman → Mohit → Karan
+↑                       ↓
+-------------------------
+
+
+After Karan: Again Rahul
+
+There is no: NULL
+
+--This is exactly how a Circular Linked List behaves.
+
+
+Difference Between Singly and Circular Linked List:
+-----------------------------------------------------
+
+| Singly Linked List | Circular Linked List            |
+| ------------------ | ------------------------------- |
+| Ends with NULL     | Never ends                      |
+| tail.next = null   | tail.next = head                |
+| Easy traversal     | Need special stopping condition |
+| Linear structure   | Circular structure              |
+
+
+
+
+Structure of Circular Linked List:
+----------------------------------
+
+Single Node Circular List
+
+Insert: 10
+
+Visualization:
+
+    ----
+    ↓   ↓
+   10 --
+
+
+Here, 
+
+head == tail
+
+and
+
+tail.next == head
+
+
+
+Inserting At front:
+--------------------
+
+
+public void insertAtFront(int value) {
+
+    Node newNode = new Node(value);
+
+    if(head == null) {
+
+        head = tail = newNode;
+
+        tail.next = head;
+    }
+    else {
+
+        newNode.next = head;
+
+        head = newNode;
+
+        tail.next = head;
+    }
+
+    size++;
+}
+
+
+
+Insertion at Last:
+------------------
+
+public void insertAtLast(int value) {
+
+    Node newNode = new Node(value);
+
+    if(head == null) {
+
+        head = tail = newNode;
+
+        tail.next = head;
+    }
+    else {
+
+        tail.next = newNode;
+
+        tail = newNode;
+
+        tail.next = head;
+    }
+
+    size++;
+}
+
+
+Time Complexity: O(1) 
+
+Notice: for the singly linked list even though we maintained the tail pointer but still it was taking O(n) for insertAtLast() implementation.
+
+
+
+Traversing a Circular Linked List:
+-----------------------------------
+
+Normal Linked List Traversal:
+
+while(current != null)
+
+works because eventually: current becomes NULL
+
+Problem in Circular List
+
+There is NO NULL.
+
+So, it never stops.
+
+Infinite loop.
+
+
+Correct Idea:
+
+--Start from head.
+
+--Keep moving until we reach head again.
+
+full code:
+----------
+
+
+public void display() {
+
+    if(head == null) {
+
+        System.out.println("List is Empty");
+        return;
+    }
+
+ 
+   Node current = head;
+
+    do {
+
+        System.out.print(current.data + " -> ");
+
+        current = current.next;
+
+    } while(current != head);
+
+    System.out.println("(Back to Head)");
+}
+
+
+Why do-while Loop?
+
+Because:
+
+--We must print head at least once.
+
+Even when:
+
+Only one node exists.
+
+Example:
+
+If we have only one node and if we use:
+
+while(current != head)
+
+--nothing gets printed.
+
+
+
+Deletion from Head:
+------------------
+
+Current:
+
+10 → 20 → 30 → 40
+↑               ↓
+-----------------
+
+
+
+Delete: 10
+
+Result:
+
+20 → 30 → 40
+↑          ↓
+------------
+
+
+Steps:
+
+1. Move head.
+
+2. Reconnect tail.
+
+
+head = head.next;
+
+tail.next = head;
+
+
+
+full code:
+----------
+
+public void deleteAtFront() {
+
+    if(head == null) {
+
+        throw new NoSuchElementException("List is empty");
+    }
+
+    if(head == tail) {
+
+        head = null;
+
+        tail = null;
+    }
+    else {
+
+        head = head.next;
+
+        tail.next = head;
+    }
+
+    size--;
+}
+
+
+
+
+Student task:
+---------------
+
+Implement delete at Last from the cicular linked list:
+
+
+public void deleteAtLast()
+
+
+Real World Uses:
+---------------
+
+1. Round Robin CPU Scheduling
+
+Processes execute in a cycle.
+
+P1 → P2 → P3 → P4
+↑              ↓
+----------------
+
+
+1. Multiplayer Games
+
+Player turns:
+
+Player1
+Player2
+Player3
+Player4
+
+After Player4:
+
+Again Player1
+
+
+3. Music Playlist
+
+Song1
+Song2
+Song3
+Song4
+
+After last song:
+
+Again Song1
+
+
+
+
+Doubly Linked List (DLL):
+=========================
+
+--The Biggest Problem with Singly Linked List
+
+Consider:
+
+10 → 20 → 30 → 40 → NULL
+
+Suppose we are currently at: 30
+
+We can't go back to: 20 ?
+
+Because every node only knows: next
+
+Node does not have any information about its previous node
+
+
+Real Life Analogy:
+-------------------
+
+
+Imagine a one-way road:
+
+Delhi → Chandigarh → Shimla
+
+You can move forward.
+
+--But you cannot directly move backward.
+
+--This is exactly how a Singly Linked List behaves.
+
+
+
+Solution: Doubly Linked List
+
+Each node stores:
+
+next
+prev
+
+instead of only: next
+
+
+Example:
+
+NULL ← 10 ⇄ 20 ⇄ 30 ⇄ 40 → NULL
+
+Each node knows:
+
+Who is before me?
+Who is after me?
+
+
+Real Life Analogy:
+
+Think of browser navigation.
+
+Google
+↓
+YouTube
+↓
+ChatGPT
+↓
+GitHub
+
+--Browser supports:
+
+Back
+Forward
+
+Because it can move:
+
+Previous Page
+Next Page
+
+--Exactly like a Doubly Linked List.
+
+
+
+
+Node structure:
+--------------
+
+Singly Linked List Node:
+
+
+public class Node {
+
+    int data;
+    Node next;
+
+   public Node(int data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+
+Doubly Linked List Node
+
+
+
+
+public class Node {
+
+    int data;
+    Node next;
+    Node prev;
+
+   public Node(int data) {
+        this.data = data;
+        this.next = null;
+	this.prev = null;
+    }
+}
+
+
+
+DLL class representation:
+--------------------------
+
+public class DoublyLinkedList {
+
+    private Node head;
+
+    private Node tail;
+
+    private int size;
+
+
+   //other method....
+
+
+}
+
+
+Empty DLL:
+---------
+
+DoublyLinkedList dll = new DoublyLinkedList();
+
+head = null
+tail = null
+size = 0;
+
+
+
+Single Node DLL:
+----------------
+
+Node newNode = new Node(10);
+
+
+NULL ← 10 → NULL
+
+head = tail = newNode;
+
+--both points to the newNode.
+
+Here:
+
+head == tail 
+
+
+Insertion at Front:
+-------------------
+
+public void insertAtFront(int value)
+
+
+
+Current:
+
+
+      head        tail
+       |          |
+NULL ← 20 ⇄ 30 ⇄ 40 → NULL
+
+
+Insert: 10
+
+Result:
+
+
+     head             tail
+       |                |
+NULL ← 10 ⇄ 20 ⇄ 30 ⇄ 40 → NULL
+
+
+--Connect the link from both end.
+
+
+full code:
+----------
+
+public void insertAtFront(int value) {
+
+    Node newNode = new Node(value);
+
+    if(head == null) {
+
+        head = tail = newNode;
+    }
+    else {
+
+        newNode.next = head;
+
+        head.prev = newNode;
+
+        head = newNode;
+    }
+
+    size++;
+}
+
+
+
+Insertion at End:
+-----------------
+
+public void insertAtEnd(int value)
+
+
+Current:
+
+NULL ← 10 ⇄ 20 ⇄ 30 → NULL
+
+Insert:
+
+40
+
+Result:
+
+NULL ← 10 ⇄ 20 ⇄ 30 ⇄ 40 → NULL
+
+
+
+--Make the connection from both end.
+
+
+full code:
+----------
+
+public void insertAtEnd(int value) {
+
+    Node newNode = new Node(value);
+
+    if(head == null) {
+
+        head = tail = newNode;
+    }
+    else {
+
+        tail.next = newNode;
+
+        newNode.prev = tail;
+
+        tail = newNode;
+    }
+
+    size++;
+}
+
+
+
+
+Forward Traversal:
+------------------
+
+--Same as Singly Linked List.
+
+
+public void displayForward() {
+
+    Node current = head;
+
+    while(current != null) {
+
+        System.out.print(current.data + " <-> ");
+
+        current = current.next;
+    }
+
+    System.out.println("NULL");
+}
+
+
+
+Output:
+
+10 <-> 20 <-> 30 <-> 40 <-> NULL
+
+
+Backward Traversal:
+-------------------
+
+--This is the biggest advantage.
+
+Start from: tail
+
+Move using: prev
+
+
+
+public void displayBackward() {
+
+    Node current = tail;
+
+    while(current != null) {
+
+        System.out.print(current.data + " <-> ");
+
+        current = current.prev;
+    }
+
+    System.out.println("NULL");
+}
+
+
+
+Output
+
+40 <-> 30 <-> 20 <-> 10 <-> NULL
+
+
+
+
+Delete At Front:
+----------------
+
+
+public void deleteAtFront()
+
+
+Current:
+
+NULL ← 10 ⇄ 20 ⇄ 30 → NULL
+
+Delete: 10
+
+Result:
+
+NULL ← 20 ⇄ 30 → NULL
+
+
+Steps:
+
+1. Move head:
+
+	head = head.next;
+
+2. Remove previous reference:
+
+	head.prev = null;
+
+
+
+
+full code:
+---------
+
+
+public void deleteAtFront() {
+
+    if(head == null) {
+
+        throw new NoSuchElementException(
+                "List is empty");
+    }
+
+    if(head == tail) {
+
+        head = null;
+        tail = null;
+    }
+    else {
+
+        head = head.next;
+
+        head.prev = null;
+    }
+
+    size--;
+}
+
+
+
+
+
+
+Delete At Last:
+---------------
+
+
+public void deleteAtLast()
+
+
+--This is where DLL shines.
+
+--Here we get more advantage of DLL compare to SLL
+
+Current:
+
+NULL ← 10 ⇄ 20 ⇄ 30 ⇄ 40 → NULL
+
+Delete: 40
+
+Result:
+
+NULL ← 10 ⇄ 20 ⇄ 30 → NULL
+
+
+In Singly Linked List
+
+Needed traversal: Find second last node
+
+Time: O(n)
+
+Whereas, 
+
+Doubly Linked List
+
+Use: tail.prev
+
+Directly.
+
+O(1)
+
+Steps:
+
+1. Move tail:
+
+tail = tail.prev;
+
+2. Disconnect:
+
+tail.next = null;
+
+Done.
+
+
+full code:
+----------
+
+public void deleteTail() {
+
+    if(head == null) {
+
+        throw new NoSuchElementException("List is empty");
+    }
+
+    if(head == tail) {
+
+        head = null;
+        tail = null;
+    }
+    else {
+
+        tail = tail.prev;
+
+        tail.next = null;
+    }
+
+    size--;
+}
+
+
+
+Memory Trade-Off:
+----------------
+
+--DLL gives more power.
+
+--But each node stores:
+
+next
+prev
+
+instead of only:
+
+next
+
+Therefore:
+
+--More Memory Consumption
+
+
+
+
+Real World Applications of DLL:
+-------------------------------
+
+
+1. Browser Back/Forward
+
+Google ⇄ YouTube ⇄ ChatGPT ⇄ GitHub
+
+Supports:
+
+Back
+Forward
+
+
+2. Undo / Redo
+
+Action1 ⇄ Action2 ⇄ Action3
+
+Move backward: Undo
+
+Move forward: Redo
+
+
+3. Music Playlist
+
+Song1 ⇄ Song2 ⇄ Song3 ⇄ Song4
+
+Supports:
+
+Previous Song
+Next Song
+
+
+4. Image Viewer
+
+Previous Image
+Next Image
+
+
+
+
+Add Two Numbers Problem:
+=========================
+
+--This is one of the most famous Linked List interview problems.
+
+It appears frequently in:
+
+LeetCode
+Amazon
+Microsoft
+Google
+Adobe
+Flipkart
+
+and many product-based companies.
+
+
+Problem Statement:
+
+You are given two Linked Lists.
+
+Each node contains exactly one digit:
+
+0 to 9
+
+The digits are stored in reverse order.
+
+Your task is to:
+
+Add the two numbers
+and return the result as a Linked List.
+
+The result must also be stored in:
+
+Reverse Order
+
+
+
+Example:
+-------
+
+Input:
+
+List 1:
+
+2 → 4 → 3
+
+List 2:
+
+5 → 6 → 4
+
+
+Output:
+
+7 → 0 → 8
+
+
+
+Important Point:
+
+--The numbers are stored in reverse order.
+
+2 → 4 → 3
+
+does NOT mean:
+
+243
+
+It means:
+
+342
+
+because:
+
+2 = Ones Place
+
+4 = Tens Place
+
+3 = Hundreds Place
+
+
+
+
+Similarly:
+
+5 → 6 → 4
+
+means:
+
+465
+
+
+Now add them:
+
+342 + 465 = 807
+
+Result should also be stored in reverse order:
+
+807
+
+becomes:
+
+7 → 0 → 8
+
+
+Think about how we add numbers in school.
+
+Example:
+
+  342
++ 465
+------
+
+We always start from:
+
+Rightmost Digit
+
+because carry is generated there.
+
+In a Linked List:
+
+2 → 4 → 3
+
+
+the ones digit is already at the beginning.
+
+So addition becomes easy.
+
+No need to reverse the list.
+
+
+
+How Humans Solve It:
+
+Let's perform: 342 + 465
+
+Step 1: 2 + 5 = 7
+
+Write: 7
+
+Carry: 0
+
+Step 2: 4 + 6 + Carry(0)
+
+= 10
+
+Write: 0
+
+Carry: 1
+
+
+Step 3: 3 + 4 + Carry(1)
+
+= 8
+
+Write: 8
+
+Carry: 0
+
+Answer: 7 → 0 → 8
+
+--Exactly the same thing we do in code.
+
+
+Approach:
+
+At every node we need:
+
+Digit from List 1
+
+Digit from List 2
+
+Carry
+
+Formula:
+
+sum = digit1 + digit2 + carry;
+
+
+
+Then:
+
+
+Digit to Store:
+
+digit = sum % 10;
+
+Carry to Forward:
+
+carry = sum / 10;
+
+
+The Most Important Edge Case
+
+Input
+
+List1: 9 → 9 → 9
+
+List2: 1
+
+Meaning:
+
+999 + 1
+
+
+
+Iteration 1: 9 + 1
+
+= 10
+
+Store: 0
+
+Carry: 1
+
+Iteration 2: 9 + 0 + 1
+
+= 10
+
+Store: 0
+
+Carry: 1
+
+Iteration 3: 9 + 0 + 1
+
+= 10
+
+Store: 0
+
+Carry: 1
+
+Now both lists ended.
+
+But:
+
+carry = 1
+
+still remains.
+
+Therefore we must create one more node.
+
+Result:
+
+0 → 0 → 0 → 1
+
+which represents:
+
+1000
+
+
+
+
+full code:
+----------
+
+public Node addTwoNumbers(Node l1, Node l2) {
+
+    Node resultHead = null;
+    Node resultTail = null;
+
+    int carry = 0;
+
+    while (l1 != null || l2 != null || carry != 0) {
+
+        int sum = carry;
+
+        if (l1 != null) {
+
+            sum += l1.data;
+            l1 = l1.next;
+        }
+
+        if (l2 != null) {
+
+            sum += l2.data;
+            l2 = l2.next;
+        }
+
+        carry = sum / 10;
+
+        int digit = sum % 10;
+
+        Node newNode = new Node(digit);
+
+        if (resultHead == null) {
+
+            resultHead = newNode;
+            resultTail = newNode;
+        }
+        else {
+
+            resultTail.next = newNode;
+
+            resultTail = newNode;
+        }
+    }
+
+    return resultHead;
+}
