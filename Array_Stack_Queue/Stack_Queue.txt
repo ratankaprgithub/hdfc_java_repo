@@ -278,6 +278,14 @@ Find:
 
 
 
+
+
+
+
+
+
+
+
 Array-Based Stack Implementation:
 =================================
 
@@ -444,7 +452,7 @@ public void display(){
 
 	   for(int i= size()-1; i>=0; i--){
 
-		System.out.println(items[i]);
+		System.out.println(items[i]+" ");
 	   }
 
 
@@ -798,7 +806,7 @@ public class Node {
     int data;
     Node next;
 
-    Node(int data) {
+    public Node(int data) {
 
         this.data = data;
     }
@@ -894,7 +902,7 @@ public class LinkedListStack {
         Node current = head;
 
         while (current != null) {
-            System.out.println(current.data);
+            System.out.println(current.data+ " -> + );
             current = current.next;
         }
 
@@ -931,6 +939,8 @@ Array Stack vs Linked List Stack:
 | Overflow Risk   | Fixed Capacity   | Memory Dependent  |
 | Memory Overhead | Low              | Higher            |
 | Cache Friendly  | Yes              | No                |
+
+
 
 
 
@@ -1082,7 +1092,7 @@ public static boolean isBalanced(String str) {
 
         char ch = str.charAt(i);
 
-        if (ch == '(' || ch == '{' || ch == '[') {
+        if (ch == '(' || ch == '{' || ch == '[') {  
 
             stack.push(ch);
         }
@@ -1322,6 +1332,7 @@ Postfix Expression Evaluation Using Stack:
 ==========================================
 
 
+
 --Use a Stack to evaluate mathematical expressions written in Postfix Notation
   (also called Reverse Polish Notation - RPN).
 
@@ -1335,6 +1346,7 @@ Result: 5
 5 1 2 + 4 * + 3 -
 
 Result: 14
+
 
 
 How Postfix Expressions are Evaluated:
@@ -1564,7 +1576,7 @@ Answer = stack.pop()
 
 Example:
 
-String expression = "2 3 4 * +";
+String expression = "2 3 4 * + ";
 
 Tokens are separated by spaces.
 Operands are integers.
@@ -1591,12 +1603,12 @@ public class PostfixCalculator {
 
         for (String token : tokens) {
 
-             if (! "+-*/".contains(token))  { // other then operators
+             if (! "+-*/".contains(token))  { // other then operators: if token is operand
 
                 stack.push(Integer.parseInt(token));
             }
 
-            else {
+            else { //if the token is operator
 
                 int operand2 = stack.pop();
                 int operand1 = stack.pop();
@@ -2080,9 +2092,14 @@ Now insert:
 enqueue(40)
 enqueue(50)
 
+dequeue()
+dequeue()
+
+
+
 Result:
 
-10 20 30 40 50
+_  _  _ 40 50
 
 Array becomes full.
 
@@ -2152,15 +2169,6 @@ rear == array.length - 1
 Queue Empty Condition:
 
 size == 0
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2710,17 +2718,7 @@ public class LinkedListQueue {
     private Node tail;
     private int size;
 
-    private static class Node {
-
-        int data;
-        Node next;
-
-        Node(int data) {
-            this.data = data;
-        }
-    }
-
-    public boolean isEmpty() {
+     public boolean isEmpty() {
 
         return size == 0;
     }

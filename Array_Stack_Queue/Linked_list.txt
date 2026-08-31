@@ -3458,6 +3458,33 @@ Previous Image
 Next Image
 
 
+Circular Doubbly linked list:
+-----------------------------
+
+   Head            Tail
+    |                |
+ ⇄ 10 ⇄ 20 ⇄ 30 ⇄ 40 ⇄ 
+ |----------------------|
+
+
+
+Student task:
+--------------
+
+Implement the following methods:
+
+insertAtFront()
+insertAtLast()
+deleteAtFront()
+deleteAtLast()
+displayForward()
+displayBackward()
+
+Note: Take a special care about the head and tail pointers.
+
+--We need to maintain or perform link and delink operation from both size including the head and tail pointers.
+
+
 
 
 Add Two Numbers Problem:
@@ -3658,7 +3685,7 @@ Input
 
 List1: 9 → 9 → 9
 
-List2: 1
+List2: 1 → 0 → 0
 
 Meaning:
 
@@ -3758,3 +3785,15 @@ public Node addTwoNumbers(Node l1, Node l2) {
 
     return resultHead;
 }
+
+
+
+
+
+
+
+
+
+
+
+
