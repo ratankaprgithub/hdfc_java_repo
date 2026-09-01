@@ -1,0 +1,2051 @@
+Introduction to Spring & Spring Boot:
+====================================
+
+
+
+
+The Problem with Plain Java:
+-----------------------------
+
+
+---Imagine you are building an E-Commerce application using only Core Java technologies. While Java is powerful, developing large-scale enterprise applications without a framework introduces several challenges.
+
+
+1. Database Connection Management:
+---------------------------------
+
+--In plain Java, every database operation requires repetitive code:
+
+
+Example:
+
+
+Connection conn = null;
+
+try {
+    conn = DriverManager.getConnection(url, username, password);
+
+    PreparedStatement stmt = conn.prepareStatement("SELECT * FROM products");
+
+    ResultSet rs = stmt.executeQuery();
+
+    // Process results
+
+} catch (SQLException e) {
+    e.printStackTrace();
+
+} finally {
+    if (conn != null) { 
+        conn.close();
+    }
+}
+
+
+
+Challenges:
+
+--Repetitive boilerplate code in every DAO class.
+
+--Developers must manually open and close database connections.
+
+--Forgetting to close connections can lead to memory leaks.
+
+--Connection pooling must be configured and managed manually.
+
+--Exception handling becomes repetitive.
+
+
+
+
+2. Object Creation and Dependency Management:
+---------------------------------------------
+
+Consider the following example:
+
+
+class EmailService {
+
+    public void sendEmail() {
+        System.out.println("Sending Email...");
+    }
+}
+
+
+class UserService {
+
+    private EmailService emailService = new EmailService();
+
+    public void registerUser() {
+
+        System.out.println("User registered successfully");
+
+        emailService.sendEmail();
+    }
+}
+
+
+
+Problems:
+
+--UserService is tightly coupled with EmailService.
+
+--Replacing EmailService with SMSService or WhatsAppService requires code modification.
+
+--Unit testing becomes difficult because dependencies are created internally.
+
+--Object creation and dependency management become the responsibility of the developer.
+
+
+3. Configuration Management:
+-----------------------------
+
+--Configuration values are usually loaded manually:
+
+Properties props = new Properties();
+
+FileInputStream fis = new FileInputStream("config.properties");
+
+props.load(fis);
+
+String dbUrl = props.getProperty("db.url");
+
+
+Challenges:
+
+--Manual loading of configuration files.
+
+--Repeated code across projects.
+
+--Environment-specific configuration becomes difficult to manage.
+
+
+
+
+4. Building REST APIs:
+-----------------------
+
+--Before modern frameworks, developers used Servlets:
+
+public class ProductServlet extends HttpServlet {
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+
+        // Parse request parameters
+
+        // Execute business logic
+
+        // Convert objects to JSON
+
+        // Set response headers
+
+        // Handle exceptions
+    }
+}
+
+
+
+Additional Complexity:
+
+--Configure URL mappings in web.xml.
+
+--Manage servlet lifecycle manually.
+
+--Convert Java objects to JSON manually.
+
+--Handle exceptions and HTTP responses explicitly.
+
+--Write a significant amount of infrastructure code.
+
+
+
+Core Problems with Plain Java Enterprise Development:
+======================================================
+
+1. Excessive Boilerplate Code
+
+--Developers spend more time writing infrastructure code than business logic.
+
+2. Manual Object Management
+
+--Creating and wiring dependencies manually becomes difficult as applications grow.
+
+3. Tight Coupling
+
+--Components become dependent on concrete implementations, reducing flexibility.
+
+4. Configuration Complexity
+
+--Managing XML files, properties, and environment settings becomes cumbersome.
+
+5. Reinventing Common Solutions
+
+--Developers repeatedly implement the same patterns across projects.
+
+
+
+What is Spring?
+--------------
+
+--Spring is not a programming language.
+
+--Java is the programming language, and Spring is a framework built on top of Java.
+
+--Spring is an open-source, lightweight, and comprehensive application framework that simplifies enterprise application development.
+
+It helps developers build:
+
+Web Applications
+Enterprise Applications
+REST APIs
+Microservices
+Cloud-Native Applications
+
+--while reducing development complexity and improving maintainability.
+
+
+
+Q/- Why Spring?
+----------------
+
+
+Spring provides:
+
+Reduced Boilerplate Code
+
+--Many repetitive tasks are handled automatically by the framework.
+
+Dependency Injection (DI)
+
+--Spring manages object creation and wiring, promoting loose coupling.
+
+Easy Testing
+
+--Components can be tested independently.
+
+Modular Architecture
+
+--Developers can use only the modules required by their applications.
+
+Integration Support:
+
+--Spring integrates seamlessly with technologies such as:
+
+Hibernate
+JPA
+Kafka
+RabbitMQ
+JMS
+REST APIs
+Cloud Platforms
+
+
+Enterprise Features:
+
+--Spring provides support for:
+
+Transactions
+Security
+Logging
+Caching
+Messaging
+
+
+
+History and Evolution of Spring:
+================================
+
+Early Enterprise Java Development
+
+--In the early days, developers used JavaBeans to implement business logic.
+
+JavaBeans were:
+
+Simple to create
+Easy to understand
+
+However, they lacked enterprise features such as:
+
+Transaction Management
+Security
+Distributed Computing Support
+Resource Management
+
+--Developers had to implement these features manually.
+
+
+Introduction of EJB:
+--------------------
+
+--To address these limitations, Sun Microsystems introduced:
+
+Enterprise JavaBeans (EJB) - 1998
+
+EJB provided enterprise services such as:
+
+Transactions
+Security
+Remote Communication
+Lifecycle Management
+
+through an EJB container.
+
+Advantages:
+
+--Reduced middleware development effort.
+
+
+Drawbacks:
+
+--Complex programming model.
+--Multiple interfaces required.
+--Numerous lifecycle methods.
+--Heavy XML configuration.
+--Difficult testing and deployment.
+
+
+
+--EJB was powerful but considered heavyweight.
+
+
+Birth of Spring:
+----------------
+
+The industry needed:
+
+--The simplicity of JavaBeans + The power of EJB - The complexity of EJB
+
+--Rod Johnson addressed this problem.
+
+
+
+| Year       | Event                                                                          |
+| ---------- | ------------------------------------------------------------------------------ |
+| 2002       | Rod Johnson published the book "Expert One-on-One J2EE Design and Development" |
+| 2003       | Framework named "Interface21" introduced                                       |
+| March 2004 | Spring Framework 1.0 officially released                                       |
+
+
+Spring allowed developers to:
+
+--Write business logic using simple POJO classes.
+
+--Let the Spring Container provide enterprise services.
+
+This dramatically simplified enterprise application development.
+
+
+Spring Today:
+
+--The Spring ecosystem has expanded significantly beyond the core framework.
+
+Major Spring Projects include:
+
+Spring Framework
+Spring Boot
+Spring Data
+Spring Security
+Spring Cloud
+Spring Batch
+Spring Integration
+
+--Today Spring is one of the most widely used frameworks for Java Enterprise Application Development.
+
+
+
+
+
+Q/- Why is Spring Considered Lightweight?
+
+
+A/- Spring is considered lightweight because of the following characteristics:
+
+1. Lightweight Container
+
+--Spring's IoC Container is simply a Java-based container that can run anywhere.
+
+2. Low Processing Overhead
+
+--Spring introduces minimal runtime overhead.
+
+3. Excellent Testability
+
+--Spring applications can be tested without deploying to heavyweight application servers.
+
+4. POJO Programming Model
+
+--Business logic can be written using ordinary Java classes.
+
+
+Example:
+
+public class CustomerService {
+
+    public void createCustomer() {
+        // business logic
+    }
+}
+
+
+--No special inheritance or container-specific APIs are required.
+
+
+
+Q/- What is an Application Framework?
+
+--An Application Framework is a reusable, semi-finished software platform that provides common functionality required by multiple applications.
+
+Developers focus on application-specific business logic while the framework handles common concerns.
+
+Examples:
+
+Dependency Management
+Transaction Management
+Logging
+Security
+Configuration
+Database Integration
+
+
+
+Benefits of Using a Framework:
+------------------------------
+
+Without a framework:
+
+Developers start from scratch.
+Development time increases.
+Code duplication becomes common.
+
+With a framework:
+
+Common functionality is already available.
+Development becomes faster.
+Code quality improves.
+Maintenance becomes easier.
+
+
+
+
+Features of Spring Framework:
+-----------------------------
+
+1. Lightweight Framework
+
+--Uses POJO-based programming.
+
+2. Versatile Framework
+
+--Integrates easily with other Java technologies and frameworks.
+
+3. Supports Multiple Application Types
+
+Can be used for:
+
+Desktop Applications
+Web Applications
+Enterprise Applications
+Distributed Applications
+Microservices
+
+4. Lightweight Container
+
+--Spring provides its own IoC Container.
+
+5. Dependency Injection
+
+--Promotes loose coupling between components.
+
+6. Transaction Management
+
+--Provides declarative transaction support.
+
+7. Modular Architecture
+
+--Developers can use only the required modules.
+
+8. Aspect-Oriented Programming (AOP)
+
+--Separates cross-cutting concerns such as:
+
+Logging
+Security
+Auditing
+Transactions
+
+from business logic.
+
+
+
+Spring Framework Architecture:
+-------------------------------
+
+--Spring follows a layered and modular architecture.
+
+
+Major modules include:
+
+1. Spring Core:
+
+IoC Container
+BeanFactory
+ApplicationContext
+Dependency Injection
+
+
+2. AOP Module
+
+Aspect-Oriented Programming
+Logging
+Security
+Transaction Interceptors
+
+
+3. JDBC & DAO Module
+
+Simplified JDBC Programming
+Exception Handling
+Database Access Support
+
+
+4. ORM Module
+
+Integration with:
+
+Hibernate
+JPA
+MyBatis
+
+
+5. Enterprise Integration Module
+
+Support for:
+
+JMS
+JMX
+EJB Integration
+
+6. Web MVC Module
+
+Developing:
+
+Web Applications
+REST APIs
+MVC Applications
+
+7. Test Module
+
+Support for:
+
+JUnit
+Mockito
+Integration Testing
+
+
+8. OXM Module (Object XML Mapping)
+
+--Converts Java Objects ↔ XML Documents.
+
+
+
+
+
+Spring Core Module:
+===================
+
+
+--Spring Core is the foundation of the entire Spring ecosystem.
+
+--Everything in Spring eventually depends on Spring Core.
+
+Think of Spring Core as: Foundation of a Building
+
+--Spring Core provides the fundamental principles and mechanisms that power all Spring modules.
+
+Key Components of Spring Core:
+-------------------------------
+
+In this module, we will learn:
+
+1. Spring Beans
+
+What is a Bean?
+How to create Beans?
+
+2. Configuration Metadata
+
+XML Configuration
+Annotation Configuration
+Java-Based Configuration
+
+3. Dependency Injection (DI)
+
+Constructor Injection
+Setter Injection
+
+4. Spring Container
+
+BeanFactory
+ApplicationContext
+
+5. Bean Lifecycle
+
+Bean Creation
+Initialization
+Usage
+Destruction
+
+
+
+
+
+Tight Coupling and Loose Coupling Between Objects:
+==================================================
+
+What is Coupling?
+
+--When one class uses the functionality of another class, we say that both classes are coupled.
+
+--The class that needs a service is called the Dependent Class.
+
+--The class that provides the service is called the Dependency Class.
+
+
+Example:
+
+public class EmailService {
+
+    public void sendEmail() {
+        System.out.println("Email Sent");
+    }
+}
+
+
+public class UserService {
+
+    private EmailService emailService = new EmailService();
+
+    public void registerUser() {
+
+        System.out.println("User Registered");
+
+        emailService.sendEmail();
+    }
+}
+
+
+
+
+Here:
+
+UserService is the Dependent Class
+EmailService is the Dependency Class
+
+--UserService needs EmailService to send an email after user registration.
+
+
+Tight Coupling:
+---------------
+
+--A system is said to be tightly coupled when changes in a dependency force changes in the dependent class.
+
+In the above example:
+
+	private EmailService emailService = new EmailService();
+
+--UserService directly creates the object of EmailService using the new operator.
+
+This means:
+
+UserService knows exactly which implementation it is using.
+UserService is responsible for creating the dependency object.
+Replacing the dependency becomes difficult.
+
+
+
+Problem 1: Method Name Change
+
+--Suppose EmailService is modified as follows:
+
+public class EmailService {
+
+    public void sendNotification() {
+        System.out.println("Email Sent");
+    }
+}
+
+
+--Now the following code in UserService becomes invalid:
+
+	emailService.sendEmail();
+
+It must be changed to:
+
+	emailService.sendNotification();
+
+
+--Because a change in the dependency class forces a change in the dependent class, both classes are tightly coupled.
+
+
+Problem 2: Replacing One Dependency with Another simmilar type of dependency.
+
+
+--Suppose the business requirement changes.
+
+--Instead of sending emails, we now want to send SMS messages.
+
+public class SmsService {
+
+    public void sendSms() {
+        System.out.println("SMS Sent");
+    }
+}
+
+
+
+--Now UserService must be modified:
+
+
+public class UserService {
+
+    private SmsService smsService = new SmsService();
+
+    public void registerUser() {
+
+        System.out.println("User Registered");
+
+        smsService.sendSms();
+    }
+}
+
+
+
+Again, the dependent class must be changed.
+
+Therefore, the classes remain tightly coupled.
+
+
+
+How to Achieve Loose Coupling?
+------------------------------
+
+--To achieve loose coupling, follow these two rules:
+
+1. Program to Interfaces
+
+--Create an interface representing the common behavior.
+
+2. Apply Dependency Injection (DI)
+
+--The dependent class should not create its own dependencies.
+
+--Instead, dependencies should be supplied from outside.
+
+
+
+
+
+
+Step 1: Create an Interface
+
+
+public interface NotificationService {
+
+    void sendNotification();
+}
+
+
+
+Step 2: Create Implementations
+
+Email Implementation:
+---------------------
+
+public class EmailService implements NotificationService {
+
+    @Override
+    public void sendNotification() {
+        System.out.println("Email Sent");
+    }
+}
+
+
+
+SMS Implementation:
+--------------------
+
+public class SmsService implements NotificationService {
+
+    @Override
+    public void sendNotification() {
+        System.out.println("SMS Sent");
+    }
+}
+
+
+Step 3: Inject Dependency into Dependent Class:
+
+
+public class UserService {
+
+    private NotificationService notificationService;
+
+    public void setNotificationService(NotificationService notificationService) {
+
+        this.notificationService = notificationService;
+    }
+
+    public void registerUser() {
+
+        System.out.println("User Registered");
+
+        notificationService.sendNotification();
+    }
+}
+
+
+
+
+
+Here:
+
+UserService no longer creates objects using new.
+Dependency is supplied from outside.
+UserService only knows about the interface.
+UserService does not care whether the implementation is Email or SMS.
+
+--This is called Dependency Injection (Setter Injection).
+
+
+
+
+Client Code
+------------
+Using Email Service:
+
+
+UserService userService = new UserService();
+
+userService.setNotificationService(new EmailService());
+
+userService.registerUser();
+
+
+Output:
+
+User Registered
+Email Sent
+
+
+
+Using SMS Service:
+
+UserService userService = new UserService();
+
+userService.setNotificationService(new SmsService());
+
+userService.registerUser();
+
+Output:
+
+User Registered
+SMS Sent
+
+
+
+--Notice that UserService code remains unchanged.
+
+--Only the injected dependency changes.
+
+--This is called Loose Coupling.
+
+
+Definition of Loose Coupling:
+-----------------------------
+
+--If the dependency between two classes is minimal and changes in one class do not force changes in the other class, then those classes are said to be loosely coupled.
+
+Benefits:
+
+Easy maintenance
+Easy testing
+Better flexibility
+Better reusability
+Easy replacement of implementations
+
+
+
+
+Inversion of Control (IoC):
+===========================
+
+--Traditionally, a dependent class creates its own dependency objects.
+
+Example:
+
+private EmailService emailService = new EmailService();
+
+--Here the control of object creation is with the application code.(Object creation is in main control)
+
+--In IoC (Inversion of Control), object creation responsibility is transferred to an external entity.
+
+--Some external entity creates the object and supplies it to the dependent class.
+
+--This external entity may be:
+
+Factory Class
+Registry
+Container
+
+--In Spring Framework, the external entity is the Spring IoC Container.
+
+--The responsibility of creating and managing objects is transferred from the application code to the Spring Container.
+
+
+
+Dependency Injection (DI)
+-------------------------
+
+--Dependency Injection is the practical implementation of IoC.
+
+In DI:
+
+--The dependent object does not create dependency objects.
+
+--Dependency objects are supplied from outside.
+
+--The container pushes the dependency into the dependent object.
+
+Example:
+
+
+userService.setNotificationService(new EmailService());
+
+--Here EmailService is injected into UserService.
+
+
+--Instead of creating dependencies inside the class, Spring provides them externally.
+
+
+
+IoC vs DI:
+----------
+
+| IoC                                          | DI                                       |
+| -------------------------------------------- | ---------------------------------------- |
+| Design Principle                             | Implementation Technique                 |
+| Concept                                      | Practical realization of IoC             |
+| Control is transferred to an external entity | External entity injects dependencies     |
+| Answers "Who creates objects?"               | Answers "How are dependencies provided?" |
+
+
+
+
+--Dependency Injection (DI) is the process of providing dependency objects to a dependent object from an external source instead of creating them using the new operator.
+
+In Spring Framework, DI can be achieved mainly in two ways:
+
+Setter Injection
+Constructor Injection
+
+
+Setter Injection:
+-----------------
+
+--In Setter Injection, the dependency object is injected into the dependent class through a setter method.
+
+
+Example: Inside the client code:
+
+UserService userService = new UserService();
+
+userService.setNotificationService(new EmailService());
+
+userService.registerUser();
+
+
+
+Advantages:
+
+Dependency can be changed at runtime.
+Suitable for optional dependencies.
+Easy to understand for beginners.
+
+
+Disadvantages:
+
+Object can be created without dependency.
+Possibility of NullPointerException if dependency is not injected.
+
+
+
+2. Constructor Injection:
+-------------------------
+
+--In Constructor Injection, the dependency object is supplied through the constructor of the dependent class.
+
+Example: Modify the above UserService class to support constuctor injection:
+
+
+public class UserService {
+
+    private NotificationService notificationService;
+
+    public UserService(NotificationService notificationService) {
+
+        this.notificationService = notificationService;
+    }
+
+    public void registerUser() {
+
+        System.out.println("User Registered");
+
+        notificationService.sendNotification();
+    }
+}
+
+
+
+Injecting Dependency:
+
+
+UserService userService = new UserService(new EmailService());
+
+userService.registerUser();
+
+
+
+Advantages:
+
+Dependency is mandatory.
+Object cannot be created without required dependencies.
+Better for immutable objects.
+Easier unit testing.
+Recommended by Spring Team.
+
+
+Disadvantages:
+
+--Constructor becomes lengthy if there are too many dependencies.
+
+
+
+Setter Injection vs Constructor Injection:
+------------------------------------------
+
+| Setter Injection                                 | Constructor Injection                   |
+| ------------------------------------------------ | --------------------------------------- |
+| Dependency injected through setter method        | Dependency injected through constructor |
+| Suitable for optional dependencies               | Suitable for mandatory dependencies     |
+| Dependency can be changed later                  | Dependency generally remains fixed      |
+| Object may exist without dependency              | Object always created with dependency   |
+| Can lead to NullPointerException if not injected | Safer because dependency is mandatory   |
+| Less preferred in modern Spring applications     | Recommended approach in Spring Boot     |
+
+
+
+
+Spring container:
+=================
+
+What is a Container?
+
+--In Java, a class that provides runtime support to other classes is called a Container.
+
+Examples:
+
+--In a Console Application, the Main class provides runtime support to other classes.
+
+--In AWT, the Frame class acts as a container for components like Button, Label, and TextField.
+
+--In Servlets, the Servlet Container (Tomcat, Jetty, etc.) provides runtime support to Servlets and JSP pages.
+
+Similarly, in Spring Framework, the Spring Container provides runtime support to Spring beans.
+
+
+What is Spring Container?
+
+--A Spring Container is a lightweight Java application that creates, configures, manages, and provides Spring bean objects to the application.
+
+--It is the core component of the Spring Framework and implements the IoC (Inversion of Control) principle.
+
+--All core services provided by Spring are available through the Spring Container.
+
+
+Services Provided by Spring Container:
+-------------------------------------
+
+1. Bean Lifecycle Management:
+
+--The Spring Container creates, initializes, manages, and destroys Spring beans automatically.
+
+--Unlike Servlets and EJBs, Spring beans do not need to implement any special container-specific interfaces.
+
+
+2. Bean Lookup Service:
+
+--The Spring Container acts as a factory of beans.
+
+--Application classes can obtain bean objects directly from the container without using any external registry or naming service.
+
+
+3. External Configuration
+
+--The state and behavior of beans can be configured using external XML configuration files or using the annotations also.
+
+--This allows modifications without changing the source code of the bean classes.
+
+
+4. Dependency Resolution:
+
+--The container automatically identifies and injects the required dependency objects into dependent objects.
+
+--This helps achieve loose coupling between application components.
+
+
+Types of Spring Containers:
+----------------------------
+
+--Spring Framework provides two container interfaces:
+
+BeanFactory
+     |
+ApplicationContext
+
+
+
+1. BeanFactory:
+----------------
+
+Basic IoC Container.
+Provides fundamental bean management features.
+Creates bean objects only when requested (lazy loading).
+Lightweight and simple container.
+
+
+2. ApplicationContext:
+
+Advanced IoC Container.
+Extends BeanFactory.
+Provides additional enterprise features.
+Provide Annotation Support
+Event Handling
+Provide Internationalization support
+Most commonly used container in Spring applications.
+
+and much more..
+
+
+Starting an ApplicationContext Container:
+-----------------------------------------
+
+--ApplicationContext provides implementation classes that directly read the configuration file or the cofiguration classes.
+
+Common Implementations:
+
+1. ClassPathXmlApplicationContext
+
+2. FileSystemXmlApplicationContext
+
+3. AnnotationConfigApplicationContext (used for Annotation based configuration classes)
+
+
+
+
+
+Example:
+
+Using ClassPathXmlApplicationContext:
+
+--When the configuration XML file is available in the classpath:
+
+ApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
+
+
+Using FileSystemXmlApplicationContext:
+
+--When the XML file is available at a different location:
+
+ApplicationContext context = new FileSystemXmlApplicationContext("D:\\myapp\\spring.xml");
+
+
+Using AnnotationConfigApplicationContext:
+
+--When the configuration is done using the annotation approach instead of using xml approach.
+
+
+
+
+Spring Bean:
+-----------
+
+--A Spring Bean is an object that is created, configured, managed, and destroyed by the Spring Container.
+
+In other words:
+
+--Any object whose lifecycle is controlled by the Spring Container is called a Spring Bean.
+
+--The Spring Container creates the bean object, injects its dependencies, manages its lifecycle, and provides it to the application whenever required.
+
+--Spring beans are POJO classes
+
+
+Consider the following class:
+
+
+
+public class EmployeeService {
+
+    public void display() {
+        System.out.println("Employee Service");
+    }
+}
+
+
+--If an object is created using:
+
+EmployeeService service = new EmployeeService();
+
+It is a normal Java object.
+
+--If the same object is created and managed by the Spring Container then it becomes a Spring Bean.
+
+
+Features of Spring Beans:
+-------------------------
+
+--Created by the Spring Container.
+
+--Managed by the Spring Container.
+
+--Dependencies are injected automatically.
+
+--Lifecycle is controlled by the container.
+
+--Can be shared and reused throughout the application.
+
+--Helps achieve loose coupling.
+
+
+
+
+
+Note: To make a Java class as Spring Bean, we need to register that class with the Spring Container using following approaches:
+
+1. Using XML configurtion files
+
+<bean id="service" class="com.app.EmployeeService"/>
+
+2. Using the help of Annotations:
+
+@Component
+@Service
+@Controller
+@Repository
+@Bean
+
+
+
+
+Steps to develop the First Spring application using XML approach:
+------------------------------------------------------------------
+
+
+Reffer the official website: https://spring.io/ 
+
+
+Step1: Create a maven project inside the IntelliJ IDEA
+
+Name: Spring-core-xml-app
+
+groupId: com.hdfc
+
+<artifactId>: Spring-core-xml-app (same as application name)
+
+
+Project Structure
+
+
+src
+ |-- main
+      |-- java
+      │    |-- com.hdfc
+      │
+      |--resources
+
+pom.xml
+
+
+
+Step 2: Add Spring Dependency
+
+Open:
+
+pom.xml
+
+Add:
+
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>7.0.9</version>
+            <scope>compile</scope>
+        </dependency>
+        
+    </dependencies>
+
+
+Step 3: Create Employee Class
+
+Package:
+
+com.hdfc.beans
+
+Create:
+
+package com.hdfc.beans;
+
+public class Employee {
+
+    public Employee() {
+
+        System.out.println("Employee Object Created");
+
+    }
+
+    public void display() {
+
+        System.out.println(
+            "Welcome to Spring Framework");
+
+    }
+}
+
+
+
+Currently it is just a:
+
+POJO
+
+Plain Old Java Object.
+
+It is NOT a Spring Bean yet.
+
+
+Step 4: Create XML Configuration
+
+Inside:
+
+src/main/resources
+
+Create:
+
+beans.xml
+
+Get the referece from the Spring documentation
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="emp" class="com.hdfc.beans.Employee"/>
+
+
+</beans>
+
+
+means:
+
+We are telling the Spring f/w to:
+
+Please create Employee object.
+
+Store it inside container.
+
+Name it "emp".
+
+
+Q/- When does Employee become a Spring Bean?
+
+Answer:
+
+--The moment Spring Container creates and manages the object.
+
+
+Step 5
+Create Main Class App.java
+
+Inside the Package:
+
+com.hdfc
+
+
+Example:
+
+package com.hdfc;
+
+import com.hdfc.beans.Employee;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class App {
+
+
+    public static void main(String[] args) {
+
+	//Create the container object
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("beans.xml");
+
+	//pull the object (get the bean)
+        Employee emp = ctx.getBean("emp", Employee.class);
+
+	//call the business logic
+        emp.display();
+
+
+    }
+
+}
+
+
+Output:
+-------
+
+Employee Object Created
+Welcome to Spring Framework
+
+
+
+Example2: 
+
+Step1: Create the NotificationService interface inside the: com.hdfc.service package
+
+
+package com.hdfc.service;
+
+public interface NotificationService {
+
+    void sendNotification();
+
+}
+
+
+
+Step2: 
+
+Create Email and Sms Implementations
+
+
+package com.hdfc.service;
+
+public class EmailService implements NotificationService {
+
+    @Override
+    public void sendNotification() {
+
+        System.out.println("Email Notification Sent");
+
+    }
+}
+
+
+
+
+package com.hdfc.service;
+
+public class SmsService implements NotificationService {
+
+    @Override
+    public void sendNotification() {
+
+        System.out.println("SMS Notification Sent");
+
+    }
+}
+
+
+
+Step3: Create the UserService class:
+
+package com.hdfc.service;
+
+public class UserService {
+
+    private NotificationService notificationService;
+
+    public void setNotificationService(NotificationService notificationService) {
+
+        this.notificationService = notificationService;
+    }
+
+    public void registerUser() {
+
+        System.out.println("User Registered Successfully");
+
+        notificationService.sendNotification();
+    }
+}
+
+
+
+
+Step 4: Add the following configuration inside the beans.xml file:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="emp" class="com.hdfc.beans.Employee"/>
+
+    <bean id="emailService"  class="com.hdfc.service.EmailService"/>
+
+    <bean id="smsService"  class="com.hdfc.service.SmsService"/>
+
+
+    <bean id="userService"  class="com.hdfc.service.UserService">
+
+        <property  name="notificationService"  ref="emailService"/>
+
+    </bean>
+
+</beans>
+
+
+
+Note: using <property> tag we perform setter injection
+
+
+Step 5: Inside the App.java, pull the UserService object and call its method.
+
+
+Example:
+
+package com.hdfc;
+
+import com.hdfc.beans.Employee;
+import com.hdfc.service.UserService;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class App {
+
+
+    public static void main(String[] args) {
+
+
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("beans.xml");
+
+        //Employee emp = ctx.getBean("emp", Employee.class);
+        //emp.display();
+
+       UserService userService= ctx.getBean("userService", UserService.class);
+
+       userService.registerUser();
+
+    }
+
+}
+
+
+Note: inside the <property> tag if we supply smsService reference then notification is sent using the SMS.
+
+Example:
+
+<property  name="notificationService"  ref="smsService"/>
+
+
+
+Performing the constructor injection:
+-------------------------------------
+
+--Many companies prefer Constructor Injection.
+
+Step 1: Modify the UserService class to take the NotificationService from the constructor instead of using setter method:
+
+
+package com.hdfc.service;
+
+public class UserService {
+
+    private NotificationService notificationService;
+
+    public UserService(NotificationService notificationService) {
+
+        this.notificationService = notificationService;
+    }
+
+    public void registerUser() {
+
+        System.out.println("User Registered Successfully");
+
+        notificationService.sendNotification();
+    }
+}
+
+
+Step2: Inside the beans.xml use the <constructor-arg> tag instead of using the <property> tag
+
+Example:
+
+
+    <bean id="userService"  class="com.hdfc.service.UserService">
+
+        <constructor-arg  ref="emailService"/>
+
+    </bean>
+
+
+Rest of the code will be as it is: Run the App.java class.
+
+
+
+
+Moving from XML to Annotation-Based Configuration:
+==================================================
+
+--Earlier Spring applications were configured using XML files.
+
+But For large projects:
+
+100 Classes
+200 Classes
+500 Classes
+
+--XML files become huge and difficult to maintain.
+
+Problems with XML:
+
+Too much configuration
+Configuration separate from code
+Difficult maintenance
+Difficult refactoring
+More parsing overhead
+Less developer productivity
+
+
+Modern Spring Boot applications use:
+
+Annotations
++
+Java Configuration
++
+Component Scanning
+
+
+Core Module Annotations:
+========================
+
+--Spring Core annotations can be divided into:
+
+1. Stereotype Annotations
+
+2. Autowiring Annotations
+
+3. Miscellaneous Annotations
+
+
+1. Stereotype Annotations:
+--------------------------
+
+--A stereotype annotation identifies the role of a class in the application.
+
+These are class-level annotations.
+
+
+
+Types of Stereotype Annotations:
+
+	@Component
+    	    |
+--------------------------------
+|             |               |
+@Service   @Repository   @Controller
+
+
+@Component is the parent annotation for all others.
+
+
+
+
+@Component:
+-----------
+
+--Generic Spring Bean.
+
+@Component
+public class UtilityService {
+
+}
+
+--Use when the class does not belong to a specific layer.
+
+
+@Service:
+----------
+
+Business Logic Layer.
+
+@Service
+public class PolicyService {
+
+}
+
+Represents:
+
+--Business Logic
+
+
+
+@Repository:
+-----------
+Persistence Layer.
+
+@Repository
+public class PolicyRepository {
+
+}
+
+Represents:
+
+--Database Operations
+
+
+
+
+@Controller:
+------------
+
+Presentation Layer.
+
+@Controller
+public class PolicyController {
+
+}
+
+Represents:
+
+--Request Handling Layer
+
+
+
+Component Scanning:
+==================
+
+--Spring automatically scans packages and sub-packages, identifies stereotype annotations, and registers them as beans.
+
+
+Instead of:
+
+<bean>
+<bean>
+<bean>
+
+--Spring automatically creates beans.
+
+
+--Here we need to create a Spring configuration class instead of a configuration xml file.
+
+--We need to apply:
+
+@Configuration annotation on the top of the configuration class.
+
+
+
+Example:
+
+
+AppConfig.java:
+---------------
+
+package com.hdfc.config;
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ComponentScan(basePackages = "com.hdfc")
+public class AppConfig {
+
+}
+
+
+
+
+@ComponentScan:
+--------------
+
+@ComponentScan enables the component scanning feature of Spring.
+
+--When the Spring Container starts, it scans the specified package and all its sub-packages for Spring-managed components.
+
+Example:
+
+@ComponentScan(basePackages = "com.hdfc")
+
+
+Spring scans:
+
+com.hdfc
+
+com.hdfc.service
+
+com.hdfc.repository
+
+com.hdfc.controller
+
+com.hdfc.*
+
+--and automatically registers eligible classes as Spring Beans.
+
+
+
+--During component scanning, Spring registers a class as a bean only if it finds a stereotype annotation on that class.
+
+Common stereotype annotations are:
+
+
+@Component
+@Service
+@Repository
+@Controller
+
+
+These annotations tell Spring:
+
+--"This class should be managed by the Spring Container."
+
+--Component scanning reduces configuration effort because Spring automatically discovers and registers beans.
+
+
+--By default, Spring creates a bean id using:
+
+Class Name -> First Letter in Lowercase
+
+
+
+Example:
+
+
+package com.hdfc.service;
+@Service
+public class EmpService
+{
+--
+--
+}
+
+
+package com.hdfc.dao;
+@Repository
+public class EmpDao
+{
+--
+--
+}
+
+
+
+--With the above configuration,spring container registers two beans with ids empService and empDao.
+
+Example2: 
+
+
+
+package com.hdfc.service;
+@Service
+public class EmpService1
+{
+--
+--
+}
+
+
+package com.hdfc.dao;
+public class EmpDao
+{
+--
+--
+}
+
+
+package org.hdfc;
+@Service
+public class EmpService2
+{
+--
+--
+}
+
+
+
+And if we use component scanning like:
+
+@ComponentScan(basePackages = "com.hdfc")
+
+
+--In the above configuration spring container register only a EmpService1 class as a bean withid 'empService1'
+
+--Second class EmpDao will not registered becoz @Service annotation(streotype annotation) is missing.
+
+--EmpService2 also will not be registered because this class does not belongs to the base package.
+
+
+--In order to specify more than one base packages we use:
+
+@ComponentScan(basePackages = {"com.hdfc" , "org.hdfc"})
+
+
+
+
+Note: If we want to tell the container that register a bean with given id then we need to pass 'value' element to the stereotype annotaion.
+
+
+ex:
+
+//@Service(value="em")
+@Service("em")
+public class EmpService
+{
+
+--
+--
+
+}
+
+
+Now the EmpService class will be registered with id "em"
+
+
+
+Creating Our First Annotation-Based Application:
+================================================
+
+Folder structure:
+-----------------
+
+com.hdfc
+│
+|-- config
+│   |-- AppConfig.java
+│
+|-- service
+│   |-- EmployeeService.java
+│
+| --App.java
+
+
+
+
+Step 1
+
+Create Maven Project
+
+	spring-core-annotations-app
+
+
+Step 2
+
+Add Dependency:
+
+
+<dependencies>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>7.0.9</version>
+            <scope>compile</scope>
+        </dependency>
+        
+    </dependencies>
+
+
+
+Step 3
+
+Create a EmployeeService class and apply the @Service annotation on the top of that class
+
+
+package com.hdfc.service;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class EmployeeService {
+
+    public void display() {
+
+	System.out.println("Inside the display method of EmployeeService class");
+    }
+}
+
+
+
+Step 4:
+
+Create a Configuration class by applying @Configuration annotation on the top of this class
+
+--Enable the component scaning by using the @ComponentScan annotation on the top of this class
+
+--specify the base package.
+
+
+Example:
+
+package com.hdfc.config;
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ComponentScan(basePackages = "com.hdfc")
+public class AppConfig {
+
+}
+
+
+
+Step 5
+
+
+--Create a main class: App.java
+
+
+package com.hdfc;
+
+import com.hdfc.config.AppConfig;
+import com.hdfc.service.EmployeeService
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+public class App {
+
+    public static void main(String[] args) {
+
+        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+
+        EmployeeService service =context.getBean("employeeService",EmployeeService.class);
+
+        service.display();
+    }
+}
+
+
+
+
+
+Autowiring Annotaions:
+======================
+
+
+
+
+
+

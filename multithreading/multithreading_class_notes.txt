@@ -4403,7 +4403,7 @@ Difference between Runnable and Callable:
 | Return type void                         | Generic return type           |
 | Cannot throw checked exceptions directly | Can throw checked exceptions  |
 | Used when no result required             | Used when result required     |
-
+| It can be supplied to a Thread const     | Can not be supplied inside a thread class construtor directly
 
 
 
