@@ -2044,6 +2044,761 @@ public class App {
 Autowiring Annotaions:
 ======================
 
+--Autowiring annotations are used to inject dependencies automatically into Spring beans.
+
+Important annotations:
+
+@Autowired
+
+@Qualifier
+
+@Primary
+
+
+
+
+@Autowired:
+------------
+
+--Used to to perform Dependency Injection (DI) automatically.
+
+Can be applied on:
+
+Field
+
+Setter Method
+
+Constructor
+
+
+--Spring container searches for a suitable bean and injects it into the target bean.
+
+
+1. Setter Injection:
+---------------------
+
+--Setter injection is useful when a dependency is optional or when additional logic needs to be executed during injection.
+
+
+Example:
+
+package com.hdfc.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserService {
+
+    private NotificationService notificationService;
+
+    @Autowired
+    public void setNotificationService(NotificationService notificationService) {
+
+	System.out.println("Dependency Injected");
+        this.notificationService = notificationService;
+    }
+
+    public void registerUser() {
+
+        System.out.println("User Registered Successfully");
+
+        notificationService.sendNotification();
+    }
+
+
+}
+
+
+
+Advantages:
+
+--Additional logic can be written inside the setter method.
+
+--Dependency can be changed later if required.
+
+
+2. Field Injection:
+-------------------
+
+--If we apply @Autowired on field then no need to explicitly define its setter() method, at runtime spring container explicitly defines its setter method.
+
+Example:
+
+
+@Service
+public class UserService {
+
+    @Autowired
+    private NotificationService notificationService;
+
+    public void registerUser() {
+
+        System.out.println("User Registered Successfully");
+
+        notificationService.sendNotification();
+    }
+}
+
+
+Note
+
+--Field Injection is simple but generally not recommended because:
+
+Difficult to unit test.
+Dependency is hidden.
+Cannot create immutable objects.
+
+--Constructor Injection is preferred in real-world applications.
+
+
+3. Constuctor injection:
+------------------------
+
+
+--Spring officially recommends Constructor Injection because:
+
+Dependencies become mandatory.
+Objects can be made immutable (final fields).
+Easier unit testing.
+Avoids accidental null dependencies.
+
+
+Example:
+
+package com.hdfc.service;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserService {
+
+    private final NotificationService notificationService;
+
+
+    @Autowired
+    public UserService(NotificationService notificationService) {
+        this.notificationService = notificationService;
+    }
+
+    public void registerUser() {
+
+        System.out.println("User Registered Successfully");
+
+        notificationService.sendNotification();
+    }
+}
+
+
+Note: In modern Spring versions (Spring 4.3+), if a class contains only one constructor, @Autowired on the constructor is optional.
+
+
+ public UserService(NotificationService notificationService) {
+        this.notificationService = notificationService;
+    }
+
+
+is sufficient.
+
+
+How Spring Resolves Dependencies:
+---------------------------------
+
+--When Spring encounters @Autowired, it primarily performs dependency resolution by type.
+
+
+Example:
+
+	@Autowired
+	private NotificationService notificationService;
+
+
+--Spring searches for a bean of type: NotificationService
+
+--and injects it.
+
+
+Mandatory Dependency:
+---------------------
+
+--By default, @Autowired makes a dependency mandatory.
+
+--If no matching bean is found, Spring throws an exception during application startup.
+
+Example:
+
+@Autowired
+private NotificationService notificationService;
+
+
+--If no NotificationService bean exists:
+
+	NoSuchBeanDefinitionException
+
+will be thrown.
+
+
+Optional Dependency
+-------------------
+
+--To make a dependency optional:
+
+@Autowired(required = false)
+private NotificationService notificationService;
+
+--If a matching bean is not found, Spring will not throw an exception and the field will remain null.
+
+
+Problem: Multiple Matching Beans:
+--------------------------------
+
+Suppose we have:
+
+public interface NotificationService {
+    void sendNotification();
+}
+
+
+@Service
+public class EmailService implements NotificationService {
+
+}
+
+
+@Service
+public class SmsService implements NotificationService {
+
+}
+
+
+--Now Spring finds two beans of type NotificationService.
+
+	@Autowired
+	private NotificationService notificationService;
+
+--Spring becomes confused and throws:
+
+	NoUniqueBeanDefinitionException
+
+
+
+To resolve this ambiguity we use:
+
+@Qualifier
+@Primary
+
+
+
+@Qualifier:
+-----------
+
+@Qualifier is used to specify exactly which bean should be injected.
+
+
+	@Autowired
+	@Qualifier("smsService")
+	private NotificationService notificationService;
+
+
+--Spring injects the bean whose name is: smsService
+
+
+@Primary
+----------
+
+--@Primary is used to mark a bean as the default choice when multiple beans of the same type are available.
+
+@Service
+@Primary
+public class EmailService implements NotificationService {
+
+}
+
+
+--Now whenever Spring finds multiple NotificationService beans, it will inject EmailService by default.
+
+
+	@Autowired
+	private NotificationService notificationService;
+
+Spring injects:
+
+EmailService
+
+--because it is marked with @Primary.
+
+
+| Annotation   | Purpose                                                           |
+| ------------ | ----------------------------------------------------------------- |
+| @Autowired   | Automatically injects a dependency                                |
+| @Qualifier   | Specifies which bean should be injected when multiple beans exist |
+| @Primary     | Marks a bean as the default choice among multiple matching beans  |
+
+
+
+
+
+
+Miscellaneous Important Annotations:
+=====================================
+
+
+--These annotations are commonly used in Spring applications for:
+
+Injecting values
+Managing bean scope
+Bean lifecycle management
+Creating beans using Java Configuration
+
+
+@Value
+
+@Scope
+
+@PostConstruct
+
+@PreDestroy
+
+@Bean
+
+@Configuration
+
+@ComponentScan
+
+
+
+1. @Value:
+----------
+
+--@Value is used to inject simple values into Spring beans.
+
+The value can come from:
+
+Hardcoded values
+application.properties
+Environment variables
+
+
+
+Example1: Harcoded value:
+
+@Component
+public class Employee {
+
+    @Value("Ratan Kumar")
+    private String employeeName;
+
+    @Value("50000")
+    private double salary;
+
+    public void display() {
+
+        System.out.println(employeeName);
+        System.out.println(salary);
+    }
+}
+
+
+
+
+Example 2: Reading from application.properties
+
+
+Step1: create a .properties file inside the "resources" folder, called: 
+
+application.properties: (Name can be anything, but inside the Spring Boot application this properties file name should be application.properties only)
+
+
+
+
+application.properties:
+------------------------
+
+employee.name=Ratan Kumar
+employee.salary=50000
+
+
+
+Step2: Inside the configuration class specify the location of this properties file using:
+
+@PropertySource("classpath:application.properties")
+
+
+Example:
+
+package com.hdfc.config;
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+
+@Configuration
+@ComponentScan(basePackages = "com.hdfc")
+@PropertySource("classpath:application.properties")
+public class AppConfig {
+
+
+}
+
+
+
+Make use the key name of this properties file:
+
+
+Example:
+
+    @Value("${employee.name}")
+    private String employeeName;
+
+    @Value("${employee.salary}")
+    private double salary;
+
+
+
+
+
+@Scope
+==========
+
+--@Scope is used to specify the lifecycle and visibility of a bean.
+
+By default every Spring Bean is:
+
+@Scope("singleton")
+
+
+
+Common Bean Scopes:
+--------------------
+
+| Scope       | Description                               |
+| ----------- | ----------------------------------------- |
+| singleton   | One object per Spring Container (Default) |
+| prototype   | New object every time bean is requested   |
+| request     | One object per HTTP Request               |
+| session     | One object per HTTP Session               |
+| application | One object per ServletContext             |
+
+
+
+
+Note: request, session and application scope is used inside the Spring mvc (webapplication)
+
+
+Singleton Scope (Default):
+
+
+@Service
+@Scope("singleton")
+public class EmployeeService {
+
+}
+
+
+--Only one object is created and shared throughout the application.
+
+
+Prototype Scope:
+
+
+@Service
+@Scope("prototype")
+public class EmployeeService {
+
+}
+
+
+--Every request gets a new object.
+
+Example
+
+
+package com.hdfc;
+
+import com.hdfc.beans.Employee;
+import com.hdfc.config.AppConfig;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+public class App {
+
+    public static void main(String[] args) {
+
+        ApplicationContext ctx= new AnnotationConfigApplicationContext(AppConfig.class);
+
+       Employee emp1=  ctx.getBean(Employee.class);
+
+        Employee emp2=  ctx.getBean(Employee.class);
+
+        System.out.println(emp1 == emp2);
+
+    }
+}
+
+
+
+
+Note: Singleton scope doesn't mean that Spring container make the Employee class as Singleton class, It is just maintaining a single object of Employee class thougout the application.
+
+
+
+Spring Bean Life Cycle:
+=======================
+
+
+--A Spring Bean passes through multiple stages from creation to destruction.
+
+
+Bean Life Cycle Steps:
+----------------------
+
+1. Spring Container Starts
+
+2. Bean Object Creation
+
+3. Dependency Injection
+
+4. @PostConstruct Method Execution
+
+5. Bean Ready For Use
+
+6. Bean Serves Requests
+
+7. Container Shutdown
+
+8. @PreDestroy Method Execution
+
+9. Bean Destroyed
+
+
+@PostConstruct:
+--------------
+
+--@PostConstruct is used to execute a method immediately after:
+
+Bean creation
+Dependency Injection completion
+
+This method is executed only once.
+
+
+
+Example:
+
+
+@Component
+public class Employee {
+
+    @Value("Ratan Kumar")
+    private String employeeName;
+
+    @Value("50000")
+    private double salary;
+
+    @PostConstruct
+    public void init() {
+
+        System.out.println("Bean Initialized");
+    }
+
+    public void display() {
+
+        System.out.println(employeeName);
+        System.out.println(salary);
+    }
+}
+
+
+Common Uses:
+
+Loading configuration
+Opening resources
+Initializing caches
+Creating database connections
+Reading files
+
+
+@PreDestroy:
+------------
+
+--@PreDestroy is used to execute cleanup code before bean destruction.
+
+--It is executed when the Spring Container is shutting down.
+
+
+Example:
+
+@Component
+public class Employee {
+
+    @Value("Ratan Kumar")
+    private String employeeName;
+
+    @Value("50000")
+    private double salary;
+
+    @PostConstruct
+    public void init() {
+
+        System.out.println("Bean Initialized");
+    }
+
+
+    @PreDestroy
+    public void destroy() {
+
+        System.out.println("Cleaning Resources");
+    }
+
+    public void display() {
+
+        System.out.println(employeeName);
+        System.out.println(salary);
+    }
+}
+
+
+
+Common Uses:
+
+Closing database connections
+Releasing resources
+Closing files
+Stopping background threads
+Logging shutdown activities
+
+
+
+
+Important Note About Prototype Scope:
+------------------------------------
+
+For Prototype Beans:
+
+@Scope("prototype")
+
+Spring:
+
+Creates the object
+
+Performs Dependency Injection
+
+Calls @PostConstruct
+
+**But Does NOT call @PreDestroy automatically
+
+Reason:
+
+--After creating a prototype bean, Spring hands it over to the application and no longer manages its complete lifecycle.
+
+
+@Bean:
+------
+
+--It is a method level annotation.
+
+--@Bean is used to create and register a bean manually in the Spring Container.
+
+
+Generally used when:
+
+Source code cannot be modified.
+Third-party classes are involved.
+Custom object creation logic is required.
+
+
+--This annotation should be used on the top of a method, which returns an object
+
+--Spring Container will register that returned object as Spring Bean.
+
+
+Example: Inside the AppConfig class
+
+
+@Bean
+public List<String> getCities(){
+
+
+	List<String> cities = new ArrayList<>(List.of("delhi", "mumbai", "kolkata", "chennai"));
+
+	return cities;
+
+}
+
+
+
+Note: By default the List object will be registered with the container with id "getCities" (method name only)
+
+--But if we want that container should registered this List as a Spring bean with different id:
+
+
+@Bean("cities")
+public List<String> getCities(){
+
+
+	List<String> cities = new ArrayList<>(List.of("delhi", "mumbai", "kolkata", "chennai"));
+
+	return cities;
+
+}
+
+
+
+Employee.java:
+--------------
+
+package com.hdfc.beans;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+@Component
+public class Employee {
+
+    @Value("${employee.name}")
+    private String employeeName;
+
+    @Value("${employee.salary}")
+    private double salary;
+
+    @Autowired
+    private List<String> cities;
+
+    public Employee() {
+        System.out.println("Employee Object Created");
+    }
+
+    public void display() {
+
+        System.out.println("Welcome to Spring Framework");
+        System.out.println(employeeName);
+        System.out.println(salary);
+
+        System.out.println(cities);
+
+
+    }
+
+
+}
+
+
+
+
+Difference Between @Component and @Bean:
+----------------------------------------
+
+| @Component                          | @Bean                                 |
+| ----------------------------------- | ------------------------------------- |
+| Applied on class                    | Applied on method                     |
+| Used for our own classes            | Commonly used for third-party classes |
+| Detected through Component Scanning | Registered through Java Configuration |
+| Automatic Bean Creation             | Manual Bean Creation                  |
+
+
 
 
 
