@@ -1,6 +1,3 @@
-
- 
-
 Web Application Architecture:
 ============================
 
@@ -70,7 +67,7 @@ Examples:
 Spring Boot Application
 ASP.NET Application
 NodeJS Application
-
+Django
 
 
 Types of Web Applications:
@@ -175,7 +172,7 @@ Employee Management Systems
 
 
 
-Type 2: REST API Based Applications:
+Type 2: REST API Based Applications: (Web services)
 -------------------------------------
 
 --This is the most commonly used architecture in modern enterprise applications.
@@ -369,6 +366,7 @@ Backend APIs for Web and Mobile Applications
 
 
 
+
 Layered Architecture in Spring Boot Applications:
 =================================================
 
@@ -458,8 +456,8 @@ In Spring Boot applications, we generally follow a 3-Layer Architecture:
 
 --In Spring Boot, this layer is typically implemented using:
 
-@Controller
-@RestController
+@Controller : used for SSR type of applicaiton
+@RestController : used for Rest API type of application
 
 
 Responsibilities:
@@ -693,14 +691,15 @@ Request data (if any).
 
 
 
+
 Structure of HTTP Request:
 -------------------------
 
-1. Request Line (HTTP method: Resource URI: HTTP version)
+1. Request Line (HTTP method + Resource URI + HTTP version)
 
 2. Request Headers
 
-3. Request Body
+3. Request Body (optional)
 
 
 
@@ -711,6 +710,9 @@ GET /employees HTTP/1.1
 Host: localhost:8080
 User-Agent: Chrome
 
+{
+
+}
 
 
 
@@ -797,7 +799,7 @@ Response data
 Structure:
 ----------
 
-1. Status Line (Status Code: Status Description: HTTP version)
+1. Response Line (Status Code + Status Description + HTTP version)
 
 2. Response Headers
 
@@ -818,7 +820,7 @@ Content-Length: 45
 
 
 
-Status Line:
+Response Line:
 -------------
 
 It contains:
@@ -1194,7 +1196,7 @@ Improved maintainability.
 
 --Although Spring MVC simplified development, developers still had to:
 
-Configure DispatcherServlet (only one Servlet act as a fron controller).
+Configure DispatcherServlet (only one Servlet act as a front controller).
 
 Configure component scanning.
 
@@ -1228,7 +1230,7 @@ This means:
 --If a sensible default configuration exists, Spring Boot automatically applies it so that developers can focus on business logic rather than infrastructure setup.
 
 
---Spring Boot is an extension of the Spring-MVC module that simplifies application development.
+--Spring Boot is built on top of the Spring Framework and simplifies the use of Spring modules such as Spring MVC, Spring Data JPA, Spring Security, etc.
 
 
 
@@ -1386,11 +1388,17 @@ Logging Libraries
 
 --In normal Spring-MVC based application, developer need to add these dependencies manually
 
---Managing all these dependencies individually is complex.
+--Managing all these dependencies individually is complex (need to manage their versions also).
 
 --Spring Boot solves this problem using Starter Dependencies.
 
 --A starter is a predefined collection of commonly required libraries for a particular functionality.
+
+Add One Starter
+
+Get Everything Required
+
+
 
 
 
@@ -1773,7 +1781,6 @@ http://localhost:8080/hello
 
 
 
-
 Understanding @SpringBootApplication
 =====================================
 
@@ -1866,6 +1873,74 @@ System.out.println(controller.sayHello());
 --However, in real-world Spring Boot applications, this approach is generally not recommended.
 
 
+
+Download the STS IDEA for Spring Boot application development:
+
+https://spring.io/tools
+
+
+For MAC: 
+
+MACOS ARM_64: For letest MAC
+
+MACOS X86_64: For Older Intel MAC
+
+
+
+Creating another API to return the Student data in the form of JSON:
+--------------------------------------------------------------------
+
+Create a Employee class inside the com.hdfc.beans package:
+
+
+Employee.java:
+--------------
+
+package com.hdfc.beans;
+
+public class Employee {
+
+	private int empId;
+	private String name;
+	private double salary;
+
+//Zero argument constructor
+//Parameterized constructor
+//getters and setters
+//toString()	
+
+}
+
+
+
+--Add another method inside the EmployeeController class:
+
+	@GetMapping("/employees")
+	public List<Employee> getAllEmployees() {
+
+		List<Employee> employees = new ArrayList<>(
+
+				List.of(
+
+					new Employee(101, "Raj", 85000), 
+					new Employee(102, "Simran", 95000),
+					new Employee(103, "Rohit", 80000), 
+					new Employee(104, "Ankit", 75000),
+					new Employee(105, "Priya", 82000)
+				)
+
+		);
+
+		return employees;
+	}
+
+
+
+
+Run the server: http://localhost:8080/employees
+
+
+
 Changing the port number:
 ------------------------
 
@@ -1907,4 +1982,1285 @@ spring.datasource.url=...
 spring.datasource.username=...
 
 spring.datasource.password=...
+
+
+
+
+YAML Configuration File in Spring Boot:
+=======================================
+
+
+--Spring Boot allows us to configure application properties using either:
+
+1. application.properties
+2. application.yml (or application.yaml)
+
+--Both files serve the same purpose. The difference is only in the format used to represent the configuration data.
+
+Why YAML?
+---------
+
+--YAML (YAML Ain't Markup Language) provides a hierarchical structure using indentation, making the configuration more readable when there are many related properties.
+
+
+Properties File Example:
+------------------------
+
+server.port=8081
+
+spring.datasource.url=jdbc:mysql://localhost:3306/emsdb
+spring.datasource.username=root
+spring.datasource.password=root
+```
+
+
+
+--As configuration grows, readability decreases.
+
+--YAML allows us to organize related properties together.
+
+
+
+
+
+
+Equivalent YAML File:
+---------------------
+
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/emsdb
+    username: root
+    password: root
+```
+
+
+--This is easier to read and maintain.
+
+Important Points:
+
+
+1. Spring Boot automatically detects `application.yml`.
+
+2. Indentation is very important in YAML.
+
+3. Use spaces for indentation. Tabs are not allowed.
+
+4. Usually 2 spaces are used for each indentation level.
+
+5. The property names and values remain the same; only the representation changes.
+
+Advantages of YAML:
+--------------------
+
+* More readable and clean.
+* Supports hierarchical configuration naturally.
+* Reduces repetition of common property prefixes.
+* Easier to manage large configuration files.
+
+Note:
+
+--A Spring Boot application can use either `application.properties` or `application.yml`. In real projects, many teams prefer YAML because of its readability and structured format.
+
+
+
+Reading the yml property inside our application using @Value:
+------------------------------------------------------------
+
+Example:
+
+
+@RestController
+public class EmployeeController {
+
+	@Value("${spring.application.name}")
+	private String appName;
+	
+	@GetMapping("/hello")
+	public String sayHello() {
+		return "Welcome to Spring......."+appName;
+	}
+	
+}
+
+
+--To specify a default value, if the property is not available:
+
+@Value("${spring.application.name: hello}")
+private String appName;
+
+
+
+
+Binding YAML Properties to Java Objects:
+========================================
+
+The approach works well for a small number of properties reading from yml/properties file into our application.
+
+However, when an application contains dozens of related properties, using multiple @Value annotations becomes difficult to manage.
+
+To solve this problem, Spring Boot provides:
+
+@ConfigurationProperties
+
+which allows configuration values to be mapped directly into Java objects.
+
+Problems with @Value
+--------------------
+
+Suppose we have:
+
+company:
+  name: HDFC Life
+  city: Mumbai
+  state: Maharashtra
+  pincode: 400001
+
+Using @Value:
+
+@Value("${company.name}")
+private String name;
+
+@Value("${company.city}")
+private String city;
+
+@Value("${company.state}")
+private String state;
+
+@Value("${company.pincode}")
+private String pincode;
+
+
+
+Problems:
+
+--Too Many @Value Annotations
+
+--Difficult To Maintain
+
+--No Type Safety
+
+--No Grouping Of Related Properties
+
+Spring Boot provides a better solution.
+
+
+@ConfigurationProperties is used to bind external configuration values directly to a Java class.
+
+Instead of reading properties one by one:
+
+Configuration
+      ↓
+Java Object
+
+--Spring automatically populates the object.
+
+
+Example Configuration
+---------------------
+
+application.yml
+
+company:
+  name: HDFC Life
+  city: Mumbai
+  state: Maharashtra
+
+
+
+Create a Configuration Class: inside the com.hdfc.bean package
+
+@Component
+@ConfigurationProperties(prefix = "company")
+public class CompanyProperties {
+
+    private String name;
+
+    private String city;
+
+    private String state;
+
+    // getters and setters
+
+    //toString()
+}
+
+
+--Spring automatically performs the mapping.
+
+@Component annotation will register this class with the Spring container..
+
+
+CompanyController.java:
+----------------------
+
+
+package com.hdfc.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+import com.hdfc.beans.CompanyProperties;
+
+@RestController
+public class CompanyController {
+
+	  private final CompanyProperties props;
+
+	    public CompanyController(CompanyProperties props) {
+
+	        this.props = props;
+	    }
+
+	    @GetMapping("/company")
+	    public String getCompany() {
+
+	        return props.getName()+" "+props.getCity() +" "+props.getState();
+	    }
+	}
+
+
+
+
+run the application:
+
+http://localhost:8080/company
+
+
+Nested Configuration:
+--------------------
+
+application.yml file:
+
+
+company:
+ name: HDFC Life
+ 
+ address: 
+  city: Mumbai
+  state: Maharashtra
+  contact[0]: 234232434
+  contact[1]: 546353242
+  contact[2]: 856464534
+
+
+# Alternate .properties file example
+
+#company.name=HDFC Life
+#company.address.city=Mumbai
+#company.address.state=Maharashtra
+#company.address.contact[0]=234232434
+#company.address.contact[1]=546353242
+#company.address.contact[2]=856464534
+
+
+
+
+Create Address Class:
+----------------------
+
+Address.java:
+-------------
+
+package com.hdfc.beans;
+
+import java.util.List;
+
+public class Address {
+
+	private String city;
+	private String state;
+	private List<String> contact;
+
+//getters and setters 
+//toString()	
+
+}
+
+
+CompanyProperties.java:
+------------------------
+
+package com.hdfc.beans;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+@Component
+@ConfigurationProperties(prefix = "company")
+public class CompanyProperties {
+
+	private String name;
+
+	private Address address;
+
+//getters and setters
+//toString()
+
+}
+
+
+CompanyController.java:
+-----------------------
+
+package com.hdfc.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.hdfc.beans.CompanyProperties;
+
+@RestController
+public class CompanyController {
+
+	  private final CompanyProperties props;
+
+	    public CompanyController(CompanyProperties props) {
+
+	        this.props = props;
+	    }
+
+	    @GetMapping("/company")
+	    public String getCompany() {
+
+	        return props.getName()+ " "+props.getAddress();
+	    }
+	}
+
+
+
+Devtools:
+=========
+
+--Spring Boot DevTools is a development-time dependency that helps developers improve productivity while developing Spring Boot applications.
+
+It provides features such as:
+
+1. Automatic Restart
+
+--Whenever a Java class is modified and saved, the application restarts automatically.
+--No need to stop and start the server manually.
+
+
+2. Live Reload
+
+--Automatically refreshes the browser when HTML, CSS, JavaScript, or template files are changed.
+--Reduces development effort and testing time.
+
+
+3. Improved Development Experience
+
+Faster feedback cycle.
+Increases developer productivity.
+
+
+
+Adding DevTools Dependency:
+---------------------------
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-devtools</artifactId>
+    <scope>runtime</scope>
+    <optional>true</optional>
+</dependency>
+
+
+
+For IntelliJ IDEA:
+
+--Go to Settings → Build, Execution, Deployment → Compiler
+--Make sure Build project automatically is checked.
+
+Then go to Settings → Advanced Settings:
+
+"Allow auto-make to start... is checked
+
+
+
+--Now with any changes if we save our file then application will automatically build and redeploed and server will be autostarted.
+
+
+
+Running the Spring boot application using terminal:
+====================================================
+
+
+--Spring Boot applications can be executed directly from the terminal without using an IDE.
+
+Prerequisites:
+--------------
+
+1. Java must be installed and configured.
+2. Maven must be installed and configured.
+3. The project should contain a valid `pom.xml` file.
+
+Step 1: Open Terminal
+
+Navigate to the project's root directory (the directory containing `pom.xml`).
+
+cd EmployeeManagement
+
+Step 2: Compile and Run the Application
+
+Use the following Maven command:
+
+mvn spring-boot:run
+
+
+Maven will:
+
+* Download required dependencies (if not already available).
+* Compile the source code.
+* Start the embedded server (Tomcat by default).
+* Launch the Spring Boot application.
+
+Step 3: Verify the Application
+
+After successful startup, messages similar to the following will appear:
+
+Started EmployeeManagementApplication in 3.5 seconds
+Tomcat started on port(s): 8080 (http)
+
+Open a browser and access the application:
+
+http://localhost:8080
+
+
+
+Alternative Approach: Running the application using the executable JAR
+--------------------
+
+--Without maven: In this case Maven need not installed inside your local system (embedded maven inside the IDE is sufficient)
+
+
+Step1: Generate the Executable JAR
+
+--First create the executable JAR file using IDE:
+
+Right Click on Project
+-> Run As
+-> Maven Build...
+-> Goals: clean package
+-> Run
+
+--Refresh the project.
+
+
+--A JAR file similar to the following will be generated inside the target folder:
+
+EmployeeManagement-0.0.1-SNAPSHOT.jar
+
+
+Step2: Open the terminal inside the location where the jar file is located.
+
+--right click on this jar file -> Show In -> System Explorer
+
+--Open the terminal at the same location
+
+Step3: Run the jar
+
+--Use the following command:
+
+	java -jar EmployeeManagement-0.0.1-SNAPSHOT.jar
+
+
+Advantages:
+-----------
+
+* Application can be executed without an IDE.
+* Commonly used in testing, deployment, and production environments.
+* The same executable JAR can run on any machine having a compatible JDK/JRE.
+
+
+
+Spring Profiles:
+================
+
+
+--In real-world applications, the same application is deployed and executed in multiple environments.
+
+For example:
+
+Development Environment (DEV)
+
+Testing Environment (TEST)
+
+Production Environment (PROD)
+
+--Each environment may require different configuration settings.
+
+
+
+Example:
+
+| Configuration | DEV         | PROD             |
+| ------------- | ----------- | ---------------- |
+| Server Port   | 8080        | 8888             |
+| Database      | Local MySQL | Production MySQL |
+| Logging Level | DEBUG       | ERROR            |
+| API URLs      | Test APIs   | Live APIs        |
+
+
+
+--If we keep all these configurations in a single configuration file, managing them becomes difficult.
+
+--To solve this problem, Spring Boot provides the concept of:
+
+Profiles
+
+--Profiles allow us to maintain separate configurations for different environments.
+
+
+What is a Profile?
+-----------------
+
+--A Profile represents a specific runtime environment.
+
+Examples:
+
+dev
+test
+prod
+
+--Using profiles, we can maintain separate configuration files for different environments.
+
+--During application startup, Spring Boot loads the configuration of the active profile.
+
+
+Example:
+
+Developer Machine
+  	Load DEV Configuration
+
+Production Server
+	Load PROD Configuration
+
+
+
+Profile Specific Configuration Files
+------------------------------------
+
+Spring Boot supports: profile-specific configuration files.
+
+Example:
+
+application.yml
+application-dev.yml
+application-test.yml
+application-prod.yml
+
+
+Where:
+
+application.yml:
+
+--Common configuration shared across all environments.
+
+application-dev.yml:
+
+--Configuration specific to Development environment.
+
+application-test.yml:
+
+--Configuration specific to Testing environment.
+
+application-prod.yml:
+
+--Configuration specific to Production environment.
+
+
+
+Example:
+
+
+
+Default Configuration File: application.yml
+--------------------------
+
+--It is the default profile
+--Properties defined in this file are available to all profiles.
+
+
+spring:
+  application:
+    name: EmployeeManagement
+
+server:
+  port: 8080
+
+
+
+
+
+Development Profile: application-dev.yml
+----------------------------------------
+
+--Used during application development.
+
+server:
+  port: 8088
+
+
+logging:
+  level:
+    root: DEBUG
+
+
+Production Profile: application-prod.yml
+------------------
+
+--Used in live production systems.
+--Typically contains production database details, production API URLs, security settings, etc.
+
+
+spring:
+  application:
+    name: EmployeeManagement-Production
+
+server:
+  port: 9090
+
+logging:
+  level:
+    root: ERROR
+
+
+Testing Profile: application-test.yml
+-------------------------------------
+
+--Used by QA/Test teams for testing the application.
+
+spring:
+  application:
+    name: EmployeeManagement-testing
+
+server:
+  port: 8888
+
+logging:
+  level:
+    root: INFO
+
+
+
+How Spring Boot Loads Profile Configuration:
+-------------------------------------------
+
+Suppose the active profile is: dev
+
+Spring Boot loads:
+
+application.yml
++
+application-dev.yml
+
+If the active profile is: prod
+
+Spring Boot loads:
+
+application.yml
++
+application-prod.yml
+
+--If the same property exists in both files, the profile-specific file overrides the value present in application.yml
+
+
+
+Activating a Profile:
+--------------------
+
+--Spring Boot must know which profile should be active.
+
+There are multiple ways to activate a profile.
+
+Method 1: Using application.yml
+--------------------------------
+
+spring:
+  profiles:
+    active: dev
+
+or
+
+spring:
+  profiles:
+    active: prod
+
+
+Method 2: Using Command Line:
+-----------------------------
+
+--If we already generated the jar file
+
+
+	java -jar EmployeeManagement-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
+
+--Spring Boot reads this argument directly from the command line.
+--Command-line arguments have the highest precedence.
+
+
+
+Method 3: Using VM (JVM) Arguments:
+-----------------------------------
+
+From STS/Eclipse:
+-----------------
+
+Right Click on Main Class
+-> Run As
+-> Run Configurations
+-> Arguments Tab
+-> VM Arguments
+
+Specify:
+
+-Dspring.profiles.active=test
+
+Click:
+
+Apply -> Run
+
+
+
+From Terminal:
+-------------
+
+--If Jar file is already generated.
+
+java -Dspring.profiles.active=prod -jar EmployeeManagement-0.0.1-SNAPSHOT.jar
+
+--Here the profile is passed as a JVM System Property.
+
+
+Overriding Other Properties Using VM Arguments:
+-----------------------------------------------
+
+--Using VM arguments (-D...) or Spring Boot command-line arguments (--...),
+
+we can override any property defined in application.yml or application.properties.
+
+Example using VM arguments:
+
+	java -Dspring.profiles.active=prod -Dserver.port=8081 -jar EmployeeManagement-0.0.1-SNAPSHOT.jar
+
+Example using command-line arguments:
+
+	java -jar EmployeeManagement-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod --server.port=8081
+
+
+
+
+
+Method 4: Using Environment Variable:
+-------------------------------------
+
+	SPRING_PROFILES_ACTIVE=test
+
+
+--Environment variables are operating-system-level variables.
+
+--Spring Boot automatically reads them during startup.
+
+
+
+Windows Command Prompt (CMD):
+---------------------------
+
+Step 1: Open Command Prompt
+
+Step 2: Set the environment variable
+
+set SPRING_PROFILES_ACTIVE=prod
+
+Step 3: Run the application
+
+java -jar EmployeeManagement-0.0.1-SNAPSHOT.jar
+
+--The prod profile will be activated.
+
+
+Linux / macOS:
+-------------
+
+export SPRING_PROFILES_ACTIVE=prod
+
+Run:
+
+java -jar EmployeeManagement-0.0.1-SNAPSHOT.jar
+
+
+
+Precedence (High to Low)
+------------------------
+A simplified order is:
+
+1. Command-line arguments
+2. JVM/System properties (-D...)
+3. Environment variables
+4. application.yml / application.properties
+
+
+Q/- Most preferred way to activate a profile in production ?
+
+Answer:
+
+Environment Variables
+or
+Command Line Arguments
+
+--because profile selection is externalized and does not require modifying application files before deployment.
+
+
+
+
+Advantages of Profiles:
+-----------------------
+
+--Supports multiple environments using the same codebase.
+
+--Keeps configuration files clean and organized.
+
+--Avoids manual changes before deployment.
+
+--Reduces configuration-related mistakes.
+
+--Makes application deployment easier and safer.
+
+
+
+
+
+CommandLineRunner in Spring Boot:
+=================================
+
+--When a Spring Boot application starts, sometimes we need to execute some logic immediately after the Spring Container is fully initialized.
+
+Examples:
+
+
+Load Initial Data
+Create Default Users
+Display Startup Messages
+Read Configuration
+Initialize Cache
+Verify Database Connectivity
+
+--Such tasks should execute only once during application startup.
+
+
+--CommandLineRunner is a functional interface provided by Spring Boot.
+
+It contains only one method:
+
+Syntax:
+
+public interface CommandLineRunner {
+
+    void run(String... args) throws Exception;
+
+}
+
+
+--This method is automatically executed after:
+
+Spring Container Startup
+        ↓
+Bean Creation Completed
+        ↓
+Dependency Injection Completed
+        ↓
+CommandLineRunner Executes
+
+
+
+Suppose we want to display:
+
+
+"Employee Management Application Started Successfully"
+
+--every time the application starts.
+
+Without CommandLineRunner:
+
+--Need Manual Invocation
+
+With CommandLineRunner:
+
+--Spring Boot Executes Automatically
+
+--during startup.
+
+
+
+Example:
+
+StartupRunner.java:
+--------------------
+
+Create a package: com.hdfc.runner:
+
+package com.hdfc.runner;
+
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+
+@Component
+public class StartupRunner implements CommandLineRunner{
+
+	@Override
+	public void run(String... args) throws Exception {
+		
+		System.out.println("Employee Management Application Started Successfully");
+		
+	}
+
+}
+
+
+
+Accessing Command Line Arguments:
+================================
+
+Suppose application is started as: 
+
+	java -jar EmployeeManagement-0.0.1-SNAPSHOT.jar hello spring boot
+
+--These values are available inside:
+
+String... args
+
+
+
+Example:
+
+
+	@Override
+	public void run(String... args) throws Exception {
+		
+		System.out.println(Arrays.toString(args));
+		
+	}
+
+
+
+Output:
+
+hello
+spring
+boot
+
+
+
+Another UseCase: Insert Initial data when the application started:
+----------------
+
+@Component
+public class StartupRunner implements CommandLineRunner {
+
+    private final EmployeeRepository repo;
+
+    public StartupRunner(EmployeeRepository repo) {
+
+        this.repo = repo;
+    }
+
+    @Override
+    public void run(String... args) {
+
+        repo.save(new Employee(101,"Ratan",50000));
+    }
+}
+
+
+
+Multiple CommandLineRunner Beans:
+----------------------------------
+
+An application can contain multiple CommandLineRunner implementations.
+
+Example:
+
+@Component
+@Order(1)
+public class Runner1 implements CommandLineRunner {
+
+    public void run(String... args) {
+        System.out.println("Runner1 Executed");
+    }
+}
+
+@Component
+@Order(2)
+public class Runner2 implements CommandLineRunner {
+
+    public void run(String... args) {
+        System.out.println("Runner2 Executed");
+    }
+}
+
+
+Output:
+
+Runner1 Executed
+Runner2 Executed
+
+--@Order annotation is used to control the execution order.
+
+
+
+
+CommandLineRunner vs @PostConstruct:
+------------------------------------
+
+@PostConstruct: Runs After Bean Creation
+
+CommandLineRunner: Runs After Entire Application Startup
+
+
+Therefore:
+
+@PostConstruct
+    Bean Level Initialization
+
+CommandLineRunner
+    Application Level Initialization
+
+
+
+Best Practices
+--------------
+
+Use CommandLineRunner for:
+
+--Data Initialization
+
+--Startup Logging
+
+--Cache Loading
+
+--Configuration Validation
+
+--Application Verification
+
+
+
+Avoid:
+
+--Long Running Tasks
+
+--Heavy Business Logic
+
+--Infinite Loops
+
+--because application startup may become slow.
+
+
+
+
+
+
+Resource Concept:
+=================
+
+The most important concept in REST is: Resource
+
+--A Resource is any business object managed by the application.
+
+Examples:
+
+Employee
+Customer
+Policy
+Claim
+Product
+Order
+
+--In a REST API, everything is treated as a resource.
+
+URI (Uniform Resource Identifier):
+----------------------------------
+
+Every resource is identified using a URI.
+
+Example:
+
+/employees
+
+represents:
+
+All Employees
+
+
+/employees/101
+
+represents:
+
+Employee With Id 101
+
+
+URI Design Guidelines:
+----------------------
+
+Good URI:
+
+/employees
+/customers
+/policies
+/orders
+
+
+--URI name should be pulural.
+
+
+Bad URI:
+
+/getEmployees
+/createEmployee
+/deleteEmployee
+
+Reason:
+
+--REST Uses HTTP Methods to represent the action.
+
+GET
+POST
+PUT
+PATCH
+DELETE
+
+
+Examples:
+
+GET /employees
+
+--Get all employees.
+
+GET /employees/101
+
+--Get employee with id 101.
+
+
+POST /employees
+
+Request Body:
+
+{
+  "name":"Ratan",
+  "salary":50000
+}
+
+--Server creates a new employee.
+
+
+DELETE /employees/101
+
+--Server removes employee record.
+
+
+@RestController:
+================
+
+
+--@RestController is used to create REST APIs.
+
+
+Example:
+
+@RestController
+public class EmployeeController {
+
+}
+
+
+--@RestController is a combination of:
+
+@Controller
+
+and
+
+@ResponseBody
+
+Equivalent to:
+
+@Controller
+@ResponseBody
+public class EmployeeController {
+
+}
+
+
+@RequestMapping
+===============
+
+--Used to define:
+
+Base URL
+Common URL Mapping
+
+Example:
+
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController {
+
+}
+
+Now all APIs inside this controller start with:
+
+/employees
+
+
+@GetMapping
+===========
+
+Used for:
+
+Read Operations
+
+Equivalent HTTP Method: GET
+
+
+Example: Get All Employees
+
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController {
+
+    @GetMapping
+    public String getEmployees() {
+
+        return "All Employees";
+    }
+}
+
+Request:
+
+GET /employees
+
+
+Get Employee By Id:
+-------------------
+
+@GetMapping("/{id}")
+public String getEmployeeById(
+        @PathVariable Integer id) {
+
+    return "Employee Id : " + id;
+}
+
+Request:
+
+GET /employees/101
+
+
+
+
+
+
+
+
+
 

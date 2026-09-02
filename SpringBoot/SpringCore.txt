@@ -1186,7 +1186,7 @@ In other words:
 
 --The Spring Container creates the bean object, injects its dependencies, manages its lifecycle, and provides it to the application whenever required.
 
---Spring beans are POJO classes
+--Most Spring Beans are POJOs.
 
 
 Consider the following class:
@@ -1597,7 +1597,7 @@ Example:
 
     <bean id="userService"  class="com.hdfc.service.UserService">
 
-        <constructor-arg  ref="emailService"/>
+        <constructor-arg name="notificationService" ref="emailService"/>
 
     </bean>
 
@@ -2121,7 +2121,9 @@ Advantages:
 2. Field Injection:
 -------------------
 
---If we apply @Autowired on field then no need to explicitly define its setter() method, at runtime spring container explicitly defines its setter method.
+--Spring injects the dependency directly into the field using reflection.
+
+--No setter method is required.
 
 Example:
 
@@ -2542,6 +2544,10 @@ Note: Singleton scope doesn't mean that Spring container make the Employee class
 
 
 
+
+
+
+
 Spring Bean Life Cycle:
 =======================
 
@@ -2710,6 +2716,8 @@ Custom object creation logic is required.
 --This annotation should be used on the top of a method, which returns an object
 
 --Spring Container will register that returned object as Spring Bean.
+
+--@Bean methods should generally be placed inside a class annotated with @Configuration.
 
 
 Example: Inside the AppConfig class
