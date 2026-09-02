@@ -2331,6 +2331,254 @@ public class CompanyController {
 
 
 
+
+
+
+Validation of @ConfigurationProperties using JSR-303:
+------------------------------------------------------
+
+
+Imagine our application.yml file contains:
+
+
+application.yml file:
+
+
+company:
+ name:
+ 
+ address: 
+  city: M
+  state: Maharashtra
+  contact[0]: 234232434
+  contact[1]: 546353242
+  contact[2]: 856464534
+
+
+--The application may start with invalid configuration values.
+
+--To prevent such situations, Spring Boot supports:
+
+JSR-303 Bean Validation
+
+--for validating configuration properties during application startup.
+
+
+
+What is JSR-303?
+================
+
+--JSR-303 is the Java standard for Bean Validation.
+
+--It provides validation annotations such as:
+
+@NotNull
+@NotBlank
+@Min
+@Max
+@Size
+@Email
+@Pattern
+
+
+--These annotations validate data automatically.
+
+
+
+Suppose:
+
+app:
+  name:
+  version:
+
+
+Application starts with:
+
+empty values
+
+--Later the application may fail unexpectedly.
+
+Instead, we want:
+
+Application Startup
+          ↓
+Validate Configuration
+          ↓
+	Fail Fast
+          ↓
+Display Error Message
+
+--This helps identify configuration mistakes immediately.
+
+
+Step 1: Add Validation Dependency
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-validation</artifactId>
+    <version>4.1.1</version>
+    <scope>compile</scope>
+</dependency>
+
+
+
+--This dependency enables JSR-303 validation.
+
+
+Step 2: Add @Validated annotation on the top of CompanyProperties class
+
+Example:
+
+
+package com.hdfc.beans;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
+
+@Component
+@Validated
+@ConfigurationProperties(prefix = "company")
+public class CompanyProperties {
+
+
+}
+
+ 
+Note: Without @Validated annotation validation will not execute.
+
+Step 3: Apply Validation Rules
+
+Example:
+
+@NotBlank
+private String name;
+
+Invalid:
+
+null
+
+""
+
+"   "
+
+--Most commonly used for String properties.
+
+
+
+@NotEmpty
+private String name;
+
+Invalid:
+
+null
+
+""
+
+Valid:
+
+"   "
+
+
+@NotNull
+private String name;
+
+Valid:
+
+ABC
+
+Invalid:
+
+null
+
+--Empty string is allowed.
+
+@Min(1)
+private Integer maxUsers;
+
+Valid:
+
+1
+10
+100
+
+Invalid:
+
+0
+-1
+
+
+@Max(100)
+private Integer maxUsers;
+
+Valid:
+
+50
+100
+
+Invalid:
+
+101
+
+
+
+@Size(min = 3, max = 20)
+private String appName;
+
+Valid:
+
+EMS
+EmployeeSystem
+
+Invalid:
+
+A
+AB
+VeryVeryLongApplicationName
+
+
+Nested Property Validation:
+--------------------------
+
+
+company:
+ name:
+ 
+ 
+ address: 
+  city: Mumbai
+  state: Maharashtra
+  contact[0]: 234232434
+  contact[1]: 546353242
+  contact[2]: 856464534
+
+
+
+@Valid
+private Address address;
+
+
+
+And inside the Address class:
+
+@Size(min = 3, max = 20)
+private String city;
+
+@NotBlank
+private String state;
+
+
+
+@NotEmpty(message = "No contact information found..")
+@Size(min = 3, max = 5, message = "size must be 3 and 5")
+private List<String> contact;
+	
+
+
+--This validation is widely used in enterprise Spring Boot applications to ensure configuration problems are detected immediately during startup rather than causing failures at runtime.
+
+
+
 Devtools:
 =========
 
