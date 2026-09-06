@@ -1874,7 +1874,7 @@ System.out.println(controller.sayHello());
 
 
 
-Download the STS IDEA for Spring Boot application development:
+Download the STS IDE for Spring Boot application development:
 
 https://spring.io/tools
 
@@ -1887,7 +1887,7 @@ MACOS X86_64: For Older Intel MAC
 
 
 
-Creating another API to return the Student data in the form of JSON:
+Creating another API to return the Employee data in the form of JSON:
 --------------------------------------------------------------------
 
 Create a Employee class inside the com.hdfc.beans package:
@@ -3412,7 +3412,9 @@ DELETE /employees/101
 ================
 
 
---@RestController is used to create REST APIs.
+--@RestController is a stereotype annotation used to create RESTful Web Services (REST APIs) in Spring Boot.
+
+--When a class is annotated with @RestController, Spring treats it as a web controller and automatically converts the return value of its request handler methods into the HTTP response body (usually JSON or XML).
 
 
 Example:
@@ -3423,14 +3425,9 @@ public class EmployeeController {
 }
 
 
---@RestController is a combination of:
+--Internally @RestController = @Controller + @ResponseBody
 
-@Controller
-
-and
-
-@ResponseBody
-
+@RestController is a shortcut annotation that combines:
 Equivalent to:
 
 @Controller
@@ -3440,38 +3437,254 @@ public class EmployeeController {
 }
 
 
+
+@Controller vs @RestController:
+------------------------------
+
+@Controller:
+
+--The @Controller annotation is generally used in Server-Side Rendering (SSR) applications, where the server generates the UI and sends it to the client.
+
+Examples:
+
+JSP-based applications
+Thymeleaf-based applications
+Freemarker applications
+
+--In such applications, the request handler method usually returns a logical view name.
+
+
+
+
+Example:
+
+@Controller
+public class EmployeeController {
+
+    @GetMapping("/home")
+    public String home() {
+        return "index";
+    }
+}
+
+--Here:
+
+return "index";
+
+--does not represent data.
+
+Instead, it represents the logical name of a view.
+
+--The ViewResolver maps this logical name to an actual view file:
+
+index
+   ↓
+/WEB-INF/views/index.jsp
+
+or
+
+index
+   ↓
+templates/index.html
+
+
+
+@Controller + @ResponseBody:
+
+--If we add @ResponseBody along with @Controller, the return value is treated as response data instead of a view name.
+
+@Controller
+@ResponseBody
+public class EmployeeController {
+
+    @GetMapping("/msg")
+    public String getMessage() {
+        return "Welcome to Spring Boot";
+    }
+}
+
+
+
+
+Response:
+
+Welcome to Spring Boot
+
+--In this case Spring does not use any ViewResolver.
+
+--The returned value is written directly into the HTTP response body.
+
+
+
+Example:
+
+--Since most modern applications expose REST APIs, Spring provides @RestController as a convenient alternative.
+
+@RestController
+public class EmployeeController {
+
+    @GetMapping("/employee")
+    public Employee getEmployee() {
+        return new Employee(101, "Ratan", 50000);
+    }
+}
+
+Response:
+
+{
+  "id": 101,
+  "name": "Ratan",
+  "salary": 50000
+}
+
+--Spring automatically converts the Java object into JSON using Jackson.
+
+
+
+
 @RequestMapping
 ===============
 
---Used to define:
-
-Base URL
-Common URL Mapping
+--In Spring MVC and Spring Boot, every request coming from the client must be mapped to a controller method.
 
 Example:
+
+GET /employees
+
+--When this request reaches the Spring application, Spring must determine:
+
+1. Which Controller should handle the request?
+2. Which Method inside that controller should be executed?
+
+--To establish this mapping between a URL and a controller method, Spring provides the @RequestMapping annotation.
+
+@RequestMapping is one of the most important annotations in Spring MVC. 
+
+
+
+Features of @RequestMapping:
+-----------------------------
+
+@RequestMapping can be used to:
+
+--Define URL mappings
+--Define a common base URL for a controller
+--Map requests to specific controller methods
+--Restrict requests to specific HTTP methods (GET, POST, PUT, DELETE, etc.)
+
+
+
+
+
+
+
+--This annotation can be applied at:
+
+1. Class Level
+
+--Used to define a common base URL for all request handler methods within a controller.
+
+2. Method Level
+
+--Used to define the specific URL path and HTTP method for a request handler method.
+
+
+
+
+
+
+
+
+Example: Method level
+
+@RestController
+public class EmployeeController {
+
+    @RequestMapping(value = "/employees", method = RequestMethod.GET)
+    public String getEmployees() {
+
+        return "All Employees";
+    }
+}
+
+
+
+Request:
+
+GET /employees
+
+Response:
+
+All Employees
+
+
+
+
+
+Example: Class-Level + Method-Level @RequestMapping
 
 @RestController
 @RequestMapping("/employees")
 public class EmployeeController {
 
+    @RequestMapping("/")
+    public String getEmployees() {
+
+        return "All Employees";
+    }
 }
 
-Now all APIs inside this controller start with:
 
-/employees
+Final URL:
+
+GET /employees/
+
+Here:
+
+@RequestMapping("/employees")
+
+--defines the base URL.
+
+and
+
+@RequestMapping("/")
+
+--defines the method-specific URL.
+
+--Spring combines both mappings to create the final URL.
+
+
+
+--Using @RequestMapping for every request mapping can become verbose.
+
+Example:
+
+@RequestMapping(value = "/employees",method = RequestMethod.GET)
+
+--To make code more readable and concise, Spring provides specialized shortcut annotations.
 
 
 @GetMapping
-===========
-
-Used for:
-
-Read Operations
-
-Equivalent HTTP Method: GET
+@PostMapping
+@PutMapping
+@DeleteMapping
+@PatchMapping
 
 
-Example: Get All Employees
+--These annotations are internally built on top of @RequestMapping.
+
+For example:
+
+@GetMapping("/employees")
+
+is equivalent to:
+
+@RequestMapping(value = "/employees",method = RequestMethod.GET)
+
+
+
+Example:
+
 
 @RestController
 @RequestMapping("/employees")
@@ -3484,26 +3697,2664 @@ public class EmployeeController {
     }
 }
 
+
+
 Request:
 
 GET /employees
 
+Response:
 
-Get Employee By Id:
--------------------
+All Employees
+
+
+
+Recommended Approach:
+---------------------
+
+--In modern Spring Boot applications:
+
+1. Use @RequestMapping at the class level to define a common base URL.
+
+2. Use specialized mapping annotations (@GetMapping, @PostMapping, etc.) at the method level.
+
+
+Example:
+---------
+
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController {
+
+    @GetMapping
+    public String getEmployees() {
+        return "All Employees";
+    }
+
+    @PostMapping
+    public String saveEmployee() {
+        return "Employee Saved";
+    }
+
+    @PutMapping("/{id}")
+    public String updateEmployee() {
+        return "Employee Updated";
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteEmployee() {
+        return "Employee Deleted";
+    }
+}
+
+
+
+@PathVariable
+=============
+
+@PathVariable is used to extract dynamic values from the URL path and bind them to method parameters.
+
+--It is commonly used when a client wants to access a specific resource by its identifier.
+
+
+Example URL:
+
+/employees/101
+
+Here:
+
+101
+
+is called a Path Variable.
+
+
+
+Example:
+
 
 @GetMapping("/{id}")
-public String getEmployeeById(
-        @PathVariable Integer id) {
+public Employee getEmployeeById(@PathVariable Integer id) {
 
-    return "Employee Id : " + id;
+    return new Employee(id, "Raj", 50000);
 }
+
+
 
 Request:
 
 GET /employees/101
 
 
+Response:
+
+{
+
+"id": 101,
+"name": "Raj",
+"salary": 50000.00
+
+}
+
+
+Note: When a value is extracted from the URL using @PathVariable,
+ Spring automatically converts the String value received in the URL into the datatype specified in the method parameter.
+
+--This conversion is performed by Spring's built-in Type Conversion Mechanism.
+
+Example:
+
+
+@GetMapping("/{salary}")
+public Employee getEmployeeBySalary(@PathVariable double salary) {
+
+    return new Employee(100, "Raj", salary);
+}
+
+
+
+Request:
+
+GET /employees/75000.50
+
+
+
+Internal Processing:
+
+URL Value   : "75000.50" (String)
+Method Parameter: double salary
+
+Spring converts:
+
+"75000.50" → 75000.50
+
+
+
+--Spring can automatically convert path variables to many commonly used datatypes:
+
+@PathVariable String
+@PathVariable Integer
+@PathVariable Long
+@PathVariable Double
+@PathVariable Float
+@PathVariable Boolean
+@PathVariable LocalDate
+@PathVariable UUID
+
+
+--If the URL value cannot be converted to the target datatype, Spring throws a type conversion exception and returns HTTP 400 (Bad Request).
+
+Example:
+
+
+
+@GetMapping("/{id}")
+public Employee getEmployee(@PathVariable Integer id) {
+
+    return new Employee(id, "Raj", 50000);
+}
+
+
+
+
+Request:
+
+GET /employees/abc
+
+Spring tries:
+
+"abc" → Integer
+
+--Conversion fails and Spring returns:
+
+400 Bad Request
+
+
+
+Multiple Path Variables:
+------------------------
+
+URL:
+
+/employees/101/Simran
+
+
+
+Controller:
+
+@GetMapping("/{id}/{name}")
+public Employee getEmployee(@PathVariable Integer id,@PathVariable String name) {
+
+	    return new Employee(id, name, 50000);
+
+
+}
+
+
+
+Request:
+
+GET /employees/102/Rahul
+
+
+Response:
+
+{
+
+"id": 102,
+"name": "Rahul",
+"salary": 80000.00
+
+}
+
+
+Explicit Variable Mapping:
+---------------------------
+
+@GetMapping("/{id}")
+public Employee getEmployee(@PathVariable("id") Integer empId) {
+
+    return new Employee(empId, "Raj", 85000);
+}
+
+
+
+URL Variable: {id}
+
+Java Variable: empId
+
+Spring maps them using:
+
+@PathVariable("id")
+
+
+
+Note: Path variables are mandatory by default.
+
+
+Example:
+
+@GetMapping("/{id}")
+public Employee getEmployeeById(@PathVariable Integer id) {
+
+    return new Employee(id, "Raj", 50000);
+}
+
+
+Request:
+
+GET /employees
+
+
+Response:
+
+404 Not Found
+
+--because the required path variable is missing.
+
+
+
+@RequestParam:
+==============
+
+@RequestParam is used to extract values from the query string (request parameters) of an HTTP request and bind them to method parameters.
+
+--It is commonly used for:
+
+Filtering
+Searching
+Sorting
+Pagination
+Optional Inputs
+
+
+Consider the following request:
+
+GET /employees?dept=IT
+
+Here:
+
+dept=IT
+
+is called a Query Parameter (Request Parameter).
+
+--Spring provides the @RequestParam annotation to extract such values from the request URL and pass them to the controller method.
+
+
+Example:
+
+http://localhost:8080/employees?dept=IT
+
+
+/employees -> Resource Path
+
+?dept=IT   -> Query Parameter
+
+
+Example: Single Request Parameter:
+---------------------------------
+
+@GetMapping("/employees")
+public String getEmployees(@RequestParam String dept) {
+
+    return "Department : " + dept;
+}
+
+
+
+Request:
+
+GET /employees?dept=IT
+
+Response:
+
+Department : IT
+
+
+Multiple Request Parameters:
+----------------------------
+
+--A request can contain multiple parameters.
+
+
+Example:
+
+@GetMapping("/employees")
+public String getEmployee(@RequestParam Integer id, @RequestParam String name) {
+
+    return "Id : " + id + " Name : " + name;
+}
+
+
+Request:
+
+GET /employees?id=101&name=Rahul
+
+Response:
+
+Id : 101 Name : Rahul
+
+
+
+Explicit Parameter Mapping:
+---------------------------
+
+--Sometimes the URL parameter name and Java variable name are different.
+
+
+Example
+@GetMapping("/employees")
+public String getEmployee(@RequestParam("id") Integer empId) {
+
+    return "Employee Id : " + empId;
+}
+
+
+Request:
+
+GET /employees?id=101
+
+
+Mapping:
+
+id -> URL Parameter
+
+empId -> Java Variable
+
+--Spring performs the mapping using:
+
+@RequestParam("id")
+
+
+Required Parameters (Default Behaviour):
+----------------------------------------
+
+--By default, every @RequestParam is mandatory.
+
+Example
+@GetMapping("/employees")
+public String getEmployee(@RequestParam Integer id) {
+
+    return "Employee Id : " + id;
+}
+
+Valid Request:
+
+GET /employees?id=101
+
+Invalid Request:
+
+GET /employees
+
+Result:
+
+400 Bad Request
+
+--Because the required request parameter is missing.
+
+
+
+--We can make a request parameter optional using:
+
+required = false
+
+
+Example:
+
+@GetMapping("/employees")
+public String getEmployee(@RequestParam(required = false) Integer id) {
+
+    if(id == null) {
+        return "All Employees";
+    }
+
+    return "Employee Id : " + id;
+}
+
+
+Request 1:
+
+	GET /employees
+
+Response:
+
+	All Employees
+
+
+Request 2
+
+	GET /employees?id=101
+
+Response:
+
+	Employee Id : 101
+
+
+
+
+Default Values:
+---------------
+
+--Instead of checking for null values, we can provide a default value.
+
+Example
+@GetMapping("/employees")
+public String getEmployee(@RequestParam(defaultValue = "100") Integer id) {
+
+    return "Employee Id : " + id;
+}
+
+Request:
+
+	GET /employees
+
+Response:
+
+	Employee Id : 100
+
+Spring automatically uses:
+
+defaultValue = "100"
+
+--when the parameter is not provided.
+
+
+Real-Time Use Cases:
+--------------------
+
+1. Searching:
+
+	GET /employees?name=Rahul
+
+
+
+@GetMapping("/employees")
+public List<Employee> searchEmployee(@RequestParam String name) {
+
+    return service.search(name);
+}
+
+
+2. Filtering
+
+	GET /employees?dept=IT
+
+
+@GetMapping("/employees")
+public List<Employee> getEmployees(@RequestParam String dept) {
+
+    return service.getByDepartment(dept);
+}
+
+
+3. Sorting:
+
+	GET /employees?sortBy=name
+
+
+@GetMapping("/employees")
+public List<Employee> getEmployees(@RequestParam String sortBy) {
+
+    return service.sort(sortBy);
+}
+
+
+
+
+4. Pagination:
+
+	GET /employees?page=1&size=10
+
+@GetMapping("/employees")
+public List<Employee> getEmployees(@RequestParam Integer page, @RequestParam Integer size) {
+
+    return service.getEmployees(page, size);
+}
+
+
+
+
+@RequestParam vs @PathVariable:
+===============================
+
+| Feature          | @RequestParam                             | @PathVariable          |
+| ---------------- | ----------------------------------------- | ---------------------- |
+| Source           | Query String                              | URL Path               |
+| Used For         | Filtering, Searching, Sorting, Pagination | Identifying a Resource |
+| Optional Support | Yes                                       | No (by default)        |
+| Example          | `/employees?id=101`                       | `/employees/101`       |
+
+
+
+
+
+Using @PathVariable and @RequestParam Together:
+-----------------------------------------------
+
+--In real-world REST APIs, it is very common to use both @PathVariable and @RequestParam in the same request handler method.
+
+Rule:
+
+	Use @PathVariable to identify a specific resource.
+	Use @RequestParam to filter, sort, paginate, or provide additional information.
+
+
+Example: Get Employee By Id and Include Address
+
+Request:
+
+	GET /employees/101?includeAddress=true
+
+
+
+@GetMapping("/{id}")
+public String getEmployee(@PathVariable Integer id, @RequestParam(required = false) Boolean includeAddress) {
+
+    return "Employee Id : " + id + ", Include Address : " + includeAddress;
+}
+
+
+
+Example 2: Employee Search API with pagination:
+
+
+Request:
+
+	GET /employees/101/projects?page=1&size=5
+
+
+
+@GetMapping("/{id}/projects")
+public String getEmployeeProjects(
+        				@PathVariable Integer id,
+        				@RequestParam Integer page,
+        				@RequestParam Integer size) {
+
+    return "Employee Id : " + id + ", Page : " + page +", Size : " + size;
+}
+
+
+
+
+Note: A good REST API design usually follows this pattern:
+
+Path Variables
+      ↓
+Identify Resource
+
+Request Parameters
+      ↓
+Filter / Search / Sort / Pagination
+
+Example:
+
+	GET /employees/101/tasks?status=OPEN&page=1&size=20
+
+
+
+@PostMapping
+============
+
+Used for:
+
+	Create Operations
+	Insert New Resource
+
+Equivalent to:
+
+@RequestMapping(method=RequestMethod.POST)
+
+
+Example:
+
+@PostMapping
+public Employee saveEmployee(@RequestBody Employee employee){
+
+    //logic the save the employee
+    return employee;
+}
+
+Request:
+
+POST /employees
+
+
+Request Body:
+
+{
+   "id":101,
+   "name":"Rahul",
+   "salary":50000,
+   "address":"Delhi"
+}
+
+
+
+What is @RequestBody?
+---------------------
+
+--When the client sends JSON data in the request body:
+
+{
+   "id":101,
+   "name":"Rahul",
+   "salary":50000
+   "address":"Delhi"
+}
+
+--Spring converts that JSON into a Java object automatically using the Jackson library.
+
+@RequestBody Employee employee
+
+JSON -> Java Object
+
+--This process is called: Deserialization
+--And reverse process is called: Serialization
+
+
+
+Commonly Used Jackson Annotations:
+----------------------------------
+
+
+1. @JsonIgnore: 
+------------
+
+@JsonIgnore is used to exclude a field from JSON serialization and deserialization. It is commonly used to hide sensitive data such as passwords, tokens, or internal fields from REST API requests and responses.
+
+Example:
+
+@JsonIgnore
+private String password;
+
+--The password field will neither appear in the JSON response nor be populated from the JSON request.
+
+
+2. @JsonProperty:
+
+--Change JSON property name
+
+
+Example:
+
+Example:
+
+public class Employee {
+
+    private Integer id;
+
+    @JsonProperty("employee_name")
+    private String name;
+   
+    private double salary;
+
+
+    @JsonProperty("employee_address")
+    private String address;
+	
+
+
+}
+
+Java Object:
+
+Employee emp =
+        new Employee(101,"Rahul", 85000, "delhi");
+
+JSON Response:
+
+{
+  "id": 101,
+  "employee_name": "Rahul",
+  "salary": 85000,
+  "employee_address":
+}
+
+
+
+
+3. @JsonFormat
+
+--Format date/time values
+
+
+Example:
+
+public class Employee {
+
+    private Integer id;
+
+    private String name;
+
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    private LocalDate joiningDate;
+}
+
+
+Java Object:
+
+emp.setJoiningDate(LocalDate.of(2025,9,1));
+
+Default Response:
+
+{
+  "joiningDate":"2025-09-01"
+}
+
+
+With @JsonFormat:
+
+{
+  "joiningDate":"01-09-2025"
+}
+
+
+Example Date and Time:
+
+
+@JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+private LocalDateTime createdAt;
+
+Response:
+
+{
+  "createdAt":"01/09/2025 11:30:25"
+}
+
+
+
+
+Note: The HTTP specification does not prohibit a request body for any HTTP method. However, in real-world applications and most frameworks, request bodies are commonly used with:
+
+POST -> Create a resource
+PUT -> Update a resource completely
+PATCH -> Update a resource partially
+
+--These methods typically receive data from the client and therefore commonly use:
+
+@RequestBody
+
+--to convert JSON payloads into Java objects.
+
+--GET and DELETE requests are generally implemented without a request body in REST APIs. Although technically allowed, using a request body with these methods is uncommon and not recommended.
+
+
+
+
+
+
+
+@PutMapping
+===========
+
+Used for:
+
+--Complete Resource Update
+
+--PUT generally replaces the existing resource with a new version.
+
+Generally used when: Entire Resource Needs Update
+
+
+
+Existing Employee
+{
+   "id":101,
+   "name":"Rahul",
+   "salary":50000,
+   "address":"Delhi"
+}
+
+
+
+@PutMapping("/{id}")
+public Employee updateEmployee(@PathVariable Integer id, @RequestBody Employee employee){
+
+    employee.setId(id);
+
+    return employee;
+}
+
+
+Request:
+
+PUT /employees/101
+
+
+Request Body:
+
+{
+   "name":"Rahul Sharma",
+   "salary":70000,
+   "address":"Mumbai"
+}
+
+
+Response:
+
+{
+   "id":101,
+   "name":"Rahul Sharma",
+   "salary":70000,
+   "address":"Mumbai"
+}
+
+
+
+
+@PatchMapping
+=============
+
+Used for:
+
+--Partial Resource Update
+
+--Instead of updating the entire object, only specific fields are updated.
+
+
+
+
+
+Example1: Suppose only salary changes.
+
+
+@PatchMapping("/{id}")
+public String updateSalary(@PathVariable Integer id, @RequestParam Double salary){
+
+    return "Salary Updated";
+}
+
+Request:
+
+	PATCH /employees/101?salary=80000
+
+Response:
+
+	Salary Updated
+
+
+
+Example2: Suppose only salary and address changing:
+
+
+@PatchMapping("/{id}")
+public Employee updateSalary(@PathVariable Integer id, @RequestBody Employee emp){
+
+    //get the employee from the Database by using id
+     
+     //employee.setName(emp.getName());
+     //employee.setAddress(emp.getAddress());
+     
+     // save the employee
+
+     return updatedEmployee;
+
+}
+
+
+
+Request:
+
+	PATCH /employees
+
+
+Requet body:
+
+
+{
+
+"salary": 90000.00,
+"address": "Chennai"
+
+}
+
+
+
+@DeleteMapping
+==============
+
+Used for:
+
+Delete Resource
+
+Equivalent to:
+
+@RequestMapping(method=RequestMethod.DELETE)
+
+
+Example:
+
+@DeleteMapping("/{id}")
+public String deleteEmployee(@PathVariable Integer id){
+
+    return "Employee Deleted : " + id;
+}
+
+
+
+Request:
+
+	DELETE /employees/101
+
+Response:
+
+	Employee Deleted : 101
+
+
+
+Idempotent Nature of HTTP Methods:
+----------------------------------
+
+--An HTTP method is called Idempotent if making the same request multiple times produces the same result on the server as making it once.
+
+In simple words:
+
+1 Request  = Result A
+
+10 Same Requests = Still Result A
+
+--The final state of the resource remains unchanged after repeated executions.
+
+In other word: the continious subsequent same requests are ignored.
+
+
+1. GET: Idempotent 
+
+--Used to fetch data.
+
+Example:
+
+GET /employees/101
+
+Whether you call it:
+
+1 time
+10 times
+100 times
+
+--the employee data remains unchanged.
+
+Therefore:
+
+GET is Idempotent
+
+
+2. POST: Not Idempotent
+
+--Used to create a new resource.
+
+Example:
+
+POST /employees
+
+Request Body:
+
+{
+  "name":"Rahul",
+  "salary":50000
+}
+
+--If the same request is sent multiple times:
+
+1st Request → Employee Created
+2nd Request → Another Employee Created
+3rd Request → Another Employee Created
+
+--Multiple records may be inserted.
+
+Therefore: POST is NOT Idempotent
+
+
+3. PUT -> Idempotent
+
+--Used to replace/update an existing resource completely.
+
+Example:
+
+PUT /employees/101
+
+Body:
+
+{
+  "name":"Rahul",
+  "salary":80000
+}
+
+Whether executed:
+
+1 time
+10 times
+100 times
+
+the final state remains:
+
+{
+  "id":101,
+  "name":"Rahul",
+  "salary":80000
+}
+
+Therefore: PUT is Idempotent
+
+
+
+4. PATCH -> Generally Not Guaranteed
+
+--PATCH is used for partial updates.
+
+Example:
+
+PATCH /employees/101
+
+Body:
+
+{
+  "salary":80000
+}
+
+Result:
+
+{
+  "id":101,
+  "salary":80000
+}
+
+--Sending the same request repeatedly may keep the same state.
+
+--However, PATCH operations can also be implemented as incremental updates:
+
+PATCH /employees/101
+
+Body:
+
+{
+  "incrementSalary":1000
+}
+
+Execution:
+
+1st Request → 51000
+2nd Request → 52000
+3rd Request → 53000
+
+--State changes every time.
+
+Therefore:
+
+--PATCH is not guaranteed to be idempotent.
+--It depends on implementation.
+
+
+
+5. DELETE - Idempotent
+
+Example:
+
+DELETE /employees/101
+
+Execution:
+
+1st Request → Employee Deleted
+2nd Request → Already Deleted
+3rd Request → Already Deleted
+
+The final state remains:
+
+Employee Does Not Exist
+
+Therefore: DELETE is Idempotent
+
+
+
+
+PostMan: A Rest Client Tool:
+===========================
+
+Till now, We used browser URLs to test web applications.
+
+Example:
+
+http://localhost:8080/employees
+
+This works only for:
+
+GET Requests
+
+But modern REST APIs use:
+
+GET
+POST
+PUT
+PATCH
+DELETE
+
+--A browser cannot easily test all these HTTP methods.
+
+To solve this problem, developers use:
+
+Some of the HTTP clients to test all these HTTP methods like:
+
+Postman
+Insomnia
+Bruno
+Swagger UI / OpenAPI
+cURL (Curl command)
+IntelliJ IDEA HTTP Client
+VS Code REST Client Extension
+
+
+Postman:
+=======
+
+--Postman is one of the most popular API Testing Tools used by developers to:
+
+Send HTTP Requests
+Test REST APIs
+Verify API Responses
+Test Request Headers
+Test Request Body
+Test Authentication
+Organize APIs into Collections
+
+
+
+
+Postman Installation
+====================
+Step 1:
+
+Visit: Postman Official Website
+
+Step 2
+
+Download according to your OS:
+
+Windows
+Mac
+Linux
+
+Step 3:
+
+Install like any normal application.
+
+Step 4
+
+Launch Postman.
+
+You may:
+
+Sign In
+or
+Continue Without Account
+
+Both work for learning.
+
+
+Sending POST request using postman:
+----------------------------------
+
+@PostMapping("/employees")
+public Employee saveEmployee(@RequestBody Employee emp){
+
+    return emp;
+}
+
+
+Step 1
+
+Select Method: POST
+
+Step 2
+
+Enter URL:
+
+http://localhost:8080/employees
+
+Step 3
+
+Open:
+
+Body Tab
+
+Select:
+
+raw
+
+Then choose:
+
+JSON
+
+
+
+Step 4
+
+Enter JSON:
+
+{
+  "id":101,
+  "name":"Rahul",
+  "salary":50000
+}
+
+Step 5
+
+Click:
+
+Send
+
+
+
+Collections in Postman:
+-----------------------
+
+Imagine a project having:
+
+50 APIs
+100 APIs
+200 APIs
+
+--Managing them individually becomes difficult.
+
+Postman provides:
+
+Collection
+
+to organize APIs.
+
+
+--A Collection is a folder that stores related API requests.
+
+Example:
+
+Employee Management Collection
+
+    GET Employees
+
+    GET Employee By Id
+
+    POST Employee
+
+    PUT Employee
+
+    DELETE Employee
+
+
+Creating Collection in Postman:
+-------------------------------
+
+Step 1
+
+Click: Collections
+
+Step 2
+
+Click:
+
++
+
+Create Collection
+
+Step 3
+
+Provide name:
+
+Employee Management APIs
+
+Step 4
+
+Save.
+
+Recommended Collection Structure:
+---------------------------------
+
+Employee APIs
+
+    GET All Employees
+
+    GET Employee By Id
+
+    CREATE Employee
+
+    UPDATE Employee
+
+    DELETE Employee
+
+Department APIs
+
+    GET Departments
+
+    CREATE Department
+
+
+Advantages of Collections:
+--------------------------
+
+1. Reusability
+
+--No need to create requests again and again.
+
+2. Team Sharing
+
+--Can share APIs with team members.
+
+3. Documentation
+
+--Acts as API documentation.
+
+4. Testing
+
+--Can run multiple API requests together.
+
+
+
+
+Project Lombok with Spring Boot:
+================================
+
+While developing Java applications, we often create POJO/DTO/Entity classes.
+
+Example:
+
+public class Employee {
+
+    private Integer id;
+    private String name;
+    private Double salary;
+
+//zero argument constructor
+//parameterized construcot
+//getters and setters
+//toString()
+
+}
+
+
+--Notice that most of the code is boilerplate code:
+
+Getters
+Setters
+Constructors
+toString()
+equals()
+hashCode()
+
+--Writing these methods repeatedly is time-consuming.
+
+--To solve this problem, we use:
+
+Project Lombok:
+
+
+--Project Lombok is a Java library that automatically generates boilerplate code during compilation.
+
+It can generate:
+
+Getters
+Setters
+Constructors
+toString()
+equals()
+hashCode()
+Builder Pattern
+Logging Objects
+
+using annotations.
+
+
+Adding Lombok Dependency:
+-------------------------
+
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <version>1.18.46</version>
+    <scope>compile</scope>
+</dependency>
+
+
+Note: Sometimes adding only the dependency is not enough.
+
+If STS shows errors like:
+
+@Getter cannot be resolved
+
+@Setter cannot be resolved
+
+@Builder cannot be resolved
+
+or generated methods are not recognized by the IDE, install Lombok into STS.
+
+
+Download Lombok
+
+Visit:
+
+Project Lombok Official Website
+
+Download: lombok.jar
+
+Run Lombok Installer
+
+Open Command Prompt:
+
+java -jar lombok.jar
+
+or simply double-click:
+
+lombok.jar
+
+
+Installer Screen
+
+--Lombok installer automatically searches for:
+
+STS
+Eclipse
+Spring Tool Suite
+
+installations.
+
+If not detected:
+
+--Specify Location
+
+and browse to your STS installation folder.
+
+Example:
+
+C:\SpringToolSuite4\
+
+Click Install/Update
+
+Click:
+
+Install / Update
+
+You should see:
+
+Lombok installed successfully
+
+
+Step 4: Restart STS
+
+Close STS completely and reopen it.
+
+This step is mandatory.
+
+
+Lombok Plugin Installation (IntelliJ IDEA)
+==========================================
+
+
+Step 1
+
+Open:
+
+File -> Settings -> Plugins
+
+
+Step 2
+
+Search: Lombok
+
+
+Step 3
+
+Install Plugin
+
+Step 4
+
+Restart IntelliJ
+
+
+
+Enable Annotation Processing
+
+Open:
+
+File
+ -> Settings
+     -> Build, Execution, Deployment
+         -> Compiler
+             -> Annotation Processors
+
+Enable:
+
+Enable Annotation Processing
+
+--This step is mandatory.
+
+
+
+
+Important Annotations:
+----------------------
+
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor: Generates default constructor.
+@AllArgsConstructor: Generates constructor with all fields.
+@RequiredArgsConstructor: Generates constructor for final fields
+@EqualsAndHashCode
+@Data
+@Builder
+@Slf4j
+
+
+
+@RequiredArgsConstructor:
+
+Generates a constructor only for:
+
+final fields
+Fields annotated with @NonNull
+
+
+Example:
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class EmployeeService {
+
+    private final EmployeeRepository repository;
+
+    private final EmailService emailService;
+
+    private String companyName;
+}
+
+
+
+
+--Here, @AllArgConstructor will generate the constructor including all the above 3 fields
+
+--Whereas @RequiredArgConstructor only include the final field inside the constructor.
+
+--It will not include non-final field like companyName.
+
+
+@Data:
+-----
+
+--Most popular Lombok annotation.
+
+Combination of:
+
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor
+
+Example:
+
+@Data
+public class Employee {
+
+    private Integer id;
+    private String name;
+    private Double salary;
+}
+
+
+Automatically generates:
+
+Getters
+Setters
+toString()
+equals()
+hashCode()
+
+
+@Builder:
+---------
+
+--One of the most important Lombok annotations.
+
+--Used to implement Builder Design Pattern.
+
+Without Builder:
+
+
+Employee emp = new Employee(101,"Rahul",50000.0);
+
+If constructor has many fields:
+
+new Employee(101, "Rahul", 50000, "IT", "Pune", "India");
+
+Hard to read.
+
+
+With Builder
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+public class Employee {
+
+    private Integer id;
+    private String name;
+    private Double salary;
+}
+
+
+Usage:
+
+Employee emp = Employee.builder()
+                		.id(101)
+                		.name("Rahul")
+                		.salary(50000.0)
+                		.build();
+
+
+Advantages:
+
+Readable
+Flexible
+Easy to maintain
+
+
+
+Real-Time Example:
+------------------
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Employee {
+
+    private Integer id;
+
+    private String name;
+
+    private Double salary;
+
+    private String address;
+}
+
+
+
+For Entity Classes:
+
+Prefer:
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+
+instead of blindly using:
+
+@Data
+
+--because @Data also generates equals() and hashCode(), which may cause issues with JPA entities.
+
+
+ResponseEntity in Spring Boot:
+==============================
+
+--In Spring Boot REST APIs, a controller method can directly return:
+
+String
+Employee
+List<Employee>
+Map
+
+
+Example:
+
+@GetMapping("/{id}")
+public Employee getEmployee(@PathVariable Integer id) {
+
+    return new Employee(id, "Rahul",50000.0);
+}
+
+
+
+Response:
+
+{
+  "id":101,
+  "name":"Rahul",
+  "salary":50000.0
+}
+
+--Spring automatically converts the object into JSON and sends it to the client.
+
+
+Problem with Direct Return Types:
+---------------------------------
+
+--When returning objects directly, we have limited control over:
+
+HTTP Status Code
+Response Headers
+Response Body
+
+
+
+
+Example:
+
+@GetMapping("/{id}")
+public Employee getEmployee(@PathVariable Integer id) {
+
+    return service.getEmployee(id);
+}
+
+How do we send:
+
+200 OK
+404 Not Found
+500 Internal Server Error
+201 Created
+
+--How do we add custom headers?
+
+--To solve these problems Spring provides:
+
+ResponseEntity<T>
+
+
+--ResponseEntity represents the complete HTTP response.
+
+It allows us to control:
+
+1. Response Body
+2. HTTP Status Code
+3. Response Headers
+
+
+Syntax:
+-------
+
+ResponseEntity<T>
+
+Where:
+
+T = Type of Response Body
+
+Example:
+
+ResponseEntity<Employee>
+ResponseEntity<String>
+ResponseEntity<List<Employee>>
+
+
+Example 1: Returning HTTP 200 OK
+--------------------------------
+
+@GetMapping("/{id}")
+public ResponseEntity<Employee> getEmployee(@PathVariable Integer id) {
+
+    Employee emp = new Employee(id, "Rahul", 50000.0);
+
+    return ResponseEntity.ok(emp);
+}
+
+
+ResponseEntity.ok() is a Shortcut for:
+
+200 OK
+
+Example:
+
+return ResponseEntity.ok(emp);
+
+Equivalent to:
+
+return ResponseEntity
+        .status(HttpStatus.OK)
+        .body(emp);
+
+
+Example 2: Returning Custom Status Code:
+----------------------------------------
+
+
+@PostMapping
+public ResponseEntity<String> saveEmployee(@RequestBody Employee employee) {
+
+    return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body("Employee Created");
+}
+
+
+Example 3: Returning 404 Not Found:
+----------------------------------
+
+@GetMapping("/{id}")
+public ResponseEntity<?> getEmployee(@PathVariable Integer id) {
+
+    Employee emp = service.findEmployee(id);
+
+    if(emp == null) {
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body("Employee Not Found");
+    }
+
+    return ResponseEntity.ok(emp);
+}
+
+
+Example 4: Using notFound()
+---------------------------
+
+--Spring provides shortcut methods.
+
+@GetMapping("/{id}")
+public ResponseEntity<Employee> getEmployee(@PathVariable Integer id) {
+
+    Employee emp = service.findEmployee(id);
+
+    if(emp == null) {
+
+        return ResponseEntity
+                .notFound()
+                .build();
+    }
+
+    return ResponseEntity.ok(emp);
+}
+
+
+Example 5: Returning 204 No Content
+-----------------------------------
+
+--Used when operation succeeds but no response body is required.
+
+Example:
+
+@DeleteMapping("/{id}")
+public ResponseEntity<Void> deleteEmployee(@PathVariable Integer id) {
+
+    service.delete(id);
+
+    return ResponseEntity
+            .noContent()
+            .build();
+}
+
+
+Response:
+
+204 No Content
+
+No body.
+
+
+
+
+Example 6: Returning Custom Headers
+-----------------------------------
+
+@GetMapping("/{id}")
+public ResponseEntity<Employee> getEmployee(@PathVariable Integer id) {
+
+    Employee emp = service.getEmployee(id);
+
+    return ResponseEntity
+            .ok()
+            .header("Application", "Employee Management System")
+            .body(emp);
+}
+
+
+
+OR
+
+
+return ResponseEntity
+        .status(HttpStatus.OK)
+        .header("Version","1.0")
+        .body(employee);
+
+
+
+
+Response:
+
+HTTP/1.1 200 OK
+
+Application:
+Employee Management System
+
+
+Example 7: ResponseEntity with List
+-----------------------------------
+
+
+@GetMapping
+public ResponseEntity<List<Employee>> getEmployees() {
+
+    List<Employee> employees = service.getEmployees();
+
+    return ResponseEntity.ok(employees);
+}
+
+
+
+Common Factory Methods:
+-----------------------
+
+| Method                                      | Status Code |
+| ------------------------------------------- | ----------- |
+| `ResponseEntity.ok()`                       | 200         |
+| `ResponseEntity.status(HttpStatus.CREATED)` | 201         |
+| `ResponseEntity.noContent()`                | 204         |
+| `ResponseEntity.badRequest()`               | 400         |
+| `ResponseEntity.notFound()`                 | 404         |
+| `ResponseEntity.internalServerError()`      | 500         |
+
+
+
+
+DTO Pattern (Data Transfer Object):
+==================================
+
+--DTO (Data Transfer Object) is a design pattern used to transfer data between different layers of an application (Controller <-> Service <-> Client) without exposing the actual Entity or Domain Object.
+
+--A DTO is simply a POJO class that contains only the required data fields along with getters/setters (or Lombok annotations).
+
+
+Why do we need DTO?
+
+--Suppose we have an Employee Entity:
+
+@Entity
+public class Employee {
+
+    private Integer empId;
+    private String name;
+    private Double salary;
+    private String address;
+    private String password;
+    private String panNumber;
+}
+
+--If we directly return this Entity from a REST API:
+
+@GetMapping("/{id}")
+public Employee getEmployee(@PathVariable Integer id) {
+    return service.getEmployee(id);
+}
+
+Response:
+
+{
+  "empId": 101,
+  "name": "Ratan",
+  "salary": 50000,
+  "address": "Pune",
+  "password": "abc123",
+  "panNumber": "ABCDE1234F"
+}
+
+
+Problem:
+
+Sensitive information is exposed.
+Unnecessary data is sent over the network.
+API becomes tightly coupled with the database structure.
+
+
+Solution: DTO
+
+--Create a DTO containing only the required fields.
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class EmployeeDTO {
+
+    private Integer empId;
+    private String name;
+    private Double salary;
+}
+
+--Controller returns DTO instead of Entity.
+
+
+@GetMapping("/{id}")
+public EmployeeDTO getEmployee(@PathVariable Integer id) {
+
+    Employee emp = service.getEmployee(id);
+
+    return new EmployeeDTO(
+            emp.getEmpId(),
+            emp.getName(),
+            emp.getSalary()
+    );
+}
+
+
+
+Response:
+
+{
+  "empId": 101,
+  "name": "Ratan",
+  "salary": 50000
+}
+
+Now sensitive fields are hidden.
+
+
+
+
+DTO Mapping:
+------------
+
+1. Manual Mapping:
+
+
+EmployeeDTO dto = new EmployeeDTO();
+
+dto.setEmpId(emp.getEmpId());
+dto.setName(emp.getName());
+dto.setSalary(emp.getSalary());
+
+
+2. Using Builder Pattern:
+
+
+EmployeeDTO dto =
+        EmployeeDTO.builder()
+                   .empId(emp.getEmpId())
+                   .name(emp.getName())
+                   .salary(emp.getSalary())
+                   .build();
+
+
+
+3. Using MapStruct (Realtime Projects): Using a 3rd party library
+
+
+@Mapper(componentModel = "spring")
+public interface EmployeeMapper {
+
+    EmployeeDTO toDto(Employee employee);
+
+    Employee toEntity(EmployeeDTO dto);
+}
+
+--MapStruct automatically generates mapping code.
+
+
+MapStruct in Spring Boot:
+========================
+
+--MapStruct is a Java code generation 3rd party library that automatically generates mapping code between two Java objects (typically Entity <-> DTO) at compile time.
+
+--Instead of manually writing conversion code, MapStruct generates the implementation class for us.
+
+
+Without MapStruct:
+
+EmployeeDTO dto = new EmployeeDTO();
+
+dto.setEmpId(emp.getEmpId());
+dto.setName(emp.getName());
+dto.setSalary(emp.getSalary());
+
+--For large applications having hundreds of DTOs, writing such code becomes repetitive and error-prone.
+
+MapStruct solves this problem by generating the mapping code automatically.
+
+
+
+Problems with Manual Mapping:
+-----------------------------
+
+EmployeeDTO dto = new EmployeeDTO();
+
+dto.setEmpId(employee.getEmpId());
+dto.setName(employee.getName());
+dto.setSalary(employee.getSalary());
+dto.setAddress(employee.getAddress());
+dto.setDepartment(employee.getDepartment());
+
+Imagine doing this for:
+
+100 Entities
+200 DTOs
+Multiple microservices
+
+--Maintenance becomes difficult.
+
+
+Adding MapStruct Dependency:
+---------------------------
+
+<dependency>
+    <groupId>org.mapstruct</groupId>
+    <artifactId>mapstruct</artifactId>
+    <version>1.6.3</version>
+</dependency>
+
+<dependency>
+    <groupId>org.mapstruct</groupId>
+    <artifactId>mapstruct-processor</artifactId>
+    <version>1.6.3</version>
+    <scope>compile</scope>
+</dependency>
+
+
+
+
+Example:
+
+Employee Entity class
+
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Employee {
+
+    private Integer empId;
+    private String name;
+    private Double salary;
+}
+
+
+Employee DTO class
+
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class EmployeeDTO {
+
+    private Integer empId;
+    private String name;
+    private Double salary;
+}
+
+
+Mapper Interface:
+----------------
+
+EmployeeMapper.java:
+
+
+@Mapper(componentModel = "spring")
+public interface EmployeeMapper {
+
+    EmployeeDTO toDto(Employee employee);
+
+    Employee toEntity(EmployeeDTO dto);
+}
+
+
+
+
+Note: We need not write its implementation, MapStruct library automatically generate the implementation class for us as follows:
+
+--And The componentModel = "spring" tells MapStruct:
+
+"Generate the implementation class as a Spring Bean and register it in the Spring Container."
+
+
+
+@Component
+public class EmployeeMapperImpl implements EmployeeMapper {
+
+    @Override
+    public EmployeeDTO toDto(Employee employee) {
+
+        EmployeeDTO dto = new EmployeeDTO();
+
+        dto.setEmpId(employee.getEmpId());
+        dto.setName(employee.getName());
+        dto.setSalary(employee.getSalary());
+
+        return dto;
+    }
+
+
+	//Similarly for toEntity() method also.
+
+
+}
+
+
+Using Mapper in Service Layer:
+------------------------------
+
+--We just need to inject this EmployeeMapper object inside our service class, and make use of it:
+
+
+@Service
+@RequiredArgsConstructor
+public class EmployeeService {
+
+    private final EmployeeMapper mapper;
+
+    public EmployeeDTO getEmployee() {
+
+        Employee emp = new Employee(101, "Ratan", 50000.0);
+
+        return mapper.toDto(emp);
+    }
+}
+
+
+
+Mapping Field Names Differently:
+--------------------------------
+
+--Sometimes Entity and DTO field names are different.
+
+Example:
+
+Entity class:
+
+public class Employee {
+
+    private String employeeName;
+}
+
+
+
+DTO class:
+
+
+public class EmployeeDTO {
+
+    private String name;
+}
+
+
+Mapper:
+
+
+
+@Mapper(componentModel = "spring")
+public interface EmployeeMapper {
+
+    @Mapping(source = "employeeName", target = "name")
+    EmployeeDTO toDto(Employee employee);
+}
+
+
+Multiple Field Mapping:
+-----------------------
+
+@Mapper(componentModel = "spring")
+public interface EmployeeMapper {
+
+    @Mappings({
+
+        @Mapping(source = "employeeName", target = "name"),
+
+        @Mapping(source = "employeeSalary", target = "salary")
+
+    })
+    EmployeeDTO toDto(Employee employee);
+}
+
+
+
+Ignoring Fields:
+----------------
+
+--Suppose DTO contains password but we don't want to map it.
+
+@Mapper(componentModel = "spring")
+public interface UserMapper {
+
+    @Mapping(target = "password", ignore = true)
+    UserDTO toDto(User user);
+}
+
+
+
+Mapping List Collections:
+-------------------------
+
+Entity List:
+
+	List<Employee> employees;
+
+Mapper:
+
+
+@Mapper(componentModel = "spring")
+public interface EmployeeMapper {
+
+    List<EmployeeDTO> toDtoList(List<Employee> employees);
+}
+
+--MapStruct automatically converts each object.
+
+
+Nested Object Mapping:
+----------------------
+
+Address.java:
+
+
+@Data
+public class Address {
+
+    private String city;
+    private String state;
+}
+
+
+Employee.java:
+--------------
+
+@Data
+public class Employee {
+
+    private Integer empId;
+    private String name;
+
+    private Address address;
+}
+
+
+DTO class:
+
+
+@Data
+public class EmployeeDTO {
+
+    private Integer empId;
+    private String name;
+
+    private String city;
+}
+
+
+
+Mapper:
+
+
+@Mapper(componentModel = "spring")
+public interface EmployeeMapper {
+
+    @Mapping(source = "address.city", target = "city")
+    EmployeeDTO toDto(Employee employee);
+}
+
+
+Common types of DTO:
+--------------------
+
+1. Request DTO
+
+--Used to receive data from the client.
+
+@Data
+public class EmployeeRequestDTO {
+
+    private String name;
+    private Double salary;
+    private String address;
+}
+
+
+Used in:
+
+@PostMapping
+public String saveEmployee(@RequestBody EmployeeRequestDTO dto) {
+
+    service.saveEmployee(dto);
+    return "Employee Saved";
+}
+
+
+
+2. Response DTO
+
+--Used to send data to the client.
+
+@Data
+public class EmployeeResponseDTO {
+
+    private Integer empId;
+    private String name;
+    private Double salary;
+}
+
+Used In:
+
+
+	@GetMapping("/{id}")
+	public ResponseEntity<EmployeeResponseDto> getEmployeeById(@PathVariable Integer id) {
+
+		EmployeeResponseDto responseDto= service.getEmployeeById(id);
+		
+		
+	    return ResponseEntity.ok(responseDto);
+	}
+
+
+
+Content Negotiation:
+====================
+
+Content Negotiation is the process of determining:
+
+1. Request Format Accepted By Server
+
+2. Response Format Required By Client
+
+Simple Definition:
+-------------------
+
+  Client
+     ↓
+Tells Preferred Format
+     ↓
+  Server
+     ↓
+Returns Data In That Format
+
+
+Real-Time Example:
+
+Client Request:
+
+GET /employees/101
+Accept: application/json
+
+
+
+Response:
+
+{
+  "id":101,
+  "name":"Ratan"
+}
+
+Another Client:
+
+GET /employees/101
+Accept: application/xml
+
+
+Response:
+
+<Employee>
+    <id>101</id>
+    <name>Ratan</name>
+</Employee>
+
+Same API.
+
+Different response format.
+
+Media Types (MIME Types):
+-------------------------
+
+Content Negotiation works using: Media Types
+
+
+| Media Type          | Meaning      |
+| ------------------- | ------------ |
+| application/json    | JSON Data    |
+| application/xml     | XML Data     |
+| text/plain          | Plain Text   |
+| text/html           | HTML Content |
+| multipart/form-data | File Upload  |
+
+
+Two important headers participate in content negotiation:
+
+1. Accept
+
+2. Content-Type
+
+
+1. Accept Header: 
+-----------------
+
+Used by:
+
+Client
+
+to tell the server:
+
+--Which Response Format Is Expected
+
+Example:
+
+
+GET /employees/101
+Accept: application/json
+
+Meaning:
+
+Please Return JSON Response
+
+Another Example:
+
+GET /employees/101
+Accept: application/xml
+
+Meaning:
+
+--Please Return XML Response
+
+Content-Type Header
+-------------------
+
+Used by:
+
+Client
+
+to tell the server:
+
+--What Type Of Data Is Being Sent
+
+Example
+
+POST /employees
+Content-Type: application/json
+
+Body:
+
+{
+  "id":101,
+  "name":"Ratan"
+}
+
+Meaning:
+
+--Request Body Contains JSON
+
+produces Attribute:
+-------------------
+
+Spring provides:
+
+produces
+
+attribute to specify:
+
+Response Format
+
+
+
+Example:
+
+@GetMapping(
+    value="/employees",
+    produces="application/json"
+)
+public Employee getEmployee() {
+
+    return emp;
+}
+
+
+OR alternate syntax:
+
+
+@GetMapping(
+    value="/employees",
+    produces = MediaType.APPLICATION_JSON_VALUE
+)
+
+
+consumes Attribute:
+-------------------
+
+
+Used to specify:
+
+--Request Format Accepted By API
+
+Example:
+
+@PostMapping(
+    value="/employees",
+    consumes="application/json"
+)
+public Employee saveEmployee(@RequestBody Employee emp) {
+
+    return emp;
+}
+
+
+
+Real-world APIs generally use both.
+
+Example:
+
+@PostMapping(
+    value="/employees",
+
+    consumes =
+      MediaType.APPLICATION_JSON_VALUE,
+
+    produces =
+      MediaType.APPLICATION_JSON_VALUE
+)
+public Employee saveEmployee(@RequestBody Employee emp) {
+
+    return emp;
+}
+
+
+Spring Boot automatically:
+
+Uses Jackson
+
+Returns JSON
+
+--because Jackson is available in the classpath.
 
 
 
@@ -3512,3 +6363,1017 @@ GET /employees/101
 
 
 
+
+
+
+A final In memory CRUD application using Layered Architechture:
+===============================================================
+
+
+Build a REST API application using:
+
+Layered Architecture
+DTO Pattern
+MapStruct
+Lombok
+ResponseEntity
+Validation
+In-Memory Repository (List<Employee>)
+
+
+
+
+
+
+
+
+Folder Structure:
+-----------------
+
+com.hdfc
+|
+|-- controller
+│     |-- EmployeeController
+│
+|-- service
+│     |-- EmployeeService
+│     |-- EmployeeServiceImpl
+│
+|-- repository
+│     |-- EmployeeRepository
+│
+|-- dto
+│     |-- EmployeeRequestDto
+│     |-- EmployeeResponseDto
+│
+|-- entity
+│     |-- Employee
+│
+|-- mapper
+│     |-- EmployeeMapper
+│     
+│
+|-- EmployeeManagementApplication
+
+
+
+
+Step 1: Create Spring Boot Project
+
+
+Add the following Dependencies:
+
+Spring Web
+Validation
+Lombok
+MapStruct
+Devtools
+
+
+
+
+Step 2: Create a Employee Entity class: inside "com.hdfc.entity" package.
+
+Employee.java:
+-------------
+
+package com.hdfc.entity;
+
+import java.time.LocalDate;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Employee {
+
+	   private Integer empId;
+
+	    private String name;
+
+	    private Double salary;
+
+	    private String address;
+
+	    private String department;
+
+	    private String email;
+
+	    private LocalDate dateOfJoining;
+	
+	
+}
+
+
+
+
+Step 3: Create a EmployeeRequestDto class inside "com.hdfc.dto" package:
+
+
+EmployeeRequestDto.java:
+-------------------------
+
+
+package com.hdfc.dto;
+
+import java.time.LocalDate;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+
+public class EmployeeRequestDto {
+
+    @NotBlank
+    private String name;
+
+    @Positive
+    private Double salary;
+
+    @NotBlank
+    private String address;
+
+    @NotBlank
+    private String department;
+
+    @Email
+    private String email;
+   
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    private LocalDate dateOfJoining;
+   
+}
+
+
+
+Step4: Create a Response DTO class inside the "com.hdfc.dto" package:
+
+
+EmployeeResponseDto.java:
+-------------------------
+
+ 
+package com.hdfc.dto;
+
+import java.time.LocalDate;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+public class EmployeeResponseDto {
+
+	 private Integer empId;
+
+	    private String name;
+
+	    private Double salary;
+
+	    private String department;
+
+	    private String email;
+
+	    private LocalDate dateOfJoining;
+	
+}
+
+
+
+
+Step5: Create a MapStruct Mapper interface inside the "com.hdfc.mapper" package:
+
+EmployeeMapper.java:
+-------------------
+
+
+package com.hdfc.mapper;
+
+import java.util.List;
+
+import org.mapstruct.Mapper;
+
+import com.hdfc.dto.EmployeeRequestDto;
+import com.hdfc.dto.EmployeeResponseDto;
+import com.hdfc.entity.Employee;
+
+@Mapper(componentModel = "spring")
+public interface EmployeeMapper {
+
+    Employee toEntity(EmployeeRequestDto dto);
+
+    EmployeeResponseDto toResponseDto(Employee employee);
+	
+    List<EmployeeResponseDto> toDtoList(List<Employee> employees);
+}
+
+
+
+
+Step 6: Design the Repository Layer:
+
+--Since we don't have a database yet:
+
+private List<Employee> employees
+
+will acts as our database.
+
+
+Create a class called EmployeeRepository.java inside the "com.hdfc.repository" package:
+
+EmployeeRepository.java:
+-----------------------
+
+package com.hdfc.repository;
+
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.stereotype.Repository;
+import com.hdfc.entity.Employee;
+
+@Repository
+public class EmployeeRepository {
+
+	private List<Employee> employees = new ArrayList<>();
+
+	public List<Employee> findAll() {
+
+		return employees;
+	}
+
+	public Employee save(Employee employee) {
+
+		employees.add(employee);
+
+		return employee;
+	}
+	
+}
+
+
+
+Step7: Define the service contract:
+
+--List out all the required services inside an interface called: EmployeeService.java: inside "com.hdfc.service" package:
+
+
+EmployeeService.java:
+--------------------
+
+package com.hdfc.service;
+
+import java.util.List;
+
+import com.hdfc.dto.EmployeeRequestDto;
+import com.hdfc.dto.EmployeeResponseDto;
+
+public interface EmployeeService {
+
+	EmployeeResponseDto saveEmployee(EmployeeRequestDto dto);
+
+	List<EmployeeResponseDto> getAllEmployees();
+
+	EmployeeResponseDto getEmployeeById(Integer empId);
+
+	EmployeeResponseDto updateEmployee(Integer empId, EmployeeRequestDto dto);
+
+	void deleteEmployee(Integer empId);
+}
+
+
+
+
+Step 8: Define its actual implementation inside the EmployeeServiceImpl.java class: "inside com.hdfc.service" package only.
+
+--Override all the service methods inside this class.
+
+--Inject EmployeeRepository and EmployeeMapper inside this class using constructor
+
+--Maintain one idCounter variable to add one unique id for newly added Employee.
+
+--Apply @Service annotation at the top of this class to register this implementation object with Spring container.
+
+
+EmployeeServiceImpl.java:
+-------------------------
+
+package com.hdfc.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.hdfc.dto.EmployeeRequestDto;
+import com.hdfc.dto.EmployeeResponseDto;
+import com.hdfc.entity.Employee;
+import com.hdfc.mapper.EmployeeMapper;
+import com.hdfc.repository.EmployeeRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class EmployeeServiceImpl implements EmployeeService {
+
+	private final EmployeeRepository repository;
+
+	private final EmployeeMapper mapper;
+
+	private static Integer idCounter = 100;
+
+	@Override
+	public EmployeeResponseDto saveEmployee(EmployeeRequestDto dto) {
+		Employee employee = mapper.toEntity(dto);
+
+		employee.setEmpId(++idCounter);
+
+		repository.save(employee);
+
+		return mapper.toResponseDto(employee);
+	}
+
+	@Override
+	public List<EmployeeResponseDto> getAllEmployees() {
+
+		List<Employee> emps = repository.findAll();
+
+		return mapper.toDtoList(emps);
+
+	}
+
+	@Override
+	public EmployeeResponseDto getEmployeeById(Integer empId) {
+
+		Employee employee = repository
+				.findAll()
+				.stream()
+				.filter(emp -> emp.getEmpId().equals(empId))
+				.findFirst()
+				.orElse(null);
+
+		return mapper.toResponseDto(employee);
+
+	}
+
+	@Override
+	public EmployeeResponseDto updateEmployee(Integer empId, EmployeeRequestDto dto) {
+
+		Employee employee = repository
+				.findAll()
+				.stream()
+				.filter(emp -> emp.getEmpId().equals(empId))
+				.findFirst()
+				.orElse(null);
+	
+		
+		
+		 if(employee != null) {
+
+		        employee.setName(dto.getName());
+		        employee.setSalary(dto.getSalary());
+		        employee.setAddress(dto.getAddress());
+		        employee.setDepartment(dto.getDepartment());
+		        employee.setEmail(dto.getEmail());
+		        employee.setDateOfJoining(dto.getDateOfJoining());
+
+		    }
+
+		    return mapper.toResponseDto(employee);
+		
+		
+		
+		
+	
+	}
+
+	@Override
+	public void deleteEmployee(Integer empId) {
+
+		 repository.findAll()
+         .removeIf(emp -> emp.getEmpId().equals(empId));
+		
+		
+	}
+
+}
+
+
+
+Step 9: Desing the controller layer:
+-------------------------------------
+
+--Create a EmployeeController class to handle the client request inside the: "com.hdfc.controller" package
+
+-- Apply @RestController annotation on the top of this class
+
+--Inside this class inject the EmployeeService as a dependency
+
+--Define all the API for client to perform the required operations
+
+
+
+EmployeeController.java:
+-----------------------
+
+
+package com.hdfc.controller;
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.hdfc.dto.EmployeeRequestDto;
+import com.hdfc.dto.EmployeeResponseDto;
+import com.hdfc.service.EmployeeService;
+
+import jakarta.validation.Valid;
+
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController {
+
+	private final EmployeeService service;
+
+	
+	//Injecting the EmployeeService
+	public EmployeeController(EmployeeService service) {
+		this.service = service;
+	}
+
+	
+	
+	//Create Employee
+	@PostMapping
+	public ResponseEntity<EmployeeResponseDto> saveEmployee(@Valid 
+								@RequestBody 
+								EmployeeRequestDto dto) {
+
+		
+		EmployeeResponseDto responseDto= service.saveEmployee(dto);
+		
+		return ResponseEntity
+				.status(HttpStatus.CREATED)
+				.body(responseDto);
+	}
+
+	
+	//Get All Employees
+	@GetMapping
+	public ResponseEntity<List<EmployeeResponseDto>> getAllEmployees() {
+
+		List<EmployeeResponseDto> responseDtos= service.getAllEmployees();
+		
+		
+	    return ResponseEntity.ok(responseDtos);
+	}
+	
+	
+	//Get Employee By Id
+	@GetMapping("/{id}")
+	public ResponseEntity<EmployeeResponseDto> getEmployeeById(@PathVariable Integer id) {
+
+		EmployeeResponseDto responseDto= service.getEmployeeById(id);
+		
+		if (responseDto == null) {
+        		return ResponseEntity.notFound().build();
+    		}		
+
+
+	    return ResponseEntity.ok(responseDto);
+	}
+	
+	//Update Employee
+	@PutMapping("/{id}")
+	public ResponseEntity<EmployeeResponseDto> updateEmployee(@PathVariable Integer id, @Valid @RequestBody EmployeeRequestDto dto) {
+
+		EmployeeResponseDto updatedResponseDto= service.updateEmployee(id,dto);
+		
+		if(updatedResponseDto == null) {
+    			return ResponseEntity.notFound().build();
+		}		
+		
+
+
+	    return ResponseEntity.ok(updatedResponseDto);
+	}
+	
+	
+	//Delete Employee
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteEmployee(@PathVariable Integer id) {
+
+	    service.deleteEmployee(id);
+
+	    return ResponseEntity
+	            .noContent()
+	            .build();
+	}
+	
+}
+
+
+
+If mapStruct related exception occurs:
+
+add the following tag inside the pom.xml:
+
+<path>
+	<groupId>org.mapstruct</groupId>
+	<artifactId>mapstruct-processor</artifactId>
+	<version>1.6.3</version>
+</path>
+
+
+Inside the <annotationProcessorPaths>, and below the following tag:
+
+<path>
+	<groupId>org.projectlombok</groupId>
+	<artifactId>lombok</artifactId>
+</path>
+
+
+
+
+
+APIs To Test In Postman
+-----------------------
+Create Employee
+POST /employees
+
+Request Body:
+
+{
+  "name":"Rahul",
+  "salary":50000,
+  "address":"Pune",
+  "department":"IT",
+  "email":"rahul@gmail.com",
+  "dateOfJoining":"01-07-2026"
+}
+
+
+
+Swaggger UI: 
+============
+
+
+
+API Documentation:
+------------------
+
+--API Documentation is a document that describes:
+
+Available APIs
+
+Request URL
+
+HTTP Method
+
+Request Parameters
+
+Request Body
+
+Response Body
+
+Status Codes
+
+Error Responses
+
+
+--Such documentation helps frontend developers, mobile developers, testers, and third-party consumers understand and use the API.
+
+
+Without documentation:
+
+What is the URL?
+
+What HTTP Method Should Be Used?
+
+What Request Body Is Required?
+
+What Response Will Be Returned?
+
+--Client Developers must repeatedly contact the backend team for clarification.
+
+Before Swagger became popular, API documentation was usually maintained manually.
+
+Common approaches:
+
+MS Word Documents
+
+PDF Documents
+
+Excel Sheets
+
+Wiki Pages
+
+Email Attachments
+
+Problems With Manual Documentation
+----------------------------------
+
+Suppose documentation says:
+
+GET /employees
+
+Later the developer changes the endpoint:
+
+GET /api/v1/employees
+
+If documentation is not updated:
+
+Documentation Becomes Incorrect
+
+Frontend Team Gets Errors
+
+Testing Team Gets Confused
+
+Maintenance Becomes Difficult
+
+This problem occurs frequently in large projects.
+
+Need for Automated Documentation
+--------------------------------
+
+An ideal documentation system should:
+
+Generate Documentation Automatically
+
+Always Stay Updated
+
+Show Request Structure
+
+Show Response Structure
+
+Allow API Testing
+
+This requirement led to:
+
+Swagger
+
+
+--Swagger is a tool used to generate interactive API documentation for REST APIs.
+
+It allows developers to:
+
+View all available APIs.
+Understand request/response structures.
+Test APIs directly from the browser.
+Share API documentation with frontend and QA teams.
+
+
+OpenAPI:
+-------
+
+--OpenAPI is a specification.
+
+It defines:
+
+How API Documentation Should Be Structured
+
+Think of it as a standard or blueprint.
+
+
+--Swagger is a set of tools that implement the OpenAPI specification.
+
+OpenAPI Specification
+---------------------
+
+The OpenAPI specification defines:
+
+Endpoints
+
+Request Body
+
+Response Body
+
+Parameters
+
+Headers
+
+Authentication
+
+Error Responses
+
+in a standard format.
+
+Because of this standardization:
+
+Any Tool
+
+Any Language
+
+Any Framework
+
+can understand API definitions.
+
+
+
+
+Springdoc OpenAPI:
+------------------
+
+--Springdoc OpenAPI is the modern library used with Spring Boot to automatically generate OpenAPI 3.0 documentation.
+
+It scans:
+
+@RestController
+Request Mappings
+DTOs
+Validation Annotations
+
+--and generates API documentation automatically.
+
+
+Maven Dependency:
+----------------
+
+<!-- Source: https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui -->
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+    <version>3.0.3</version>
+    <scope>compile</scope>
+</dependency>
+
+
+--Springdoc scans the application and generates the OpenAPI specification automatically.
+
+Controller
+     ↓
+Springdoc OpenAPI
+     ↓
+OpenAPI JSON Specification
+     ↓
+Swagger UI
+
+
+
+
+
+After starting the application:
+
+http://localhost:8080/swagger-ui/index.html
+
+This opens the Swagger UI page where all APIs are displayed.
+
+OpenAPI JSON Specification:
+--------------------------
+
+--Springdoc automatically generates the OpenAPI JSON document.
+
+URL:
+
+http://localhost:8080/v3/api-docs
+
+This JSON contains complete API metadata and can be used by:
+
+Frontend Teams
+API Gateways
+API Testing Tools
+Third-party integrations
+
+
+--The /v3/api-docs endpoint returns the OpenAPI specification in JSON format.
+--Swagger UI reads this JSON and renders interactive API documentation.
+
+
+
+Customizing API Information:
+----------------------------
+
+By default Swagger displays:
+
+OpenAPI definition
+
+We can customize it.
+
+Create Configuration: Create a configuration class called: OpenApiConfig.java inside the "com.hdfc.config" package.
+
+OpenApiConfig.java:
+-------------------
+
+
+package com.hdfc.config;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+
+@Configuration
+public class OpenApiConfig {
+
+	@Bean
+	public OpenAPI customOpenApi() {
+		
+		return new OpenAPI()
+				.info(new Info()
+						.title("Employee Management API")
+						.version("1.0")
+						.description("Employee Management System"));
+		
+		
+	}
+	
+	
+}
+
+
+
+
+Swagger UI now displays:
+
+Employee Management API
+
+Version 1.0
+
+instead of the default title.
+
+
+
+
+
+Controller Documentation Annotations:
+-------------------------------------
+
+1. @Tag
+
+--Used to group related APIs.
+
+Example
+@RestController
+@RequestMapping("/employees")
+
+@Tag(
+    name = "Employee APIs",
+    description = "Operations related to Employee Management"
+)
+public class EmployeeController {
+
+}
+
+
+--Swagger UI displays all Employee APIs under the "Employee APIs" section.
+
+
+2. @Operation
+
+--Used to describe a particular API.
+
+Example:
+
+@GetMapping("/{id}")
+
+@Operation(
+    summary = "Get Employee By Id",
+    description = "Returns employee details using employee id"
+)
+public EmployeeResponseDto getEmployee(
+                            @PathVariable Integer id) {
+
+}
+
+Swagger UI displays:
+
+Get Employee By Id
+
+Returns employee details using employee id
+
+3. @Parameter
+
+--Used to document request parameters.
+
+Example
+
+@GetMapping("/{id}")
+@Operation(summary = "Get Employee")
+
+public EmployeeResponseDto getEmployee(
+
+        @Parameter(
+            description = "Employee Id",
+            example = "101"
+        )
+
+        @PathVariable Integer id) {
+
+}
+
+Swagger UI shows:
+
+Employee Id
+Example: 101
+
+
+
+4. @Schema
+
+--Used to document model fields (DTO properties), classes, and request/response objects in Swagger UI.
+
+It provides additional information such as:
+
+Description
+Example Values
+Default Values
+Required Fields
+Allowed Values
+
+This makes API documentation more descriptive and user-friendly.
+
+Example:
+
+
+ @Schema(
+    description = "Date of Joining",
+    example = "01-07-2026"
+)
+@JsonFormat(pattern = "dd-MM-yyyy")
+private LocalDate dateOfJoining;
+
+
+
+5. @ApiResponse
+
+--Used to document possible API responses.
+
+Example:
+
+@RestController
+@RequestMapping("/employees")
+
+@Tag(
+    name = "Employee APIs",
+    description = "Employee CRUD Operations"
+)
+public class EmployeeController {
+
+    @GetMapping("/{id}")
+
+    @Operation(
+        summary = "Get Employee By Id",
+        description = "Fetch employee details using employee id"
+    )
+
+    @ApiResponses({
+
+        @ApiResponse(
+            responseCode = "200",
+            description = "Employee Found"
+        ),
+
+        @ApiResponse(
+            responseCode = "404",
+            description = "Employee Not Found"
+        )
+    })
+
+    public ResponseEntity<EmployeeResponseDto> getEmployee(
+
+            @Parameter(
+                description = "Employee Id",
+                example = "101"
+            )
+
+            @PathVariable Integer id) {
+
+        return ResponseEntity.ok().build();
+    }
+}
