@@ -3969,11 +3969,11 @@ Optional Inputs
 
 Consider the following request:
 
-GET /employees?dept=IT
+GET /employees?address=delhi
 
 Here:
 
-dept=IT
+address=delhi
 
 is called a Query Parameter (Request Parameter).
 
@@ -3982,32 +3982,32 @@ is called a Query Parameter (Request Parameter).
 
 Example:
 
-http://localhost:8080/employees?dept=IT
+http://localhost:8080/employees?address=delhi
 
 
 /employees -> Resource Path
 
-?dept=IT   -> Query Parameter
+?address=delhi   -> Query Parameter
 
 
 Example: Single Request Parameter:
 ---------------------------------
 
 @GetMapping("/employees")
-public String getEmployees(@RequestParam String dept) {
+public String getEmployees(@RequestParam address=delhi) {
 
-    return "Department : " + dept;
+    return "Address : " + address;
 }
 
 
 
 Request:
 
-GET /employees?dept=IT
+GET /employees?address=delhi
 
 Response:
 
-Department : IT
+Address : delhi
 
 
 Multiple Request Parameters:
@@ -4275,6 +4275,7 @@ public String getEmployeeProjects(
 
 
 
+
 Note: A good REST API design usually follows this pattern:
 
 Path Variables
@@ -4406,7 +4407,7 @@ JSON Response:
   "id": 101,
   "employee_name": "Rahul",
   "salary": 85000,
-  "employee_address":
+  "employee_address": "delhi"
 }
 
 
@@ -4508,6 +4509,10 @@ Existing Employee
 
 @PutMapping("/{id}")
 public Employee updateEmployee(@PathVariable Integer id, @RequestBody Employee employee){
+
+
+    //fetch the original emp object based on the pathvariable
+    // set the entire details from the @Request body emp to the Original emp object
 
     employee.setId(id);
 
@@ -4625,6 +4630,9 @@ Example:
 
 @DeleteMapping("/{id}")
 public String deleteEmployee(@PathVariable Integer id){
+
+   //Fetch the emp record from the DB based on the id 
+   //Delete the recored from the db
 
     return "Employee Deleted : " + id;
 }
@@ -4803,6 +4811,8 @@ Employee Does Not Exist
 
 Therefore: DELETE is Idempotent
 
+
+1:55 pm
 
 
 
@@ -5046,6 +5056,12 @@ Advantages of Collections:
 
 
 
+Installing the Insomnia Rest Client software:
+=============================================
+
+
+
+
 
 Project Lombok with Spring Boot:
 ================================
@@ -5247,7 +5263,7 @@ Important Annotations:
 Generates a constructor only for:
 
 final fields
-Fields annotated with @NonNull
+Fields annotated with @NotNull
 
 
 Example:
@@ -5327,6 +5343,7 @@ Hard to read.
 
 
 With Builder
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -7143,6 +7160,13 @@ Springdoc OpenAPI
 OpenAPI JSON Specification
      ↓
 Swagger UI
+
+
+
+
+
+
+
 
 
 
