@@ -4812,8 +4812,6 @@ Employee Does Not Exist
 Therefore: DELETE is Idempotent
 
 
-1:55 pm
-
 
 
 PostMan: A Rest Client Tool:
@@ -5694,6 +5692,13 @@ public class Employee {
     private String address;
     private String password;
     private String panNumber;
+    
+    private LocalDateTime createdAt;
+    private String createdBy;
+    private LocalDateTime updatedAt;
+    private String updatedBy;
+
+
 }
 
 --If we directly return this Entity from a REST API:
@@ -5744,11 +5749,7 @@ public EmployeeDTO getEmployee(@PathVariable Integer id) {
 
     Employee emp = service.getEmployee(id);
 
-    return new EmployeeDTO(
-            emp.getEmpId(),
-            emp.getName(),
-            emp.getSalary()
-    );
+    return new EmployeeDTO(emp.getEmpId(),emp.getName(),emp.getSalary());
 }
 
 
@@ -5879,6 +5880,7 @@ public class Employee {
     private Integer empId;
     private String name;
     private Double salary;
+   
 }
 
 
@@ -5893,6 +5895,7 @@ public class EmployeeDTO {
     private Integer empId;
     private String name;
     private Double salary;
+	
 }
 
 
@@ -7160,8 +7163,6 @@ Springdoc OpenAPI
 OpenAPI JSON Specification
      ↓
 Swagger UI
-
-
 
 
 

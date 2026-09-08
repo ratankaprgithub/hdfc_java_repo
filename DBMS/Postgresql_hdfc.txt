@@ -1,0 +1,5333 @@
+Introduction to DBMS (Database Management System):
+==================================================
+
+Importance of Data:
+--------------------
+
+--In today's world every software application runs on data.
+
+Examples:
+
+WhatsApp  -> Messages
+YouTube   -> Videos
+Amazon    -> Products
+HDFC Life -> Customers, Policies, Claims
+Instagram -> Photos, Reels
+
+Without data:
+
+No business
+No reports
+No analytics
+No application
+
+Hence,
+
+--Data is one of the most valuable assets of an organization.
+
+
+What is Data:
+-------------
+
+--Data is a collection of raw and isolated facts that by themselves may not have complete meaning.
+
+Like:
+
+Customer Names
+Phone Numbers
+Policy Numbers
+Student Marks
+Images
+Videos
+Audio Files
+
+
+Examples:
+
+Rahul
+
+50000
+
+9876543210
+
+95
+
+2026-09-07
+
+--These values do not clearly explain anything.
+
+Therefore they are simply: DATA
+
+
+Information:
+------------
+
+--When data is processed and converted into a meaningful form, it becomes Information.
+
+Example:
+
+Raw Data:
+---------
+
+Name  : Rahul
+Marks : 95
+Subject : Java
+
+
+Information: 
+
+Rahul scored 95 marks in Java.
+
+Now the data has meaning.
+
+Hence: Information
+
+
+Another Example:
+
+Data:
+
+Product Price = 50000
+Quantity = 2
+
+Information:
+
+Total Bill Amount = 100000
+
+
+Formula:
+
+Data + Processing = Information
+
+
+Data Store:
+----------
+
+--A Data Store is a place where data or information can be stored.
+
+--We generally stores data in three different places:
+
+1. Normal book and papers:
+
+Examples:
+
+Registers
+Files
+Documents
+Notebooks
+
+
+
+2. Flat files in computer systems:
+
+Examples:
+
+TXT Files
+CSV Files
+Excel Files
+XML Files
+JSON Files
+
+
+3. Databases:
+
+Examples:
+
+PostgreSQL
+MySQL
+Oracle
+SQL Server
+MongoDB
+
+
+
+Flat files:
+-----------
+
+--This is the traditional mechanism which is used to store data in secondary storage device.
+
+Example:
+
+employees.csv
+-------------
+
+id,name,salary
+
+101,Ravi,50000
+102,Amit,60000
+103,Neha,70000
+
+
+Problems with Flat Files:
+-------------------------
+
+1. Data Redundancy: 
+
+--Same data gets repeated multiple times.
+
+2. Data Inconsistency:
+
+--One file containts "Ravi Kumar" whereas another file contains "Ravi K"
+
+3. Data Retrieval:
+
+--Finding one customer among lakhs of records becomes difficult.
+
+4. Poor Security
+
+--Anyone can modify the file.
+
+5. Difficult Maintenance
+
+--Updating thousands of files becomes difficult.
+
+6. Data Integrity Issues
+
+--No guarantee that correct data is entered.
+
+Example:
+
+Age = -50
+
+--Flat files cannot effectively prevent such invalid data.
+
+
+To overcome the limitations of Flat Files: 
+
+
+--To overcome the above limitations DBMS softwares are introduced.
+
+
+
+Database:
+=========
+
+--A Database is an organized collection of interrelated data.
+
+--A database stores data in a structured manner so that it can be easily:
+
+Stored
+Retrieved
+Updated
+Deleted
+Managed
+
+
+Real Time Example:
+------------------
+
+HDFC Life Database may contain:
+
+Customers
+Policies
+Agents
+Branches
+Claims
+Payments
+
+--All these are related to each other and stored systematically.
+
+Library Analogy:
+
+Without Database:
+
+--Books scattered everywhere
+
+--Finding a book is difficult.
+
+
+With Database:
+
+Rack Number
+Category
+Author
+Shelf
+
+--Everything is organized.
+
+
+
+--Database could be a simple text file(if data is stored in a structured way) or it could be a large RDBMS.
+
+
+Note: In a DataBase, data need not be in a table. But should be in proper and structured format where we can manage the data(access, insert, update, delete) data in easy and standard manner. 
+
+
+
+Characteristics of a Database:
+------------------------------
+
+1. Structured Storage
+
+--Data is stored in an organized format.
+
+2. Easy Retrieval
+
+--Data can be searched quickly.
+
+3. Multiple User Access
+
+--Many users can access data simultaneously.
+
+4. Data Consistency
+
+--Maintains uniform data.
+
+5. Data Security
+
+--Access can be controlled.
+
+
+DBMS: (Database Management System)
+==================================
+
+--A DBMS is a software application used to manage databases efficiently.
+
+
+Responsibilities of DBMS:
+-------------------------
+
+--A DBMS helps in:
+
+Creating Databases
+Storing Data
+Updating Data
+Deleting Data
+Searching Data
+Securing Data
+Managing Users
+
+
+Examples of DBMS:
+-----------------
+
+Oracle
+MySQL
+PostgreSQL
+SQL Server
+DB2
+MongoDB
+Cassandra
+
+
+Benefits of DBMS:
+-----------------
+
+1. Reduces Data Redundancy
+
+--Avoids unnecessary duplication.
+
+2. Reduces Data Inconsistency
+
+--Ensures data remains uniform.
+
+3. Provides Security
+
+--Different users can have different permissions.
+
+4. Provides Data Integrity
+
+--Invalid data can be restricted.
+
+5. Supports Concurrent Access
+
+--Multiple users can access the database simultaneously.
+
+6. Backup and Recovery Support
+
+--Data can be recovered in case of failure.
+
+
+Real World Example:
+------------------
+
+Consider PostgreSQL:
+
+
+PostgreSQL Software
+        ↓
+     Creates
+        ↓
+HDFCLIFE Database
+        ↓
+     Contains
+        ↓
+  Customer Table
+  Policy Table
+  Claim Table
+
+
+
+Data Model:
+----------
+
+--A Data Model defines how data should be stored, organized and related inside a database.
+
+Real Life Analogy:
+
+--Suppose you are constructing a house.
+
+Before construction: Blueprint is created
+
+The blueprint decides:
+
+Bedroom location
+Kitchen location
+Hall location
+Bathroom location
+
+Similarly,
+
+Before designing a database: Data Model is created
+
+It decides:
+
+How data will be stored
+How data will be related
+How data will be accessed
+
+
+Types of Data Models:
+--------------------
+
+There are three major data models are there:
+
+1. Hierarchical Model
+
+2. Network Model
+
+3. Relational Model
+
+
+
+Hierarchical Model:
+------------------
+
+--In Hierarchical Model, data is organized in a tree-like structure.
+
+--Here one root element will be there and for one root there can be multiple childs elements.
+
+--This model is also called as parent-child hierarchical model.
+
+Example:
+
+	College
+     [name|address]   
+	    |
+	Department
+       [dno|name]
+            |
+--------------------------------
+|				|
+Course			      Student
+[cno|name|duration]	     [sno|name|address]
+   |
+Faculty
+[id|name] 
+
+
+The biggest limitation of this model is: 
+
+Not all data naturally follows a parent-child relationship.
+
+Example:
+
+Suppose:
+
+Student
+Course
+
+A student can enroll in multiple courses.
+
+A course can have multiple students.
+
+--This relationship cannot be represented efficiently using a simple hierarchy.
+
+
+2. Network Model:
+-----------------
+
+--In Network Model, entities are represented as nodes and connected through relationships.
+
+--Here we gets a graph like structure.
+
+Example:
+
+Student
+ /   \
+/     \
+Java  Spring
+ \    /
+  \  /
+ Teacher
+
+
+Limitations:
+
+1. Not suitable for large amounts of data and relationships.
+
+2. Complex to design
+
+3. Complex to maintain
+
+
+3. Relational Model:
+--------------------
+
+In 1970, Dr. E. F. Codd introduced the Relational Model.
+
+--This completely changed the database world.
+
+--In this model, data is stored in the form of 2-dimentional tables.
+
+Example:
+
+Customer Table:
+
+
+| customer_id | name |
+| ----------- | ---- |
+| 1           | Ravi |
+| 2           | Amit |
+| 3           | Neha |
+
+
+Policy Table:
+
+| policy_id | customer_id |
+| --------- | ----------- |
+| 101       | 1           |
+| 102       | 1           |
+| 103       | 2           |
+
+
+Why Is It Called Relational?
+
+--Because tables can be related to each other.
+
+Example:
+
+Customer related with Policy using customer_id
+
+
+
+Real Life Example:
+------------------
+
+--In HDFC life,
+
+Customer Table
+Policy Table
+Agent Table
+Branch Table
+Claim Table
+
+--All tables are related.
+
+
+Components of Relational Model:
+-------------------------------
+
+--Relational model mainly consists of 3 components:
+
+1. Collection of Database Objects:
+
+Like, 
+
+Tables
+Views
+Indexes
+
+
+2. Set of Operators:
+
+Like,
+
+SELECT
+INSERT
+UPDATE
+DELETE
+
+
+3. Integrity Rules:
+
+Like,
+
+Primary Key
+Foreign Key
+Unique
+Check
+
+
+--These rules ensure valid data and relationship among tables.
+
+
+Relational Model Become Popular because:
+
+1. Easy To Understand
+
+--Tables are intuitive.
+
+Example:
+
+| id | name |
+| -- | ---- |
+| 1  | Ravi |
+
+
+--Even non-technical people understand this.
+
+2. Easy To Query:
+
+Using SQL.
+
+Example:
+
+SELECT * FROM customer;
+
+
+3. Easy To Maintain:
+
+--Relationships can be managed easily.
+
+
+4. Supports Large Applications
+
+Examples:
+
+Banking
+Insurance
+E-Commerce
+Healthcare
+ERP Systems
+
+
+RDBMS:
+======
+
+Relational Database Management System
+
+--A DBMS that follows the Relational Model is called an RDBMS.
+
+Examples:
+
+PostgreSQL
+Oracle
+MySQL
+SQL Server
+DB2
+
+
+Important Point: 
+
+Every RDBMS is a DBMS
+
+But
+
+Every DBMS is NOT an RDBMS
+
+
+Example: 
+
+--MongoDB is a DBMS but it is not a RDBMS software, because it does not primarily organize data into related tables like PostgreSQL or MySQL
+
+--MongoDB is a: NoSQL Database
+
+--MongoDB stores documents in BSON format
+(which looks similar to JSON).
+
+{
+  "id": 101,
+  "name": "Ratan",
+  "salary": 50000
+}
+
+
+--called a Document.
+
+
+
+
+DBMS Architecture:
+==================
+
+ANSI (American National Standards Institute) proposed a Three-Level Architecture for DBMS.
+
+This architecture is also known as:
+
+ANSI/SPARC Architecture
+
+
+Objective of DBMS Architecture:
+---------------------------------
+
+The main objective of DBMS Architecture is:
+
+--To separate the user's view of data from the way data is physically stored.
+
+Benefits:
+
+Data Abstraction
+Security
+Flexibility
+Data Independence
+
+
+Three Levels of DBMS Architecture:
+----------------------------------
+
+1. External Level
+2. Conceptual Level
+3. Internal Level
+
+
+External Level
+     ↑
+Conceptual Level
+     ↑
+Internal Level
+
+
+
+
+1. Conceptual Level:
+--------------------
+
+--The Conceptual Level provides the logical view of the entire database.
+
+--It is the most important level for Database Developers.
+
+It describes:
+
+What data should be stored
+Data Types
+Constraints
+Relationships
+Business Rules
+
+It does NOT describe:
+
+--How data is physically stored
+
+Example:
+
+CREATE TABLE employee
+(
+emp_id INT PRIMARY KEY,
+name VARCHAR(100) NOT NULL,
+salary NUMERIC(10,2)
+);
+
+The above definition specifies:
+
+Data Type
+Primary Key
+NOT NULL Constraint
+
+--Therefore it belongs to the Conceptual Level.
+
+Relationship Example:
+
+CREATE TABLE department
+(
+dept_id INT PRIMARY KEY
+);
+
+CREATE TABLE employee
+(
+emp_id INT PRIMARY KEY,
+dept_id INT REFERENCES department(dept_id)
+);
+
+--The Foreign Key relationship is also part of the Conceptual Level.
+
+
+2. External Level:
+------------------
+
+--The External Level provides customized views of data to different groups of users.
+
+Purpose:
+
+Security
+Restricted Access
+Simplified Data Access
+
+Example:
+
+--Suppose we have the following table:
+
+Item
+
+item_no
+item_name
+price
+quantity
+
+Customer View:
+
+item_name
+price
+
+Manager View:
+
+item_name
+price
+quantity
+
+Different users can access different portions of the same data.
+
+Example using SQL View:
+
+CREATE VIEW customer_view AS
+SELECT item_name, price
+FROM item;
+
+
+--The customer can access only the view instead of the complete table.
+
+Important Point:
+
+External Level is mainly used for:
+
+Security
+Controlled Data Access
+User-Specific Views
+
+
+3. Internal Level:
+------------------
+
+--The Internal Level describes how data is physically stored inside the database.
+
+--It is the lowest level of the architecture.
+
+It includes:
+
+Storage Files
+Data Pages
+Disk Blocks
+Index Structures
+Storage Allocation
+
+Managed By:
+
+Database Engine
+DBA
+
+Example:
+
+When we create:
+
+CREATE TABLE employee(
+emp_id INT,
+name VARCHAR(100)
+);
+
+
+--The developer only sees the table.
+
+Internally PostgreSQL decides:
+
+Which file stores the table
+Which page stores the data
+Which block stores the page
+
+--These decisions belong to the Internal Level.
+
+Important Point:
+
+--The Internal Level focuses on physical storage optimization.
+
+
+
+
+Data Independence:
+------------------
+
+--It means, Changes at one level should not affect higher levels.
+
+--There are two types of Data Independence based on the 3-level ANSI/SPARC architecture:
+
+1. Logical Data Independence
+2. Physical Data Independence
+
+
+
+1. Logical Data Independence:
+-----------------------------
+
+--Changes in the Conceptual Level should not affect the External Level.
+
+Example:
+
+employee table:
+
+id
+name
+salary
+
+Later:
+
+ALTER TABLE employee ADD COLUMN email VARCHAR(100);
+
+Even after adding the new column:
+
+Customer View:
+
+id
+name
+salary
+
+--continues to work without modification.
+
+This property is called: Logical Data Independence
+
+Benefit:
+
+--Changes in the database design should not require changes in user views.
+
+
+
+2. Physical Data Independence:
+------------------------------
+
+--Changes in the Internal Level should not affect the Conceptual Level.
+
+Example:
+
+The DBA may:
+
+Move data files
+Reorganize storage
+Rebuild indexes
+Change storage locations
+
+Despite these changes:
+
+CREATE TABLE employee
+(
+emp_id INT,
+name VARCHAR(100)
+);
+
+--remains unchanged.
+
+--Application code also remains unchanged.
+
+This property is called: Physical Data Independence
+
+Benefit:
+
+--Storage-related changes do not impact database design or application logic.
+
+
+
+Introduction to PostgreSQL:
+==========================
+
+--PostgreSQL (pronounced as Post-Gres-Q-L) is an open-source Relational Database Management System (RDBMS) software used to store, manage, and retrieve data efficiently.
+
+--It follows the Relational Model proposed by Dr. E. F. Codd and stores data in the form of related tables.
+
+
+History of PostgreSQL:
+---------------------
+
+--PostgreSQL originated from the POSTGRES project at:
+
+University of California, Berkeley
+
+The project was led by: Michael Stonebraker
+
+--Over time, PostgreSQL evolved into one of the most powerful open-source databases.
+
+
+
+Why PostgreSQL is Popular?
+
+Because it provides:
+
+Reliability
+Security
+Performance
+Scalability
+Open Source
+
+--without licensing costs.
+
+
+Major Features of PostgreSQL:
+-----------------------------
+
+1. Open Source:
+
+--Free to use.
+
+--No license cost.
+
+Example:
+
+PostgreSQL = Free
+
+Oracle = Paid (mostly enterprise environments)
+
+2. ACID Compliance:
+
+--PostgreSQL follows ACID properties.
+
+A → Atomicity
+C → Consistency
+I → Isolation
+D → Durability
+
+--This ensures safe transactions.
+
+3. Supports Large Databases:
+
+Can handle:
+
+Millions of Records
+Billions of Records
+Terabytes of Data
+
+
+4. Strong Security
+
+Supports:
+
+Users
+Roles
+Privileges
+Authentication
+
+
+5. Supports Advanced SQL:
+
+--PostgreSQL provides:
+
+Joins
+Subqueries
+Window Functions
+CTEs
+Transactions
+
+
+6. Cross Platform:
+
+Works on:
+
+Windows
+Linux
+macOS
+
+
+
+7. Extensible
+
+Supports:
+
+Custom Functions
+Custom Data Types
+Extensions
+
+
+
+Note: PostgreSQL is an RDBMS, but it also supports several NoSQL capabilities through:
+
+JSON
+JSONB
+JSON Path Queries
+Document Storage
+
+
+
+
+Companies Using PostgreSQL
+
+Examples:
+
+Apple
+Instagram
+Spotify
+Reddit
+TripAdvisor
+
+
+PostgreSQL vs MySQL:
+--------------------
+
+| Feature             | PostgreSQL | MySQL    |
+| ------------------- | ---------- | -------- |
+| Open Source         | Yes        | Yes      |
+| SQL Standards       | Excellent  | Good     |
+| Advanced Features   | More       | Less     |
+| Complex Queries     | Better     | Good     |
+| Enterprise Features | Strong     | Moderate |
+
+
+Small Projects → MySQL
+Enterprise Applications → PostgreSQL
+
+
+
+
+PostgreSQL Installation Guide:
+------------------------------
+
+Step 1: Download PostgreSQL
+
+Download PostgreSQL from:
+
+PostgreSQL Official Website
+
+Select: Appropriate OS
+
+--Download the installer suitable for your operating system.
+
+Step2: Install the installer with default setup
+
+Default port for postgreSQL is 5432
+
+Default username is : postgres
+and the password at the time of installation : root
+
+
+After installation you will get:
+
+1. PostgreSQL Server (Database Engine)
+
+2. pgAdmin 4 (Graphical User Interface (GUI))
+
+3. SQL Shell (psql) (Command-line client)
+
+
+
+SQL Shell (psql) Commands:
+--------------------------
+
+Launch: SQL Shell (psql)
+
+Connect using:
+
+Server     : localhost
+Database   : postgres
+Port       : 5432
+Username   : postgres
+Password   : root
+
+
+
+Default Database:
+
+--PostgreSQL comes with a default database:
+
+postgres
+
+
+
+
+
+
+Exit psql:
+
+\q
+
+
+List All Databases:
+
+\l
+
+Connect to Database:
+
+\c db1
+
+List All Tables:
+
+\dt
+
+Describe Table Structure:
+
+\d student
+
+
+Working with Databases:
+-----------------------
+
+Create Database:
+
+	CREATE DATABASE db1;
+
+Connect Database:
+
+	\c db1
+
+
+Drop Database:
+	
+	\c postgres
+
+	DROP DATABASE db1;
+
+
+
+
+
+
+
+PostgreSQL Data Types:
+-----------------------
+
+--Before storing data in a table, PostgreSQL must know:
+
+What kind of data will be stored?
+
+Number?
+Text?
+Date?
+Boolean?
+JSON?
+
+--This information is provided using Data Types.
+
+A Data Type defines:
+
+What type of data can be stored
+How much memory is required
+What operations can be performed
+
+
+Categories of PostgreSQL Data Types:
+-----------------------------------
+
+1. Numeric Types
+
+2. Character Types
+
+3. Boolean Type
+
+4. Date & Time Types
+
+5. UUID
+
+6. JSON / JSONB
+
+7. Special Auto Increment Types
+
+
+1. Numeric Data Types:
+----------------------
+
+--Used for storing numbers.
+
+SMALLINT: Stores small integer values.
+----------
+
+Range:
+
+-32,768 to 32,767
+
+Example:
+
+age SMALLINT
+
+INTEGER (INT): Most commonly used numeric type.
+-------------
+
+Range:
+
+-2,147,483,648
+
+to
+
+2,147,483,647
+
+Example:
+
+emp_id INTEGER
+or
+emp_id INT
+
+Both are same.
+
+
+BIGINT: Used for very large numbers.
+-------
+
+Example:
+
+mobile_no BIGINT
+
+
+NUMERIC: Used when precision is important.
+--------
+
+Syntax:
+
+NUMERIC(precision, scale)
+
+Where:
+
+precision = total digits
+
+scale = digits after decimal
+
+Example:
+
+salary NUMERIC(10,2)
+
+FLOAT vs NUMERIC:
+-----------------
+
+NUMERIC → Exact
+FLOAT   → Approximate
+
+--For financial applications:
+
+Always prefer NUMERIC
+
+
+2. Character Data Types:
+------------------------
+
+--Used for storing text.
+
+VARCHAR(n): Most commonly used text type.
+----------
+
+Variable length string.
+
+Example:
+
+name VARCHAR(100)
+
+TEXT: Unlimited length text.
+------
+
+Example:
+
+description TEXT
+
+
+3. Boolean Data Type:
+---------------------
+Stores:
+
+TRUE
+FALSE
+
+Example:
+
+is_active BOOLEAN
+
+
+4. Date and Time Data Types:
+----------------------------
+
+--Extremely important in Spring Boot applications.
+
+DATE: Stores date only.
+-----
+
+
+Example:
+
+date_of_joining DATE
+
+Stored Value:
+
+2026-09-08
+
+Format:
+
+YYYY-MM-DD
+
+
+TIME: Stores time only.
+-----
+
+Example:
+
+meeting_time TIME
+
+Stored Value:
+
+10:30:45
+
+
+TIMESTAMP: Stores both date and time.
+----------
+
+Example:
+
+created_at TIMESTAMP
+
+Stored Value:
+
+2026-09-08 10:30:45
+
+
+PostgreSQL vs Java Mapping:
+---------------------------
+
+| PostgreSQL | Java          |
+| ---------- | ------------- |
+| DATE       | LocalDate     |
+| TIME       | LocalTime     |
+| TIMESTAMP  | LocalDateTime |
+
+
+5. SERIAL: Used for auto-generating IDs.
+-----------
+
+Example
+
+CREATE TABLE employee
+(
+    emp_id SERIAL,
+    name VARCHAR(100)
+);
+
+Insert:
+
+INSERT INTO employee(name) VALUES('Ratan');
+
+Result:
+
+emp_id = 1
+
+Automatically generated.
+
+
+To start IDs from 1000:
+
+ALTER SEQUENCE employee_emp_id_seq RESTART WITH 1000;
+
+
+Why Use SERIAL?
+
+For:
+
+Primary Keys
+
+Employee IDs
+
+Customer IDs
+
+Policy IDs
+
+
+
+
+Note: Modern PostgreSQL Internally PostgreSQL uses:
+
+GENERATED AS IDENTITY
+
+in newer designs.
+
+--But SERIAL is still widely used
+
+
+Example:
+
+CREATE TABLE employee
+(
+    emp_id INT GENERATED ALWAYS AS IDENTITY
+        (START WITH 1000 INCREMENT BY 1),
+    name VARCHAR(100)
+);
+
+
+
+
+
+
+6. UUID
+--------
+
+UUID = Universally Unique Identifier
+
+Example:
+
+550e8400-e29b-41d4-a716-446655440000
+
+Why Use UUID?
+
+Globally Unique
+Hard to Guess
+Good for Distributed Systems
+
+Example:
+
+customer_id UUID
+
+
+Spring Boot Microservice applications often use:
+
+UUID
+
+instead of:
+
+SERIAL
+
+Example: Create Table Using UUID
+-------
+
+First enable the extension:
+
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+Create table:
+
+CREATE TABLE employee
+(
+    emp_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(100)
+);
+
+Insert:
+
+INSERT INTO employee(name) VALUES('Ratan');
+
+Manually inserting the UUID:
+----------------------------
+
+CREATE TABLE customer
+(
+    customer_id UUID PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+Insert manually:
+
+INSERT INTO customer VALUES('550e8400-e29b-41d4-a716-446655440000', 'Ratan');
+
+Note: A UUID must follow the standard format:
+
+8-4-4-4-12 hexadecimal characters
+
+
+
+
+| Data Type                   | Description                               | Example                           |
+| --------------------------- | ----------------------------------------- | --------------------------------- |
+| INT / INTEGER               | 4-byte Integer                            | 100, 200                          |
+| BIGINT                      | 8-byte Large Integer                      | 9999999999                        |
+| BOOLEAN                     | true / false value                        | TRUE, FALSE                       |
+| CHAR(n)                     | Fixed Length String                       | CHAR(5)                           |
+| VARCHAR(n)                  | Variable Length String with limit         | VARCHAR(100)                      |
+| TEXT                        | Variable Length String (Unlimited)        | Description, Comments             |
+| NUMERIC(p,s) / DECIMAL(p,s) | Exact Precision Number                    | NUMERIC(10,2)                     |
+| REAL                        | Single Precision Floating Point (4 bytes) | 12.34                             |
+| DOUBLE PRECISION            | Double Precision Floating Point (8 bytes) | 12345.6789                        |
+| DATE                        | Stores Date Only                          | 2026-09-07                        |
+| TIME                        | Stores Time Only                          | 10:30:45                          |
+| TIMESTAMP                   | Stores Date and Time                      | 2026-09-07 10:30:45               |
+| TIMESTAMPTZ                 | Timestamp with Time Zone                  | 2026-09-07 10:30:45+05:30         |
+| SERIAL                      | Auto Increment Integer                    | 1, 2, 3, ...                      |
+| XML                         | Stores XML Data                           | `<employee><id>1</id></employee>` |
+| JSON                        | Stores JSON Data (Text Format)            | `{"name":"Ratan"}`                |
+| JSONB                       | Stores JSON Data (Binary Format)          | `{"name":"Ratan"}`                |
+
+
+
+
+Most Commonly Used Data Types in Real Projects:
+-----------------------------------------------
+
+| Requirement                  | Recommended Data Type                     |
+| ---------------------------- | ----------------------------------------- |
+| ID / Primary Key             | INTEGER GENERATED AS IDENTITY (or SERIAL) |
+| Name                         | VARCHAR(100)                              |
+| Email                        | VARCHAR(255)                              |
+| Mobile Number                | VARCHAR(15)                               |
+| Salary                       | NUMERIC(10,2)                             |
+| Date of Birth                | DATE                                      |
+| Created Date & Time          | TIMESTAMP                                 |
+| Audit Timestamp              | TIMESTAMPTZ                               |
+| Description / Remarks        | TEXT                                      |
+| Active Flag                  | BOOLEAN                                   |
+| API Request/Response Storage | JSONB                                     |
+
+
+
+
+
+Creating Employee table: Using SQL-Shell:
+-----------------------------------------
+
+--First Create a Database:
+
+>Create database hdfcdb;
+
+--Then connect with the database:
+
+\c hdfcdb;
+
+--Create the Employee table:
+
+create table employee
+(
+emp_id int primary key,
+name varchar(20),
+address text,
+salary numeric(10,2)
+);
+
+
+
+
+List out all the tables inside the hdfcdb database:
+
+\dt
+
+
+Verifying the table employee structure:
+
+\d employee
+
+
+
+Inserting the records:
+----------------------
+
+insert into employee values(101, 'Raj', 'delhi', 50000.00);
+insert into employee values(101, 'Raj', 'delhi', 50000.00);
+ERROR:  duplicate key value violates unique constraint "employee_pkey"
+
+insert into employee values(102, 'Simran', 'mumbai', 70000);
+
+Selecting all the records:
+--------------------------
+
+select * from employee;
+
+
+
+SpringBoot datasource URL: to connect with hdfcdb database:
+---------------------------
+
+	spring.datasource.url=jdbc:postgresql://localhost:5432/hdfcdb
+	
+
+
+Using JDBC:
+------------
+
+jar file name:- postgressql.jar 
+
+
+Driver class Name: org.postgresql.Driver
+
+URL: jdbc:postgresql://localhost:5432/hdfcdb
+
+username :- postgres
+
+password :- root
+
+
+
+
+PostgreSQL Hierarchy:
+--------------------
+
+PostgreSQL Server
+        |
+    Database
+        |
+     Schema
+        |        
+      Table
+        |
+       Rows
+
+
+
+PostgreSQL Server
+        |
+        |---- Database
+                 |
+                 |---- Schema
+                          |
+                          |---- Table
+                                   |
+                                   |---- Rows
+
+
+
+
+
+PostgreSQL Server:
+-----------------
+
+--The PostgreSQL software running on a machine is called a PostgreSQL Server.
+
+--It is the main database engine which manages the different databases and executes the query.
+
+--It listens for requests from applications.
+
+Default Port: 5432
+
+--One server can host multiple databases.
+
+
+Example:
+
+PostgreSQL Server
+       |
+       |---- Insurancedb
+       |
+       |---- HRdb
+       |
+       |---- Trainingdb
+
+
+
+What is a Schema ?:
+-------------------
+
+--A Schema is a logical container inside a database.
+
+
+It groups database objects.
+
+Example:
+
+Tables
+Views
+Indexes
+Functions
+Sequences
+Procedures
+Triggers
+
+
+
+
+Default Schema:
+---------------
+
+--Every PostgreSQL database contains:
+
+public
+
+schema by default.
+
+Structure:
+
+   hdfcdb
+      |
+      |
+    public
+      |
+      |---- customer
+      |
+      |---- policy
+      |
+      |---- employee
+
+
+
+Note: from SQL-shell all the tables created inside a database will be created under the 'public' schema by default.
+
+
+
+PostgreSQL Tools:
+----------------
+
+--There are two major ways to interact with PostgreSQL.
+
+1. pgAdmin (GUI)
+
+2. psql (Command Line)
+
+
+Working with pgAdmin:
+=====================
+
+--It is the graphical administration tool for PostgreSQL.
+
+It allows us to:
+
+Create Databases
+Create Tables
+Run Queries
+Manage Users
+Backup Databases
+
+--without remembering commands.
+
+
+
+Step1: Launch the pgAdmin from the start menu.
+
+Step2: Create Database using pgAdmin
+
+Databases
+   |-- Right Click
+         |-- Create
+                |-- Database
+
+
+Example:
+
+Database Name : ratandb
+Owner         : postgres
+
+
+Click Save.
+
+Step3: Create a table:
+
+ratandb
+   |-- Schemas
+          |-- public
+                 |-- Tables
+                        |-- Create Table
+
+
+Add columns and save.
+
+
+
+
+
+
+SQL Fundamentals & SQL Categories:
+==================================
+
+What is SQL?
+------------
+
+SQL stands for:
+
+	Structured Query Language
+
+--SQL is a standard language used to communicate with Relational Databases.
+
+
+Using SQL we can:
+
+Create Databases
+Create Tables
+Store Data
+Retrieve Data
+Update Data
+Delete Data
+Manage Security
+Control Transactions
+
+
+SQL commands are divided into five categories:
+
+1. DDL: Data Definition Language
+2. DML: Data Manipulation Language
+3. DQL: (DRL) Data Query Language
+4. DCL: Data Control Language
+5. TCL: Transaction Control Language
+
+
+1. DDL (Data Definition Language):
+-----------------------------------
+
+--DDL commands are used to define and modify database structures.
+
+These commands work on:
+
+Database
+Table
+Schema
+Constraints
+
+
+Common DDL Commands:
+
+CREATE
+ALTER
+DROP
+TRUNCATE
+RENAME
+
+
+CREATE:
+-------
+
+--Used to create database objects.
+
+Create Database:
+
+	CREATE DATABASE training_db;
+
+Create Table:
+
+CREATE TABLE employee
+(
+    emp_id INT,
+    emp_name VARCHAR(100)
+);
+
+
+
+ALTER:
+-----
+
+--Used to modify existing structures.
+
+Add New Column:
+
+	ALTER TABLE employee ADD COLUMN salary NUMERIC(10,2);
+
+
+DROP:
+-----
+
+--Used to permanently remove objects.
+
+Drop Table:
+
+	DROP TABLE employee;
+
+TRUNCATE:
+----------
+
+--Removes all rows but keeps table structure.
+
+	TRUNCATE TABLE employee;
+
+
+
+
+2. DML (Data Manipulation Language)
+------------------------------------
+
+--DML commands manipulate the data stored inside tables.
+
+Common DML Commands:
+
+INSERT
+UPDATE
+DELETE
+
+
+
+INSERT:
+--------
+
+--Used to add data.
+
+Example1: Inserting all the columns
+
+	INSERT INTO employee VALUES(101,'Ravi');
+
+Example2: Inserting specific columns values
+
+
+	INSERT INTO employee(name) VALUES('Ravi');
+
+
+
+UPDATE:
+------
+
+--Used to modify existing data.
+
+	UPDATE employee SET emp_name='Amit' WHERE emp_id=101;
+
+
+
+DELETE:
+-------
+
+--Used to remove records.
+
+	DELETE FROM employee WHERE emp_id=101;
+
+	DELETE FROM employee; //Delete all the records
+
+
+
+3. DQL (Data Query Language):
+-------------------------------
+
+--Used to retrieve data from database tables.
+
+Main Command: SELECT
+
+Retrieve All Records:
+
+	SELECT * FROM employee;
+
+
+Retrieve Specific Columns:
+
+	SELECT emp_id, emp_name FROM employee;
+
+Retrieve records based on condition: Using where clause.
+
+	SELECT * FROM employee where address = 'delhi';
+
+
+
+4. DCL (Data Control Language)
+------------------------------
+
+--DCL commands control access and permissions.
+
+Used by:
+
+DBA (Database Administrators)
+
+Common Commands:
+
+GRANT
+REVOKE
+
+
+Provides permissions.
+
+Example:
+
+	GRANT SELECT ON employee TO user1;
+
+Removes permissions.
+
+Example:
+
+	REVOKE SELECT ON employee FROM user1;
+
+
+5. TCL (Transaction Control Language)
+--------------------------------------
+
+--TCL commands control database transactions.
+
+--A transaction is a group of SQL statements executed as a single unit.
+
+
+Real Time Example
+
+Bank Transfer:
+
+Withdraw 1000
+Deposit 1000
+
+Both operations should succeed together.
+
+Common TCL Commands:
+
+BEGIN
+COMMIT
+ROLLBACK
+SAVEPOINT
+
+
+
+Complete SQL classification:
+----------------------------
+
+SQL
+ |
+ |---- DDL
+ |       |
+ |       |---- CREATE
+ |       |---- ALTER
+ |       |---- DROP
+ |       |---- TRUNCATE
+ |
+ |---- DML
+ |       |
+ |       |---- INSERT
+ |       |---- UPDATE
+ |       |---- DELETE
+ |
+ |---- DQL
+ |       |
+ |       |---- SELECT
+ |
+ |---- DCL
+ |       |
+ |       |---- GRANT
+ |       |---- REVOKE
+ |
+ |---- TCL
+         |
+         |---- BEGIN
+         |---- COMMIT
+         |---- ROLLBACK
+         |---- SAVEPOINT
+
+
+
+Consider the following table:
+
+CREATE TABLE employee
+(
+    emp_id INT,
+    name VARCHAR(100),
+    salary NUMERIC(10,2),
+    address VARCHAR(50)
+);
+
+
+where clause:
+============
+
+--Used to filter the records based on condition:
+
+Example:
+
+Employees with salary above 60000
+
+	SELECT * FROM employee WHERE salary > 60000;
+
+
+Comparison Operators:
+--------------------
+
+| Operator | Meaning            |
+| -------- | ------------------ |
+| =        | Equal              |
+| >        | Greater Than       |
+| <        | Less Than          |
+| >=       | Greater Than Equal |
+| <=       | Less Than Equal    |
+| <>       | Not Equal          |
+
+
+Multiple Conditions:
+-------------------
+
+1. AND
+
+--Both conditions must be true.
+
+	SELECT * FROM employee WHERE address='delhi' AND salary > 50000;
+
+
+2. OR
+
+	SELECT * FROM employee WHERE address='delhi' OR salary > 50000;
+
+
+3. NOT
+
+Reverse condition.
+
+SELECT * FROM employee WHERE NOT address='delhi';
+
+
+4. IN Operator
+
+--Used when checking multiple values.
+
+Instead of:
+
+WHERE address='delhi' OR address='mumbai' OR address='chennai'
+
+Use:
+
+	SELECT * FROM employee WHERE address IN ('delhi','mumbai','chennai');
+
+
+5. BETWEEN Operator
+
+--Used for ranges.
+
+	SELECT * FROM employee WHERE salary BETWEEN 50000 AND 70000;
+
+
+6. LIKE Operator
+
+--Used for pattern matching.
+
+Names starting with R
+
+	SELECT * FROM employee WHERE name LIKE 'R%';
+
+Names ending with a
+
+	SELECT * FROM employee WHERE name LIKE '%a';
+
+Wildcards:
+----------
+
+% -> Any number of characters
+_ -> Single character
+
+
+
+
+
+7. NULL Check
+
+--Retrieve employees whose address is NULL
+
+	SELECT * FROM employee WHERE address IS NULL;
+
+Not NULL
+
+	SELECT * FROM employee WHERE address IS NOT NULL;
+
+
+
+8. ORDER BY Clause:
+
+--Used to sort results.
+
+Ascending Order
+
+(Default)
+
+	SELECT * FROM employee ORDER BY salary;
+
+
+Equivalent to:
+
+	SELECT * FROM employee ORDER BY salary ASC;
+
+
+Descending Order:
+
+	SELECT * FROM employee ORDER BY salary DESC;
+
+
+Multiple Columns Sorting:
+-------------------------
+
+SELECT * FROM employee ORDER BY address, salary DESC;
+
+First sort by:
+
+address
+
+Then within each address:
+
+salary DESC
+
+
+9. LIMIT Clause
+
+--Used to restrict the number of rows returned.
+
+
+Retrieve first 3 rows.
+
+SELECT * FROM employee LIMIT 3;
+
+Example:
+
+Highest Salary Employee
+
+	SELECT * FROM employee ORDER BY salary DESC LIMIT 1;
+
+
+10. OFFSET Clause
+
+--Used to skip rows before returning results.
+
+
+Example:
+
+SELECT * FROM employee OFFSET 2;
+
+Skips:
+
+Row 1
+Row 2
+
+--Returns remaining rows.
+
+
+11. LIMIT + OFFSET
+
+--Very important for pagination.
+
+Example
+
+	SELECT * FROM employee LIMIT 2 OFFSET 2;
+
+Meaning:
+
+Skip first 2 rows
+Return next 2 rows
+
+
+
+Real Time Example (Pagination):
+--------------------------------
+
+Page Size: 2 records 
+
+
+Page 1:
+
+	SELECT * FROM employee LIMIT 2 OFFSET 0;
+
+Page 2:
+
+	SELECT * FROM employee LIMIT 2 OFFSET 2;
+
+Page 3:
+
+	SELECT * FROM employee LIMIT 2 OFFSET 4;
+
+This concept is heavily used in:
+
+Spring Data JPA Pagination
+Pageable
+PageRequest
+
+
+Execution Order of Query:
+-------------------------
+
+	SELECT * FROM employee WHERE salary > 50000 ORDER BY salary DESC LIMIT 3;
+
+
+Execution Order:
+
+FROM
+WHERE
+SELECT
+ORDER BY
+LIMIT
+
+
+
+
+Aggregate Functions:
+====================
+
+
+--Aggregate Functions perform calculations on multiple rows and return a single result.
+
+
+Most frequently used SQL functions:
+
+
+COUNT()
+SUM()
+AVG()
+MIN()
+MAX()
+
+
+Example
+
+
+create table employee
+(
+emp_id int primary key,
+emp_name varchar(12),
+salary numeric(10,2),
+address varchar(15)
+);
+
+insert into employee values(101, 'Ravi', 50000, 'Delhi');
+insert into employee values(102, 'Amit', 60000, 'Mumbai');
+insert into employee values(103, 'Neha', 70000, 'Delhi');
+insert into employee values(104, 'Priya', 80000, 'Chennai');
+insert into employee values(105, 'Rahul', 55000, 'Delhi');
+insert into employee values(106, 'Ankit', 50000, 'Mumbai');
+
+select * from employee;
+
+
+Employee Table:
+
+| emp_id | emp_name | salary | address    |
+| ------ | -------- | ------ | ---------- |
+| 101    | Ravi     | 50000  | Delhi      |
+| 102    | Amit     | 60000  | Mumbai     |
+| 103    | Neha     | 70000  | Delhi      |
+| 104    | Priya    | 80000  | Chennai    |
+| 105    | Rahul    | 55000  | Delhi      |
+| 106    | Ankit    | 50000  | Mumbai     |
+
+
+1. COUNT():
+
+--Returns the number of rows.
+
+Count total employees.
+
+SELECT COUNT(*) FROM employee;
+
+Output: 6
+
+COUNT(column_name)
+
+--Counts only non-null values.
+
+Example:
+
+SELECT COUNT(email) FROM employee;
+
+If some employees have NULL email values:
+
+--Only non-null emails are counted.
+
+
+2. SUM():
+
+Total salary expenditure.
+
+SELECT SUM(salary) FROM employee;
+
+
+3. AVG():
+
+Average employee salary.
+
+SELECT AVG(salary) FROM employee;
+
+
+4. MIN():
+
+Returns the smallest value.
+
+Lowest salary.
+
+SELECT MIN(salary) FROM employee;
+
+
+Example: Oldest employee date.
+
+SELECT MIN(joining_date) FROM employee;
+
+
+5. MAX():
+
+--Returns the highest value.
+
+Example
+
+Highest salary.
+
+SELECT MAX(salary) FROM employee;
+
+Example: Highest premium.
+
+SELECT MAX(premium_amount) FROM policy;
+
+
+
+Using Multiple Aggregate Functions:
+----------------------------------
+
+SELECT
+    COUNT(*) AS total_employees,
+    SUM(salary) AS total_salary,
+    AVG(salary) AS avg_salary,
+    MIN(salary) AS min_salary,
+    MAX(salary) AS max_salary
+FROM employee;
+
+
+
+Output:
+
+ total_employees | total_salary |     avg_salary     | min_salary | max_salary
+-----------------+--------------+--------------------+------------+------------
+               6 |    365000.00 | 60833.333333333333 |   50000.00 |   80000.00
+
+
+
+
+
+DISTINCT Keyword:
+-----------------
+
+DISTINCT removes duplicate values.
+
+SELECT DISTINCT address FROM employee;
+
+Count unique address.
+
+SELECT COUNT(DISTINCT address) AS address FROM employee;
+
+Output:
+
+2
+
+
+
+
+GROUP BY:
+=========
+
+--GROUP BY clause is used to divide similar data items into logical groups.
+
+--It is generally used with aggregate (group) functions such as:
+
+COUNT()
+SUM()
+AVG()
+MAX()
+MIN()
+
+--It can also be used without aggregate functions to display unique combinations of column values.
+
+
+Syntax:
+
+SELECT column_name, aggregate_function(column_name)
+FROM table_name
+GROUP BY column_name;
+
+
+Example1: 
+
+--Count Employees address-wise
+
+SELECT address, COUNT(*)
+FROM employee
+GROUP BY address;
+
+Output:
+
+ address | count
+---------+-------
+ Mumbai  |     2
+ Delhi   |     3
+ Chennai |     1
+
+
+
+
+Example2: 
+
+--Count Employees salary-wise
+
+SELECT salary, COUNT(*)
+FROM employee
+GROUP BY salary;
+
+
+Output:
+
+ salary  | count
+----------+-------
+ 60000.00 |     1
+ 50000.00 |     2
+ 70000.00 |     1
+ 80000.00 |     1
+ 55000.00 |     1
+
+
+Example3: Maximum and Minimum Salary address-wise
+
+
+SELECT address, MAX(salary), MIN(salary)
+FROM employee
+GROUP BY address;
+
+
+Output:
+
+ address |   max    |   min
+---------+----------+----------
+ Mumbai  | 60000.00 | 50000.00
+ Delhi   | 70000.00 | 50000.00
+ Chennai | 80000.00 | 80000.00
+
+
+Important Rule:
+
+When using GROUP BY:
+
+--Every column in the SELECT clause that is not inside an aggregate function must be present in the GROUP BY clause.
+
+Example:
+
+Correct:
+
+SELECT address, salary, MAX(salary)
+FROM employee
+GROUP BY address, salary;
+
+
+Incorrect:
+
+SELECT address, salary, MAX(salary)
+FROM employee
+GROUP BY address;
+
+
+
+How Group By works:
+-------------------
+
+--Aggregate (group) functions such as SUM(), AVG(), COUNT(), MAX(), and MIN() operate on multiple rows and return a single value.
+
+For example:
+
+SELECT SUM(salary) FROM employee;
+
+Output: 365000
+
+--Here the database calculates the total salary of all employees and returns a single value.
+
+
+Problem Without GROUP BY:
+------------------------
+
+Suppose we write:
+
+SELECT address, SUM(salary)
+FROM employee;
+
+PostgreSQL will generate an error:
+
+ERROR: column "employee.address" must appear in the
+GROUP BY clause or be used in an aggregate function
+
+
+--The aggregate function SUM(salary) returns only one value for the entire table.
+
+--But address contains multiple values:
+
+Delhi
+Mumbai
+Delhi
+Chennai
+Delhi
+Mumbai
+
+--Now PostgreSQL cannot determine which address should be displayed along with the single salary total.
+
+--Therefore, a normal column cannot be used together with a group function unless the data is grouped properly.
+
+Solution: GROUP BY Clause
+
+--To calculate salary totals for each address separately, use:
+
+SELECT address, SUM(salary)
+FROM employee
+GROUP BY address;
+
+
+Output:
+
+ address |    sum
+---------+-----------
+ Mumbai  | 110000.00
+ Delhi   | 175000.00
+ Chennai |  80000.00
+
+
+
+When the following query is executed:
+
+SELECT address, SUM(salary)
+FROM employee
+GROUP BY address;
+
+PostgreSQL performs the following steps:
+
+Step 1: Read the GROUP BY Column
+
+address
+
+Step 2: Create Logical Groups:
+
+Group 1 → Delhi
+Group 2 → Mumbai
+Group 3 → Chennai
+
+
+Step 3: Place Rows into Corresponding Groups
+
+Delhi Group:
+
+emp_id	emp_name	salary
+101	Ravi	        50000
+103	Neha	        70000
+105	Rahul	        55000
+
+Mumbai Group:
+
+emp_id	emp_name	salary
+102	Amit	        60000
+106	Ankit	        50000
+
+Chennai Group:
+
+emp_id	emp_name	salary
+104	Priya	        80000
+
+
+Step 4: Apply Aggregate Function on Each Group
+
+Delhi   → 50000 + 70000 + 55000 = 175000
+
+Mumbai  → 60000 + 50000 = 110000
+
+Chennai → 80000
+
+
+Step 5: Create Temporary Result Set
+
+address	sum
+Delhi	175000
+Mumbai	110000
+Chennai	80000
+
+--Finally, PostgreSQL returns this result to the user.
+
+
+Important Point:
+
+--Normal query execution works row by row.
+
+Example:
+
+SELECT emp_name, salary FROM employee;
+
+--The database processes one row at a time.
+
+
+--But aggregate functions work on an entire group of rows.
+
+Example:
+
+SELECT SUM(salary) FROM employee;
+
+--The database must read all salary values before producing the result.
+
+--Because of this difference, normal columns and aggregate functions cannot be mixed directly.
+
+--To establish a relationship between them, we use the GROUP BY clause.
+
+
+
+HAVING Clause:
+-------------
+
+--The HAVING clause is used to filter groups created by the GROUP BY clause.
+
+--Just as the WHERE clause filters individual rows, the HAVING clause filters groups after grouping has been performed.
+
+WHERE  ->  Filters rows
+
+HAVING ->  Filters groups
+
+
+--The WHERE clause is executed before GROUP BY.
+
+--The HAVING clause is executed after GROUP BY.
+
+--Therefore, if we want to apply a condition on grouped data or on aggregate function results, we must use the HAVING clause.
+
+
+
+Syntax:
+
+SELECT column_name, aggregate_function(column_name)
+FROM table_name
+GROUP BY column_name
+HAVING condition;
+
+
+
+Example 1: Display Number of Employees in Each Address
+
+SELECT address, COUNT(*)
+FROM employee
+GROUP BY address;
+
+Output:
+
+ address | count
+---------+-------
+ Mumbai  |     2
+ Delhi   |     3
+ Chennai |     1
+
+
+Example 2: Display Only Those Addresses Having More Than 1 Employee
+
+
+SELECT address, COUNT(*)
+FROM employee
+GROUP BY address
+HAVING COUNT(*) > 1;
+
+
+Output:
+
+ address | count
+---------+-------
+ Mumbai  |     2
+ Delhi   |     3
+
+Example 3: Display Total Salary for Each Address(Address wise)
+
+
+SELECT address, SUM(salary)
+FROM employee
+GROUP BY address;
+
+
+Output:
+
+ address |    sum
+---------+-----------
+ Mumbai  | 110000.00
+ Delhi   | 175000.00
+ Chennai |  80000.00
+
+
+
+
+Example 4: Display Addresses Whose Total Salary is Greater Than 100000
+
+
+SELECT address, SUM(salary)
+FROM employee
+GROUP BY address
+HAVING SUM(salary) > 100000;
+
+
+Output:
+
+ address |    sum
+---------+-----------
+ Mumbai  | 110000.00
+ Delhi   | 175000.00
+
+
+Example : Using WHERE and HAVING Together
+
+Requirement:
+
+Consider only employees whose salary is 50000 or more.
+Group them by address.
+Display only those addresses having at least 2 employees.
+
+
+SELECT address, COUNT(*) AS total_employees
+FROM employee
+WHERE salary >= 50000
+GROUP BY address
+HAVING COUNT(*) >= 2;
+
+Output:
+
+  address | total_employees
+---------+-----------------
+ Mumbai  |               2
+ Delhi   |               3
+
+
+
+Execution Flow:
+
+FROM
+ ↓
+WHERE
+ ↓
+GROUP BY
+ ↓
+HAVING
+ ↓
+SELECT
+ ↓
+ORDER BY
+
+
+
+Realtime examples:
+-----------------
+
+Customers paying more than 30000 premium:
+
+SELECT customer_id, SUM(premium)
+FROM policy
+GROUP BY customer_id
+HAVING SUM(premium) > 30000;
+
+
+
+
+SQL JOINs:
+==========
+
+SQL JOIN is used to combine and retrieve related data from two or more tables based on a common column or relationship between those tables..
+
+OR
+
+SQL JOIN is used to fetch meaningful information by combining rows from multiple related tables.
+
+
+Consider the following 2 tables:
+
+
+Department Table:
+
+CREATE TABLE department
+(
+    dept_id INT PRIMARY KEY,
+    dept_name VARCHAR(20),
+    location VARCHAR(20)
+);
+
+
+
+INSERT INTO department VALUES(10, 'HR', 'Delhi');
+
+INSERT INTO department VALUES(20, 'IT', 'Mumbai');
+
+INSERT INTO department VALUES(30, 'Finance', 'Chennai');
+
+INSERT INTO department VALUES(40, 'Sales', 'Bangalore');
+
+INSERT INTO department VALUES(50, 'Marketing', 'Hyderabad');
+
+SELECT * FROM department;
+
+
+ dept_id | dept_name | location
+---------+-----------+-----------
+      10 | HR        | Delhi
+      20 | IT        | Mumbai
+      30 | Finance   | Chennai
+      40 | Sales     | Bangalore
+      50 | Marketing | Hyderabad
+
+
+
+Employee Table:
+
+CREATE TABLE employee
+(
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(20),
+    salary NUMERIC(10,2),
+    address VARCHAR(20),
+    dept_id INT,
+    FOREIGN KEY(dept_id)
+    REFERENCES department(dept_id)
+);
+
+
+Understanding the Foreign Key:
+
+department.dept_id  ----->  employee.dept_id
+
+--The value stored in employee.dept_id must exist in the department table.
+
+Example:
+
+employee.dept_id = 20
+
+--is valid because Department 20 exists.
+
+
+Parent Table:
+
+--The table whose Primary Key is being referenced: department table
+
+Child Table:
+
+--The table containing the Foreign Key: employee table
+
+
+
+Insert Employee Records:
+
+INSERT INTO employee VALUES
+(101, 'Ravi', 50000, 'Delhi', 10);
+
+INSERT INTO employee VALUES
+(102, 'Amit', 60000, 'Mumbai', 20);
+
+INSERT INTO employee VALUES
+(103, 'Neha', 70000, 'Delhi', 20);
+
+INSERT INTO employee VALUES
+(104, 'Priya', 80000, 'Chennai', 30);
+
+INSERT INTO employee VALUES
+(105, 'Rahul', 55000, 'Delhi', 40);
+
+INSERT INTO employee VALUES
+(106, 'Ankit', 50000, 'Mumbai', 20);
+
+INSERT INTO employee VALUES
+(107, 'Kiran', 65000, 'Pune', 40);
+
+INSERT INTO employee VALUES
+(108, 'Sonia', 75000, 'Delhi', 10);
+
+
+SELECT * FROM employee;
+
+ emp_id | emp_name |  salary  | address | dept_id
+--------+----------+----------+---------+---------
+    101 | Ravi     | 50000.00 | Delhi   |      10
+    102 | Amit     | 60000.00 | Mumbai  |      20
+    103 | Neha     | 70000.00 | Delhi   |      20
+    104 | Priya    | 80000.00 | Chennai |      30
+    105 | Rahul    | 55000.00 | Delhi   |      40
+    106 | Ankit    | 50000.00 | Mumbai  |      20
+    107 | Kiran    | 65000.00 | Pune    |      40
+    108 | Sonia    | 75000.00 | Delhi   |      10
+
+
+Suppose we want:
+
+Employee Name
+Department Name
+Department Location
+
+Employee table contains:
+
+emp_name
+dept_id
+
+Department table contains:
+
+dept_name
+location
+
+--Since the required data is spread across two tables, a single table cannot provide the complete information.
+
+Therefore, we use SQL Joins.
+
+
+Types of SQL Joins:
+===================
+
+
+1. Cross Join
+2. Inner Join
+3. Left Outer Join
+4. Right Outer Join
+5. Full Outer Join
+6. Self Join
+
+
+
+1. CROSS JOIN:
+--------------
+
+--A Cross Join returns all possible combinations of rows from both tables.
+
+--It does not require any matching condition.
+
+Syntax:
+
+SELECT *
+FROM employee
+CROSS JOIN department;
+
+Formula:
+
+Total Rows = Rows in Table1 × Rows in Table2
+
+In our data:
+
+Employee Rows   = 8
+Department Rows = 5
+
+Result:
+
+8 × 5 = 40 rows
+
+Use Cases:
+
+--Rarely used in real projects.
+
+Used mainly for:
+
+Generating combinations
+Testing
+Matrix reports
+
+
+
+2. INNER JOIN:
+-------------
+
+An Inner Join returns only the rows that have matching values in both tables.
+
+--INNER JOIN is the most frequently used join in real-world applications.
+
+Syntax:
+
+SELECT columns
+FROM table1
+INNER JOIN table2
+ON condition;
+
+Example1: Get all employee and their department details.
+
+SELECT e.emp_id,
+       e.emp_name,
+       d.dept_name,
+       d.location
+FROM employee e
+INNER JOIN department d
+ON e.dept_id = d.dept_id;
+
+Output:
+
+ emp_id | emp_name | dept_name | location
+--------+----------+-----------+-----------
+    101 | Ravi     | HR        | Delhi
+    102 | Amit     | IT        | Mumbai
+    103 | Neha     | IT        | Mumbai
+    104 | Priya    | Finance   | Chennai
+    105 | Rahul    | Sales     | Bangalore
+    106 | Ankit    | IT        | Mumbai
+    107 | Kiran    | Sales     | Bangalore
+    108 | Sonia    | HR        | Delhi
+
+
+
+
+Example1: Get the employee emp_id, name, salary, dept_name who works in location Delhi:
+
+
+
+SELECT e.emp_id,
+       e.emp_name,
+       e.salary,
+       d.dept_name
+FROM employee e
+INNER JOIN department d
+ON e.dept_id = d.dept_id WHERE d.location = 'Delhi';
+
+
+Output:
+
+ emp_id | emp_name |  salary  | dept_name
+--------+----------+----------+-----------
+    101 | Ravi     | 50000.00 | HR
+    108 | Sonia    | 75000.00 | HR
+
+
+
+implicit join: (old style)
+
+SELECT e.emp_name,
+       d.dept_name
+FROM employee e, department d
+WHERE e.dept_id = d.dept_id WHERE d.location = 'Delhi';
+
+--Both Both produce the same result.
+
+However:
+
+--Use Explicit JOIN in modern applications.
+
+
+Student task:
+
+1. Display employees working in IT department.
+
+
+
+SELECT  e.emp_id,
+	e.emp_name,
+	e.salary,
+	e.address,
+        d.dept_name
+FROM employee e
+JOIN department d
+ON e.dept_id = d.dept_id
+WHERE d.dept_name = 'IT';
+
+
+Output:
+-------
+
+
+ emp_id | emp_name |  salary  | address | dept_name
+--------+----------+----------+---------+-----------
+    102 | Amit     | 60000.00 | Mumbai  | IT
+    103 | Neha     | 70000.00 | Delhi   | IT
+    106 | Ankit    | 50000.00 | Mumbai  | IT
+
+
+
+2. Display total employees in each department.
+
+
+
+SELECT d.dept_name,
+       COUNT(e.emp_id)
+FROM department d
+INNER JOIN employee e
+ON d.dept_id = e.dept_id
+GROUP BY d.dept_name;
+
+
+ dept_name | count
+-----------+-------
+ Finance   |     1
+ Sales     |     2
+ IT        |     3
+ HR        |     2
+
+
+Note: Marketing department related count is not showing. It is only showing the matching records.
+
+
+
+
+
+
+
+
+
+Adding Sample data:
+
+Employee Without Department:
+
+INSERT INTO employee
+VALUES (109, 'Vikas', 45000, 'Jaipur', NULL);
+
+
+New Department Without Employees:
+
+INSERT INTO department
+VALUES (60, 'Admin', 'Pune');
+
+
+SELECT * FROM department;
+
+
+ dept_id | dept_name | location
+---------+-----------+-----------
+      10 | HR        | Delhi
+      20 | IT        | Mumbai
+      30 | Finance   | Chennai
+      40 | Sales     | Bangalore
+      50 | Marketing | Hyderabad
+      60 | Admin     | Pune
+
+
+SELECT * FROM employee;
+
+ emp_id | emp_name |  salary  | address | dept_id
+--------+----------+----------+---------+---------
+    101 | Ravi     | 50000.00 | Delhi   |      10
+    102 | Amit     | 60000.00 | Mumbai  |      20
+    103 | Neha     | 70000.00 | Delhi   |      20
+    104 | Priya    | 80000.00 | Chennai |      30
+    105 | Rahul    | 55000.00 | Delhi   |      40
+    106 | Ankit    | 50000.00 | Mumbai  |      20
+    107 | Kiran    | 65000.00 | Pune    |      40
+    108 | Sonia    | 75000.00 | Delhi   |      10
+    109 | Vikas    | 45000.00 | Jaipur  |
+
+
+
+Notice: 
+
+Vikas -> No Department
+Marketing -> No Employee
+Admin -> No Employee
+
+
+3. LEFT OUTER JOIN:
+-------------------
+
+A LEFT JOIN returns:
+
+All records from Left Table
++
+Matching records from Right Table
+
+If no match is found, NULL values are returned for the right table columns.
+
+
+Syntax:
+
+SELECT columns
+FROM left_table
+LEFT JOIN right_table
+ON condition;
+
+Example:
+
+SELECT e.emp_id,
+       e.emp_name,
+       d.dept_name
+FROM employee e
+LEFT JOIN department d
+ON e.dept_id = d.dept_id;
+
+
+Output:
+
+ emp_id | emp_name | dept_name
+--------+----------+-----------
+    101 | Ravi     | HR
+    102 | Amit     | IT
+    103 | Neha     | IT
+    104 | Priya    | Finance
+    105 | Rahul    | Sales
+    106 | Ankit    | IT
+    107 | Kiran    | Sales
+    108 | Sonia    | HR
+    109 | Vikas    |
+
+
+
+Employee          Department
+
+[ ALL ]      +    [ MATCHING ]
+
+
+
+Important Point:
+
+--Even though Vikas has no department, he still appears in the result because Employee is the Left Table.
+
+
+Student task:
+
+1. Display total employees in each department.
+
+
+SELECT d.dept_name,
+       COUNT(e.emp_id)
+FROM department d
+LEFT JOIN employee e
+ON d.dept_id = e.dept_id
+GROUP BY d.dept_name;
+
+
+
+Output:
+------
+
+ dept_name | count
+-----------+-------
+ Marketing |     0
+ Finance   |     1
+ Admin     |     0
+ Sales     |     2
+ IT        |     3
+ HR        |     2
+
+
+2. Display departments having more than 2 employees.
+
+
+SELECT d.dept_name,
+       COUNT(e.emp_id)
+FROM department d
+LEFT JOIN employee e
+ON d.dept_id = e.dept_id
+GROUP BY d.dept_name
+HAVING COUNT(e.emp_id) > 2;
+
+
+Output:
+
+ dept_name | count
+-----------+-------
+ IT        |     3
+
+
+
+4. RIGHT OUTER JOIN:
+--------------------
+
+A RIGHT JOIN returns:
+
+All records from Right Table
++
+Matching records from Left Table
+
+If no match exists, NULL values are returned for left table columns.
+
+
+Example:
+
+SELECT e.emp_name,
+       d.dept_name
+FROM employee e
+RIGHT JOIN department d
+ON e.dept_id = d.dept_id;
+
+
+Output:
+
+ emp_name | dept_name
+----------+-----------
+ Ravi     | HR
+ Amit     | IT
+ Neha     | IT
+ Priya    | Finance
+ Rahul    | Sales
+ Ankit    | IT
+ Kiran    | Sales
+ Sonia    | HR
+          | Marketing
+          | Admin
+
+
+Important Point:
+
+Marketing and Admin appear even though they have no employees.
+
+Because Department is the Right Table.
+
+Final Rule: Keep all rows from RIGHT table.
+
+
+5. FULL OUTER JOIN:
+-------------------
+
+A FULL OUTER JOIN returns:
+
+All rows from Left Table
++
+All rows from Right Table
+
+Matched rows are combined.
+
+Unmatched rows are filled with NULL values.
+
+Example:
+
+SELECT e.emp_name,
+       d.dept_name
+FROM employee e
+FULL OUTER JOIN department d
+ON e.dept_id = d.dept_id;
+
+Output:
+
+emp_name | dept_name
+----------+-----------
+ Ravi     | HR
+ Amit     | IT
+ Neha     | IT
+ Priya    | Finance
+ Rahul    | Sales
+ Ankit    | IT
+ Kiran    | Sales
+ Sonia    | HR
+ Vikas    |
+          | Marketing
+          | Admin
+
+
+
+Employee     Department
+
+[ ALL ]  +  [ ALL ]
+
+Important Point:
+
+The result contains:
+
+All matched records
+Unmatched employees
+Unmatched departments
+
+
+Summary:
+
+INNER JOIN: Only Matching
+
+LEFT JOIN: Keep Everything From Left
+
+RIGHT JOIN: Keep Everything From Right
+
+FULL OUTER JOIN: Keep Everything From Both
+
+
+
+6. SELF JOIN:
+-------------
+
+--A SELF JOIN is a join in which a table is joined with itself.
+
+--Since the same table is used twice, aliases are mandatory to differentiate between the two instances of the table.
+
+--Whenever a table contains hirarical data then only we allow to use self join.
+
+Example:
+
+Employee - Manager
+
+Student - Monitor
+
+
+
+Example:
+
+
+create database selfdb;
+
+\c selfdb;
+
+
+Consider the following Employee table:
+
+CREATE TABLE employee
+(
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(20),
+    salary NUMERIC(10,2),
+    manager_id INT
+);
+
+
+Sample Data:
+
+INSERT INTO employee VALUES
+(101,'Ravi',50000,NULL);
+
+INSERT INTO employee VALUES
+(102,'Amit',60000,101);
+
+INSERT INTO employee VALUES
+(103,'Neha',70000,101);
+
+INSERT INTO employee VALUES
+(104,'Priya',80000,102);
+
+INSERT INTO employee VALUES
+(105,'Rahul',55000,102);
+
+
+SELECT * FROM employee;
+
+ emp_id | emp_name |  salary  | manager_id
+--------+----------+----------+------------
+    101 | Ravi     | 50000.00 |
+    102 | Amit     | 60000.00 |        101
+    103 | Neha     | 70000.00 |        101
+    104 | Priya    | 80000.00 |        102
+    105 | Rahul    | 55000.00 |        102
+
+
+
+
+Example:
+
+SELECT e.emp_name AS employee_name,
+       m.emp_name AS manager_name
+FROM employee e
+INNER JOIN employee m
+ON e.manager_id = m.emp_id;
+
+
+
+ employee_name | manager_name
+---------------+--------------
+ Amit          | Ravi
+ Neha          | Ravi
+ Priya         | Amit
+ Rahul         | Amit
+
+
+
+Student Task:
+
+--Get the all employee details whose manager is Amit:
+
+
+SELECT e.*
+FROM employee e
+JOIN employee m
+ON e.manager_id = m.emp_id
+WHERE m.emp_name = 'Amit';
+
+
+Output:
+
+ emp_id | emp_name |  salary  | manager_id
+--------+----------+----------+------------
+    104 | Priya    | 80000.00 |        102
+    105 | Rahul    | 55000.00 |        102
+
+
+
+
+
+
+Constraints & Data Integrity:
+=============================
+
+--Suppose we create an employee table:
+
+CREATE TABLE employee(
+    emp_id INT,
+    emp_name VARCHAR(100),
+    salary NUMERIC(10,2)
+);
+
+--Without constraints PostgreSQL allows:
+
+INSERT INTO employee
+VALUES(NULL,NULL,-5000);
+
+Technically the data gets inserted.
+
+
+But:
+
+Employee ID is missing
+Employee Name is missing
+Salary cannot be negative
+
+This is called: Bad Data
+
+To prevent bad or invalid data, databases use: Constraints
+
+
+Constraint:
+----------
+
+--A Constraint is a rule applied on a column or table to enforce data integrity.
+
+Constraint = Restriction/Rule
+
+--that controls what data can be inserted, updated, or deleted.
+
+Types of Constraints:
+
+1. NOT NULL
+2. UNIQUE
+3. CHECK
+4. PRIMARY KEY
+5. FOREIGN KEY
+6. DEFAULT
+
+
+
+Constraints can be defined in two ways:
+
+1. Column-Level Constraint
+2. Table-Level Constraint
+
+
+Column-Level Constraints:
+
+--These constraints are written immediately after the column definition.
+
+Syntax:
+
+column_name datatype constraint
+
+Example:
+
+CREATE TABLE employee
+(
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(20) NOT NULL,
+    salary NUMERIC(10,2) CHECK(salary > 0)
+);
+
+
+Table-Level Constraint:
+
+--These constraints are written after all column definitions.
+
+CREATE TABLE employee(
+    emp_id INT,
+    salary NUMERIC(10,2),
+    CHECK(salary > 0)
+);
+
+
+Which Constraints Can Be Applied at Which Level:
+------------------------------------------------
+
+| Constraint            | Column Level    | Table Level |
+| --------------------- | --------------- | ----------- |
+| NOT NULL              | Yes             |  No         |
+| DEFAULT               | Yes             |  No         |
+| CHECK                 | Yes             |  Yes        |
+| UNIQUE                | Yes             | Yes         |
+| PRIMARY KEY           | Yes             | Yes         |
+| FOREIGN KEY           | Generally No*   | Yes         |
+| Composite Primary Key | No              | Yes         |
+| Composite Unique Key  | No              | Yes         |
+
+
+
+
+1. NOT NULL Constraint:
+-----------------------
+
+--Prevents NULL values.
+
+Example
+
+CREATE TABLE employee(
+    emp_id INT,
+    emp_name VARCHAR(100) NOT NULL
+);
+
+
+INSERT INTO employee
+VALUES(102,NULL);
+
+Error.
+
+
+Real-Time Examples
+
+Usually:
+
+Employee Name
+Customer Name
+Policy Number
+Email
+
+--should not be NULL.
+
+Multiple NOT NULL Columns:
+
+
+CREATE TABLE employee(
+    emp_id INT NOT NULL,
+    emp_name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NOT NULL
+);
+
+
+
+2. UNIQUE Constraint:
+---------------------
+
+--Ensures no duplicate values exist.
+
+Example:
+
+CREATE TABLE employee(
+    emp_id INT,
+    email VARCHAR(255) UNIQUE
+);
+
+
+
+INSERT INTO employee
+VALUES(101,'ravi@gmail.com');
+
+INSERT INTO employee
+VALUES(102,'ravi@gmail.com');
+
+Error: Duplicate email not allowed.
+
+
+Real-Time Examples:
+
+Email
+Mobile Number
+PAN Number
+Passport Number
+
+--often use UNIQUE constraints.
+
+
+Note: PostgreSQL allows multiple NULL values in a UNIQUE column.
+
+Example:
+
+INSERT INTO employee(email)
+VALUES(NULL);
+
+INSERT INTO employee(email)
+VALUES(NULL);
+
+Valid.
+
+
+Composite UNIQUE:
+
+--Multiple columns together can be unique.
+
+Example:
+
+CREATE TABLE enrollment(
+    student_id INT,
+    student_name VARCHAR(20),
+    course_id INT,
+    UNIQUE(student_id, course_id)
+);
+
+
+--Same student cannot enroll in same course twice.
+
+
+3. CHECK Constraint:
+--------------------
+
+--CHECK validates data using a condition.
+
+Example
+
+--Salary must be positive.
+
+
+CREATE TABLE employee(
+    emp_id INT,
+    salary NUMERIC(10,2) CHECK(salary > 0)
+);
+
+
+
+Real-Time Examples:
+
+Age Validation:
+
+	CHECK(age >= 18)
+
+Rating Validation:
+
+	CHECK(rating BETWEEN 1 AND 5)
+
+Gender Validation:
+
+	CHECK(gender IN ('M','F'))
+
+Premium Amount:
+
+	CHECK(premium > 0)
+
+
+Example:
+
+CREATE TABLE customer(
+    age INT CHECK(age >= 18),
+    rating INT CHECK(rating BETWEEN 1 AND 5)
+);
+
+
+
+
+4. PRIMARY KEY Constraint:
+---------------------------
+
+--Primary Key uniquely identifies each row.
+
+Example:
+
+CREATE TABLE employee(
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(100)
+);
+
+
+
+Primary Key Rules:
+
+Must Be Unique
+Cannot Be NULL
+Only One Primary Key Per Table
+
+
+
+Composite Primary Key:
+
+--Some time we need to combine more than one columns to uniquely identify a record.
+
+--We create the Composite PK at table level.
+
+CREATE TABLE enrollment(
+    student_id INT,
+    course_id INT,
+    PRIMARY KEY(student_id,course_id)
+);
+
+
+Here combination of student_id and course_id should not be duplicate.
+
+
+
+5. FOREIGN KEY Constraint:
+---------------------------
+
+--A Foreign Key (FK) is a constraint used to establish a relationship between two tables and enforce Referential Integrity.
+
+--It ensures that a value entered in the child table must already exist in the parent table.
+
+
+Referential Integrity means:
+
+--A child record cannot reference a non-existing parent record.
+
+Example:
+
+Parent Table:
+
+CREATE TABLE department
+(
+    dept_id INT PRIMARY KEY,
+    dept_name VARCHAR(20)
+);
+
+
+Child Table:
+
+CREATE TABLE employee
+(
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(20),
+    dept_id INT,
+
+    FOREIGN KEY(dept_id)
+    REFERENCES department(dept_id)
+);
+
+
+Valid Insert:
+
+INSERT INTO department VALUES
+(10,'HR');
+
+INSERT INTO employee VALUES
+(101,'Ravi',10);
+
+
+Invalid Insert:
+
+INSERT INTO employee VALUES
+(102,'Amit',99);
+
+Error: violates foreign key constraint
+
+--Because department 99 does not exist in the parent table.
+
+
+
+
+Foreign Key Actions (Cascade Options):
+---------------------
+
+--By default, if a parent table record is referenced by a child table through a foreign key, the database does not allow the parent record to be deleted or its referenced key value to be updated.
+
+--This restriction is enforced to maintain Referential Integrity and prevent orphan records.
+
+--To allow such operations automatically, we can use cascade options such as:
+
+   ON DELETE CASCADE
+   ON UPDATE CASCADE
+
+-- These options instruct the database to automatically propagate the changes to the related child records.
+
+--When a parent row is UPDATED or DELETED, PostgreSQL can automatically perform actions on related child rows.
+
+
+
+
+1. ON DELETE CASCADE
+
+--If a parent record is deleted, all related child records are automatically deleted.
+
+Example:
+
+CREATE TABLE employee
+(
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(20),
+    dept_id INT,
+
+    FOREIGN KEY(dept_id)
+    REFERENCES department(dept_id)
+    ON DELETE CASCADE
+);
+
+Example:
+
+
+department:
+
+10  HR
+20  IT
+
+employee:
+
+101 Ravi 10
+102 Neha 10
+103 Amit 20
+
+Delete Parent:
+
+DELETE FROM department WHERE dept_id = 10;
+
+Result: Deleted
+
+department
+
+20 IT
+
+employee
+
+103 Amit 20
+
+Employees belonging to department 10 are automatically deleted.
+
+
+
+2. ON UPDATE CASCADE:
+
+
+--If a parent key value changes, related child records are automatically updated.
+
+Example
+CREATE TABLE employee
+(
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(20),
+    dept_id INT,
+
+    FOREIGN KEY(dept_id)
+    REFERENCES department(dept_id)
+    ON UPDATE CASCADE
+);
+
+
+Example:
+
+department:
+
+10 HR
+
+employee:
+
+101 Ravi 10
+102 Neha 10
+
+Update Parent Key:
+
+UPDATE department
+SET dept_id = 1001
+WHERE dept_id = 10;
+
+
+Result: Employee table data also will be updated.
+
+department
+
+100 HR
+
+employee
+
+101 Ravi 1001
+102 Neha 1001
+
+--Child records are automatically updated.
+
+
+3. ON DELETE SET NULL
+
+--When the parent row is deleted, the foreign key column in child records becomes NULL.
+
+Example:
+
+FOREIGN KEY(dept_id)
+REFERENCES department(dept_id)
+ON DELETE SET NULL
+
+
+Result:
+
+Before Delete:
+
+101 Ravi 10
+102 Neha 10
+
+
+Delete Department 10:
+
+DELETE FROM department
+WHERE dept_id = 10;
+
+After Delete:
+
+101 Ravi NULL
+102 Neha NULL
+
+
+Complete Example:
+
+
+CREATE TABLE employee
+(
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(20),
+    dept_id INT,
+
+    FOREIGN KEY(dept_id)
+    REFERENCES department(dept_id)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE
+);
+
+
+
+
+
+6. DEFAULT Constraint:
+----------------------
+
+--The DEFAULT constraint is used to assign a default value to a column when no value is provided during an INSERT operation.
+
+--If the user does not specify a value for that column, the database automatically inserts the default value.
+
+
+Example:
+
+CREATE TABLE employee
+(
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(20),
+    country VARCHAR(20) DEFAULT 'India'
+);
+
+
+
+INSERT INTO employee(emp_id, emp_name)
+VALUES (101, 'Ravi');
+
+INSERT INTO employee
+VALUES (102, 'Amit', 'USA');
+
+SELECT * FROM employee;
+
+
+Stored Data:
+
+emp_id	emp_name	country
+101	Ravi	         India
+102     Amit             USA
+
+
+
+Relationships among tables:
+===========================
+
+
+--In a Relational Database Management System (RDBMS), data is generally stored in multiple related tables rather than a single large table.
+
+--To establish a connection between related data stored in different tables, we use Relationships.
+
+--A relationship is typically established using:
+
+Primary Key (PK)
+        +
+Foreign Key (FK)
+
+
+Relationships help in:
+
+Reducing data redundancy
+Maintaining data consistency
+Enforcing referential integrity
+Improving database design
+
+
+
+What is a Relationship?
+-----------------------
+
+--A relationship is an association between two or more tables that allows related data to be linked together.
+
+Example:
+
+
+Employee Table
+      |
+      | dept_id
+      |
+      V
+Department Table
+
+--Here, employees are associated with departments through the dept_id column.
+
+
+Types of Relationships
+----------------------
+
+--There are three major types of relationships:
+
+1. One-to-One (1:1)
+
+2. One-to-Many (1:M)
+
+3. Many-to-Many (M:N)
+
+
+1. One-to-One Relationship (1:1)
+--------------------------------
+
+--In a One-to-One relationship, one record from Table A is associated with only one record from Table B, and vice versa.
+
+One Person      ↔      One Passport
+
+One User        ↔      One User Profile
+
+One Citizen     ↔      One Aadhaar Card
+
+One Person      ↔      One Driving Licence
+
+One Husband     ↔      One Wife
+
+
+Implementation:
+
+Generally, a One-to-One relationship is implemented by:
+
+Creating a Foreign Key
+Applying a UNIQUE constraint on the Foreign Key
+
+--This ensures that a parent record can be referenced only once.
+
+
+Example:
+
+Person Table:
+
+CREATE TABLE person
+(
+    person_id INT PRIMARY KEY,
+    person_name VARCHAR(30),
+    address VARCHAR(50)
+);
+
+
+Driving Licence Table:
+
+CREATE TABLE driving_licence
+(
+    dl_id INT PRIMARY KEY,
+    rto VARCHAR(30),
+    issue_date DATE,
+    expiry_date DATE,
+    person_id INT UNIQUE,
+
+    FOREIGN KEY(person_id)
+    REFERENCES person(person_id)
+);
+
+
+
+Insert Data:
+
+INSERT INTO person
+VALUES
+(101,'Ravi','Delhi');
+
+INSERT INTO person
+VALUES
+(102,'Amit','Mumbai');
+
+
+INSERT INTO driving_licence
+VALUES
+(1001,'Delhi RTO','2022-01-01','2042-01-01',101);
+
+INSERT INTO driving_licence
+VALUES
+(1002,'Mumbai RTO','2021-05-01','2041-05-01',102);
+
+
+
+Important Note:
+
+--Because person_id is UNIQUE in the Driving Licence table:
+
+One Person
+      ↔
+One Driving Licence
+
+is guaranteed.
+
+
+
+2. One-to-Many Relationship (1:M)
+---------------------------------
+
+In a One-to-Many relationship:
+
+--One record in the parent table can be related to multiple records in the child table.
+Each child record belongs to only one parent.
+
+
+Examples:
+
+Department -> Employees
+
+Customer   -> Orders
+
+Country    -> States
+
+State    -> Cities
+
+College  ->  Departments
+
+Category  -> Products
+
+
+Most Common Relationship: One-to-Many (1:M)
+
+--is the most commonly used relationship in enterprise applications.
+
+
+Implementation:
+
+Generally implemented using:
+
+Primary Key + Foreign Key
+
+
+Example:
+
+
+Department Table:
+
+CREATE TABLE department
+(
+    dept_id INT PRIMARY KEY,
+    dept_name VARCHAR(30),
+    location VARCHAR(30)
+);
+
+Employee Table:
+
+CREATE TABLE employee
+(
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(30),
+    salary NUMERIC(10,2),
+    email VARCHAR(50),
+    dept_id INT,
+
+    FOREIGN KEY(dept_id)
+    REFERENCES department(dept_id)
+);
+
+
+Insert Departments:
+
+INSERT INTO department
+VALUES
+(10,'HR','Delhi');
+
+INSERT INTO department
+VALUES
+(20,'IT','Mumbai');
+
+Insert Employees:
+
+
+INSERT INTO employee
+VALUES
+(101,'Ravi',50000,'ravi@gmail.com',10);
+
+INSERT INTO employee
+VALUES
+(102,'Amit',60000,'amit@gmail.com',20);
+
+INSERT INTO employee
+VALUES
+(103,'Neha',70000,'neha@gmail.com',20);
+
+INSERT INTO employee
+VALUES
+(104,'Ankit',55000,'ankit@gmail.com',20);
+
+
+3. Many-to-Many Relationship (M:N)
+----------------------------------
+
+In a Many-to-Many relationship:
+
+--One record from Table A can be associated with multiple records from Table B.
+--One record from Table B can also be associated with multiple records from Table A.
+
+
+Examples:
+
+Student <-> Course
+
+Doctor  <-> Patient
+
+Author  <-> Book
+
+User    <-> Role
+
+Product <-> Order
+
+Boyfriend  <-> Girlfriend
+
+
+
+Problem
+
+Consider:
+
+Ravi learns Java
+Ravi learns SQL
+
+Amit learns Java
+Amit learns Python
+
+Relationship:
+
+One Student
+      ↔
+Many Courses
+
+One Course
+      ↔
+Many Students
+
+--This becomes a Many-to-Many relationship.
+
+
+Relational databases do not directly support Many-to-Many relationships.
+
+--To implement them, we need a third table called:
+
+Junction Table
+(or)
+Bridge Table
+(or)
+Mapping Table
+
+
+Implementation:
+
+Student Table:
+
+CREATE TABLE student
+(
+    student_id INT PRIMARY KEY,
+    student_name VARCHAR(30),
+    email VARCHAR(50),
+    address VARCHAR(50)
+);
+
+
+Course Table:
+
+CREATE TABLE course
+(
+    course_id INT PRIMARY KEY,
+    course_name VARCHAR(30),
+    duration INT,
+    fee NUMERIC(10,2)
+);
+
+
+
+Junction Table:
+
+CREATE TABLE student_course
+(
+    student_id INT,
+    course_id INT,
+    PRIMARY KEY(student_id, course_id),
+
+    FOREIGN KEY(student_id)
+    REFERENCES student(student_id),
+
+    FOREIGN KEY(course_id)
+    REFERENCES course(course_id)
+);
+
+
+Insert Students:
+
+INSERT INTO student
+VALUES
+(101,'Ravi','ravi@gmail.com','Delhi');
+
+INSERT INTO student
+VALUES
+(102,'Amit','amit@gmail.com','Mumbai');
+
+
+
+Insert Courses:
+
+INSERT INTO course
+VALUES
+(1,'Java',90,12000);
+
+INSERT INTO course
+VALUES
+(2,'SQL',30,5000);
+
+INSERT INTO course
+VALUES
+(3,'Python',60,10000);
+
+Map Students to Courses:
+
+INSERT INTO student_course
+VALUES
+(101,1);
+
+INSERT INTO student_course
+VALUES
+(101,2);
+
+INSERT INTO student_course
+VALUES
+(102,1);
+
+INSERT INTO student_course
+VALUES
+(102,3);
+
+
+
+Find a student who enrolled in Java course:
+
+
+SELECT s.student_id,
+       s.student_name,
+       s.email,
+       s.address,
+       c.course_name
+FROM student s
+INNER JOIN student_course sc
+ON s.student_id = sc.student_id
+INNER JOIN course c
+ON sc.course_id = c.course_id
+WHERE c.course_name = 'Java';
+
+
+
+or (OLD style)
+
+
+SELECT s.student_id,
+       s.student_name,
+       s.email,
+       s.address,
+       c.course_name
+FROM student s, course c, student_course sc 
+WHERE
+s.student_id = sc.student_id
+AND
+c.course_id = sc.course_id
+AND
+c.course_name= 'Java';
+
+
+
+
+
+Subqueries: (Nested Query)
+==========================
+
+--A Subquery is a query written inside another SQL query.
+
+A subquery is also known as:
+
+Nested Query
+Inner Query
+Child Query
+
+The main query is called:
+
+Outer Query
+Main Query
+Parent Query
+
+
+Syntax:
+
+SELECT column_name
+FROM table_name
+WHERE column_name operator
+(
+    SELECT column_name
+    FROM table_name
+);
+
+
+Execution Flow:
+
+1. First the Inner Query (Subquery) executes.
+
+2. The result produced by the Subquery is passed to the Outer Query.
+
+3. The Outer Query uses that result and produces the final output.
+
+
+
+
+
+Example Employee Table:
+
+CREATE TABLE employee
+(
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(20),
+    salary NUMERIC(10,2),
+    dept_id INT
+);
+
+
+INSERT INTO employee VALUES
+(101,'Ravi',50000,10),
+(102,'Amit',60000,20),
+(103,'Neha',70000,20),
+(104,'Priya',80000,30),
+(105,'Rahul',55000,10);
+
+
+
+--Sometimes we need the result of one query as input to another query.
+
+Example
+
+Display employees whose salary is greater than the average salary.
+
+First find:
+
+SELECT AVG(salary)
+FROM employee;
+
+Suppose result:
+
+63000
+
+Then:
+
+SELECT *
+FROM employee
+WHERE salary > 63000;
+
+--Instead of executing two separate queries, we can combine them using a Subquery.
+
+Example:
+
+SELECT *
+FROM employee
+WHERE salary >
+(
+    SELECT AVG(salary)
+    FROM employee
+);
+
+
+
+Execution:
+
+Step 1
+
+SELECT AVG(salary)
+FROM employee;
+
+Result:
+
+63000
+
+Step 2
+
+SELECT *
+FROM employee
+WHERE salary > 63000;
+
+Result:
+
+Neha
+Priya
+
+
+Types of Subqueries:
+--------------------
+
+--Subqueries are commonly classified as:
+
+1. Single Row Subquery (Scalar Subquery)
+
+2. Multiple Row Subquery (Multirow single column)
+
+3. Multiple Column Subquery
+
+4. Correlated Subquery
+
+
+1. Single Row Subquery: Scalar Subquery
+----------------------
+
+--A subquery that returns:
+
+Exactly One Row
+Exactly One Column
+
+
+
+--here mostly same column name which is in the where clause of parent query will be there inside the child query select clause.
+
+
+
+Example1: 
+
+
+Write a Query to find out the employee details who is working in 'IT' detaparment:
+
+
+SELECT * 
+FROM employee 
+WHERE dept_id=(select dept_id from department where dept_name='IT');
+
+
+
+Note: This query works only if department name 'IT'
+returns exactly one row.
+
+Otherwise Oracle/PostgreSQL may throw an error
+that the subquery returned more than one row.
+
+
+
+
+Example 2
+
+--Display employees earning more than the average salary.
+
+SELECT *
+FROM employee
+WHERE salary >
+(
+    SELECT AVG(salary)
+    FROM employee
+);
+
+Subquery returns:
+
+63000
+
+Only one value.
+
+Hence: Single Row Subquery
+
+
+Example 2
+
+Display employees working in the same department as Ravi.
+
+SELECT *
+FROM employee
+WHERE dept_id =
+(
+    SELECT dept_id
+    FROM employee
+    WHERE emp_name = 'Ravi'
+);
+
+Subquery returns:
+
+10
+
+Outer query becomes:
+
+SELECT *
+FROM employee
+WHERE dept_id = 10;
+
+
+Example3: 
+
+
+Find employee having highest salary.
+
+SELECT *
+FROM employee
+WHERE salary =
+(
+    SELECT MAX(salary)
+    FROM employee
+);
+
+
+
+
+
+Operators Used:
+
+--Single Row Subqueries generally use:
+
+=
+>
+<
+>=
+<=
+<>
+
+
+
+2. Multiple Row Subquery
+------------------------
+
+--A subquery that returns more than one row.
+
+Example
+
+Suppose we have a department table.
+
+CREATE TABLE department
+(
+    dept_id INT PRIMARY KEY,
+    dept_name VARCHAR(20)
+);
+
+
+INSERT INTO department VALUES
+(10,'HR'),
+(20,'IT'),
+(30,'Finance');
+
+
+Requirement:
+
+Display employees working in HR or IT departments.
+
+
+SELECT *
+FROM employee
+WHERE dept_id IN
+(
+    SELECT dept_id
+    FROM department
+    WHERE dept_name IN ('HR','IT')
+);
+
+
+Subquery returns:
+
+10
+20
+
+Multiple rows.
+
+Hence: Multiple Row Subquery
+
+Operators Used:
+
+IN
+ANY
+ALL
+EXISTS
+NOT EXISTS
+
+
+IN Operator
+-----------
+
+--Used when the subquery returns multiple values.
+
+Example:
+
+SELECT *
+FROM employee
+WHERE dept_id IN
+(
+    SELECT dept_id
+    FROM department
+);
+
+Equivalent to:
+
+WHERE dept_id IN (10,20,30)
+
+
+
+ANY Operator
+------------
+
+--Condition should be true for at least one value returned by the subquery.
+
+Example
+
+Display employees whose salary is greater than ANY salary of employees in department 10.
+
+
+SELECT *
+FROM employee
+WHERE salary > ANY
+(
+    SELECT salary
+    FROM employee
+    WHERE dept_id = 10
+);
+
+Suppose:
+
+Dept 10 salaries
+
+50000
+55000
+
+Condition becomes:
+
+salary > 50000
+OR
+salary > 55000
+
+
+Condition must be true for at least one value returned by the subquery.
+
+Example:
+
+salary > ANY (50000,55000)
+
+Equivalent to:
+
+salary > MIN(50000,55000)
+
+Result:
+
+salary > 50000
+
+
+
+
+ALL Operator
+------------
+
+--Condition should be true for all values returned by the subquery.
+
+Example
+SELECT *
+FROM employee
+WHERE salary > ALL
+(
+    SELECT salary
+    FROM employee
+    WHERE dept_id = 10
+);
+
+Suppose:
+
+50000
+55000
+
+Condition becomes:
+
+salary > 50000
+AND
+salary > 55000
+
+Effectively:
+
+salary > ALL (50000,55000)
+
+Equivalent to:
+
+salary > MAX(50000,55000)
+
+Result:
+
+salary > 55000
+
+
+
+
+EXISTS Operator
+---------------
+
+--Checks whether the subquery returns at least one row.
+
+Returns:
+
+TRUE  -> if rows exist
+
+FALSE -> if no rows exist
+
+Example
+
+Display departments having employees.
+
+SELECT *
+FROM department d
+WHERE EXISTS
+(
+    SELECT 1
+    FROM employee e
+    WHERE e.dept_id = d.dept_id
+);
+
+
+
+
+Here we often see:
+
+SELECT 1
+
+inside EXISTS.
+
+Example:
+
+EXISTS
+(
+    SELECT 1
+    FROM employee
+)
+
+Reason:
+
+EXISTS only checks row existence.
+
+Actual column values are irrelevant.
+
+
+Note: EXISTS stops searching as soon as it finds the first matching row.
+
+
+
+NOT EXISTS
+----------
+
+Opposite of EXISTS.
+
+Example
+
+Display departments having no employees.
+
+SELECT *
+FROM department d
+WHERE NOT EXISTS
+(
+    SELECT 1
+    FROM employee e
+    WHERE e.dept_id = d.dept_id
+);
+
+
+
+3. Multiple Column Subquery
+---------------------------
+
+--Subquery returns multiple columns.
+
+Example
+
+Display employees having the highest salary in their department.
+
+
+SELECT *
+FROM employee
+WHERE (dept_id, salary) IN
+(
+    SELECT dept_id,
+           MAX(salary)
+    FROM employee
+    GROUP BY dept_id
+);
+
+
+Inner Query Result:
+
+dept_id		max_salary
+10		55000
+20		70000
+30		80000
+
+
+--Outer query matches both columns.
+
+
+4. Correlated Subquery:
+------------------------
+
+--A Correlated Subquery depends on the Outer Query.
+
+--Unlike normal subqueries, it executes once for each row processed by the outer query.
+
+--A subquery that references columns from the outer query and executes once for each row processed by the outer query.
+
+--A Correlated Subquery depends on values coming from the outer query, 
+therefore it cannot be executed independently..
+
+
+In Normal subquery the inner query execute first then it gives value to the outer query.
+
+Whereas in corelated subquery the the outer query will execute first and its value is given to the inner query for record of the outer query.
+
+Common trick: If child query is using the alias of parent query then 99% chances are there it is a corelated subquery.
+
+
+Example:
+
+Normal Subquery:
+
+
+SELECT * 
+FROM employee 
+WHERE salary > (
+ 
+SELECT AVG(salary) 
+FROM employee 
+
+);
+
+
+Runs independently.
+
+Execution Flow:
+
+1. Execute Child Query
+2. Get Result
+3. Pass Result to Parent Query
+4. Execute Parent Query
+
+
+
+Correlated Subquery:
+
+--Uses values from outer query.
+
+SELECT *
+FROM employee e
+WHERE salary >
+(
+    SELECT AVG(salary)
+    FROM employee
+    WHERE dept_id = e.dept_id
+);
+
+
+Notice:
+
+e.dept_id
+
+comes from outer query.
+
+Therefore: Correlated Subquery
+
+
+
+--A Correlated Subquery depends on values coming from the Outer Query.
+
+--The Outer Query processes one row at a time and passes values to the Inner Query.
+
+--The Inner Query executes repeatedly, once for each row processed by the Outer Query.
+
+--A Correlated Subquery cannot be executed independently because it references columns from the Outer Query.
+
+Execution Flow:
+
+1. Parent Query picks a row
+2. Parent Query passes value(s) to Child Query
+3. Child Query executes using those value(s)
+4. Result is returned to Parent Query
+5. Repeat for the next row
+
+
+
+Example
+
+Display employees earning more than the average salary of their own department.
+
+SELECT *
+FROM employee e1
+WHERE salary >
+(
+    SELECT AVG(salary)
+    FROM employee e2
+    WHERE e2.dept_id = e1.dept_id
+);
+
+
+
+
+
+
+Execution:
+
+For Ravi:
+
+Find average salary of Dept 10
+Compare Ravi's salary
+
+For Amit:
+
+Find average salary of Dept 20
+Compare Amit's salary
+
+For Neha:
+
+Find average salary of Dept 20
+Compare Neha's salary
+
+--The subquery executes repeatedly.
+
+
+
+Difference Between Normal and Correlated Subquery:
+-------------------------------------------------
+
+| Normal Subquery      | Correlated Subquery    |
+| -------------------- | ---------------------- |
+| Executes once        | Executes for each row  |
+| Independent          | Depends on outer query |
+| Faster               | Usually slower         |
+| Easier to understand | More complex           |
+
+
+
+Subquery vs Join:
+-----------------
+
+Subquery
+SELECT *
+FROM employee
+WHERE dept_id =
+(
+    SELECT dept_id
+    FROM department
+    WHERE dept_name = 'IT'
+);
+
+
+Join
+
+
+SELECT e.*
+FROM employee e
+INNER JOIN department d
+ON e.dept_id = d.dept_id
+WHERE d.dept_name = 'IT';
+
+
+Both may produce the same result.
+
+General Rule:
+
+If data is coming from multiple tables
+      ↓
+Prefer JOIN
+
+If you need a value/result from one query
+to be used by another query
+      ↓
+Subquery is often more readable
+
+
+
+A Subquery can be used in:
+
+1. SELECT clause
+2. FROM clause
+3. WHERE clause
+4. HAVING clause
+5. DML Statements (INSERT, UPDATE, DELETE)
+
+
+1. Subquery in SELECT Clause:
+
+
+SELECT emp_name,
+       salary,
+       (SELECT AVG(salary) FROM employee) AS avg_salary
+FROM employee;
+
+
+2. Subquery in FROM Clause:
+
+SELECT *
+FROM
+(
+    SELECT *
+    FROM employee
+    WHERE salary > 50000
+) x;
+
+Here the subquery acts as a temporary table (derived table / inline view).
+
+
+3. Subquery in WHERE Clause:
+
+SELECT *
+FROM employee
+WHERE salary >
+(
+    SELECT AVG(salary)
+    FROM employee
+);
+
+--Most common usage.
+
+
+4. Subquery in HAVING Clause:
+
+SELECT dept_id,
+       SUM(salary)
+FROM employee
+GROUP BY dept_id
+HAVING SUM(salary) >
+(
+    SELECT AVG(salary)
+    FROM employee
+);
+
+
+
+5. Subquery in INSERT Statement:
+
+Create Backup Table
+
+CREATE TABLE employee_backup
+AS
+SELECT *
+FROM employee
+WHERE 1=2;
+
+
+1=2 is always FALSE.
+Therefore, the SELECT query returns zero rows.
+The database reads the column names and data types from the employee table.
+A new table employee_backup is created with the same structure but no data.
+
+
+
+INSERT INTO employee_backup
+(
+    SELECT *
+    FROM employee
+    WHERE salary > 60000
+);
+
+
+6. Subquery in UPDATE Statement:
+
+UPDATE employee
+SET salary = salary + 5000
+WHERE dept_id =
+(
+    SELECT dept_id
+    FROM department
+    WHERE dept_name = 'IT'
+);
+
+
+7. Subquery in DELETE Statement:
+
+Delete employees belonging to HR department
+
+DELETE FROM employee
+WHERE dept_id =
+(
+    SELECT dept_id
+    FROM department
+    WHERE dept_name = 'HR'
+);
+
+
+
+
+
+
+
+
+
