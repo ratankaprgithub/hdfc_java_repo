@@ -1877,6 +1877,8 @@ Add New Column:
 
 	ALTER TABLE employee ADD COLUMN salary NUMERIC(10,2);
 
+	ALTER TABLE employee MODIFY COLUMN emp_id INT PRIMARY KEY;
+
 
 DROP:
 -----
@@ -1932,6 +1934,8 @@ UPDATE:
 --Used to modify existing data.
 
 	UPDATE employee SET emp_name='Amit' WHERE emp_id=101;
+
+	UPDATE employee SET emp_name='Amit', address='pune' WHERE emp_id=101;
 
 
 
@@ -2101,7 +2105,11 @@ Multiple Conditions:
 
 --Both conditions must be true.
 
-	SELECT * FROM employee WHERE address='delhi' AND salary > 50000;
+	
+SELECT * 
+FROM employee 
+WHERE address='delhi' 
+AND salary > 50000;
 
 
 2. OR
@@ -2295,7 +2303,7 @@ LIMIT
 
 
 
-Aggregate Functions:
+Aggregate Functions: Group function
 ====================
 
 
@@ -2352,6 +2360,8 @@ Employee Table:
 Count total employees.
 
 SELECT COUNT(*) FROM employee;
+
+SELECT COUNT(*) AS Total_EMP FROM employee;
 
 Output: 6
 
@@ -2724,7 +2734,7 @@ HAVING ->  Filters groups
 Syntax:
 
 SELECT column_name, aggregate_function(column_name)
-FROM table_name
+FROM table_name WHERE cond.
 GROUP BY column_name
 HAVING condition;
 
@@ -2751,7 +2761,7 @@ Example 2: Display Only Those Addresses Having More Than 1 Employee
 SELECT address, COUNT(*)
 FROM employee
 GROUP BY address
-HAVING COUNT(*) > 1;
+HAVING COUNT(*) > 2;
 
 
 Output:
@@ -2850,6 +2860,8 @@ HAVING SUM(premium) > 30000;
 
 
 
+
+
 SQL JOINs:
 ==========
 
@@ -2906,8 +2918,8 @@ CREATE TABLE employee
     salary NUMERIC(10,2),
     address VARCHAR(20),
     dept_id INT,
-    FOREIGN KEY(dept_id)
-    REFERENCES department(dept_id)
+
+    FOREIGN KEY(dept_id) REFERENCES department(dept_id)
 );
 
 
@@ -3114,7 +3126,7 @@ implicit join: (old style)
 SELECT e.emp_name,
        d.dept_name
 FROM employee e, department d
-WHERE e.dept_id = d.dept_id WHERE d.location = 'Delhi';
+WHERE e.dept_id = d.dept_id AND d.location = 'Delhi';
 
 --Both Both produce the same result.
 
@@ -3135,9 +3147,21 @@ SELECT  e.emp_id,
 	e.address,
         d.dept_name
 FROM employee e
-JOIN department d
+INNER JOIN department d
 ON e.dept_id = d.dept_id
 WHERE d.dept_name = 'IT';
+
+//OR
+
+SELECT  e.*,
+        d.dept_name
+FROM employee e
+INNER JOIN department d
+ON e.dept_id = d.dept_id
+WHERE d.dept_name = 'IT';
+
+
+
 
 
 Output:
@@ -3538,7 +3562,7 @@ Student Task:
 
 SELECT e.*
 FROM employee e
-JOIN employee m
+INNER JOIN employee m
 ON e.manager_id = m.emp_id
 WHERE m.emp_name = 'Amit';
 
@@ -3563,7 +3587,7 @@ Constraints & Data Integrity:
 CREATE TABLE employee(
     emp_id INT,
     emp_name VARCHAR(100),
-    salary NUMERIC(10,2)
+    salary NUMERIC(10,2),
 );
 
 --Without constraints PostgreSQL allows:
@@ -3636,6 +3660,7 @@ Table-Level Constraint:
 CREATE TABLE employee(
     emp_id INT,
     salary NUMERIC(10,2),
+
     CHECK(salary > 0)
 );
 
@@ -3707,7 +3732,7 @@ Example:
 
 CREATE TABLE employee(
     emp_id INT,
-    email VARCHAR(255) UNIQUE
+    email VARCHAR(255) UNIQUE 
 );
 
 
@@ -3754,6 +3779,7 @@ CREATE TABLE enrollment(
     student_id INT,
     student_name VARCHAR(20),
     course_id INT,
+
     UNIQUE(student_id, course_id)
 );
 
@@ -3807,6 +3833,7 @@ CREATE TABLE customer(
 
 
 
+
 4. PRIMARY KEY Constraint:
 ---------------------------
 
@@ -3843,6 +3870,7 @@ CREATE TABLE enrollment(
 
 
 Here combination of student_id and course_id should not be duplicate.
+
 
 
 
@@ -3899,6 +3927,8 @@ INSERT INTO employee VALUES
 Error: violates foreign key constraint
 
 --Because department 99 does not exist in the parent table.
+
+
 
 
 
@@ -4273,6 +4303,35 @@ Category  -> Products
 
 Most Common Relationship: One-to-Many (1:M)
 
+Spring Boot relationship IDEA:
+-------------------------------
+
+class Employee{
+
+private int empId;
+private String empName;
+private double salary;
+
+@ManytoOne
+private Departement dept;
+
+}
+
+
+class Department {
+
+private int deptId;
+private String deptName;
+private String location;
+
+@OneToMany
+List<Employee> employees;
+
+
+}
+
+
+
 --is the most commonly used relationship in enterprise applications.
 
 
@@ -4581,6 +4640,32 @@ INSERT INTO employee VALUES
 (103,'Neha',70000,20),
 (104,'Priya',80000,30),
 (105,'Rahul',55000,10);
+
+
+
+ emp_id | emp_name |  salary  | dept_id
+--------+----------+----------+---------
+    101 | Ravi     | 50000.00 |      10
+    102 | Amit     | 60000.00 |      20
+    103 | Neha     | 70000.00 |      20
+    104 | Priya    | 80000.00 |      30
+    105 | Rahul    | 55000.00 |      10
+
+
+
+Get the all employee details who is working with Neha
+
+
+select * 
+from employee
+where dept_id = (
+
+	select 
+		dept_id
+	 from employee 
+	 where emp_name = 'Neha'
+);
+
 
 
 
@@ -5140,9 +5225,6 @@ WHERE salary >
 
 
 
-
-
-
 Execution:
 
 For Ravi:
@@ -5180,6 +5262,8 @@ Subquery vs Join:
 -----------------
 
 Subquery
+
+
 SELECT *
 FROM employee
 WHERE dept_id =
@@ -5327,7 +5411,3383 @@ WHERE dept_id =
 
 
 
+Common Table Expressions (CTEs):
+================================
 
+Employee Table:
+
+CREATE TABLE employee
+(
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(20),
+    salary NUMERIC(10,2),
+    dept_id INT
+);
+
+INSERT INTO employee VALUES
+(101,'Ravi',50000,1),
+(102,'Amit',60000,1),
+(103,'Neha',70000,2),
+(104,'Rahul',40000,2);
+
+
+SELECT * FROM employee;
+
+ emp_id | emp_name |  salary  | dept_id
+--------+----------+----------+---------
+    101 | Ravi     | 50000.00 |       1
+    102 | Amit     | 60000.00 |       1
+    103 | Neha     | 70000.00 |       2
+    104 | Rahul    | 40000.00 |       2
+
+
+
+Why Do We Need CTEs?
+--------------------
+
+--Suppose we want to find departments whose average salary is greater than 50,000.
+
+Without CTE:
+
+
+SELECT *
+FROM
+(
+    SELECT dept_id,
+           AVG(salary) AS avg_salary
+    FROM employee
+    GROUP BY dept_id
+) dept_avg
+WHERE avg_salary > 50000;
+
+This works perfectly.
+
+However, in real-world reporting queries, we may have:
+
+5 Subqueries
+10 Subqueries
+15 Subqueries
+
+
+--nested inside a single SQL statement.
+
+As complexity increases, queries become:
+
+Difficult to Read
+Difficult to Maintain
+Difficult to Debug
+
+
+To solve this problem, SQL provides:
+
+CTE (Common Table Expression)
+
+
+What is a CTE?
+--------------
+
+A Common Table Expression (CTE) is a temporary named result set that exists only during the execution of a SQL statement.
+
+Think of a CTE as:
+
+A Temporary Named Query
+
+that can be referenced within the same SQL statement.
+
+
+Benefits of CTEs:
+
+Better Readability
+Better Maintainability
+Query Reusability
+Easier Handling of Complex Queries
+
+
+A CTE is created using the:
+
+WITH
+
+keyword.
+
+Syntax:
+
+WITH cte_name AS
+(
+    query
+)
+SELECT *
+FROM cte_name;
+
+
+
+
+Example 1: Basic CTE
+--------------------
+
+Requirement:
+
+Find departments having average salary greater than 55,000.
+
+Without CTE:
+
+
+SELECT *
+FROM
+(
+    SELECT dept_id,
+           AVG(salary) AS avg_salary
+    FROM employee
+    GROUP BY dept_id
+) d
+WHERE avg_salary > 55000;
+
+
+Using CTE:
+
+
+WITH dept_avg AS
+(
+    SELECT dept_id,
+           AVG(salary) AS avg_salary
+    FROM employee
+    GROUP BY dept_id
+)
+SELECT *
+FROM dept_avg
+WHERE avg_salary > 55000;
+
+
+Observation:
+
+
+In the first query:
+
+(
+    SELECT ...
+) d
+
+
+'d' is also acting as a temporary result set.
+
+So the natural question is:
+
+
+If a derived table already works,
+why do we need a CTE?
+
+
+Both approaches can produce the same result.
+
+CTEs were introduced mainly to improve:
+
+1. Readability
+2. Maintainability
+3. Reusability
+
+
+Example 2: Complex Query:
+------------------------
+
+Requirement:
+
+1. Find department averages
+2. Find the highest average salary
+3. Display the department having the highest average salary
+
+
+Without CTE:
+
+
+SELECT *
+FROM
+(
+    SELECT dept_id,
+           AVG(salary) AS avg_salary
+    FROM employee
+    GROUP BY dept_id
+) d
+WHERE avg_salary =
+(
+    SELECT MAX(avg_salary)
+    FROM
+    (
+        SELECT dept_id,
+               AVG(salary) AS avg_salary
+        FROM employee
+        GROUP BY dept_id
+    ) x
+);
+
+
+Notice:
+
+--The same logic is repeated twice.
+
+Using CTE:
+
+
+WITH dept_avg AS
+(
+    SELECT dept_id,
+           AVG(salary) AS avg_salary
+    FROM employee
+    GROUP BY dept_id
+)
+SELECT *
+FROM dept_avg
+WHERE avg_salary =
+(
+    SELECT MAX(avg_salary)
+    FROM dept_avg
+);
+
+
+--This version is much cleaner and easier to maintain.
+
+
+Biggest Advantage: Reusability:
+------------------------------
+
+--A derived table exists only where it is written.
+
+Example:
+
+
+SELECT *
+FROM
+(
+    SELECT ...
+) d;
+
+
+After query execution:
+
+'d' no longer exists.
+
+--It can only be referenced once.
+
+
+CTE Reusability:
+
+WITH dept_avg AS
+(
+    SELECT dept_id,
+           AVG(salary) AS avg_salary
+    FROM employee
+    GROUP BY dept_id
+)
+SELECT *
+FROM dept_avg
+
+UNION ALL
+
+SELECT *
+FROM dept_avg;
+
+
+--Here the same result set is reused multiple times.
+
+
+
+CTE Referencing Another CTE:
+---------------------------
+
+--A CTE can reference a previously defined CTE.
+
+
+WITH dept_avg AS
+(
+    SELECT dept_id,
+           AVG(salary) AS avg_salary
+    FROM employee
+    GROUP BY dept_id
+),
+
+high_avg_dept AS
+(
+    SELECT *
+    FROM dept_avg
+    WHERE avg_salary > 55000
+)
+
+SELECT *
+FROM high_avg_dept;
+
+
+
+Multiple CTEs:
+--------------
+
+--Multiple CTEs can be defined within a single query.
+
+
+WITH dept_avg AS
+(
+    SELECT dept_id,
+           AVG(salary) AS avg_salary
+    FROM employee
+    GROUP BY dept_id
+),
+
+dept_count AS
+(
+    SELECT dept_id,
+           COUNT(*) AS emp_count
+    FROM employee
+    GROUP BY dept_id
+)
+
+SELECT da.dept_id,
+       da.avg_salary,
+       dc.emp_count
+FROM dept_avg da
+INNER JOIN dept_count dc
+ON da.dept_id = dc.dept_id;
+
+
+
+
+
+
+
+CTE vs Derived Table (Subquery)
+-------------------------------
+
+Derived Table (Subquery):
+
+
+SELECT *
+FROM
+(
+    SELECT ...
+) temp;
+
+
+CTE:
+
+WITH temp AS
+(
+    SELECT ...
+)
+SELECT *
+FROM temp;
+
+
+Which One is Better?
+
+For simple queries:
+
+Both are acceptable.
+
+For complex queries:
+
+--CTE is generally preferred because it is more readable and reusable.
+
+
+
+Recursive CTE:
+=============
+
+A Recursive CTE is a CTE that references itself.
+
+Just as a Self Join joins a table with itself, a Recursive CTE repeatedly references its own result set.
+
+Recursive CTEs are commonly used for:
+
+Hierarchies
+Tree Structures
+Organization Structures
+Category Structures
+Parent-Child Relationships
+
+
+Real-Life Example:
+
+Company Hierarchy
+
+
+CEO
+│
+├── Manager A
+│   ├── Employee 1
+│   └── Employee 2
+│
+└── Manager B
+    ├── Employee 3
+    └── Employee 4
+
+Question:
+
+--Find all employees working under the CEO.
+
+
+Employee Hierarchy Table:
+
+
+CREATE TABLE employee_hierarchy
+(
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(20),
+    manager_id INT
+);
+
+
+INSERT INTO employee_hierarchy VALUES
+(1,'CEO',NULL),
+(2,'Manager A',1),
+(3,'Manager B',1),
+(4,'Emp1',2),
+(5,'Emp2',2),
+(6,'Emp3',3),
+(7,'Emp4',3);
+
+
+SELECT * FROM employee_hierarchy;
+
+
+ emp_id | emp_name  | manager_id
+--------+-----------+------------
+      1 | CEO       |
+      2 | Manager A |          1
+      3 | Manager B |          1
+      4 | Emp1      |          2
+      5 | Emp2      |          2
+      6 | Emp3      |          3
+      6 | Emp4      |          3
+
+
+
+Recursive CTE Structure:
+-----------------------
+
+
+WITH RECURSIVE cte_name AS
+(
+    Anchor Query
+
+    UNION ALL
+
+    Recursive Query
+)
+SELECT *
+FROM cte_name;
+
+
+Components of a Recursive CTE:
+-----------------------------
+
+1. Anchor Query
+
+--The starting point of recursion.
+
+Executed only once.
+
+Example:
+
+SELECT *
+FROM employee_hierarchy
+WHERE emp_id = 1;
+
+Result:
+
+CEO
+
+
+2. Recursive Query
+
+Finds child rows repeatedly.
+
+
+SELECT e.*
+FROM employee_hierarchy e
+JOIN hierarchy h
+ON e.manager_id = h.emp_id;
+
+
+--This process continues until no more matching rows are found.
+
+
+Example: Generate Numbers from 1 to 10
+--------------------------------------
+
+
+
+WITH RECURSIVE numbers AS
+(
+    SELECT 1 AS n
+
+    UNION ALL
+
+    SELECT n + 1
+    FROM numbers
+    WHERE n < 10
+)
+SELECT *
+FROM numbers;
+
+Result:
+
+| n  |
+| -- |
+| 1  |
+| 2  |
+| 3  |
+| 4  |
+| 5  |
+| 6  |
+| 7  |
+| 8  |
+| 9  |
+| 10 |
+
+
+
+Real-Time Recursive CTE Example:
+-------------------------------
+
+
+Display Complete Employee Hierarchy:
+
+
+WITH RECURSIVE emp_tree AS
+(
+    SELECT emp_id,
+           emp_name,
+           manager_id,
+           1 AS level
+    FROM employee_hierarchy
+    WHERE manager_id IS NULL
+
+    UNION ALL
+
+    SELECT e.emp_id,
+           e.emp_name,
+           e.manager_id,
+           t.level + 1
+    FROM employee_hierarchy e
+    JOIN emp_tree t
+    ON e.manager_id = t.emp_id
+)
+SELECT *
+FROM emp_tree;
+
+
+
+Output:
+
+
+| emp_id | emp_name  | manager_id | level |
+| ------ | --------- | ---------- | ----- |
+| 1      | CEO       | NULL       | 1     |
+| 2      | Manager A | 1          | 2     |
+| 3      | Manager B | 1          | 2     |
+| 4      | Emp1      | 2          | 3     |
+| 5      | Emp2      | 2          | 3     |
+| 6      | Emp3      | 3          | 3     |
+
+
+
+Recursive CTE Execution Flow:
+----------------------------
+
+Anchor Query
+      │
+Initial Rows
+      │
+Recursive Query
+      │
+More Rows Found?
+      │
+  Yes │ No
+      │
+Repeat   Stop
+
+
+Database Design:
+=================
+
+Up to now we have learned:
+
+Tables
+
+Relationships
+
+Constraints
+
+SQL Queries
+
+
+--But before creating tables in PostgreSQL, we must answer:
+
+What tables should exist?
+What columns should exist?
+How should tables be related?
+How can we avoid duplicate data?
+
+--This process is called:
+
+Database Design
+
+
+--A well-designed database is:
+
+Easy to Maintain
+Fast
+Consistent
+Scalable
+
+
+--A poorly designed database leads to:
+
+Duplicate Data
+Data Inconsistency
+Difficult Maintenance
+Complex Queries
+
+
+
+--Database Design is the process of organizing data into tables and defining relationships between them.
+
+
+Steps in Database Design:
+-------------------------
+
+1. Understand Business Requirement
+
+2. Identify Entities
+
+3. Identify Attributes
+
+4. Identify Relationships
+
+5. Apply Normalization
+
+6. Create ER Diagram
+
+7. Create Tables
+
+
+Example Requirement:
+
+--Suppose a training institute needs a system to manage:
+
+Students
+Courses
+Enrollments
+
+
+Step 1: Identify Entities
+
+--An Entity is a real-world object about which data is stored.
+
+Examples:
+
+Student
+Employee
+Customer
+Policy
+Department
+Course
+
+--All are Entities.
+
+
+Example: Entities in Training Institute System:
+
+Student
+Course
+
+
+
+Step 2: Identify Attributes:
+
+--Attributes describe an Entity.
+
+Example
+
+Student Entity:
+
+Student
+|
+|-- student_id
+|-- name
+|-- email
+|-- mobile
+
+
+Course Entity:
+
+Course
+|
+|-- course_id
+|-- course_name
+|-- duration
+|-- fee
+
+
+
+Step 3: Identify Relationships
+
+--Entities rarely exist independently.
+
+--They usually interact with each other.
+
+Example:
+--------
+
+Student and Course:
+
+One Student can join many Courses
+
+One Course can have many Students
+
+Relationship: Many-to-Many
+
+
+Department and Employee:
+
+One Department
+
+Many Employees
+
+Relationship: One-to-Many
+
+
+
+ER Model
+========
+
+ER = Entity Relationship
+
+Model =  It is a graphical representation of:
+
+Entities
+Attributes
+Relationships
+
+
+
+Before creating tables:
+
+Developers
+Business Analysts
+Architects
+DBAs
+
+--can understand the complete system visually.
+
+
+ER Diagram Components:
+----------------------
+
+--There are three main components:
+
+Entity
+Attribute
+Relationship
+
+
+
+Normalization in DBMS:
+=====================
+
+
+--Normalization is a database design technique used to organize data efficiently and reduce data redundancy.
+
+The main objective of Normalization is to:
+
+1. Minimize Data Redundancy
+2. Avoid Data Inconsistency
+3. Eliminate Data Anomalies
+4. Improve Data Integrity
+5. Improve Database Design
+
+
+
+What is Data Redundancy?
+
+--Data Redundancy means storing the same information repeatedly in multiple places.
+
+
+Example:
+
+
+| emp_id | emp_name | dept_id | dept_name | location |
+| ------ | -------- | ------- | --------- | -------- |
+| 101    | Ravi     | 10      | HR        | Delhi    |
+| 102    | Amit     | 20      | IT        | Mumbai   |
+| 103    | Neha     | 20      | IT        | Mumbai   |
+| 104    | Rahul    | 20      | IT        | Mumbai   |
+
+
+
+Observe:
+
+IT department and Mumbai location are repeated multiple times.
+
+This is called: Data Redundancy
+
+
+
+Problems Due to Redundancy
+--------------------------
+
+Normalization helps eliminate three major problems:
+
+1. Insert Anomaly
+2. Update Anomaly
+3. Delete Anomaly
+
+
+
+1. Insert Anomaly:
+-------------------
+
+Suppose we want to add a new department:
+
+Finance
+Location: Chennai
+
+--But currently no employee exists in that department.
+
+--Because department data is stored inside the employee table:
+
+Cannot insert department
+without employee information.
+
+This is called: Insert Anomaly
+
+
+
+2. Update Anomaly:
+-----------------
+
+Suppose:
+
+IT Department Location
+changes from Mumbai to Pune
+
+We must update multiple rows.
+
+If one row is missed:
+
+emp_name	dept_name	location
+Amit		IT		Pune
+Neha		IT		Mumbai
+
+--Now inconsistent data exists.
+
+This is: Update Anomaly
+
+
+
+3. Delete Anomaly:
+-----------------
+
+Suppose Rahul is the only employee in Finance.
+
+If Rahul's record is deleted:
+
+Finance Department information
+also gets deleted.
+
+Loss of useful data.
+
+This is: Delete Anomaly
+
+
+
+
+Solution: Normalization
+-----------------------
+
+Instead of storing everything in one table:
+--We split the data into following 2 tables:
+
+
+Department:
+
+dept_id	dept_name	location
+10	HR		Delhi
+20	IT		Mumbai
+
+
+Employee:
+
+emp_id	emp_name	dept_id
+101	Ravi		10
+102	Amit		20
+
+
+
+Now redundancy is removed.
+
+
+
+Keys in DBMS
+============
+
+--Before learning Normal Forms, we must understand different types of keys.
+
+
+
+What is a Key?
+
+--A Key is a column or a group of columns used to uniquely identify a record in a table.
+
+
+Example Table: Employee
+
+
+emp_id	emp_name	email		mobile
+101	Ravi		ravi@gmail.com	9876543210
+102	Amit		amit@gmail.com	9876543211
+103	Neha		neha@gmail.com	9876543212
+
+
+Super Key
+---------
+
+--A Super Key is any column or combination of columns that uniquely identifies a row.
+
+Examples
+
+
+emp_id
+email
+mobile
+(emp_id,email)
+(emp_id,mobile)
+(email,mobile)
+(emp_id,email,mobile)
+(emp_id,emp_name,email,mobile)
+
+
+
+--All uniquely identify employees.
+
+Therefore all are Super Keys.
+
+
+
+Important Note:
+
+Every Candidate Key is a Super Key,
+but every Super Key is not a Candidate Key.
+
+
+
+Candidate Key:
+-------------
+
+--A Candidate Key is a minimal Super Key.
+
+Meaning:
+
+--No unnecessary columns should be present.
+
+--A super key is called as a candidate key if there is no proper subset of that super key is itself a super key.
+
+
+Examples:
+
+emp_id
+email
+mobile
+
+--Each alone uniquely identifies a record.
+
+Hence Candidate Keys.
+
+
+
+Non-Candidate Keys:
+
+(emp_id,email)
+
+(emp_id,mobile)
+
+(email,mobile)
+
+--Because extra columns are unnecessary.
+
+
+
+Primary Key
+-----------
+
+--A Candidate Key selected by the DBA or developer to uniquely identify records.
+
+Example
+
+Candidate Keys:
+
+emp_id
+email
+mobile
+
+Choose:
+
+emp_id
+
+as Primary Key.
+
+CREATE TABLE employee
+(
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(20),
+    email VARCHAR(50) UNIQUE
+);
+
+
+
+
+Alternate Key:
+--------------
+
+--Candidate Keys not chosen as Primary Key become Alternate Keys.
+
+Example
+
+Primary Key:
+
+	emp_id
+
+Alternate Keys:
+
+	email
+
+	mobile
+
+
+Composite Key
+-------------
+
+--A Key formed using multiple columns.
+
+Example
+
+Student_Course
+
+student_id	course_id
+101		1
+101		2
+102		1
+
+--Neither column alone is unique.
+
+
+Together:
+
+(student_id,course_id)
+
+becomes unique.
+
+PRIMARY KEY(student_id,course_id)
+
+--This is a Composite Key.
+
+
+
+
+Normal Forms:
+============
+
+--Normalization is performed through Normal Forms.
+
+1NF
+2NF
+3NF
+BCNF
+4NF
+5NF
+
+--In most applications:
+
+1NF + 2NF + 3NF
+
+are sufficient.
+
+
+
+First Normal Form (1NF)
+-----------------------
+
+Rule:
+
+1. Each column must contain atomic values.
+
+2. No repeating groups, like:
+
+| course1 | course2 | course3 |
+
+3. No multivalued columns.
+
+4. All values in a column must be of the same domain (data type).
+
+5. Each row must be unique (requires a primary key).
+
+Not in 1NF:
+
+student_id	student_name	course1 
+101		Ravi		Java,SQL
+
+
+
+--Multiple values stored in one column.
+
+
+Convert to 1NF:
+
+
+student_id	student_name	course
+101		Ravi		Java
+101		Ravi		SQL
+
+--Now every cell contains a single value.
+
+(student_id + course) composite key
+
+
+Second Normal Form (2NF):
+------------------------
+
+Rule:
+
+1. Table must be in 1NF.
+
+2. No Partial Dependency.
+
+Note: If a table has a single-column Primary Key and is in 1NF, it is automatically in 2NF.
+
+If a table having composite primary key then only we need to think about the 2NF..
+
+
+Functional Dependency:
+----------------------
+
+--A column is functionally dependent on another column if its value can be determined using that column.
+
+
+Example:
+
+student_id	student_name
+101		Ravi
+102		Amit
+
+Here:
+
+student_id -> student_name
+
+Meaning:
+
+Knowing student_id,
+we can identify student_name.
+
+
+Types of Dependency:
+-------------------
+
+1. Full Dependency
+2. Partial Dependency
+3. Transitive Dependency
+
+These are the foundation of:
+
+2NF
+3NF
+
+
+Partial Dependency:
+--------------------
+
+--A non-key column depends on only part of a Composite Key.
+
+Example
+
+Consider: The following CourseEnrollment table:
+
+
+student_id	course_id	student_name	course_name
+101		1		Ravi		Java
+101		2		Ravi		Spring
+102		1		Amit		Java
+
+
+Primary Key:
+
+(student_id, course_id)
+
+Composite Key.
+
+
+Observe:
+
+student_name depends only on student_id
+
+course_name depends only on course_id
+
+--Not on the entire composite key.
+
+This is: Partial Dependency
+
+
+Problem:
+
+--Student name repeats.
+
+student_id	student_name
+101		Ravi
+101		Ravi
+
+Duplicate data.
+
+
+Simple Definition of 2NF:
+
+--Every non-key column must depend on the FULL primary key.
+
+
+
+
+Another Example:
+
+Table: EmployeeProject table
+
+
+employee_id	project_id	employee_name
+101		10001		Raj
+101		10002		Raj
+102		10001		Rohit
+103		10002		Rahul
+
+
+
+
+
+Primary Key: (employee_id, project_id)
+
+--This is a Composite Primary Key because both columns together uniquely identify each record.
+
+Problem:
+
+Observe the column: employee_name
+
+The value of employee_name depends only on: employee_id
+
+and not on the complete primary key: (employee_id, project_id)
+
+For example:
+
+employee_id = 101
+
+employee_name = Raj
+
+Regardless of whether the project is:
+
+10001
+or
+10002
+
+--the employee name remains the same.
+
+
+Therefore:
+
+employee_name
+      ↓
+depends only on
+employee_id
+
+and not on the entire composite key.
+
+This is called: Partial Dependency
+
+Hence, the table is not in Second Normal Form (2NF).
+
+
+
+Solution:
+
+--Separate employee information from project assignment information.
+
+
+
+Employee table:
+
+employee_id	employee_name
+101		Raj
+102		Rohit
+103		Rahul		
+
+
+Primary key: employee_id
+
+
+
+employee_project table:
+
+employee_id	project_id
+101		10001
+101		10002
+102		10001
+103		10002
+
+
+Primary Key: (employee_id, project_id)
+
+
+--Now table is in 2NF.
+
+
+
+Benefit
+
+Now: employee_name
+
+is stored only once in the Employee table.
+
+Advantages:
+
+No data redundancy
+No partial dependency
+Better database design
+Table satisfies 2NF
+
+
+
+
+
+
+Third Normal Form (3NF)
+-----------------------
+
+Rule
+
+1. Table must be in 2NF.
+
+2. No Transitive Dependency exists.
+
+
+What is Transitive Dependency?
+
+--A non-key column depends on another non-key column.
+
+
+Example
+
+Employee table:
+
+emp_id	 emp_name  dept_id    dept_name
+101	 Ravi	   1	     IT
+102	 Amit	   2	     HR
+
+
+Primary key: emp_id
+
+
+
+emp_id → dept_id
+
+dept_id → dept_name
+
+Therefore:
+
+emp_id → dept_name
+
+indirectly.
+
+This is called: Transitive Dependency
+
+
+Here:
+
+dept_name
+
+depends on:
+
+dept_id
+
+not directly on Primary Key.
+
+--This is Transitive Dependency.
+
+
+Problem:
+
+--Department Name repeats.
+
+emp_id	dept_name
+101	IT
+103	IT
+105	IT
+
+
+If 'IT' changes to: 'Information Technology'
+
+--multiple rows must be updated.
+
+
+
+Solution:
+---------
+
+
+3NF: 
+
+--Every Non-key columns should depend only on Primary Key.
+
+--Not on another non-key column.
+
+Split the above table into:
+
+Department 
+and
+Employee tables
+
+
+Department:
+
+dept_id		dept_name
+1		IT
+2		HR
+
+
+Employee:
+
+emp_id	emp_name	dept_id
+101	Ravi		1
+102	Amit		2
+
+
+
+--Now 3NF is achieved.
+
+Benefits:
+
+No repeated department names
+Easy updates
+Better consistency
+
+
+
+Real Project Example:
+====================
+
+Bad Design:
+
+
+CustomerPolicy table:
+
+policy_id	customer_id		customer_name	city_name	plan_name
+
+1		1001			N1		Delhi		JeevanJyoti
+2		1001			N1		Delhi		JeevanPrakash
+2		1003			N3		Mumbai		JeevanJyoti
+
+
+Problems:
+
+Customer name repeated
+City repeated
+Plan repeated
+
+Student task: Normalize this table upto 3NF
+
+
+
+
+
+Window Functions:
+=================
+
+
+Suppose management asks:
+
+Show employee ranking based on salary.
+Show top 3 employees from each department.
+Show previous month's sales.
+Show running total of revenue.
+Show next order amount.
+
+Using:
+
+GROUP BY
+Subqueries
+Joins
+
+
+is often difficult.
+
+Solution:
+
+Window Functions
+
+
+
+
+--A Window Function performs calculations across a set of rows that are related to the current row.
+
+Unlike:
+
+GROUP BY
+
+which collapses multiple rows into one row,
+
+a Window Function:
+
+Performs calculations on a group of rows
+But still returns every row
+Does not collapse rows
+
+
+GROUP BY
+---------
+
+Combines rows
+
+Window Functions:
+----------------
+
+Keep all rows
+
+AND
+
+Perform calculations on related rows
+
+
+
+Consider:
+
+CREATE TABLE employee
+(
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(20),
+    salary NUMERIC(10,2),
+    dept_id INT
+);
+INSERT INTO employee VALUES
+(101,'Ravi',50000,1),
+(102,'Amit',60000,1),
+(103,'Neha',70000,2),
+(104,'Rahul',40000,2),
+(105,'Priya',80000,1);
+
+SELECT * FROM employee;
+
+ emp_id | emp_name |  salary  | dept_id
+--------+----------+----------+---------
+    101 | Ravi     | 50000.00 |       1
+    102 | Amit     | 60000.00 |       1
+    103 | Neha     | 70000.00 |       2
+    104 | Rahul    | 40000.00 |       2
+    105 | Priya    | 80000.00 |       1
+
+
+
+Using GROUP BY
+--------------
+
+Suppose we want department-wise average salary.
+
+SELECT dept_id,
+       AVG(salary)
+FROM employee
+GROUP BY dept_id;
+
+ dept_id |        avg
+---------+--------------------
+       2 | 55000.000000000000
+       1 | 63333.333333333333
+
+Notice:
+
+--Original employee rows are gone.
+
+GROUP BY merges rows.
+
+
+What If We Need Both?
+---------------------
+
+Requirement:
+
+Display:
+
+Employee Name
+Employee Salary
+Department Average Salary
+
+
+Example Output:
+
+
+| emp_name | salary | dept_avg |
+| -------- | ------ | -------- |
+| Ravi     | 50000  | 63333    |
+| Amit     | 60000  | 63333    |
+| Priya    | 80000  | 63333    |
+| Neha     | 70000  | 55000    |
+| Rahul    | 40000  | 55000    |
+
+
+
+GROUP BY cannot directly produce this result.
+
+This is where Window Functions help.
+
+
+Window Function:
+----------------
+
+
+SELECT emp_name,
+       salary,
+       AVG(salary)
+       OVER()
+FROM employee;
+
+
+OVER() Clause:
+--------------
+
+--Window functions always use:
+
+OVER()
+
+--It converts a normal aggregate function into a window function.
+
+
+Example:
+
+SELECT emp_name,
+       salary,
+       AVG(salary)
+       OVER()
+FROM employee;
+
+
+--AVG() calculated once
+
+--But every row is still preserved.
+
+
+PARTITION BY:
+------------
+
+Think of PARTITION BY as:
+
+GROUP BY for Window Functions
+
+
+But:
+
+GROUP BY
+    ↓
+Collapses rows
+
+PARTITION BY
+    ↓
+Keeps rows intact
+
+
+
+Example:
+
+Department-wise average salary.
+
+SELECT emp_name,
+       salary,
+       dept_id,
+       AVG(salary)
+       OVER(PARTITION BY dept_id) AS dept_avg
+FROM employee;
+
+Output:
+
+ emp_name |  salary  | dept_id |      dept_avg
+----------+----------+---------+--------------------
+ Ravi     | 50000.00 |       1 | 63333.333333333333
+ Amit     | 60000.00 |       1 | 63333.333333333333
+ Priya    | 80000.00 |       1 | 63333.333333333333
+ Neha     | 70000.00 |       2 | 55000.000000000000
+ Rahul    | 40000.00 |       2 | 55000.000000000000
+
+
+
+
+First Ranking Function: ROW_NUMBER():
+--------------------------------------
+
+
+ROW_NUMBER() assigns:
+
+1
+
+2
+
+3
+
+4
+
+...
+
+to rows.
+
+Every row gets a unique number.
+
+
+Syntax:
+
+ROW_NUMBER()
+OVER(...)
+
+
+
+Example 1
+
+Assign row numbers based on salary.
+
+SELECT emp_name,
+       salary,
+       ROW_NUMBER()
+       OVER(ORDER BY salary DESC) AS rn
+FROM employee;
+
+
+ emp_name |  salary  | rn
+----------+----------+----
+ Priya    | 80000.00 |  1
+ Neha     | 70000.00 |  2
+ Amit     | 60000.00 |  3
+ Ravi     | 50000.00 |  4
+ Rahul    | 40000.00 |  5
+
+
+
+Example2:
+
+SELECT emp_name,
+       salary,
+       ROW_NUMBER()
+       OVER(ORDER BY salary) AS rn
+FROM employee;
+
+
+ emp_name |  salary  | rn
+----------+----------+----
+ Rahul    | 40000.00 |  1
+ Ravi     | 50000.00 |  2
+ Amit     | 60000.00 |  3
+ Neha     | 70000.00 |  4
+ Priya    | 80000.00 |  5
+
+
+
+Real-Time Use Case
+------------------
+
+Find Top 3 Highest Paid Employees.
+
+WITH emp_rank AS
+(
+    SELECT emp_name,
+           salary,
+           ROW_NUMBER()
+           OVER(ORDER BY salary DESC) rn
+    FROM employee
+)
+SELECT *
+FROM emp_rank
+WHERE rn <= 3;
+
+
+
+ emp_name |  salary  | rn
+----------+----------+----
+ Priya    | 80000.00 |  1
+ Neha     | 70000.00 |  2
+ Amit     | 60000.00 |  3
+
+
+ROW_NUMBER() with PARTITION BY:
+-------------------------------
+
+Requirement:
+
+Find Top Salary Employee
+from each Department
+
+
+SELECT emp_name,
+       salary,
+       dept_id,
+       ROW_NUMBER()
+       OVER
+       (
+           PARTITION BY dept_id
+           ORDER BY salary DESC
+       ) rn
+FROM employee;
+
+
+ emp_name |  salary  | dept_id | rn
+----------+----------+---------+----
+ Priya    | 80000.00 |       1 |  1
+ Amit     | 60000.00 |       1 |  2
+ Ravi     | 50000.00 |       1 |  3
+ Neha     | 70000.00 |       2 |  1
+ Rahul    | 40000.00 |       2 |  2
+
+Example2: 
+
+Highest Salary Employee Per Department
+
+
+WITH ranked_emp AS
+(
+    SELECT emp_name,
+           salary,
+           dept_id,
+           ROW_NUMBER()
+           OVER
+           (
+               PARTITION BY dept_id
+               ORDER BY salary DESC
+           ) rn
+    FROM employee
+)
+SELECT *
+FROM ranked_emp
+WHERE rn = 1;
+
+
+
+ emp_name |  salary  | dept_id | rn
+----------+----------+---------+----
+ Priya    | 80000.00 |       1 |  1
+ Neha     | 70000.00 |       2 |  1
+
+
+
+
+RANK() and DENSE_RANK() function:
+----------------------------------
+
+These functions are commonly used in:
+
+Leaderboards
+Top N Reports
+Salary Rankings
+Competition Rankings
+Employee Performance Reports
+
+
+DROP TABLE employee;
+
+
+CREATE TABLE employee
+(
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(20),
+    salary NUMERIC(10,2)
+);
+
+INSERT INTO employee VALUES
+(101,'Ravi',80000),
+(102,'Amit',70000),
+(103,'Neha',70000),
+(104,'Rahul',60000),
+(105,'Priya',50000);
+
+SELECT * FROM employee;
+
+
+
+emp_id | emp_name |  salary
+--------+----------+----------
+    101 | Ravi     | 80000.00
+    102 | Amit     | 70000.00
+    103 | Neha     | 70000.00
+    104 | Rahul    | 60000.00
+    105 | Priya    | 50000.00
+
+
+
+Notice:
+
+Amit and Neha have the same salary.
+
+Now the question is:
+
+Should they get the same rank?
+
+OR
+
+Different ranks?
+
+This is where:
+
+RANK()
+DENSE_RANK()
+
+become useful.
+
+
+
+Problem with ROW_NUMBER()
+-------------------------
+
+
+SELECT emp_name,
+       salary,
+       ROW_NUMBER()
+       OVER(ORDER BY salary DESC) AS rn
+FROM employee;
+
+
+ emp_name |  salary  | rn
+----------+----------+----
+ Ravi     | 80000.00 |  1
+ Amit     | 70000.00 |  2
+ Neha     | 70000.00 |  3
+ Rahul    | 60000.00 |  4
+ Priya    | 50000.00 |  5
+
+
+Notice:
+
+Amit and Neha have the same salary
+
+But got different numbers.
+
+Sometimes this is not what we want.
+
+
+
+RANK() assigns the same rank to equal values.
+
+However:
+
+After a tie,
+
+it skips rank numbers.
+
+Syntax:
+
+RANK()
+OVER(ORDER BY column_name)
+
+
+Example:
+
+SELECT emp_name,
+       salary,
+       RANK()
+       OVER(ORDER BY salary DESC) AS rank_no
+FROM employee;
+
+
+Output:
+
+
+ emp_name |  salary  | rank_no
+----------+----------+---------
+ Ravi     | 80000.00 |       1
+ Amit     | 70000.00 |       2
+ Neha     | 70000.00 |       2
+ Rahul    | 60000.00 |       4
+ Priya    | 50000.00 |       5
+
+
+
+
+Notice:
+
+Rank 3 is missing.
+
+Why?
+
+Because:
+
+Amit and Neha both occupied Rank 2.
+
+Therefore Rank 3 is skipped.
+
+
+
+DENSE_RANK():
+-------------
+
+DENSE_RANK() assigns the same rank to equal values.
+
+But:
+
+No ranks are skipped.
+
+Syntax:
+
+DENSE_RANK()
+OVER(ORDER BY column_name)
+
+Example:
+
+SELECT emp_name,
+       salary,
+       DENSE_RANK()
+       OVER(ORDER BY salary DESC) AS dense_rank_no
+FROM employee;
+
+
+emp_name |  salary  | dense_rank_no
+----------+----------+---------------
+ Ravi     | 80000.00 |             1
+ Amit     | 70000.00 |             2
+ Neha     | 70000.00 |             2
+ Rahul    | 60000.00 |             3
+ Priya    | 50000.00 |             4
+
+
+No rank numbers are skipped.
+
+
+ROW_NUMBER(): 
+
+Everybody gets a unique number.
+
+1
+2
+3
+4
+5
+
+
+RANK():
+
+Same value = Same rank
+But gaps appear.
+
+1
+2
+2
+4
+5
+
+DENSE_RANK():
+
+Same value = Same rank
+No gaps.
+
+1
+2
+2
+3
+4
+
+
+
+When Should We Use Which One?
+-----------------------------
+
+Use ROW_NUMBER()
+
+When:
+
+Every row must be unique.
+
+
+Examples:
+
+Pagination
+Latest Order
+Latest Login Record
+Top 1 Record
+
+
+Use RANK()
+
+When:
+
+Competition style ranking is required.
+
+Examples:
+
+Sports Rankings
+Exam Rankings
+Leaderboards
+
+
+
+Use DENSE_RANK()
+
+When:
+
+Continuous rankings are required.
+
+Examples:
+
+Top 3 Salaries
+Top 5 Products
+Business Reports
+
+
+
+
+
+
+NTILE():
+========
+
+--Dividing Data into Buckets(Groups)
+
+--NTILE() divides rows into a specified number of groups (buckets).
+
+Think of it as:
+
+"Divide the data into N equal parts"
+
+Syntax:
+
+NTILE(number_of_buckets)
+OVER(ORDER BY column_name)
+
+
+Real-Life Example
+-----------------
+
+Suppose a company has:
+
+100 Employees
+
+and management wants to divide them into:
+
+Top 25%
+Middle 25%
+Lower 25%
+Bottom 25%
+
+Instead of manually calculating:
+
+1-25
+26-50
+51-75
+76-100
+
+--SQL can do it automatically using:
+
+NTILE(4)
+
+
+Example Employee Table:
+------------------------
+
+TRUNCATE TABLE employee;
+
+
+INSERT INTO employee VALUES
+(101,'Ravi',50000),
+(102,'Amit',60000),
+(103,'Neha',70000),
+(104,'Rahul',40000),
+(105,'Priya',80000),
+(106, 'Ankit',55000),
+(107, 'Pooja',65000),
+(108, 'Karan',45000);
+
+SELECT * FROM employee;
+
+
+
+
+
+ emp_id | emp_name |  salary
+--------+----------+----------
+    101 | Ravi     | 50000.00
+    102 | Amit     | 60000.00
+    103 | Neha     | 70000.00
+    104 | Rahul    | 40000.00
+    105 | Priya    | 80000.00
+    106 | Ankit    | 55000.00
+    107 | Pooja    | 65000.00
+    108 | Karan    | 45000.00
+
+
+Example 1: Divide Employees into 4 Groups:
+
+
+SELECT emp_name,
+       salary,
+       NTILE(4)
+       OVER(ORDER BY salary DESC) AS bucket
+FROM employee;
+
+
+
+
+ emp_name |  salary  | bucket
+----------+----------+--------
+ Priya    | 80000.00 |      1
+ Neha     | 70000.00 |      1
+ Pooja    | 65000.00 |      2
+ Amit     | 60000.00 |      2
+ Ankit    | 55000.00 |      3
+ Ravi     | 50000.00 |      3
+ Karan    | 45000.00 |      4
+ Rahul    | 40000.00 |      4
+
+
+
+
+How Does NTILE(4) Work?
+-----------------------
+
+Step 1: Sort data
+
+80000
+70000
+65000
+60000
+55000
+50000
+45000
+40000
+
+Step 2: Divide into 4 equal buckets
+
+Bucket 1 → Top 2 rows
+
+Bucket 2 → Next 2 rows
+
+Bucket 3 → Next 2 rows
+
+Bucket 4 → Last 2 rows
+
+
+Visual Representation:
+---------------------
+
+Bucket 1
+---------
+Priya
+Neha
+
+Bucket 2
+---------
+Pooja
+Amit
+
+Bucket 3
+---------
+Ankit
+Ravi
+
+Bucket 4
+---------
+Karan
+Rahul
+
+
+
+Why NTILE() is Useful?
+----------------------
+
+Suppose management asks:
+
+Show Top 25% Employees
+
+Instead of calculating manually:
+
+WITH ranked_emp AS
+(
+    SELECT emp_name,
+           salary,
+           NTILE(4)
+           OVER(ORDER BY salary DESC) AS bucket
+    FROM employee
+)
+SELECT *
+FROM ranked_emp
+WHERE bucket = 1;
+
+
+ emp_name |  salary  | bucket
+----------+----------+--------
+ Priya    | 80000.00 |      1
+ Neha     | 70000.00 |      1
+
+
+
+
+Example 2: Divide into 2 Groups
+
+SELECT emp_name,
+       salary,
+       NTILE(2)
+       OVER(ORDER BY salary DESC) AS grp
+FROM employee;
+
+
+ emp_name |  salary  | grp
+----------+----------+-----
+ Priya    | 80000.00 |   1
+ Neha     | 70000.00 |   1
+ Pooja    | 65000.00 |   1
+ Amit     | 60000.00 |   1
+ Ankit    | 55000.00 |   2
+ Ravi     | 50000.00 |   2
+ Karan    | 45000.00 |   2
+ Rahul    | 40000.00 |   2
+
+
+Interpretation:
+
+Group 1 → Top Half
+
+Group 2 → Bottom Half
+
+
+
+What If Rows Are Not Divisible Equally?
+---------------------------------------
+
+Suppose:
+
+10 Rows
+
+NTILE(4)
+
+Calculation:
+
+10 / 4 = 2.5
+
+SQL distributes extra rows starting from Bucket 1.
+
+Example:
+
+Bucket 1 → 3 Rows
+Bucket 2 → 3 Rows
+Bucket 3 → 2 Rows
+Bucket 4 → 2 Rows
+
+
+NTILE() with PARTITION BY
+-------------------------
+
+Requirement:
+
+Divide employees into salary buckets
+within each department.
+
+Employee Data:
+
+| emp_name | salary | dept_id |
+| -------- | ------ | ------- |
+| Ravi     | 50000  | 1       |
+| Amit     | 60000  | 1       |
+| Priya    | 80000  | 1       |
+| Neha     | 70000  | 2       |
+| Rahul    | 40000  | 2       |
+| Ankit    | 55000  | 2       |
+
+
+
+
+SELECT emp_name,
+       salary,
+       dept_id,
+       NTILE(2)
+       OVER
+       (
+           PARTITION BY dept_id
+           ORDER BY salary DESC
+       ) AS bucket
+FROM employee;
+
+
+Output:
+
+Department 1:
+
+| Employee | Salary | Bucket |
+| -------- | ------ | ------ |
+| Priya    | 80000  | 1      |
+| Amit     | 60000  | 1      |
+| Ravi     | 50000  | 2      |
+
+Department 2:
+
+| Employee | Salary | Bucket |
+| -------- | ------ | ------ |
+| Neha     | 70000  | 1      |
+| Ankit    | 55000  | 1      |
+| Rahul    | 40000  | 2      |
+
+
+
+LEAD() and LAG():
+----------------
+
+These are heavily used in:
+
+Salary Comparison
+Monthly Sales Reports
+Stock Market Analysis
+Audit Logs
+Employee Promotion History
+Time Series Analysis
+
+
+
+Suppose we have the following employee data:
+
+
+| emp_id | emp_name | salary |
+| ------ | -------- | ------ |
+| 101    | Ravi     | 50000  |
+| 102    | Amit     | 60000  |
+| 103    | Neha     | 70000  |
+| 104    | Rahul    | 80000  |
+| 105    | Priya    | 90000  |
+
+
+
+Requirement:
+
+Show each employee's salary
+along with the previous employee's salary.
+
+
+Desired Output:
+
+
+| emp_name | salary | previous_salary |
+| -------- | ------ | --------------- |
+| Ravi     | 50000  | NULL            |
+| Amit     | 60000  | 50000           |
+| Neha     | 70000  | 60000           |
+| Rahul    | 80000  | 70000           |
+| Priya    | 90000  | 80000           |
+
+
+
+Before Window Functions, developers often used:
+
+Self Join
+
+which becomes complex.
+
+SQL introduced:
+
+LAG()
+
+to solve this problem easily.
+
+
+LAG() returns a value from a previous row.
+
+
+Think:
+
+LAG
+ ↓
+Look Back
+
+Syntax:
+
+LAG(column_name)
+OVER(ORDER BY column_name)
+
+
+SELECT emp_name,
+       salary,
+       LAG(salary)
+       OVER(ORDER BY salary) AS previous_salary
+FROM employee;
+
+| emp_name | salary | previous_salary |
+| -------- | ------ | --------------- |
+| Ravi     | 50000  | NULL            |
+| Amit     | 60000  | 50000           |
+| Neha     | 70000  | 60000           |
+| Rahul    | 80000  | 70000           |
+| Priya    | 90000  | 80000           |
+
+
+
+LAG with Difference Calculation:
+------------------------------
+
+Requirement:
+
+Show salary increase compared
+to previous employee.
+
+
+SELECT emp_name,
+       salary,
+       salary -
+       LAG(salary)
+       OVER(ORDER BY salary)
+       AS difference
+FROM employee;
+
+
+| emp_name | salary | difference |
+| -------- | ------ | ---------- |
+| Ravi     | 50000  | NULL       |
+| Amit     | 60000  | 10000      |
+| Neha     | 70000  | 10000      |
+| Rahul    | 80000  | 10000      |
+| Priya    | 90000  | 10000      |
+
+
+LEAD():
+------
+
+LEAD() returns a value from the next row.
+
+Think:
+
+LEAD
+ ↓
+Look Ahead
+
+
+Syntax:
+
+LEAD(column_name)
+OVER(ORDER BY column_name)
+
+Example:
+
+SELECT emp_name,
+       salary,
+       LEAD(salary)
+       OVER(ORDER BY salary) AS next_salary
+FROM employee;
+
+
+| emp_name | salary | next_salary |
+| -------- | ------ | ----------- |
+| Ravi     | 50000  | 60000       |
+| Amit     | 60000  | 70000       |
+| Neha     | 70000  | 80000       |
+| Rahul    | 80000  | 90000       |
+| Priya    | 90000  | NULL        |
+
+
+SUM():
+======
+
+Suppose we have a sales table:
+
+
+CREATE TABLE sales
+(
+    sale_id INT,
+    sale_date DATE,
+    amount NUMERIC(10,2)
+);
+
+INSERT INTO sales VALUES
+(1,'2025-01-01',1000),
+(2,'2025-01-02',2000),
+(3,'2025-01-03',1500),
+(4,'2025-01-04',2500),
+(5,'2025-01-05',1000);
+
+
+SELECT * FROM sales;
+
+
+ sale_id | sale_date  | amount
+---------+------------+---------
+       1 | 2025-01-01 | 1000.00
+       2 | 2025-01-02 | 2000.00
+       3 | 2025-01-03 | 1500.00
+       4 | 2025-01-04 | 2500.00
+       5 | 2025-01-05 | 1000.00
+
+
+
+
+Requirement
+-----------
+
+Display:
+
+Today's Amount
+
+Running Total Till Today
+
+
+Expected Output:
+
+| Date | Amount | Running Total |
+| ---- | ------ | ------------- |
+| Day1 | 1000   | 1000          |
+| Day2 | 2000   | 3000          |
+| Day3 | 1500   | 4500          |
+| Day4 | 2500   | 7000          |
+| Day5 | 1000   | 8000          |
+
+
+
+
+Traditional Approach (Difficult)
+--------------------------------
+
+Before Window Functions, developers often used:
+
+Self Join
+
+or
+
+Correlated Subquery
+
+Example:
+
+SELECT s1.sale_date,
+       s1.amount,
+       (
+           SELECT SUM(s2.amount)
+           FROM sales s2
+           WHERE s2.sale_date <= s1.sale_date
+       ) AS running_total
+	FROM sales s1;
+
+Works, but:
+
+Slow
+Hard to read
+Hard to maintain
+
+Solution: Window Function
+-------------------------
+
+
+
+SELECT sale_date,
+       amount,
+       SUM(amount)
+       OVER
+       (
+           ORDER BY sale_date
+       ) AS running_total
+FROM sales;
+
+
+
+PARTITION BY with SUM():
+------------------------
+
+Requirement:
+
+Running Total
+Within Each Department
+
+Employee Data:
+
+
+| emp_name | salary | dept_id |
+| -------- | ------ | ------- |
+| Ravi     | 50000  | 1       |
+| Amit     | 60000  | 1       |
+| Priya    | 80000  | 1       |
+| Rahul    | 40000  | 2       |
+| Neha     | 70000  | 2       |
+
+
+
+SELECT emp_name,
+       dept_id,
+       salary,
+       SUM(salary)
+       OVER
+       (
+           PARTITION BY dept_id
+           ORDER BY salary
+       ) AS running_total
+FROM employee;
+
+
+
+Output:
+
+
+Department 1
+
+| Employee | Salary | Running Total |
+| -------- | ------ | ------------- |
+| Ravi     | 50000  | 50000         |
+| Amit     | 60000  | 110000        |
+| Priya    | 80000  | 190000        |
+
+
+Department 2
+
+| Employee | Salary | Running Total |
+| -------- | ------ | ------------- |
+| Rahul    | 40000  | 40000         |
+| Neha     | 70000  | 110000        |
+
+
+Notice:
+
+Running Total restarts
+for every department.
+
+
+
+
+
+Business Use Case
+-----------------
+
+Suppose:
+
+Bank Transactions
+
+| Date | Amount |
+| ---- | ------ |
+| Day1 | 1000   |
+| Day2 | 2000   |
+| Day3 | -500   |
+| Day4 | 1500   |
+
+
+
+SELECT txn_date,
+       amount,
+       SUM(amount)
+       OVER(ORDER BY txn_date)
+       AS account_balance
+FROM transactions;
+
+
+
+| Date | Balance |
+| ---- | ------- |
+| Day1 | 1000    |
+| Day2 | 3000    |
+| Day3 | 2500    |
+| Day4 | 4000    |
+
+
+
+EXPLAIN and EXPLAIN ANALYZE:
+============================
+
+Up to now, we have learned how to write SQL queries.
+
+But in real projects, writing a query is only half the job.
+
+The second half is:
+
+How efficiently is the query executing?
+
+
+For example:
+
+SELECT *
+FROM employee
+WHERE emp_id=101;
+
+The query may return the correct result.
+
+But:
+
+Did PostgreSQL scan 1 row?
+
+or
+
+Did PostgreSQL scan 10 million rows?
+
+Both queries may return the same output, but performance will be drastically different.
+
+
+
+To understand how PostgreSQL executes a query, we use:
+
+EXPLAIN
+
+EXPLAIN ANALYZE
+
+
+Suppose a table contains:
+
+10 rows
+
+Everything feels fast.
+
+Now imagine:
+
+10 million rows
+
+A poorly written query may take:
+
+10 seconds
+30 seconds
+2 minutes
+
+
+To diagnose performance issues, PostgreSQL provides:
+
+EXPLAIN
+
+which shows:
+
+Execution Plan
+
+
+
+Think of it as:
+
+Google Maps Route
+
+Before traveling, Google Maps shows:
+
+Roads
+Turns
+Distance
+Traffic
+
+Similarly:
+
+EXPLAIN
+
+shows:
+
+Scans
+Indexes
+Joins
+
+
+
+Sample Table
+------------
+
+CREATE TABLE employee
+(
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(30),
+    salary NUMERIC(10,2),
+    dept_id INT
+);
+
+
+INSERT INTO employee VALUES
+(101,'Ravi',50000,1),
+(102,'Amit',60000,1),
+(103,'Neha',70000,2),
+(104,'Rahul',40000,2);
+
+
+SELECT * FROM employee;
+
+ emp_id | emp_name |  salary  | dept_id
+--------+----------+----------+---------
+    101 | Ravi     | 50000.00 |       1
+    102 | Amit     | 60000.00 |       1
+    103 | Neha     | 70000.00 |       2
+    104 | Rahul    | 40000.00 |       2
+
+
+
+EXPLAIN
+SELECT *
+FROM employee
+WHERE emp_id = 101;
+
+Output:
+
+
+                                   QUERY PLAN
+--------------------------------------------------------------------------------
+ Index Scan using employee_pkey on employee  (cost=0.15..8.17 rows=1 width=102)
+   Index Cond: (emp_id = 101)
+
+
+
+This means:
+
+PostgreSQL will use an Index
+to find the row.
+
+Important Point:
+
+
+EXPLAIN
+
+does NOT execute the query.
+
+It only shows: Execution Plan
+
+Think: Plan Only
+
+
+EXPLAIN ANALYZE
+---------------
+
+Now:
+
+EXPLAIN ANALYZE
+SELECT *
+FROM employee
+WHERE emp_id = 101;
+
+
+Output:
+
+
+                                                         QUERY PLAN
+-----------------------------------------------------------------------------------------------------------------------------
+ Index Scan using employee_pkey on employee  (cost=0.15..8.17 rows=1 width=102) (actual time=0.078..0.080 rows=1.00 loops=1)
+   Index Cond: (emp_id = 101)
+   Index Searches: 1
+   Buffers: shared hit=2
+ Planning Time: 0.132 ms
+ Execution Time: 0.107 ms
+
+
+
+
+Interpretation:
+
+Used Primary Key Index
+
+Expected Rows = 1
+
+Actual Rows = 1
+
+Planning Time = 0.132 ms
+
+Execution Time = 0.107 ms
+
+
+
+
+
+
+| EXPLAIN              | EXPLAIN ANALYZE |
+| -------------------- | --------------- |
+| Shows estimated plan | Executes query  |
+| Estimated values     | Actual values   |
+| No execution         | Executes query  |
+
+
+
+
+EXPLAIN
+     ↓
+Prediction
+
+EXPLAIN ANALYZE
+     ↓
+Reality
+
+
+
+
+Understanding Cost
+------------------
+
+--When PostgreSQL generates an execution plan, it estimates how much work is required to execute a query.
+
+Example:
+
+(cost=0.15..8.17)
+
+Meaning:
+
+Startup Cost = 0.15
+Total Cost = 8.17
+
+Important Note:
+
+--Cost is NOT milliseconds (ms).
+
+--It is an internal unit used by PostgreSQL to compare different execution plans.
+
+
+Startup Cost:
+
+How much work PostgreSQL must do
+before returning the FIRST row.
+
+
+
+Example:
+
+Reading/Locating index
+Preparing sort
+Initializing join (Find the matching entry)
+
+Startup Cost = 0.15
+
+Meaning:
+
+Very little work needed
+before first row appears.
+
+
+
+Total Cost:
+
+Estimated work required
+to return ALL rows.
+
+Example:
+
+cost = 0.15..8.17
+
+means:
+
+0.15 cost to start
+
+8.17 cost to finish entire query
+
+
+
+
+
+
+
+Understanding Rows
+------------------
+
+Example:
+
+rows=1
+
+means:
+
+PostgreSQL expects
+1 row.
+
+Example:
+
+rows=100000
+
+means:
+
+
+PostgreSQL expects
+100,000 rows.
+
+
+
+Understanding Width
+-------------------
+
+Example:
+
+width=44
+
+means:
+
+Estimated row size
+
+44 bytes
+
+
+
+Sequential Scan (Seq Scan):
+--------------------------
+
+EXPLAIN
+SELECT *
+FROM employee
+WHERE salary = 50000;
+
+
+What is Seq Scan?
+
+Sequential Scan
+
+Reads table row by row
+from beginning to end.
+
+Think:
+
+Searching a name
+in an unsorted notebook.
+
+You must:
+
+Check every page.
+
+
+
+Seq Scan vs Index Scan:
+----------------------
+
+| Seq Scan               | Index Scan               |
+| ---------------------- | ------------------------ |
+| Reads table row by row | Uses index               |
+| Good for small tables  | Good for large tables    |
+| No index needed        | Requires index           |
+| Slower on large data   | Faster on selective data |
+
+
+Planning Time vs Execution Time
+-------------------------------
+
+
+Example:
+
+Planning Time: 0.250 ms
+
+Execution Time: 12.500 ms
+
+
+
+
+Planning Time
+
+Time spent deciding:
+
+Which index?
+Which join?
+Which scan?
+
+Think:
+
+Planning Route
+
+
+Execution Time
+
+Actual time spent:
+
+Reading data
+
+Think:
+
+Travel Time
+
+
+
+
+Index in DBMS:
+================
+
+--An Index is a special database object that helps the database locate rows quickly without scanning the entire table.
+
+Think of an index like the index section of a book.
+
+Without an index:
+
+Read page by page to find a topic.
+
+With an index:
+
+Look at the index and directly jump to the required page.
+
+Similarly, a database index helps in faster data retrieval.
+
+
+
+Suppose we have the following table:
+
+CREATE TABLE employee
+(
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(20),
+    salary NUMERIC(10,2)
+);
+
+
+
+
+
+Query:
+
+SELECT *
+FROM employee
+WHERE emp_id = 101;
+
+Without an index:
+
+Database scans rows one by one.
+
+This is called: Sequential Scan (Seq Scan)
+
+
+
+With an index:
+
+Database directly locates the required row.
+
+This is called: Index Scan
+
+
+Creating an Index:
+------------------
+
+Syntax:
+
+CREATE INDEX index_name
+ON table_name(column_name);
+
+
+
+Example:
+
+CREATE INDEX idx_employee_salary
+ON employee(salary);
+
+
+Now PostgreSQL creates a separate structure:
+
+50000 -> Row Location
+
+60000 -> Row Location
+
+70000 -> Row Location
+
+80000 -> Row Location
+
+When searching:
+
+SELECT *
+FROM employee
+WHERE salary = 70000;
+
+PostgreSQL can jump directly.
+
+
+
+
+--Now queries filtering by salary can execute faster.
+
+
+Default Index Type in PostgreSQL:
+
+
+The default index type is: B-Tree Index
+
+--It efficiently supports:
+
+=
+>
+<
+>=
+<=
+BETWEEN
+ORDER BY
+
+Example:
+
+SELECT *
+FROM employee
+WHERE salary > 50000;
+
+
+Primary Key and Index
+
+--Whenever a Primary Key is created:
+
+CREATE TABLE employee
+(
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(20)
+);
+
+PostgreSQL automatically creates a:
+
+Unique B-Tree Index
+
+for the primary key column.
+
+
+Note: A UNIQUE constraint also automatically creates a unique B-Tree index.
+
+
+
+
+Composite (Multi-Column) Index:
+--------------------------------
+
+--An index can be created on multiple columns.
+
+Example:
+
+CREATE INDEX idx_dept_salary
+ON employee(dept_id, salary);
+
+Useful for queries like:
+
+SELECT *
+FROM employee
+WHERE dept_id = 10
+AND salary = 50000;
+
+
+
+Benefits of Indexes:
+--------------------
+
+
+Faster data retrieval.
+Improves performance of WHERE clauses.
+Improves JOIN operations.
+Helps ORDER BY and GROUP BY.
+Reduces query execution time on large tables.
+
+
+
+
+Drawbacks of Indexes:
+---------------------
+
+Indexes are not free.
+
+They require:
+
+Additional disk space.
+Extra maintenance during INSERT.
+Extra maintenance during UPDATE.
+Extra maintenance during DELETE.
+
+--Too many indexes can slow down DML operations.
+
+
+Good Candidates for Indexing
+
+Columns frequently used in:
+
+WHERE
+JOIN
+ORDER BY
+GROUP BY
+
+Examples:
+
+email
+emp_id
+dept_id
+created_date
+
+
+
+
+Checking Whether an Index Is Used
+
+Use:
+
+EXPLAIN ANALYZE
+SELECT *
+FROM employee
+WHERE emp_id = 101;
+
+Good sign:
+
+Index Scan
+
+Warning sign on large tables:
+
+Seq Scan
 
 
 

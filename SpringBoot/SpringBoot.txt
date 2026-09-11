@@ -6807,7 +6807,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
 
-Step 9: Desing the controller layer:
+Step 9: Design the controller layer:
 -------------------------------------
 
 --Create a EmployeeController class to handle the client request inside the: "com.hdfc.controller" package
