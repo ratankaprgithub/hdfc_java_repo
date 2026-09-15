@@ -1,0 +1,5781 @@
+Connecting Spring Boot with PostgreSQL:
+=======================================
+
+
+--To connect a Spring Boot application with any Relational Database Management System (RDBMS), we need a few essential configurations. 
+
+--Spring Boot uses JDBC (Java Database Connectivity) to establish communication between the application and the database.
+
+
+1. JDBC Driver:
+---------------
+
+What is JDBC?
+
+--JDBC (Java Database Connectivity) is a standard Java API that allows any Java applications to communicate with different relational databases in a uniform way.
+
+Why do we need a JDBC Driver?
+
+--Each database vendor provides its own JDBC driver implementation. The driver acts as a bridge between the Java application and the database.
+
+--These JDBC driver software comes in the form of a jar file. 
+
+
+Examples of JDBC Drivers:
+
+
+| Database   | JDBC Driver Artifact / JAR Name                         |
+| ---------- | ------------------------------------------------------- |
+| PostgreSQL | postgresql (postgresql-<version>.jar)                   |
+| MySQL      | mysql-connector-j (mysql-connector-j-<version>.jar)     |
+| Oracle     | ojdbc11 or ojdbc8 (ojdbc11-<version>.jar)               |
+| SQL Server | mssql-jdbc (mssql-jdbc-<version>.jar)                   |
+
+
+
+--In a Spring Boot project, these driver related jar files are usually added through Maven or Gradle dependencies, so we do not need to manually download JAR files.
+
+
+
+2. Database Connection URL:
+----------------------------
+
+The JDBC URL specifies:
+
+Database type
+Hostname/IP Address
+Port Number
+Database Name
+
+
+PostgreSQL JDBC URL Format:
+
+jdbc:postgresql://<host>:<port>/<database_name>
+
+Example:
+
+jdbc:postgresql://localhost:5432/appdb
+
+
+
+Where:
+
+localhost -> Database server location
+5432 -> Default PostgreSQL port
+appdb -> Database name
+
+
+3. Database Username:
+---------------------
+
+--The username is required for authentication.
+
+postgres
+
+
+
+4. Database Password:
+--------------------
+
+--The password associated with the database user.
+
+root
+
+
+5. JDBC Driver Class Name (Optional)
+-------------------------------------
+
+--Every database related driver jar file have one main class is there.
+
+--Spring Boot can automatically detect the appropriate JDBC driver if the dependency is available in the classpath.
+
+Therefore, specifying the driver class name is usually optional.
+
+Example:
+
+PostgreSQL : org.postgresql.Driver
+MySQL      : com.mysql.cj.jdbc.Driver
+Oracle     : oracle.jdbc.OracleDriver
+SQL Server : com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+
+Steps to Connect Spring Boot with PostgreSQL:
+=============================================
+
+Step 1: Create a PostgreSQL Database
+
+Open PostgreSQL terminal (psql) and execute:
+
+CREATE DATABASE flywaydb;
+
+Connect to the database:
+
+\c flywaydb
+
+
+
+Step 2: Create a Spring Boot Project: SpringBootDatabaseDemo
+
+--Create a Spring Boot project with the following dependencies:
+
+Spring Web
+PostgreSQL Driver
+Spring Data JPA (optional, if working with JPA/Hibernate)
+Flyway Migration (if database versioning is required)
+
+
+Step 3: Configure Database Properties:
+
+
+Add the following configuration in application.properties:
+
+# Database Connection
+spring.datasource.url=jdbc:postgresql://localhost:5432/flywaydb
+spring.datasource.username=postgres
+spring.datasource.password=root
+
+# Optional Driver Class
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+
+corresponding yml file:
+
+application.yml:
+---------------
+
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/flywaydb
+    username: postgres
+    password: admin123
+#  driver-class-name: org.postgresql.Driver
+
+
+
+
+Step 4: Start the Application:
+
+--When the Spring Boot application starts:
+
+Spring Boot reads the datasource configuration.
+Loads the PostgreSQL JDBC driver.
+Creates a database connection pool.
+Makes the connection available to JPA, Hibernate, Flyway, or JDBC APIs.
+
+--If the configuration is correct, the application starts successfully and connects to PostgreSQL.
+
+--If there is a connection issue, Spring Boot will fail during startup with exceptions such as:
+
+Failed to obtain JDBC Connection
+Connection refused
+FATAL: password authentication failed
+Database does not exist
+
+
+
+SQL Script Files:
+=================
+
+--An SQL Script File is a text file that contains one or more SQL statements. 
+--These files are used to create :
+database objects, 
+insert data, 
+update records, 
+
+or perform database migrations automatically.
+
+Common file extensions:
+
+.sql
+
+
+Why Use SQL Script Files?
+
+Automate database creation and setup.
+Maintain database changes in version control systems (Git).
+Ensure all developers and environments use the same database structure.
+Support database migrations through tools such as Flyway and Liquibase.
+
+
+Example 1: Create Table Script
+
+create_employee.sql
+
+CREATE TABLE employee (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    salary NUMERIC(10,2)
+);
+
+--This script creates an employee table in the database.
+
+
+Example 2: Insert Data Script
+
+insert_employee.sql
+
+INSERT INTO employee(name, salary)
+VALUES ('Rahul', 50000);
+
+INSERT INTO employee(name, salary)
+VALUES ('Amit', 60000);
+
+--This script inserts sample data into the table.
+
+
+SQL Script Files in Spring Boot:
+--------------------------------
+
+--Spring Boot can execute SQL scripts automatically during application startup.
+
+Common files:
+
+src/main/resources/schema.sql
+src/main/resources/data.sql
+
+
+schema.sql
+
+--Used to create database objects.
+
+CREATE TABLE employee (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+
+data.sql
+
+--Used to insert initial data.
+
+INSERT INTO employee(name)
+VALUES ('Rahul');
+
+
+SQL Script Files with Flyway:
+-----------------------------
+
+--Flyway stores migration scripts in:
+
+src/main/resources/db/migration
+
+Example:
+
+V1__create_employee_table.sql
+V2__insert_employee_data.sql
+
+--When the application starts, Flyway executes these scripts in version order.
+
+
+
+Introduction to Flyway:
+=======================
+
+--Imagine 10 developers are working on the same project.
+
+Developer A creates:
+
+CREATE TABLE employee(
+    id INT PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+
+After 2 days Developer B adds:
+
+ALTER TABLE employee
+ADD COLUMN email VARCHAR(100);
+
+After 1 week Developer C adds:
+
+ALTER TABLE employee
+ADD COLUMN salary NUMERIC(10,2);
+
+
+Now a new developer joins the team: 
+
+Question:
+
+--How will he know which SQL scripts must be executed and in what order?
+
+Without Flyway:
+
+create_table.sql
+new_table.sql
+employee_final.sql
+employee_latest_final.sql
+employee_latest_final_v2.sql
+
+
+Flyway solves this problem.
+
+Think of Flyway as:
+
+Git for Database Schema
+
+--Just as Git tracks source code versions, Flyway tracks database versions.
+
+
+Flyway ensures:
+
+V1
+ ↓
+V2
+ ↓
+V3
+ ↓
+V4
+
+
+What is Flyway?
+
+--Flyway is a database migration tool.
+
+It helps us:
+
+Create schema
+Modify schema
+Maintain schema versions
+Automatically execute SQL scripts
+
+--during application startup.
+
+
+Flyway Workflow:
+----------------
+
+Spring Boot Application
+            |
+            v
+         Flyway
+            |
+            v
+     Migration Scripts
+            |
+            v
+       PostgreSQL
+
+
+
+When Spring Boot starts:
+
+Step 1:
+
+--Connect to PostgreSQL
+
+Step 2:
+
+--Check Flyway history table
+
+Step 3:
+
+--Find pending migrations
+
+Step 4:
+
+--Execute them
+
+Step 5:
+
+--Mark them as completed
+
+
+Flyway Internal Table:
+----------------------
+
+--Flyway automatically creates the following table:
+
+flyway_schema_history
+
+Example:
+
+
+| installed_rank | version | description     |
+| -------------- | ------- | --------------- |
+| 1              | 1       | create_employee |
+| 2              | 2       | add_email       |
+| 3              | 3       | add_salary      |
+
+
+This table tells Flyway:
+
+Which migrations already executed?
+
+
+
+Flyway Folder Structure:
+
+
+Create:
+
+src/main/resources
+    |
+    +--db
+        |
+        +--migration
+
+This location is mandatory.
+
+Flyway automatically scans:
+
+db/migration
+
+
+Migration Naming Convention:
+----------------------------
+
+--Flyway follows strict naming.
+
+V1__create_employee_table.sql
+
+Notice:
+
+V1: Version Number
+
+__: Double Underscore
+
+create_employee_table.sql: Descriptive name.sql
+
+
+Examples:
+
+V1__create_employee_table.sql
+
+V2__add_email_column.sql
+
+V3__create_department_table.sql
+
+
+
+First Migration Script:
+------------------------
+
+V1__create_employee_table.sql
+
+
+CREATE TABLE employee
+(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    salary NUMERIC(10,2)
+);
+
+
+Run Application
+
+When application starts:
+
+Flyway Community Edition
+Migrating schema
+Successfully applied migration V1
+
+
+Verify in PostgreSQL:
+
+
+flywaydb=# \dt
+                  List of tables
+ Schema |         Name          | Type  |  Owner
+--------+-----------------------+-------+----------
+ public | employee              | table | postgres
+ public | flyway_schema_history | table | postgres
+
+
+
+Also verify:
+
+SELECT *
+FROM flyway_schema_history;
+
+You will see:
+
+version = 1
+description = create employee table
+
+
+Second Migration:
+
+Create:
+
+V2__add_email_column.sql
+
+
+ALTER TABLE employee
+ADD COLUMN email VARCHAR(100) NOT NULL;
+
+Run application again.
+
+Flyway checks:
+
+V1 already executed
+V2 pending
+
+Only V2 executes.
+
+
+
+Important Rule:
+
+Never modify:
+
+V1__create_employee_table.sql
+
+--after it has executed in production.
+
+Instead create:
+
+V3__something.sql
+
+--This is one of the most important Flyway rules.
+
+
+Third Migration Script: Insert Sample Data
+
+
+Create a new migration file:
+
+V3__insert_employee_data.sql
+
+Add the following SQL statements:
+
+INSERT INTO employee (name, salary, email)
+VALUES ('Ratan Kumar', 50000.00, 'ratan@example.com');
+
+INSERT INTO employee (name, salary, email)
+VALUES ('Rahul Sharma', 60000.00, 'rahul@example.com');
+
+INSERT INTO employee (name, salary, email)
+VALUES ('Amit Verma', 70000.00, 'amit@example.com');
+
+Run the Application Again
+
+--When the application starts, Flyway checks the migration history:
+
+V1 already executed
+V2 already executed
+V3 pending
+
+--Flyway executes only the new migration:
+
+--Successfully applied migration V3
+
+
+Verify the Data
+
+Execute the following query in PostgreSQL:
+
+SELECT *
+FROM employee;
+
+
+Verify in Flyway History:
+
+SELECT version, description
+FROM flyway_schema_history;
+
+Expected Output:
+
+ version |      description
+---------+------------------------
+ 1       | create employee table
+ 2       | add email column
+ 3       | insert employee data
+
+
+Important Note:
+
+--Once V3__insert_employee_data.sql has been executed successfully, never modify its contents. 
+--If additional data needs to be inserted, create a new migration such as:
+
+V4__insert_more_employee_data.sql
+
+--This ensures that Flyway can maintain a consistent and reliable migration history across all environments.
+
+
+Flyway vs hibernate.ddl-auto:
+-----------------------------
+
+Many beginners use:
+
+spring.jpa.hibernate.ddl-auto=create
+
+or
+
+spring.jpa.hibernate.ddl-auto=update
+
+In real enterprise projects:
+
+spring.jpa.hibernate.ddl-auto=validate
+
+or
+
+spring.jpa.hibernate.ddl-auto=none
+
+
+--and Flyway manages schema.
+
+
+| Hibernate Auto DDL  | Flyway           |
+| ------------------- | ---------------- |
+| Less control        | Full control     |
+| Difficult audit     | Complete history |
+| Risky in production | Safe             |
+| Auto generated      | Explicit SQL     |
+| Hard rollback       | Versioned        |
+
+
+
+
+ORM (Object Relational Mapping):
+================================
+
+--ORM (Object Relational Mapping) is a technique used to map Java objects to database tables and vice versa.
+
+--In ORM, developers work with Java classes and objects instead of writing SQL queries for every database operation.
+
+--ORM acts as a bridge between an Object-Oriented Programming language (Java) and a Relational Database (PostgreSQL, MySQL, Oracle, etc.).
+
+Why Do We Need ORM?
+
+--Without ORM, developers need to write JDBC code and SQL queries manually for every CRUD operation.
+
+Example using SQL:
+
+INSERT INTO employee(id, name, salary)
+VALUES (1, 'Ratan', 50000);
+
+--Using ORM, we simply create and save an object:
+
+Employee employee = new Employee();
+employee.setName("Ratan");
+employee.setSalary(50000);
+
+employeeRepository.save(employee);
+
+--The ORM framework automatically generates and executes the required SQL statement.
+
+
+How ORM Works:
+--------------
+
+Java Side		Database Side
+
+Class			Table
+Object			Row/Record
+Field			Column
+Object Creation		INSERT
+Object Update		UPDATE
+Object Deletion		DELETE
+
+
+Example:
+
+Java Class:
+
+public class Employee {
+    private Integer id;
+    private String name;
+    private Double salary;
+}
+
+
+Employee emp = new Employee(1, "Ratan", 50000);
+
+
+Database Table:
+
+employee
+--------------------------------
+id      | name      | salary
+--------------------------------
+1       | Ratan     | 50000
+
+
+--ORM automatically maps the class to the table and fields to columns.
+
+
+Benefits of ORM:
+----------------
+
+Reduces JDBC boilerplate code.
+Minimizes manual SQL writing.
+Improves developer productivity.
+Makes applications database-independent.
+Supports object-oriented programming principles.
+Simplifies CRUD operations.
+
+
+Popular ORM Frameworks in Java:
+------------------------------
+
+Framework		Description
+
+Hibernate		Most popular Java ORM framework
+JPA			Java ORM Specification
+EclipseLink		JPA implementation
+Spring Data JPA		Simplifies JPA usage in Spring Boot
+
+
+
+ORM in Spring Boot
+--------------------
+
+--In Spring Boot applications:
+
+Spring Data JPA
+       ↓
+      JPA
+       ↓
+   Hibernate
+       ↓
+ PostgreSQL/MySQL
+
+
+--Spring Data JPA provides repository support (Repository Abstraction).
+--JPA defines the standard ORM specification.
+--Hibernate implements the JPA specification.
+--Hibernate generates SQL and communicates with the database.
+
+
+
+Create a New Spring Boot project: SpringBootDataJPADemo
+
+Add the following dependencies:
+
+1. Spring Web
+2. PostgreSQL Driver
+3. Spring Data JPA 
+4. Devtools
+5. lombok
+
+
+Don't add the Flyway dependency..
+
+
+Create a new database inside the postgres:
+
+CREATE DATABASE employeemanagementdb;
+
+\c employeemanagementdb
+
+
+
+What is an Entity?
+===================
+
+
+--An Entity is a Java class that maps to a database table.
+
+
+Database: employee table
+
+Java: Employee class 
+
+--Each Employee object represents one row.
+
+Example:
+
+Employee object: Employee emp = new Employee(10, "Rahul", 50000);
+
+table record: INSERT INTO employee VALUES(10, 'Rahul', 50000);
+
+
+
+@Entity annotation:
+--------------------
+
+--This is the most important annotation.
+
+--@Entity tells JPA/Hibernate that this class should be mapped to a database table.
+
+
+@Entity
+public class Employee {
+
+}
+
+Meaning:
+
+--This class should be treated as a database entity.
+
+Without @Entity
+
+--JPA ignores the class completely.
+
+
+@Table annotation:
+------------------
+
+By default, JPA uses the class name as the table name.
+
+@Entity
+public class Employee {
+}
+
+JPA assumes:
+
+Class Name = Table Name
+
+So:
+
+Employee class
+
+maps to
+
+employee table
+
+
+If table name differs:
+
+tbl_employee
+
+Use:
+
+@Entity
+@Table(name="tbl_employee")
+public class Employee {
+
+}
+
+
+@Table is like telling JPA:
+
+Database Name = tbl_employee
+Java Name = Employee
+
+
+Q/- Can an Entity class exist without @Table?
+
+Yes.
+
+@Entity is mandatory.
+@Table is optional.
+
+--Use @Table only when the table name differs from the class name or additional table configuration is required.
+
+
+
+@Id annotation:
+---------------
+
+--Every table must have a primary key.
+
+Example:
+
+CREATE TABLE employee
+(
+    id int PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+Primary Key:
+
+id
+
+Entity:
+
+@Id
+private Long id;
+
+
+Why @Id is Mandatory:
+---------------------
+
+--Suppose there are 10,000 employees.
+
+How will JPA identify:
+
+Employee #101
+
+--without a unique identifier?
+
+It cannot.
+
+--Therefore every entity must have at least one @Id.
+
+
+@GeneratedValue annotation:
+---------------------------
+
+Imagine HR creates employees.
+
+--We don't want HR to manually enter:
+
+1
+2
+3
+4
+5
+
+Database should generate IDs.
+
+PostgreSQL:
+
+SERIAL or BIGSERIAL 
+
+
+Entity:
+
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Long id;
+
+
+
+Generation Strategies:
+----------------------
+
+1. IDENTITY
+
+--Most common with PostgreSQL auto increment.
+
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+
+--Database generates ID.
+
+
+2. SEQUENCE
+
+--Very common in Oracle.
+
+@GeneratedValue(strategy = GenerationType.SEQUENCE)
+
+--Uses database sequence.
+
+Note: PostgreSQL also supports SEQUENCE and Hibernate often uses sequences internally.
+
+
+3. AUTO
+
+@GeneratedValue(strategy = GenerationType.AUTO)
+
+--JPA chooses strategy automatically.
+
+
+4. GenerationType.TABLE
+
+
+@GeneratedValue(strategy = GenerationType.TABLE)
+
+--Uses a separate table to store and manage IDs.
+
+Example:
+
+id_generator
+-------------
+next_id = 1001
+
+Disadvantages:
+
+Slowest strategy.
+Rarely used today.
+Not recommended for PostgreSQL.
+
+
+
+For PostgreSQL, the most commonly preferred strategy is:
+--------------------------------------------------------
+
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Long id;
+
+or, in many enterprise applications:
+
+@Id
+@GeneratedValue(strategy = GenerationType.SEQUENCE)
+private Long id;
+
+The choice depends on your requirements.
+
+
+GenerationType.IDENTITY:
+------------------------
+
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Long id;
+
+Database:
+
+CREATE TABLE employee (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+How it works:
+
+--PostgreSQL generates the ID automatically.
+
+Hibernate performs:
+
+INSERT INTO employee(name)
+VALUES ('Rahul');
+
+
+PostgreSQL generates:
+id = 1
+id = 2
+id = 3
+...
+
+Advantages:
+
+Simple to understand.
+Works naturally with SERIAL, BIGSERIAL columns.
+Very common in Spring Boot
+
+
+Starting the ID value with 1000:
+--------------------------------
+
+--If you let Hibernate/JPA generate the table from the Entity class and you want IDs to start from 1000, then SEQUENCE is the best approach.
+
+Recommended: Use SEQUENCE
+
+Example:
+
+Employee.java:
+--------------
+
+
+@Entity
+public class Employee {
+
+    @Id
+    @GeneratedValue(
+        strategy = GenerationType.SEQUENCE,
+        generator = "emp_seq"
+    )
+    @SequenceGenerator(
+        name = "emp_seq",
+        sequenceName = "employee_seq",
+        initialValue = 1000,
+        allocationSize = 1
+    )
+    private Long id;
+
+    private String name;
+}
+
+
+--When Hibernate creates the schema, it will create a sequence that starts at 1000.
+
+Generated IDs:
+
+1000
+1001
+1002
+1003
+...
+
+
+
+1. name = "emp_seq":
+
+--This is the logical generator name inside your Java application.
+
+--Hibernate uses this name to link @GeneratedValue with @SequenceGenerator.
+
+
+2. sequenceName = "employee_seq": 
+
+--This is the actual sequence name in PostgreSQL.
+
+--Hibernate will create or use a database sequence named:
+
+employee_seq
+
+Example:
+
+CREATE SEQUENCE employee_seq
+START WITH 1000;
+
+
+--Whenever Hibernate needs a new ID, it executes something similar to:
+
+SELECT nextval('employee_seq');
+
+
+3. initialValue = 1000:
+
+--Specifies the starting value of the sequence when Hibernate creates it.
+
+
+4. allocationSize = 1
+
+--It tells Hibernate:
+
+"How many IDs should I reserve from the database at one time?"
+
+
+
+What About IDENTITY?
+-------------------
+
+
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Long id;
+
+--With IDENTITY, Hibernate creates an auto-increment/identity column and does not provide a standard JPA annotation to specify "start from 1000".
+
+--You would typically need a database-specific SQL script (Flyway/Liquibase/manual SQL) to alter the underlying sequence after table creation.
+
+For example in PostgreSQL:
+
+--ALTER SEQUENCE employee_id_seq RESTART WITH 1000;
+
+
+
+OR use the flyway migration tool and create a table script file: 
+
+V1__create_table_employee.sql
+
+
+CREATE TABLE employee (
+    id BIGINT GENERATED BY DEFAULT AS IDENTITY
+        (START WITH 1000),
+    name VARCHAR(100),
+    PRIMARY KEY(id)
+);
+
+
+OR: 
+
+V2__set_employee_id_start.sql
+
+ALTER SEQUENCE employee_id_seq RESTART WITH 1000;
+
+
+
+@Column annotation:
+===================
+
+--The @Column annotation is used to map an entity field to a specific database table column.
+
+--It is an optional annotation because JPA/Hibernate can automatically map fields to columns using naming conventions.
+
+Example:
+
+@Entity
+public class Employee {
+
+    @Id
+    private Long id;
+
+    @Column
+    private String name;
+}
+
+--In this case, the field name is mapped to the name column of the database table.
+
+
+@Column is typically used when:
+
+The column name differs from the field name.
+Column length needs to be specified.
+A column should be marked as NOT NULL.
+A column should be unique.
+Additional column-level configuration is required.
+
+
+Example:
+
+@Column(name = "employee_name")
+private String name;
+
+
+Note: Spring Boot and modern Hibernate use a naming strategy that converts:
+
+camelCase -> snake_case
+
+
+Examples:
+
+Java Field	Database Column
+
+empId		emp_id
+firstName	first_name
+mobileNumber	mobile_number
+dateOfBirth	date_of_birth
+
+
+Therefore:
+
+private Long empId;
+
+can automatically map to:
+
+emp_id
+
+without using @Column.
+
+
+
+When Should We Explicitly Use @Column?
+
+--If the database column name does not follow Hibernate's naming convention.
+
+Example1: name
+
+
+
+@Column(name = "emp_name")
+private String name;
+
+--Maps the field to a specific column.
+
+
+Example2: nullabel
+
+@Column(nullable = false)
+private String name;
+
+Generates:
+
+name VARCHAR(255) NOT NULL
+
+
+Example3: unique
+
+
+@Column(unique = true)
+private String email;
+
+Ensures unique values.
+
+
+Example4: length
+
+@Column(length = 100)
+private String name;
+
+Generates:
+
+name VARCHAR(100)
+
+
+
+Example:
+
+@Column(name = "emp_name", nullable = false, length = 100) 
+private String name;
+
+
+
+Note: If we use only @Column annotation like:
+
+@Column
+private String name;
+
+Default nullable = true
+Default unique = false
+Default length = 255
+
+
+
+Note: If we are not using any migration tools like flyway, 
+and we want Hibernate/JPA to automatically create tables from our Entity classes, 
+then we need to configure Hibernate's DDL generation inside the application.properties file.
+
+spring.jpa.hibernate.ddl-auto=create
+
+
+
+Common Values of ddl-auto:
+-------------------------
+
+1. create:
+
+spring.jpa.hibernate.ddl-auto=create
+
+Behavior:
+
+Drops existing tables.
+Creates tables again from Entity classes.
+Executes on every application startup.
+
+Example:
+
+@Entity
+public class Employee {
+    @Id
+    private Long id;
+    private String name;
+}
+
+
+Hibernate generates:
+
+CREATE TABLE employee (
+    id BIGINT PRIMARY KEY,
+    name VARCHAR(255)
+);
+
+
+--Existing data will be lost.
+
+
+2. create-drop:
+
+spring.jpa.hibernate.ddl-auto=create-drop
+
+Behavior:
+
+Creates tables at startup.
+Drops tables when application stops.
+
+Useful for:
+
+Unit Testing
+Learning
+
+
+3. update
+
+
+spring.jpa.hibernate.ddl-auto=update
+
+Behavior:
+
+Creates missing tables.
+Adds missing columns.
+Keeps existing data.
+
+Example:
+
+Initially:
+
+private String name;
+
+Later:
+
+private String name;
+private String email;
+
+Hibernate adds:
+
+ALTER TABLE employee
+ADD COLUMN email VARCHAR(255);
+
+without deleting existing data.
+
+--Most commonly used during development.
+
+
+4. validate:
+
+spring.jpa.hibernate.ddl-auto=validate
+
+Behavior:
+
+Does not create tables.
+Checks whether tables match Entity definitions.
+Fails startup if mismatch is found.
+
+--Used in production together with Flyway.
+
+
+
+5. none:
+
+spring.jpa.hibernate.ddl-auto=none
+
+Behavior:
+
+Hibernate performs no schema management.
+Database objects must already exist.
+
+--Typically used when Flyway/Liquibase manages the schema.
+
+
+During Learning / Development:
+
+spring.jpa.hibernate.ddl-auto=update
+
+or
+
+spring.jpa.hibernate.ddl-auto=create
+
+With Flyway:
+
+spring.jpa.hibernate.ddl-auto=validate
+
+or
+
+spring.jpa.hibernate.ddl-auto=none
+
+Reason:
+
+Flyway manages the schema.
+Hibernate only maps entities.
+
+
+--ddl-auto is useful for development and learning, but in real-world production applications, database schema changes are usually managed by tools such as Flyway or Liquibase, while Hibernate is configured with validate or none.
+
+
+
+Note: Spring Boot determines a default value for this auto-ddl automatically.
+
+Generally:
+
+Scenario								Effective Default
+
+Embedded databases (H2, HSQLDB, Derby)					create-drop
+
+External databases (PostgreSQL, MySQL, Oracle, SQL Server)		none
+
+--So for a typical PostgreSQL application:
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/mydb
+
+and no ddl-auto property configured, the effective behavior is usually:
+
+spring.jpa.hibernate.ddl-auto=none
+
+--meaning Hibernate will not create or modify tables.
+
+
+
+
+Note: To see the auto generated sql commands on the console add the following configuration inside the application.properties file:
+
+	spring.jpa.show-sql=true
+
+
+
+
+
+Create Employee Entity class inside the com.hdfc.entity package:
+----------------------------------------------------------------
+
+
+Employee.java:
+-------------
+
+
+package com.hdfc.entity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Entity
+@Getter
+@Setter
+@ToString
+public class Employee {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer empId;
+	
+	private String empName;
+	private Double salary;
+	
+	@Column(nullable = false, unique = true)
+	private String email;
+
+}
+
+
+
+Note: Without @GeneratedValue(strategy = GenerationType.IDENTITY) we need to manually set the Employee Id value.
+
+
+For learning and small projects, IDENTITY is easiest.
+For high-performance enterprise systems, SEQUENCE is often preferred.
+
+
+
+
+application.yml file:
+----------------------
+
+spring:
+ application:
+  name: SpringBootDatabaseDemo
+
+ datasource:
+  url: jdbc:postgresql://localhost:5432/employeemanagementdb
+  username: postgres
+  password: root
+
+ jpa:
+  hibernate: 
+   ddl-auto: update
+  show-sql: true
+
+
+
+JPA Entity Life Cycle:
+======================
+
+--In JPA/Hibernate, every Entity object goes through different states during its lifetime.
+
+--Understanding the Entity Life Cycle is very important because it helps us understand:
+
+When an object is stored in the database.
+When changes are automatically synchronized with the database.
+When an object is no longer managed by Hibernate.
+How JPA tracks and persists data.
+
+--An Entity can exist in one of the following states:
+
+
+1. Transient 
+     | 
+2. Managed (Persistent) 
+     | 
+3. Detached 
+     | 
+4. Removed
+
+
+
+1. Transient State:
+
+
+--A newly created Java object that is not associated with Hibernate/JPA and does not exist in the database is called a Transient Entity.
+
+Example:
+
+Employee emp = new Employee();
+emp.setName("Raj");
+emp.setSalary(50000);
+emp.setEmail("raj@gmail.com");
+
+
+
+At this moment:
+
+Object exists only in JVM memory.
+No database record exists.
+JPA is not tracking this object.
+No SQL statement has been executed.
+
+
+JVM Memory: Employee Object 
+Database: No Record 
+
+
+
+Analogy:
+
+You filled a job application form.
+But haven't submitted it yet.
+Exists with you.
+Not in company records.
+
+
+
+2. Managed (Persistent) State:
+
+--When an Entity is saved using JPA, it becomes a Managed (Persistent) Entity.
+
+Example:
+
+employeeRepository.save(emp);
+
+or
+
+entityManager.persist(emp);
+
+Hibernate now:
+
+Tracks the object.
+Associates it with the Persistence Context.
+Generates SQL statements.
+Synchronizes changes automatically.
+
+Example SQL:
+
+INSERT INTO employee(name, salary, email)
+VALUES ('Raj', 50000, 'raj@gmail.com');
+
+
+JVM Memory: Employee Object
+                  |
+              Hibernate Tracking
+                 |
+Database: Employee Record
+
+
+Analogy:
+
+Application submitted.
+HR now tracks it.
+
+
+What is Persistence Context?
+
+--Persistence Context is a memory area managed by Hibernate that keeps track of all Managed Entities.
+
+Think of it as:
+
+Hibernate Cache (Persistence Context is also called the First Level Cache)
+or
+Hibernate Tracking Area
+
+--Whenever an Entity becomes Managed, Hibernate starts monitoring it.
+
+
+
+
+Dirty Checking:
+---------------
+
+--One of the most powerful features of Hibernate is Dirty Checking.
+
+Suppose:
+
+Employee emp = entityManager.find(Employee.class, 1);
+
+Entity becomes Managed.
+
+Now:
+
+emp.setSalary(70000);
+
+Notice:
+
+entityManager.update(emp);
+
+--is NOT required.
+
+--Hibernate detects the modification automatically.
+
+--At transaction commit:
+
+UPDATE employee
+SET salary = 70000
+WHERE id = 1;
+
+--This automatic change detection is called Dirty Checking.
+
+
+3. Detached State: 
+
+--An Entity becomes Detached when Hibernate stops managing it.
+
+Example:
+
+entityManager.detach(emp);
+
+or
+
+entityManager.clear();
+
+or when the session is closed.
+
+Now:
+
+emp.setSalary(90000);
+
+--Hibernate will NOT track this change.
+
+--No SQL is generated.
+
+
+Characteristics:
+
+Object still exists in memory.
+Database record still exists.
+Hibernate is no longer monitoring changes.
+
+
+Analogy:
+
+Employee resigned.
+Company no longer tracks activities.
+
+
+
+
+
+Reattaching a Detached Entity:
+-----------------------------
+
+--A Detached Entity can be attached again using:
+
+entityManager.merge(emp);
+
+Example:
+
+emp.setSalary(90000);
+
+entityManager.merge(emp);
+
+Hibernate executes:
+
+UPDATE employee
+SET salary = 90000
+WHERE id = 1;
+
+
+
+4. Removed State:
+
+--When an Entity is marked for deletion, it enters the Removed State.
+
+Example:
+
+entityManager.remove(emp);
+
+or
+
+employeeRepository.delete(emp);
+
+--Hibernate marks the entity for deletion.
+
+At transaction commit:
+
+DELETE FROM employee
+WHERE id = 1;
+
+
+Entity Life Cycle Diagram:
+--------------------------
+
+Transient
+   |-- persist() or save()
+Managed
+   |-- detach()
+Detached  
+   |-- merge()
+Managed
+   |-- remove()
+Remove
+
+
+
+
+Spring Data JPA Repositories:
+=============================
+
+Repository Pattern:
+------------------
+
+--A Repository is a design pattern that provides an abstraction layer between the application and the database.
+
+--Instead of writing JDBC code or SQL queries directly, we interact with Repository interfaces.
+
+Repository is responsible for:
+
+Saving data
+Updating data
+Retrieving data
+Deleting data
+
+
+Without Repository:
+-------------------
+
+Traditional JDBC approach:
+
+Connection con = DriverManager.getConnection(...);
+
+PreparedStatement ps =
+    con.prepareStatement(
+        "INSERT INTO employee(name,salary) VALUES (?,?)");
+
+ps.setString(1, "Ratan");
+ps.setDouble(2, 50000);
+
+ps.executeUpdate();
+
+Problems:
+
+Lots of boilerplate code
+Manual SQL writing
+Resource management
+Error handling
+
+
+With Spring Data JPA Repository:
+--------------------------------
+
+Employee emp = new Employee();
+emp.setName("Ratan");
+emp.setSalary(50000);
+
+employeeRepository.save(emp);
+
+--Spring Data JPA automatically generates the required SQL.
+
+
+Repository Hierarchy:
+=====================
+
+--Spring Data JPA provides several repository interfaces.
+
+Repository
+    ↑
+CrudRepository
+    ↑
+PagingAndSortingRepository
+    ↑
+JpaRepository
+
+
+
+Repository interface:
+---------------------
+
+public interface Repository<T, ID> {
+}
+
+--This is a marker interface.
+
+Purpose:
+
+Provides type safety.
+Base interface for all repositories.
+
+Example:
+
+public interface EmployeeRepository extends Repository<Employee, Integer> {
+}
+
+--Rarely used directly.
+
+
+Generic Parameters:
+--------------------
+
+Consider:
+
+public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
+
+}
+
+Meaning:
+
+Employee: Entity Type
+Integer:  Primary Key Type
+
+If:
+
+@Id
+private Long id;
+
+
+
+Then:
+
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+
+}
+
+
+Rule:
+
+First Generic: Entity Class
+Second Generic:  @Id Data Type
+
+
+2. CrudRepository:
+
+public interface CrudRepository<T, ID>
+
+Provides basic CRUD operations.
+
+Important Methods:
+------------------
+
+1. save():
+
+
+<S extends T> S save(S entity);
+
+Used for:
+
+INSERT
+UPDATE
+
+Example:
+
+Employee emp = new Employee();
+emp.setName("Raj");
+
+	employeeRepository.save(emp);
+
+
+Generated SQL:
+
+INSERT INTO employee(name)
+VALUES ('Raj');
+
+
+
+2. findById():
+
+Optional<T> findById(ID id);
+
+Example:
+
+Optional<Employee> emp = employeeRepository.findById(1);
+
+Generated SQL:
+
+SELECT *
+FROM employee
+WHERE id = 1;
+
+
+
+
+3. findAll()
+
+Iterable<T> findAll();
+
+Example:
+
+Iterable<Employee> employees = employeeRepository.findAll();
+
+Generated SQL:
+
+SELECT *
+FROM employee;
+
+
+4. deleteById():
+
+void deleteById(ID id);
+
+Example:
+
+employeeRepository.deleteById(1);
+
+Generated SQL:
+
+DELETE FROM employee
+WHERE id = 1;
+
+
+
+5. count():
+
+long count();
+
+Example:
+
+long total = employeeRepository.count();
+
+Generated SQL:
+
+SELECT COUNT(*)
+FROM employee;
+
+
+
+6. existsById():
+
+boolean existsById(ID id);
+
+Example:
+
+boolean exists = employeeRepository.existsById(10);
+
+--Used to check whether a record exists.
+
+
+
+
+
+Note:  CrudRepository provides basic:
+
+save()
+findById()
+findAll()
+delete()
+count()
+exists()
+
+But modern applications usually need:
+
+Pagination
+Sorting
+Batch Operations
+Flush Support
+
+--Therefore most projects directly use: JpaRepository
+
+
+JpaRepository:
+==============
+
+public interface JpaRepository<T, ID> extends PagingAndSortingRepository<T, ID>
+
+--Most commonly used repository interface.
+
+Example:
+
+@Repository
+public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
+}
+
+That's it.
+
+--No implementation required.
+
+--Spring generates the implementation at runtime.
+
+
+
+Advantages of JpaRepository:
+---------------------------
+
+
+All CRUD operations
+Pagination support
+Sorting support
+Batch operations
+JPA-specific features
+Less boilerplate code
+
+
+Actual flow:
+------------
+
+Repository
+      ↓
+EntityManager
+      ↓
+Persistence Context
+      ↓
+Hibernate
+      ↓
+JDBC Driver
+      ↓
+PostgreSQL
+
+--This is happening behind the scenes.
+
+
+Creating Repository:
+-------------------
+
+--After creating the Entity class
+
+--Create the following repository interface inside the "com.hdfc.repository" package:
+
+
+EmployeeRepository.java:
+------------------------
+
+package com.hdfc.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import com.hdfc.entity.Employee;
+
+@Repository
+public interface EmployeeRepository extends JpaRepository<Employee, Integer>{
+
+}
+
+
+
+--Here @Repository annotation is optional, SpringBoot Data JPA will automatically provide its implmentation class and register it with the Spring container as a Spring Bean.
+
+
+Note About Repository Usage in Real Projects:
+=============================================
+
+--In a real-world Spring Boot application, we generally follow a layered architecture:
+
+Controller
+    ↓
+Service
+    ↓
+Repository
+    ↓
+Database
+
+
+--The Repository is typically injected into the Service layer, and all business logic is implemented within Service classes.
+
+
+Example:
+
+EmployeeController
+    ↓
+EmployeeService
+    ↓
+EmployeeRepository
+    ↓
+PostgreSQL
+
+
+
+
+Benefits:
+
+Separation of Concerns (SoC)
+Better maintainability
+Easier testing
+Reusable business logic
+Cleaner architecture
+
+
+
+--To keep the examples simple and focus entirely on Repository features, we will inject the EmployeeRepository directly into the Controller.
+
+
+Architecture used for learning:
+
+Controller
+    ↓
+Repository
+    ↓
+Database
+
+
+--This approach reduces boilerplate code and helps us understand Spring Data JPA concepts more quickly.
+
+--Once we complete the Repository and Mapping concepts, we will build a complete enterprise-style application using:
+
+Controller
+    ↓
+Service Interface
+    ↓
+Service Implementation
+    ↓
+Repository
+    ↓
+Database
+
+along with:
+
+Request DTO
+Response DTO
+Exception Handling
+Validation
+Service Layer
+Layered Architecture Best Practices
+
+--This will help us understand how Spring Data JPA is used in real-world enterprise applications.
+
+
+
+Application Development Using Controller Layer:
+----------------------------------------------
+
+Creating REST Controller EmployeeController class inside: com.hdfc.controller package:
+
+
+
+EmployeeRepository.java:
+------------------------
+
+
+package com.hdfc.controller;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.hdfc.repository.EmployeeRepository;
+
+@RestController
+
+@RequestMapping("/employees")
+public class EmployeeController {
+
+	 private EmployeeRepository employeeRepository;
+
+	 //Injecting the repository
+	 public EmployeeController(EmployeeRepository employeeRepository) {
+		this.employeeRepository = employeeRepository;
+	 }
+	 	
+	
+}
+
+
+
+
+1. Save Employee:
+
+
+@PostMapping
+public ResponseEntity<Employee> saveEmployee(@RequestBody Employee employee) {
+
+    Employee savedEmployee = employeeRepository.save(employee);
+
+    return ResponseEntity.status(HttpStatus.CREATED)
+                         .body(savedEmployee);
+}
+
+
+URL:
+
+POST /employees
+
+Request Body
+{
+    "empName": "Raj",
+    "salary": 50000,
+    "email": "raj@gmail.com"
+}
+
+
+Response
+{
+    "empId": 1,
+    "empName": "Raj",
+    "salary": 50000,
+    "email": "raj@gmail.com"
+}
+
+
+Note:
+
+--Since the Employee ID is configured as an auto-generated primary key:
+
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+
+--the client does not need to provide the Employee ID in the request payload.
+
+--The database automatically generates the ID and Hibernate updates the Entity object with the generated value.
+
+
+Real-Time Application Approach:
+
+--In enterprise applications, we generally do not expose Entity classes directly to clients.
+
+Instead, we use separate DTO classes.
+
+Request: EmployeeRequestDTO
+
+Contains only the fields required from the client:
+
+private String empName;
+private Double salary;
+private String email;
+
+Notice:
+
+empId is not present
+
+--because the client should not supply the primary key.
+
+
+Response: EmployeeResponseDTO
+
+Contains the data returned to the client:
+
+private Integer empId;
+private String empName;
+private Double salary;
+private String email;
+
+Notice:
+
+empId is included
+
+--because the ID has already been generated and persisted in the database.
+
+
+
+
+2. Get Employee By Id:
+----------------------
+
+
+@GetMapping("/{empId}")
+public ResponseEntity<Employee> getEmployeeById(@PathVariable Integer empId) {
+
+    Employee employee = employeeRepository.findById(empId)
+            		.orElseThrow(() ->
+                    		new RuntimeException("Employee Not Found"));
+
+    return ResponseEntity.ok(employee);
+}
+
+
+
+URL:
+
+GET /employees/1
+
+
+
+
+3. Get All Employees:
+---------------------
+
+
+@GetMapping
+public ResponseEntity<List<Employee>> getAllEmployees() {
+
+    List<Employee> employees = employeeRepository.findAll();
+
+    return ResponseEntity.ok(employees);
+}
+
+
+URL:
+
+GET /employees
+
+
+
+4. Update Employee:
+-------------------
+
+@PutMapping("/{empId}")
+public ResponseEntity<Employee> updateEmployee(@PathVariable Integer empId, @RequestBody Employee employee) {
+
+    Employee existingEmployee = employeeRepository.findById(empId)
+            					.orElseThrow(() ->new RuntimeException("Employee Not Found"));
+
+    existingEmployee.setEmpName(employee.getEmpName());
+
+    existingEmployee.setSalary(employee.getSalary());
+
+    existingEmployee.setEmail(employee.getEmail());
+
+    // It sync automatically
+    Employee updatedEmployee = employeeRepository.save(existingEmployee);
+
+    return ResponseEntity.ok(updatedEmployee);
+}
+
+
+
+URL:
+
+PUT /employees/1
+
+Request Body
+{
+  "empName":"Raj Kumar",
+  "salary":70000,
+  "email":"raj@gmail.com"
+}
+
+
+
+Note: save() method is used for both:
+
+INSERT
+UPDATE
+
+
+How save() Decides?:
+
+New Employee:
+
+Employee emp = new Employee();
+emp.setEmpName("Raj");
+
+ID: null
+
+Result: INSERT
+
+Existing Employee:
+
+Employee emp = employeeRepository.findById(1).get();
+
+ID: 1
+
+Result: UPDATE
+
+
+5. Delete Employee:
+
+@DeleteMapping("/{empId}")
+public ResponseEntity<String> deleteEmployee(@PathVariable Integer empId) {
+
+    employeeRepository.deleteById(empId);
+
+    return ResponseEntity.ok("Employee Deleted Successfully");
+
+}
+
+
+
+URL:
+
+DELETE /employees/1
+
+
+6. Count Employees:
+
+@GetMapping("/count")
+public ResponseEntity<Long> getEmployeeCount() {
+
+    long total = employeeRepository.count();
+
+    return ResponseEntity.ok(total);
+}
+
+
+
+URL:
+
+GET /employees/count
+
+
+
+Derived Query Methods:
+======================
+
+--This is Spring Data JPA's superpower.
+
+--Spring Data JPA can automatically generate SQL queries based on method names defined inside the EmployeeRepository interface.
+
+--Instead of writing SQL manually, we define methods following a specific naming convention.
+
+Example:
+
+Employee findByEmail(String email);
+
+--Spring Data JPA automatically generates the required query at runtime.
+
+
+Q/- How Spring Data JPA Understands Method Names?
+
+--Spring Data JPA analyzes the method name and divides it into two parts:
+
+findByEmail
+
+findBy : Operation
+Email  : Entity Field Name
+
+Example:
+
+private String email;
+
+Method:
+
+Employee findByEmail(String email);
+
+Generated SQL:
+
+	SELECT * FROM employee WHERE email = ?;
+
+
+Naming Rules:
+--------------
+
+--The field name used in the method must match the Entity field name.
+
+Entity:
+
+private String empName;
+private Double salary;
+private String email;
+
+Valid Methods:
+
+findByEmpName(...)
+findBySalary(...)
+findByEmail(...)
+
+Invalid:
+
+findByName(...)
+
+--because there is no field named:
+
+--private String name;
+
+
+Return Types and No-Result Behavior:
+-----------------------------------
+
+--When defining derived query methods, Spring Data JPA allows different return types.
+
+The return type determines what happens when:
+
+A matching record exists
+No matching record exists
+Multiple matching records exist
+
+--If the query is expected to return at most one record (for example, searching by a unique email address), the return type can be:
+
+Employee findByEmail(String email);
+
+or
+
+Optional<Employee> findByEmail(String email);
+
+--Among these two approaches, Optional<Employee> is generally preferred because it helps avoid NullPointerException when no record is found.
+
+
+Note: If Spring expects:
+
+Employee
+
+and query returns:
+
+2 records
+
+Spring throws:
+
+IncorrectResultSizeDataAccessException
+
+
+
+
+
+
+
+
+--If the query can return multiple records, the return type should be a Collection such as:
+
+List<Employee>
+
+or
+
+Set<Employee>
+
+--If no matching records are found, Spring Data JPA returns an empty collection rather than null.
+
+
+
+Example: 
+
+Step1: 
+
+Add the following methods defination inside the EmployeeRepository interface:
+
+Employee findByEmail(String email);
+List<Employee> findBySalary(Double salary);
+
+
+Step2: Write the endpoints for both methods inside the EmployeeController:
+
+
+
+
+Common Derived Query Keywords:
+------------------------------
+
+
+1. Equal To:
+
+findByEmail(String email)
+findByEmpName(String empName)
+
+
+--Returns records matching the exact value.
+
+
+combining multiple fields:
+---------------------------
+
+findByEmpNameAndSalary(String empName, Double salary)
+
+findByEmpNameOrSalary(String empName,Double salary)
+
+Example:
+
+And: Multiple conditions must match
+
+Or: Any one condition can match
+
+
+
+
+2. Greater Than:
+
+
+findBySalaryGreaterThan(Double salary)
+
+
+--Returns employees whose salary is greater than the specified value.
+
+3. Less Than:
+
+findBySalaryLessThan(Double salary)
+
+--Returns employees whose salary is less than the specified value.
+
+4. Between:
+
+findBySalaryBetween(Double minSalary, Double maxSalary)
+
+--Returns employees whose salary falls within the specified range.
+
+
+5. Like Search: 
+
+findByEmpNameContaining(String keyword);
+
+
+--Performs pattern-based matching.
+
+Example:
+
+repository.findByEmpNameContaining("Ra");
+
+Generated SQL: LIKE '%Ra%'
+
+6. Starting With:
+
+findByEmpNameStartingWith(String prefix)
+
+--Returns employees whose names start with the given value.
+
+Example:
+
+findByEmpNameStartingWith("Ra");
+
+Generated SQL: WHERE emp_name LIKE 'Ra%'
+
+
+7. Ending With:
+
+findByEmpNameEndingWith(String suffix)
+
+
+--Returns employees whose names end with the given value.
+
+Example:
+
+findByEmpNameEndingWith("an");
+
+Generated SQL: WHERE emp_name LIKE '%an'
+
+
+8. Count By:
+
+long countBySalaryGreaterThan(Double salary);
+
+--Returns the count of matching records.
+
+
+9. Exists By
+
+boolean existsByEmail(String email);
+
+--Checks whether a record exists.
+
+Usage:
+
+boolean exists = employeeRepository.existsByEmail("raj@gmail.com");
+
+--Exists queries are generally more efficient than fetching the complete entity when we only need to know whether a record exists.
+
+
+10. Order By:
+
+List<Employee> findBySalaryGreaterThanOrderBySalaryAsc(Double salary);
+
+--Returns records sorted in ascending order.
+
+List<Employee> findBySalaryGreaterThanOrderBySalaryDesc(Double salary);
+
+--Returns records sorted in descending order.
+
+
+--Spring Data JPA supports dozens of keywords such as:
+
+And
+Or
+Not
+IsNull
+IsNotNull
+In
+NotIn
+Between
+GreaterThan
+LessThan
+Like
+Containing
+StartingWith
+EndingWith
+OrderBy
+
+For the complete list of supported keywords, refer to the official Spring Data JPA documentation.
+
+https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html
+
+
+@Query Annotation: JPQL
+===================
+
+--Derived Query Methods are very powerful and suitable for simple queries.
+
+Example:
+
+findByEmail(String email);
+
+findBySalaryGreaterThan(Double salary);
+
+findByEmpNameStartingWith(String prefix);
+
+However, for complex queries, the method name can become very long and difficult to understand.
+
+Example:
+
+findByEmpNameContainingAndSalaryGreaterThanAndEmailEndingWith(...)
+
+--In such situations, Spring Data JPA provides the @Query annotation.
+
+
+@Query is used to write custom queries directly inside the Repository interface.
+
+Using @Query, we can:
+
+Write custom queries
+Avoid very long method names
+Execute complex searches
+Use JPQL (Java Persistence Query Language)
+Use Native SQL Queries
+
+
+Syntax:
+
+@Query("JPQL")
+ReturnType methodName(parameters);
+
+Example:
+
+
+@Query("SELECT e FROM Employee e")
+List<Employee> getAllEmployees();
+
+
+--JPQL is an object-oriented query language provided by JPA.
+
+Important:
+
+JPQL works with:
+
+Entity Class Names
+Entity Field Names
+
+NOT
+
+Database Table Names
+Database Column Names
+
+
+
+
+Example
+
+Entity:
+
+@Entity
+public class Employee {
+
+    private Integer empId;
+    private String empName;
+    private Double salary;
+}
+
+JPQL Query:
+
+@Query("SELECT e FROM Employee e")
+List<Employee> getAllEmployees();
+
+Notice:
+
+Employee  : Entity Class Name
+empName   : Entity Field Name
+salary    : Entity Field Name
+
+
+Difference Between SQL and JPQL:
+--------------------------------
+
+SQL:
+
+SELECT *
+FROM employee
+WHERE salary > 50000;
+
+Uses:
+
+Table Names
+Column Names
+
+
+
+JPQL:
+
+@Query("SELECT e FROM Employee e WHERE e.salary > 50000 ")
+
+Uses:
+
+Entity Names
+Field Names
+
+
+
+
+Example 1: Get All Employees:
+
+Repository:
+
+@Query("SELECT e FROM Employee e ")
+List<Employee> getAllEmployees();
+
+
+
+Example 2: Find Employees By Salary using @Param tag
+
+Repository: Using named parameter
+
+@Query("SELECT e FROM Employee e WHERE e.salary > :salary ")
+List<Employee> getEmployeesBySalary(@Param("salary") Double salary);
+
+
+
+Example3: Multiple Parameters:
+
+@Query("SELECT e FROM Employee e WHERE e.salary BETWEEN :minSalary AND :maxSalary ")
+List<Employee> findEmployeesBySalaryRange(@Param("minSalary") Double minSalary, @Param("maxSalary") Double maxSalary);
+
+
+For more refer docs:
+
+
+
+
+Native SQL Query:
+------------------
+
+--Sometimes we may want to write actual database SQL instead of JPQL.
+
+Example:
+
+@Query(
+ value = "SELECT * FROM employee WHERE salary > :salary",
+ nativeQuery = true
+)
+List<Employee> getEmployeesBySalaryNative(@Param("salary") Double salary);
+
+Important:
+
+When using:
+
+nativeQuery = true
+
+
+we must use:
+
+Table Names
+Column Names
+
+instead of Entity names.
+
+
+
+
+
+JPQL vs Native SQL:
+====================
+
+JPQL			Native SQL
+
+Uses Entity Name	Uses Table Name
+Uses Field Names	Uses Column Names
+Database Independent	Database Specific
+Recommended		Use only when required
+
+
+
+Best Practice:
+
+1. Use Derived Query Methods for simple queries.
+
+2. Use JPQL (@Query) for medium to complex queries.
+
+3. Use Native SQL only when JPQL cannot achieve the required functionality.
+
+
+
+For learning purposes, we can included many repository methods in a single interface.
+
+But In real-world applications:
+
+Repository interfaces are usually kept small and focused.
+Only required query methods are added.
+Complex queries are often moved to custom repositories or specifications.
+Most CRUD operations are handled using the methods already provided by JpaRepository.
+
+Since JpaRepository already provides methods such as:
+
+save()
+findById()
+findAll()
+deleteById()
+count()
+existsById()
+
+--we only define additional methods when custom search requirements arise.
+
+
+Entity Relationships in JPA
+===========================
+
+
+Until now, we worked with a single table.
+
+
+Example: employee table
+
+
+| emp_id | emp_name | salary |
+| ------ | -------- | ------ |
+| 1      | Rahul    | 50000  |
+| 2      | Aman     | 60000  |
+
+
+However, in real-world applications, entities rarely exist independently.
+
+Examples:
+
+Employee belongs to a Department
+Student enrolls in Courses
+Customer places Orders
+Employee has a Passport
+Doctor treats Patients
+
+--These are relationships between entities.
+
+
+
+
+How Java Represents Relationships
+=================================
+
+Suppose an Employee belongs to a Department.
+
+--Java represents this relationship using object references.
+
+Example:
+
+public class Employee {
+
+    private Integer empId;
+
+    private String empName;
+
+    private Department department;
+}
+
+Notice:
+
+Employee object contains
+a reference to a Department object.
+
+--This is how Object-Oriented Programming models relationships.
+
+
+
+How Databases Represent Relationships
+=====================================
+
+Relational databases do not store object references.
+
+Instead, relationships are maintained using:
+
+Primary Key (PK)
+Foreign Key (FK)
+
+Example:
+
+
+department table:
+
+| dept_id | dept_name |
+| ------- | --------- |
+| 1       | IT        |
+| 2       | HR        |
+
+
+employee table:
+
+| emp_id | emp_name | dept_id |
+| ------ | -------- | ------- |
+| 101    | Ankit    | 1       |
+| 102    | Rahul    | 1       |
+| 103    | Amit     | 2       |
+
+
+
+Here:
+
+employee.dept_id
+
+references
+
+department.dept_id
+
+This is called a: Foreign Key Relationship
+
+
+
+The Object-Relational Mismatch
+==============================
+
+--Java represents relationships using:
+
+Object References
+
+--Database represents relationships using:
+
+Foreign Keys
+
+--Both worlds use different approaches.
+
+This mismatch is called: 
+
+Object-Relational Mismatch
+
+--JPA solves this problem by automatically converting:
+
+Java Object Relationships
+            ↓
+Database Foreign Key Relationships
+
+
+
+What is Relationship Mapping?
+=============================
+
+--Relationship Mapping is the process of mapping:
+
+Java Object References
+            ↓
+Database Foreign Keys
+
+--using JPA annotations.
+
+
+Relationship Cardinality
+=========================
+
+Cardinality defines:
+
+How many records of one entity
+can be associated with another entity.
+
+JPA supports four major relationship types.
+
+
+1. @ManyToOne
+
+Example:
+
+Many Employees
+       ↓
+One Department
+
+Ankit --|
+Rahul --|--> IT Department
+Amit  --|
+
+
+Annotation:
+
+@ManyToOne
+
+--This is the most commonly used relationship in JPA.
+
+
+
+2. @OneToMany
+
+Example:
+
+One Department
+       ↓
+Many Employees
+
+IT
+ |-- Ankit
+ |-- Rahul
+ |-- Amit
+
+Annotation:
+
+@OneToMany
+
+
+3. @OneToOne
+
+Example:
+
+One Employee <-> One Passport
+
+
+Ankit <-> Passport P1001
+
+Rahul <-> Passport P1002
+
+Annotation:
+
+@OneToOne
+
+
+4. @ManyToMany
+
+Example:
+
+One Student <-> Many Courses
+
+One Course <-> Many Students
+
+Ankit -> Java
+Ankit -> Spring
+
+Rahul -> Java
+Rahul -> SQL
+
+Annotation:
+
+@ManyToMany
+
+
+
+Unidirectional Relationship
+===========================
+
+--Only one entity knows about the relationship.
+
+Example:
+
+public class Employee {
+
+    private Department department;
+}
+
+--Here Employee contains the referernce of Department
+
+
+--Employee knows Department.
+
+--Department does not know Employee.
+
+
+Bidirectional Relationship
+==========================
+
+--Both entities know about each other.
+
+Example:
+
+public class Employee {
+
+    private Department department;
+}
+
+
+public class Department {
+
+    private List<Employee> employees;
+}
+
+Visualization:
+
+Employee <-> Department
+
+--Both entities can navigate to each other.
+
+
+--An Employee object has its Department information.
+--A Department object has its all Employee information.
+
+
+Important Relationship Annotations
+==================================
+
+During relationship mapping, we frequently use:
+
+
+@ManyToOne
+@OneToMany
+@OneToOne
+@ManyToMany
+
+@JoinColumn
+@JoinTable
+
+
+@JoinColumn
+===========
+
+--Whenever JPA creates a Foreign Key column, the column name can be customized using:
+
+@JoinColumn
+
+Example:
+
+@ManyToOne
+@JoinColumn(name = "dept_id")
+private Department department;
+
+
+Generated Employee table:
+
+employee
+-------------------
+emp_id
+emp_name
+salary
+email
+dept_id <- FK
+
+Here:
+
+dept_id
+
+is the Foreign Key column.
+
+
+@ManyToOne Mapping
+==================
+
+Why is @ManyToOne Important?
+
+--In relational databases, the Foreign Key is typically stored in the child table.
+
+Example:
+
+employee
+-------------------
+emp_id
+emp_name
+salary
+email
+dept_id  <- Foreign Key
+
+--Since the Foreign Key exists in the Employee table, relationship mapping usually starts from the Employee side.
+
+
+
+Therefore:
+
+@ManyToOne
+
+is considered the most important relationship annotation in JPA.
+
+
+Example:
+
+Department Entity:
+
+Department.java:
+----------------
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Department {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer deptId;
+
+    private String deptName;
+
+    private String location;
+}
+
+
+Employee Entity:
+
+Employee.java:
+--------------
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer empId;
+
+    private String empName;
+
+    private Double salary;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @ManyToOne
+    @JoinColumn(name = "dept_id")
+    private Department department;
+}
+
+
+
+Generated Database Tables:
+
+department table:
+
+dept_id (PK)
+dept_name
+location
+
+
+employee table:
+
+emp_id (PK)
+emp_name
+salary
+email
+dept_id (FK)
+
+
+
+Notice:
+
+dept_id
+
+references
+
+department.dept_id
+
+
+
+Generated Foreign Key Name:
+---------------------------
+
+Without any configuration:
+
+@ManyToOne
+private Department department;
+
+Hibernate may generate:
+
+department_dept_id
+
+or something similar.
+
+--To avoid auto-generated names, we generally use:
+
+@JoinColumn
+
+
+--@JoinColumn annotation is used to customize the Foreign Key column name.
+
+
+Example:
+
+@ManyToOne
+@JoinColumn(name = "dept_id")
+private Department department;
+
+Generated Employee table:
+
+employee:
+
+emp_id
+emp_name
+salary
+email
+dept_id
+
+Now the FK column name becomes:
+
+dept_id
+
+instead of Hibernate's generated name.
+
+
+Creating the Relationship:
+===========================
+
+Department itDept = new Department();
+itDept.setDeptName("IT");
+itDept.setLocation("Mumbai");
+
+Employee emp = new Employee();
+emp.setEmpName("Ankit");
+emp.setSalary(50000.0);
+emp.setEmail("ankit@gmail.com");
+
+emp.setDepartment(itDept);
+
+Important:
+
+	emp.setDepartment(itDept);
+
+This line establishes the relationship.
+
+
+Saving Data:
+------------
+
+Saving Using Repository:
+-----------------------
+
+Assume:
+
+@Autowired
+private EmployeeRepository employeeRepository;
+
+and
+
+@Autowired
+private DepartmentRepository departmentRepository;
+
+First save Department:
+
+	departmentRepository.save(itDept);
+
+
+Then:
+
+	employeeRepository.save(emp);
+
+
+
+Generated SQL (simplified):
+
+INSERT INTO department (dept_name, location) VALUES ('IT', 'Mumbai');
+
+INSERT INTO employee (emp_name,salary,email,dept_id) VALUES ('Ankit',50000,'ankit@gmail.com',1);
+
+Notice:
+
+dept_id = 1
+
+--is automatically inserted.
+
+
+
+Using Cascade:
+==============
+
+Without Cascade:
+
+departmentRepository.save(department);
+employeeRepository.save(employee);
+
+--Two save operations required.
+
+
+With Cascade:
+
+@ManyToOne(cascade = CascadeType.PERSIST)
+@JoinColumn(name = "dept_id")
+private Department department;
+
+Now:
+
+	employeeRepository.save(employee);
+
+--can automatically persist the Department if it is new.
+
+
+
+Fetching Data:
+--------------
+
+Employee emp = employeeRepository.findById(1).get();
+
+Access the department info:
+
+Department dept = emp.getDepartment();
+
+System.out.println(dept);
+
+
+
+Derived Query Method:
+---------------------
+
+Finding Employees By Department Name:
+
+Define the following method inside the EmployeeRepository interface:
+
+List<Employee> findByDepartmentDeptName(String deptName);
+
+
+Usage:
+
+employeeRepository.findByDepartmentDeptName("IT");
+
+Generated Query:
+
+SELECT *
+FROM employee e
+JOIN department d
+ON e.dept_id=d.dept_id
+WHERE d.dept_name='IT';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Entity Relationships in JPA
+===========================
+
+
+Until now, we worked with a single table.
+
+
+Example: employee table
+
+
+| emp_id | emp_name | salary |
+| ------ | -------- | ------ |
+| 1      | Rahul    | 50000  |
+| 2      | Aman     | 60000  |
+
+
+However, in real-world applications, entities rarely exist independently.
+
+Examples:
+
+Employee belongs to a Department
+Student enrolls in Courses
+Customer places Orders
+Employee has a Passport
+Doctor treats Patients
+
+--These are relationships between entities.
+
+
+
+
+How Java Represents Relationships
+=================================
+
+Suppose an Employee belongs to a Department.
+
+--Java represents this relationship using object references.
+
+Example:
+
+public class Employee {
+
+    private Integer empId;
+
+    private String empName;
+
+    private Department department;
+}
+
+Notice:
+
+Employee object contains
+a reference to a Department object.
+
+--This is how Object-Oriented Programming models relationships.
+
+
+
+How Databases Represent Relationships
+=====================================
+
+Relational databases do not store object references.
+
+Instead, relationships are maintained using:
+
+Primary Key (PK)
+Foreign Key (FK)
+
+Example:
+
+
+department table:
+
+| dept_id | dept_name |
+| ------- | --------- |
+| 1       | IT        |
+| 2       | HR        |
+
+
+employee table:
+
+| emp_id | emp_name | dept_id |
+| ------ | -------- | ------- |
+| 101    | Ankit    | 1       |
+| 102    | Rahul    | 1       |
+| 103    | Amit     | 2       |
+
+
+
+Here:
+
+employee.dept_id
+
+references
+
+department.dept_id
+
+This is called a: Foreign Key Relationship
+
+
+
+The Object-Relational Mismatch
+==============================
+
+--Java represents relationships using:
+
+Object References
+
+--Database represents relationships using:
+
+Foreign Keys
+
+--Both worlds use different approaches.
+
+This mismatch is called: 
+
+Object-Relational Mismatch
+
+--JPA solves this problem by automatically converting:
+
+Java Object Relationships
+            ↓
+Database Foreign Key Relationships
+
+
+
+What is Relationship Mapping?
+=============================
+
+--Relationship Mapping is the process of mapping:
+
+Java Object References
+            ↓
+Database Foreign Keys
+
+--using JPA annotations.
+
+
+Relationship Cardinality
+=========================
+
+Cardinality defines:
+
+How many records of one entity
+can be associated with another entity.
+
+JPA supports four major relationship types.
+
+
+1. @ManyToOne
+
+Example:
+
+Many Employees
+       ↓
+One Department
+
+Ankit --|
+Rahul --|--> IT Department
+Amit  --|
+
+
+Annotation:
+
+@ManyToOne
+
+--This is the most commonly used relationship in JPA.
+
+
+
+2. @OneToMany
+
+Example:
+
+One Department
+       ↓
+Many Employees
+
+IT
+ |-- Ankit
+ |-- Rahul
+ |-- Amit
+
+Annotation:
+
+@OneToMany
+
+
+3. @OneToOne
+
+Example:
+
+One Employee <-> One Passport
+
+
+Ankit <-> Passport P1001
+
+Rahul <-> Passport P1002
+
+Annotation:
+
+@OneToOne
+
+
+4. @ManyToMany
+
+Example:
+
+One Student <-> Many Courses
+
+One Course <-> Many Students
+
+Ankit -> Java
+Ankit -> Spring
+
+Rahul -> Java
+Rahul -> SQL
+
+Annotation:
+
+@ManyToMany
+
+
+
+Unidirectional Relationship
+===========================
+
+--Only one entity knows about the relationship.
+
+Example:
+
+public class Employee {
+
+    private Department department;
+}
+
+--Here Employee contains the referernce of Department
+
+
+--Employee knows Department.
+
+--Department does not know Employee.
+
+
+Bidirectional Relationship
+==========================
+
+--Both entities know about each other.
+
+Example:
+
+public class Employee {
+
+    private Department department;
+}
+
+
+public class Department {
+
+    private List<Employee> employees;
+}
+
+Visualization:
+
+Employee <-> Department
+
+--Both entities can navigate to each other.
+
+
+--An Employee object has its Department information.
+--A Department object has its all Employee information.
+
+
+Important Relationship Annotations
+==================================
+
+During relationship mapping, we frequently use:
+
+
+@ManyToOne
+@OneToMany
+@OneToOne
+@ManyToMany
+
+@JoinColumn
+@JoinTable
+
+
+@JoinColumn
+===========
+
+--Whenever JPA creates a Foreign Key column, the column name can be customized using:
+
+@JoinColumn
+
+Example:
+
+@ManyToOne
+@JoinColumn(name = "dept_id")
+private Department department;
+
+
+Generated Employee table:
+
+employee
+-------------------
+emp_id
+emp_name
+salary
+email
+dept_id <- FK
+
+Here:
+
+dept_id
+
+is the Foreign Key column.
+
+
+@ManyToOne Mapping
+==================
+
+Why is @ManyToOne Important?
+
+--In relational databases, the Foreign Key is typically stored in the child table.
+
+Example:
+
+employee
+-------------------
+emp_id
+emp_name
+salary
+email
+dept_id  <- Foreign Key
+
+--Since the Foreign Key exists in the Employee table, relationship mapping usually starts from the Employee side.
+
+
+
+Therefore:
+
+@ManyToOne
+
+is considered the most important relationship annotation in JPA.
+
+
+Example:
+
+Department Entity:
+
+Department.java:
+----------------
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Department {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer deptId;
+
+    private String deptName;
+
+    private String location;
+}
+
+
+Employee Entity:
+
+Employee.java:
+--------------
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer empId;
+
+    private String empName;
+
+    private Double salary;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @ManyToOne
+    @JoinColumn(name = "dept_id")
+    private Department department;
+}
+
+
+
+Generated Database Tables:
+
+department table:
+
+dept_id (PK)
+dept_name
+location
+
+
+employee table:
+
+emp_id (PK)
+emp_name
+salary
+email
+dept_id (FK)
+
+
+
+Notice:
+
+dept_id
+
+references
+
+department.dept_id
+
+
+
+Generated Foreign Key Name:
+---------------------------
+
+Without any configuration:
+
+@ManyToOne
+private Department department;
+
+Hibernate may generate:
+
+department_dept_id
+
+or something similar.
+
+--To avoid auto-generated names, we generally use:
+
+@JoinColumn
+
+
+--@JoinColumn annotation is used to customize the Foreign Key column name.
+
+
+Example:
+
+@ManyToOne
+@JoinColumn(name = "dept_id")
+private Department department;
+
+Generated Employee table:
+
+employee:
+
+emp_id
+emp_name
+salary
+email
+dept_id
+
+Now the FK column name becomes:
+
+dept_id
+
+instead of Hibernate's generated name.
+
+
+Creating the Relationship:
+===========================
+
+Department itDept = new Department();
+itDept.setDeptName("IT");
+itDept.setLocation("Mumbai");
+
+Employee emp = new Employee();
+emp.setEmpName("Ankit");
+emp.setSalary(50000.0);
+emp.setEmail("ankit@gmail.com");
+
+emp.setDepartment(itDept);
+
+Important:
+
+	emp.setDepartment(itDept);
+
+This line establishes the relationship.
+
+
+Saving Data:
+------------
+
+Saving Using Repository:
+-----------------------
+
+Assume:
+
+@Autowired
+private EmployeeRepository employeeRepository;
+
+and
+
+@Autowired
+private DepartmentRepository departmentRepository;
+
+First save Department:
+
+	departmentRepository.save(itDept);
+
+
+Then:
+
+	employeeRepository.save(emp);
+
+
+
+Generated SQL (simplified):
+
+INSERT INTO department (dept_name, location) VALUES ('IT', 'Mumbai');
+
+INSERT INTO employee (emp_name,salary,email,dept_id) VALUES ('Ankit',50000,'ankit@gmail.com',1);
+
+Notice:
+
+dept_id = 1
+
+--is automatically inserted.
+
+
+
+Using Cascade:
+==============
+
+Without Cascade:
+
+departmentRepository.save(department);
+employeeRepository.save(employee);
+
+--Two save operations required.
+
+
+With Cascade:
+
+@ManyToOne(cascade = CascadeType.ALL)
+@JoinColumn(name = "dept_id")
+private Department department;
+
+Now:
+
+	employeeRepository.save(employee);
+
+--can automatically persist the Department if it is new.
+
+
+Other commonly used Cascade types are:
+
+CascadeType.PERSIST: When parent is saved, child is also saved.
+CascadeType.MERGE: When parent is updated, child is also updated.
+CascadeType.REMOVE: Deleting parent deletes child entities as well.
+CascadeType.DETACH: When parent is detached from Persistence Context, child entities are detached as well.
+
+CascadeType.ALL: Apply all cascade operations.
+
+
+
+In real projects:
+
+CascadeType.PERSIST
+CascadeType.MERGE
+CascadeType.ALL
+
+are the most frequently used.
+
+
+
+Fetching Data:
+--------------
+
+Employee emp = employeeRepository.findById(1).get();
+
+Access the department info:
+
+Department dept = emp.getDepartment();
+
+System.out.println(dept);
+
+
+
+Derived Query Method:
+---------------------
+
+Finding Employees By Department Name:
+
+Define the following method inside the EmployeeRepository interface:
+
+List<Employee> findByDepartmentDeptName(String deptName);
+
+
+Usage:
+
+employeeRepository.findByDepartmentDeptName("IT");
+
+Generated Query:
+
+SELECT *
+FROM employee e
+JOIN department d
+ON e.dept_id=d.dept_id
+WHERE d.dept_name='IT';
+
+
+
+
+
+
+@OneToMany Mapping:
+==================
+
+@OneToMany represents a relationship where:
+
+One Parent Record
+        ↓
+Many Child Records
+
+Real-Time Example:
+
+One Department
+        ↓
+Many Employees
+
+Example:
+
+IT Department
+      |
+      |-- Ankit
+      |-- Rahul
+      |-- Amit
+
+Here:
+
+--One Department contains multiple Employees.
+
+Therefore:
+
+@OneToMany
+
+is the correct mapping.
+
+
+Important Question:
+
+--If @ManyToOne Already Creates the Relationship, Why Do We Need @OneToMany?
+
+Remember: In Employee Entity class
+
+@ManyToOne
+@JoinColumn(name = "dept_id")
+private Department department;
+
+already creates:
+
+employee
+-------------
+emp_id
+emp_name
+salary
+email
+dept_id (FK)
+
+
+So technically:
+
+--The database relationship is already established.
+
+Then why use @OneToMany?
+
+Answer:
+
+@OneToMany is mainly used for navigation.
+
+It allows us to navigate from
+Department -> Employees.
+
+
+Without @OneToMany:
+
+Employee -> Department (From the Employee we can navigate Department object)
+
+Department -> Employees (But from Department object we can not navigate to Employee object)
+
+
+With @OneToMany:
+
+Department -> Employee (We can navigate from the Department to all the associated Employee objects)
+
+
+Unidirectional @OneToMany:
+--------------------------
+
+Suppose we want:
+
+Department -> Employees
+
+--but Employees do not know Department.
+
+
+Department Entity:
+
+
+@Entity
+public class Department {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer deptId;
+
+    private String deptName;
+
+    private String location;
+
+    @OneToMany
+    private List<Employee> employees = new ArrayList<>();
+}
+
+
+Employee Entity:
+
+
+@Entity
+public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer empId;
+
+    private String empName;
+
+    private String email;
+
+    private Double salary;
+}
+
+
+What Happens Internally?
+
+Many beginners expect:
+
+employee
+-------------
+emp_id
+emp_name
+salary
+email
+dept_id
+
+But JPA creates:
+
+department table:
+
+dept_id
+dept_name
+location
+
+employee table: 
+
+emp_id
+emp_name
+email
+salary
+
+
+department_employees
+dept_id
+emp_id
+
+--A third table is created.
+
+Why?
+
+--Because JPA does not know where to store the relationship.
+
+
+Note: Unidirectional @OneToMany is Rarely Used
+
+Because it creates:
+
+Extra Join Table
+
+which is unnecessary.
+
+Most real-world projects avoid:
+
+@OneToMany
+
+alone.
+
+
+Instead we use: Bidirectional mapping
+
+@ManyToOne: Inside the Parent Entity class
+
+@OneToMany(mappedBy="...") : Inside the Child Entity class
+
+
+
+Real-World Approach:
+
+--Usually we already have:
+
+@ManyToOne
+@JoinColumn(name="dept_id")
+private Department department;
+
+inside Employee.
+
+Then we add:
+
+@OneToMany(mappedBy = "department")
+private List<Employee> employees;
+
+inside Department.
+
+This is called:
+
+Bidirectional Mapping
+
+
+Unidirectional Example:
+-----------------------
+
+Department Entity:
+
+@Entity
+public class Department {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer deptId;
+
+    private String deptName;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Employee> employees = new ArrayList<>();
+}
+
+
+
+
+Creating Objects:
+
+
+Department dept = new Department();
+dept.setDeptName("IT");
+dept.setLocation("Mumbai");
+
+Employee e1 = new Employee();
+e1.setEmpName("Ankit");
+e1.setSalary(50000.0);
+e1.setEmail("ankit@gmail.com");
+
+Employee e2 = new Employee();
+e2.setEmpName("Rahul");
+e2.setSalary(60000.0);
+e2.setEmail("rahul@gmail.com");
+
+dept.getEmployees().add(e1);
+dept.getEmployees().add(e2);
+
+
+Save:
+
+	departmentRepository.save(dept);
+
+Because of:
+
+	cascade = CascadeType.ALL
+
+--both Employees are saved automatically.
+
+
+Fetching Employees:
+------------------
+
+Department dept = departmentRepository.findById(1).get();
+
+List<Employee> employees = dept.getEmployees();
+
+Now we can navigate:
+
+Department -> Employees
+
+
+Bidirectional Mapping:
+-----------------------
+
+
+--In a Bidirectional Relationship:
+
+Both entities know
+about each other.
+
+Navigation is possible in both directions.
+
+
+--Understanding mappedBy
+
+Consider:
+
+Inside Department Entity class:
+
+@OneToMany(mappedBy = "department")
+private List<Employee> employees;
+
+The value:
+
+mappedBy = "department"
+
+refers to:
+
+@ManyToOne
+@JoinColumn(name="dept_id")
+private Department department;
+
+inside Employee Entity class.
+
+The word:
+
+department
+
+--must exactly match the field name.
+
+
+Meaning of mappedBy:
+-------------------
+
+I am NOT the owner
+of this relationship.
+
+The Employee entity
+maintains the Foreign Key.
+
+
+Relationship Owner:
+------------------
+
+Consider:
+
+Employee
+    ↓
+Department
+
+The Foreign Key exists in:
+
+employee table
+
+Therefore:
+
+Employee is the owning side.
+
+and
+
+Department is the inverse side.
+
+using:
+
+mappedBy
+
+
+Rule: 
+
+At table level the side containing the Foreign Key is the owning side.
+
+At Entity level the side contains the @JoinColumn is called Owning side.
+And the side contains the mappedBy is called Inverse Side.
+
+
+Saving Data in Bidirectional Mapping:
+=====================================
+
+Always update both sides
+of a bidirectional relationship.
+
+
+
+Example:
+
+Create Department:
+
+	Department dept = new Department();
+
+	dept.setDeptName("IT");
+
+Create Employee:
+
+	Employee emp = new Employee();
+
+	emp.setEmpName("Ankit");
+
+Associate both sides:
+
+emp.setDepartment(dept);
+dept.getEmployees().add(emp);
+
+
+Save:
+
+	departmentRepository.save(dept);
+
+or
+
+	employeeRepository.save(emp);
+
+
+--depending on Cascade configuration.
+
+
+Because: 
+
+Database Relationship:
+
+	emp.setDepartment(dept);
+
+creates the FK relationship.
+
+Java Object Relationship:
+
+	dept.getEmployees().add(emp);
+
+keeps both objects synchronized.
+
+
+
+
+Summery:
+
+@ManyToOne: creates the actual Foreign Key.
+
+@OneToMany: mainly provides reverse navigation.
+
+mappedBy: prevents unnecessary join tables.
+
+
+
+
+Example of Bidirectional Mapping:
+=================================
+
+Without mappedBy:
+
+Employee Entity:
+
+@Entity
+public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer empId;
+
+    private String empName;
+
+    @ManyToOne
+    @JoinColumn(name = "dept_id")
+    private Department department;
+}
+
+
+
+Department Entity:
+
+@Entity
+public class Department {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer deptId;
+
+    private String deptName;
+
+    @OneToMany
+    private List<Employee> employees;
+}
+
+
+Navigation:
+
+Employee -> Department
+
+Employee emp = employeeRepository.findById(1).get();
+
+Department dept = emp.getDepartment();
+
+
+Department -> Employees
+
+Department dept = departmentRepository.findById(1).get();
+
+List<Employee> employees = dept.getEmployees();
+
+
+Problem With This Approach
+==========================
+
+Consider:
+
+Inside Employee Entity class:
+
+@ManyToOne
+@JoinColumn(name="dept_id")
+private Department department;
+
+and 
+
+Inside Department Entity class:
+
+@OneToMany
+private List<Employee> employees;
+
+Now JPA sees:
+
+Employee -> Department
+
+and
+
+Department -> Employees
+
+as two separate relationships.
+
+--Therefore Hibernate may create:
+
+employee table with FK: 
+--------------
+emp_id
+emp_name
+dept_id <- FK
+
+
+and also extra join table to navigate from Department to Employee:
+
+
+department_employees
+---------------------
+dept_id
+emp_id
+
+
+--This is unnecessary.
+
+
+Solution: mappedBy
+
+
+To tell Hibernate:
+
+This is the same relationship.
+Do not create another table.
+
+we use: mappedBy
+
+
+
+
+
+@OneToOne Mapping:
+=================
+
+A One-To-One relationship means:
+
+One record of Entity A
+is associated with
+
+exactly one record of Entity B
+
+and vice versa.
+
+
+
+Real-Time Examples:
+-------------------
+
+Employee <-> Passport
+
+Person <-> Driving License
+
+Citizen <-> Aadhaar
+
+User <-> UserProfile
+
+
+Example:
+
+Employee 101 <-> Passport P1001
+
+Employee 102 <-> Passport P1002
+
+Relationship:
+
+One Employee <-> One Passport
+
+Therefore:
+
+@OneToOne
+
+
+
+Database Representation
+=======================
+
+passport table:
+
+| passport_id | passport_no |
+| ----------- | ----------- |
+| 1           | P1001       |
+| 2           | P1002       |
+
+
+
+
+employee table:
+
+| emp_id | emp_name | passport_id |
+| ------ | -------- | ----------- |
+| 101    | Rahul    | 1           |
+| 102    | Amit     | 2           |
+
+
+Notice:
+
+passport_id
+
+is a Foreign Key.
+
+But unlike Many-To-One:
+
+The FK must be UNIQUE.
+
+because:
+
+One Passport
+cannot belong to
+multiple Employees.
+
+
+Unidirectional One-To-One
+=========================
+
+Only Employee knows Passport.
+
+Passport knows nothing about Employee.
+
+
+Passport Entity:
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Passport {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer passportId;
+
+    private String passportNumber;
+
+    private String country;
+}
+
+
+Employee Entity:
+
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer empId;
+
+    private String empName;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "passport_id")
+    private Passport passport;
+}
+
+
+
+Generated Tables:
+
+passport table:
+
+passport_id (PK)
+passport_number
+country
+
+employee table:
+
+emp_id (PK)
+emp_name
+passport_id (FK + UNIQUE)
+
+
+
+Saving Data
+===========
+
+Create Passport:
+
+	Passport passport = new Passport();
+
+	passport.setPassportNumber("P1001");
+	passport.setCountry("India");
+
+Create Employee:
+
+	Employee employee = new Employee();
+
+	employee.setEmpName("Rahul");
+
+	employee.setPassport(passport);
+
+	employeeRepository.save(employee);
+
+--automatically persists Passport.
+
+
+Without Cascade:
+
+	passportRepository.save(passport);
+
+	employeeRepository.save(employee);
+
+Two save operations.
+
+
+Fetching Data
+=============
+
+Employee employee = employeeRepository.findById(1).get();
+
+Passport passport = employee.getPassport();
+
+--Possible because Employee knows Passport.
+
+
+
+Bidirectional One-To-One
+========================
+
+--Suppose Passport should also know Employee.
+
+
+Employee Entity:
+
+@Entity
+public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer empId;
+
+    private String empName;
+
+    @OneToOne
+    @JoinColumn(name = "passport_id")
+    private Passport passport;
+}
+
+
+
+
+Passport Entity:
+
+@Entity
+public class Passport {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer passportId;
+
+    private String passportNumber;
+
+    @OneToOne
+    private Employee employee;
+}
+
+
+Problem
+
+Hibernate sees:
+
+Employee -> Passport
+
+Passport -> Employee
+
+as two relationships.
+
+May create:
+
+employee.passport_id
+
+and
+
+passport.employee_id
+
+Two Foreign Keys.
+
+
+Solution: mappedBy
+==================
+
+Passport Entity:
+
+@Entity
+public class Passport {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer passportId;
+
+    private String passportNumber;
+
+    @OneToOne(mappedBy = "passport")
+    private Employee employee;
+}
+
+
+Meaning:
+
+Employee already owns
+the relationship.
+
+--Do not create another FK.
+
+
+Owning Side
+===========
+
+Contains:
+
+@JoinColumn
+
+Example:
+
+@OneToOne
+@JoinColumn(name="passport_id")
+private Passport passport;
+
+Employee owns the relationship.
+
+
+Inverse Side
+============
+
+Contains:
+
+mappedBy
+
+Example:
+
+@OneToOne(mappedBy="passport")
+private Employee employee;
+
+Passport is the inverse side.
+
+
+
+Navigation
+
+Employee -> Passport
+
+employee.getPassport();
+
+Passport -> Employee
+
+passport.getEmployee();
+
+--Possible in bidirectional mapping.
+
+
+@ManyToMany Mapping
+===================
+
+
+A @ManyToMany relationship exists when:
+
+Many records of Entity A
+can be associated with
+Many records of Entity B
+
+and vice versa.
+
+Real-Time Examples:
+
+
+Student <-> Course:
+
+Student A -> Java
+Student A -> Spring
+
+Student B -> Java
+Student B -> SQL
+
+Here:
+
+One Student -> Many Courses
+One Course  -> Many Students
+
+Therefore:
+
+@ManyToMany
+
+
+Other Examples:
+
+User <-> Role
+
+Doctor <-> Patient
+
+Actor <-> Movie
+
+Employee <-> Project
+
+
+Note: As we know to implement the ManyToMany relationship at table level we need to make use of a junction (3rd linking) table.
+
+
+JPA Mapping:
+============
+
+Student Entity:
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Student {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer studentId;
+
+    private String studentName;
+
+    @ManyToMany
+    private Set<Course> courses = new HashSet<>();
+}
+
+
+Course Entity:
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Course {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer courseId;
+
+    private String courseName;
+}
+
+
+Hibernate creates:
+
+1. student table:
+
+student_id
+student_name
+
+2. course table: 
+
+course_id
+course_name
+
+
+3. student_courses table (3rd table)
+
+student_id
+course_id
+
+Automatically.
+
+
+@JoinTable annotation:
+=======================
+
+By default Hibernate generates the 3rd table name and columns names automatically.
+
+--Usually we customize them.
+
+@ManyToMany
+@JoinTable(
+        name = "student_course",
+        joinColumns =
+            @JoinColumn(name = "student_id"),
+        inverseJoinColumns =
+            @JoinColumn(name = "course_id")
+)
+private Set<Course> courses;
+
+
+Here,
+
+@JoinTable(name="student_course",
+
+Creates: Join table with following name:
+
+student_course
+
+joinColumns = @JoinColumn(name="student_id")
+
+Represents:
+
+Current Entity FK
+
+Student FK.
+
+inverseJoinColumns = @JoinColumn(name="course_id")
+
+Represents:
+
+Other Entity FK
+
+Course FK.
+
+
+Saving Data:
+============
+
+Create Courses:
+
+	Course java = new Course();
+	java.setCourseName("Java");
+
+	Course spring = new Course();
+	spring.setCourseName("Spring");
+
+Create Student:
+
+	Student student = new Student();
+
+	student.setStudentName("Rahul");
+
+Associate:
+
+	student.getCourses().add(java);
+	student.getCourses().add(spring);
+
+Save:
+
+	studentRepository.save(student);
+
+(assuming Cascade is configured)
+
+
+Bidirectional Many-To-Many:
+==========================
+
+Until now:
+
+Student -> Course
+
+only.
+
+This is:
+
+Unidirectional ManyToMany
+
+To navigate both directions:
+
+Student <-> Course
+
+
+we use:
+
+mappedBy
+
+
+Otherwise one extra linking table will be created.
+
+
+Example:
+
+Student Entity class:
+
+@Entity
+public class Student {
+
+    @Id
+    private Integer studentId;
+
+    private String studentName;
+
+    @ManyToMany
+    @JoinTable(
+        name = "student_course",
+        joinColumns =
+            @JoinColumn(name = "student_id"),
+        inverseJoinColumns =
+            @JoinColumn(name = "course_id")
+    )
+    private Set<Course> courses = new HashSet<>();
+}
+
+
+Course Entity class:
+
+@Entity
+public class Course {
+
+    @Id
+    private Integer courseId;
+
+    private String courseName;
+
+    @ManyToMany(mappedBy = "courses")
+    private Set<Student> students = new HashSet<>();
+}
+
+
+Here,
+
+The word:
+
+courses
+
+must match:
+
+private Set<Course> courses;
+
+inside Student.
+
+
+Meaning:
+
+Student already owns
+the relationship.
+
+Do not create another
+join table.
+
+
+
+Owning Side vs Inverse Side:
+============================
+
+Owning Side:
+
+Contains:
+
+@JoinTable
+
+Example:
+
+@ManyToMany
+@JoinTable(...)
+private Set<Course> courses;
+
+Student owns the relationship.
+
+
+Inverse Side:
+
+Contains:
+
+mappedBy
+
+Example:
+
+@ManyToMany(mappedBy="courses")
+private Set<Student> students;
+
+Course is the inverse side.
+
+
+Cascade in Many-To-Many:
+------------------------
+
+Example:
+
+@ManyToMany(
+    cascade = {
+        CascadeType.PERSIST,
+        CascadeType.MERGE
+    }
+)
+
+Commonly used:
+
+PERSIST
+MERGE
+
+Avoid:
+
+REMOVE
+
+in ManyToMany.
+
+
+Because: 
+
+Suppose,
+
+Student A -> Java
+
+Student B -> Java
+
+If Student A is deleted:
+
+Java course should not
+be deleted.
+
+because Student B still uses it.
+
+
+
+Passing Client Data in JPA Relationships:
+=========================================
+
+--When working with JPA relationships, the client can send data in two ways:
+
+1. Send only the related entity ID (Recommended)
+
+2. Send the complete related object
+
+--In real-world applications, sending only IDs is preferred because it avoids duplicate records and improves performance.
+
+
+1. Many-To-One Relationship
+---------------------------
+
+Example:
+
+Many Employees
+        ↓
+One Department
+
+Employee Entity:
+
+
+@ManyToOne
+@JoinColumn(name = "dept_id")
+private Department department;
+
+
+Recommended Request:
+
+Assume Department already exists:
+
+1 -> IT
+2 -> HR
+
+Client Request:
+
+{
+  "empName": "Rahul",
+  "salary": 50000,
+  "email": "rahul@gmail.com",
+  "deptId": 1
+}
+
+DTO:
+
+public class EmployeeRequestDTO {
+
+    private String empName;
+    private Double salary;
+    private String email;
+    private Integer deptId;
+}
+
+
+Service:
+
+Department dept = departmentRepository.findById(dto.getDeptId()).get();
+
+Employee emp = new Employee();
+
+emp.setDepartment(dept);
+
+employeeRepository.save(emp);
+
+
+
+
+2. One-To-Many Relationship
+---------------------------
+
+Example:
+
+One Department
+        ↓
+Many Employees
+
+Department Entity:
+
+@OneToMany(mappedBy = "department")
+private List<Employee> employees;
+
+
+--Since FK exists in Employee table, normally we save from the Many-To-One side.
+
+Client Request:
+
+{
+  "empName": "Rahul",
+  "deptId": 1
+}
+
+
+
+JPA automatically updates:
+
+employee
+----------------
+emp_id
+emp_name
+dept_id
+
+
+Although the relationship is
+One-To-Many,
+
+client requests are usually
+handled through the
+Many-To-One side.
+
+
+
+3. One-To-One Relationship
+---------------------------
+
+Example:
+
+Employee <-> Passport
+
+Employee Entity:
+
+@OneToOne
+@JoinColumn(name = "passport_id")
+private Passport passport;
+
+Recommended Request
+
+Passport already exists:
+
+1 -> P1001
+2 -> P1002
+
+Client Request:
+
+{
+  "empName": "Rahul",
+  "passportId": 1
+}
+
+
+
+
+DTO:
+
+public class EmployeeRequestDTO {
+
+    private String empName;
+
+    private Integer passportId;
+}
+
+Service:
+
+Passport passport = passportRepository.findById(dto.getPassportId()).get();
+
+employee.setPassport(passport);
+
+employeeRepository.save(employee);
+
+
+Alternative
+
+Send complete Passport object:
+
+{
+  "empName": "Rahul",
+  "passport": {
+      "passportNumber": "P1001"
+  }
+}
+
+Requires:
+
+@OneToOne(cascade = CascadeType.PERSIST)
+
+or
+
+@OneToOne(cascade = CascadeType.ALL)
+
+
+4. Many-To-Many Relationship:
+------------------------------
+
+Example:
+
+Student <-> Course:
+
+Student Entity:
+
+@ManyToMany
+@JoinTable(
+        name = "student_course",
+        joinColumns =
+            @JoinColumn(name = "student_id"),
+        inverseJoinColumns =
+            @JoinColumn(name = "course_id")
+)
+private Set<Course> courses;
+
+
+
+Recommended Request:
+--------------------
+
+Assume courses already exist:
+
+101 -> Java
+102 -> Spring
+103 -> SQL
+
+Client Request:
+
+{
+  "studentName": "Rahul",
+  "courseIds": [101,102]
+}
+
+
+DTO:
+
+public class StudentRequestDTO {
+
+    private String studentName;
+
+    private List<Integer> courseIds;
+}
+
+
+
+Service:
+
+Set<Course> courses = new HashSet<>(courseRepository.findAllById(dto.getCourseIds()));
+
+student.setCourses(courses);
+
+studentRepository.save(student);
+
+
+Alternative
+
+Send complete Course objects:
+
+{
+  "studentName": "Rahul",
+  "courses": [
+      {
+          "courseName": "Java"
+      },
+      {
+          "courseName": "Spring"
+      }
+  ]
+}
+
+
+
+Infinite Recursion Problem in Bidirectional Mapping:
+====================================================
+
+--When we create a bidirectional relationship, both entities hold references to each other.
+
+Example:
+
+@Entity
+public class Department {
+
+    @Id
+    private Integer deptId;
+
+    private String deptName;
+
+    @OneToMany(mappedBy = "department")
+    private List<Employee> employees;
+}
+
+
+@Entity
+public class Employee {
+
+    @Id
+    private Integer empId;
+
+    private String empName;
+
+    @ManyToOne
+    private Department department;
+}
+
+
+Problem:
+
+--Suppose we fetch a Department object and return it from a REST API.
+
+Jackson tries to convert the object into JSON:
+
+Department
+    ↓
+Employees
+    ↓
+Department
+    ↓
+Employees
+    ↓
+Department
+    ↓
+...
+
+--Since both entities continuously reference each other, JSON serialization may enter an infinite loop and throw:
+
+
+StackOverflowError
+
+or
+
+Infinite Recursion Exception
+
+
+
+
+Solution 1: Using @JsonIgnore
+
+--Ignore one side of the relationship during JSON serialization.
+
+@Entity
+public class Employee {
+
+    @ManyToOne
+    @JoinColumn(name = "dept_id")
+    @JsonIgnore
+    private Department department;
+}
+
+Now when Department data is returned:
+
+{
+  "deptId": 1,
+  "deptName": "IT",
+  "employees": [
+    {
+      "empId": 101,
+      "empName": "Rahul"
+    }
+  ]
+}
+
+
+
+--The department object inside Employee is ignored, preventing the infinite loop.
+
+
+
+Solution 2: Using DTO Pattern (Recommended)
+
+Instead of returning Entity objects directly, create DTOs.
+
+Example:
+
+public class EmployeeResponseDTO {
+
+    private Integer empId;
+    private String empName;
+    private String deptName;
+}
+
+
+Service Layer:
+
+EmployeeResponseDTO dto = new EmployeeResponseDTO();
+
+dto.setEmpId(employee.getEmpId());
+dto.setEmpName(employee.getEmpName());
+dto.setDeptName(employee.getDepartment().getDeptName());
+
+
+Response:
+
+{
+  "empId": 101,
+  "empName": "Rahul",
+  "deptName": "IT"
+}
+
+Best Practice:
+
+For learning/demo projects:
+    @JsonIgnore is simple and sufficient.
+
+For real-time enterprise applications:
+    DTO Pattern is the recommended approach.
+
+
+--DTOs not only prevent infinite recursion but also:
+
+Hide unnecessary fields
+Improve API design
+Increase security
+Reduce response size
+Decouple Entity classes from API contracts
+
+
+
+
+
+
+
