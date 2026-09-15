@@ -7,6 +7,32 @@ Connecting Spring Boot with PostgreSQL:
 --Spring Boot uses JDBC (Java Database Connectivity) to establish communication between the application and the database.
 
 
+JDBC: It is a Java Specification(Documentation) for the JDBC driver vendors..
+
+JDBC driver software is the implementation of the JDBC specification
+
+ 
+Postgres : driver software 
+MySql: 
+Oracle: 
+SqlServer
+DB2
+
+RatanDB: ratandb driver 
+
+
+Java application performs any task using Objects and method calls
+
+Translater : JDBC driver s/w
+
+Whereas RDBMS s/w performs any task using SQL query
+
+
+
+
+
+
+
 1. JDBC Driver:
 ---------------
 
@@ -54,7 +80,7 @@ jdbc:postgresql://<host>:<port>/<database_name>
 
 Example:
 
-jdbc:postgresql://localhost:5432/appdb
+jdbc:postgresql://localhost:5432/hdfcdb
 
 
 
@@ -630,7 +656,7 @@ spring.jpa.hibernate.ddl-auto=none
 ORM (Object Relational Mapping):
 ================================
 
---ORM (Object Relational Mapping) is a technique used to map Java objects to database tables and vice versa.
+--ORM (Object Relational Mapping) is a technique used to map Java classes to database tables and vice versa.
 
 --In ORM, developers work with Java classes and objects instead of writing SQL queries for every database operation.
 
@@ -714,7 +740,12 @@ Framework		Description
 Hibernate		Most popular Java ORM framework
 JPA			Java ORM Specification
 EclipseLink		JPA implementation
-Spring Data JPA		Simplifies JPA usage in Spring Boot
+
+Spring Data JPA		Simplifies JPA usage in Spring Boot (By providing auto configuration)
+
+
+
+
 
 
 
@@ -729,13 +760,15 @@ Spring Data JPA
        ↓
    Hibernate
        ↓
+    JDBC Driver
+        ↓
  PostgreSQL/MySQL
 
 
 --Spring Data JPA provides repository support (Repository Abstraction).
 --JPA defines the standard ORM specification.
 --Hibernate implements the JPA specification.
---Hibernate generates SQL and communicates with the database.
+--Hibernate generates SQL and communicates with the database via JDBC driver software.
 
 
 
@@ -813,6 +846,9 @@ By default, JPA uses the class name as the table name.
 public class Employee {
 }
 
+
+
+
 JPA assumes:
 
 Class Name = Table Name
@@ -876,7 +912,7 @@ id
 Entity:
 
 @Id
-private Long id;
+private Integer id;
 
 
 Why @Id is Mandatory:
@@ -919,7 +955,7 @@ Entity:
 
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
-private Long id;
+private Integer id;
 
 
 
@@ -979,13 +1015,13 @@ For PostgreSQL, the most commonly preferred strategy is:
 
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
-private Long id;
+private Integer id;
 
 or, in many enterprise applications:
 
 @Id
 @GeneratedValue(strategy = GenerationType.SEQUENCE)
-private Long id;
+private Integer id;
 
 The choice depends on your requirements.
 
@@ -1054,7 +1090,7 @@ public class Employee {
         initialValue = 1000,
         allocationSize = 1
     )
-    private Long id;
+    private Integer id;
 
     private String name;
 }
@@ -1427,6 +1463,9 @@ Embedded databases (H2, HSQLDB, Derby)					create-drop
 
 External databases (PostgreSQL, MySQL, Oracle, SQL Server)		none
 
+
+
+
 --So for a typical PostgreSQL application:
 
 spring.datasource.url=jdbc:postgresql://localhost:5432/mydb
@@ -1745,7 +1784,7 @@ Entity Life Cycle Diagram:
 --------------------------
 
 Transient
-   |-- persist() or save()
+   |-- persist() or save() or find()
 Managed
    |-- detach()
 Detached  
@@ -1790,6 +1829,13 @@ ps.setString(1, "Ratan");
 ps.setDouble(2, 50000);
 
 ps.executeUpdate();
+
+
+
+
+
+
+
 
 Problems:
 
@@ -1938,7 +1984,7 @@ Iterable<T> findAll();
 
 Example:
 
-Iterable<Employee> employees = employeeRepository.findAll();
+List<Employee> employees = employeeRepository.findAll();
 
 Generated SQL:
 
@@ -2157,6 +2203,7 @@ along with:
 
 Request DTO
 Response DTO
+ResponseEntity
 Exception Handling
 Validation
 Service Layer
