@@ -2375,6 +2375,10 @@ GET /employees
 
 
 
+----->
+
+
+
 4. Update Employee:
 -------------------
 
@@ -2395,6 +2399,8 @@ public ResponseEntity<Employee> updateEmployee(@PathVariable Integer empId, @Req
 
     return ResponseEntity.ok(updatedEmployee);
 }
+
+
 
 
 
@@ -2470,6 +2476,14 @@ public ResponseEntity<Long> getEmployeeCount() {
 URL:
 
 GET /employees/count
+
+
+
+Home work: Develop a Spring boot  DataJPA application in which implement all the above methods once again in proper and 
+structured manner.
+
+
+
 
 
 
@@ -2749,6 +2763,12 @@ For the complete list of supported keywords, refer to the official Spring Data J
 https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html
 
 
+
+
+
+
+
+
 @Query Annotation: JPQL
 ===================
 
@@ -2964,6 +2984,14 @@ count()
 existsById()
 
 --we only define additional methods when custom search requirements arise.
+
+
+
+
+
+
+
+
 
 
 Entity Relationships in JPA
@@ -3527,627 +3555,6 @@ Now:
 --can automatically persist the Department if it is new.
 
 
-
-Fetching Data:
---------------
-
-Employee emp = employeeRepository.findById(1).get();
-
-Access the department info:
-
-Department dept = emp.getDepartment();
-
-System.out.println(dept);
-
-
-
-Derived Query Method:
----------------------
-
-Finding Employees By Department Name:
-
-Define the following method inside the EmployeeRepository interface:
-
-List<Employee> findByDepartmentDeptName(String deptName);
-
-
-Usage:
-
-employeeRepository.findByDepartmentDeptName("IT");
-
-Generated Query:
-
-SELECT *
-FROM employee e
-JOIN department d
-ON e.dept_id=d.dept_id
-WHERE d.dept_name='IT';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Entity Relationships in JPA
-===========================
-
-
-Until now, we worked with a single table.
-
-
-Example: employee table
-
-
-| emp_id | emp_name | salary |
-| ------ | -------- | ------ |
-| 1      | Rahul    | 50000  |
-| 2      | Aman     | 60000  |
-
-
-However, in real-world applications, entities rarely exist independently.
-
-Examples:
-
-Employee belongs to a Department
-Student enrolls in Courses
-Customer places Orders
-Employee has a Passport
-Doctor treats Patients
-
---These are relationships between entities.
-
-
-
-
-How Java Represents Relationships
-=================================
-
-Suppose an Employee belongs to a Department.
-
---Java represents this relationship using object references.
-
-Example:
-
-public class Employee {
-
-    private Integer empId;
-
-    private String empName;
-
-    private Department department;
-}
-
-Notice:
-
-Employee object contains
-a reference to a Department object.
-
---This is how Object-Oriented Programming models relationships.
-
-
-
-How Databases Represent Relationships
-=====================================
-
-Relational databases do not store object references.
-
-Instead, relationships are maintained using:
-
-Primary Key (PK)
-Foreign Key (FK)
-
-Example:
-
-
-department table:
-
-| dept_id | dept_name |
-| ------- | --------- |
-| 1       | IT        |
-| 2       | HR        |
-
-
-employee table:
-
-| emp_id | emp_name | dept_id |
-| ------ | -------- | ------- |
-| 101    | Ankit    | 1       |
-| 102    | Rahul    | 1       |
-| 103    | Amit     | 2       |
-
-
-
-Here:
-
-employee.dept_id
-
-references
-
-department.dept_id
-
-This is called a: Foreign Key Relationship
-
-
-
-The Object-Relational Mismatch
-==============================
-
---Java represents relationships using:
-
-Object References
-
---Database represents relationships using:
-
-Foreign Keys
-
---Both worlds use different approaches.
-
-This mismatch is called: 
-
-Object-Relational Mismatch
-
---JPA solves this problem by automatically converting:
-
-Java Object Relationships
-            ↓
-Database Foreign Key Relationships
-
-
-
-What is Relationship Mapping?
-=============================
-
---Relationship Mapping is the process of mapping:
-
-Java Object References
-            ↓
-Database Foreign Keys
-
---using JPA annotations.
-
-
-Relationship Cardinality
-=========================
-
-Cardinality defines:
-
-How many records of one entity
-can be associated with another entity.
-
-JPA supports four major relationship types.
-
-
-1. @ManyToOne
-
-Example:
-
-Many Employees
-       ↓
-One Department
-
-Ankit --|
-Rahul --|--> IT Department
-Amit  --|
-
-
-Annotation:
-
-@ManyToOne
-
---This is the most commonly used relationship in JPA.
-
-
-
-2. @OneToMany
-
-Example:
-
-One Department
-       ↓
-Many Employees
-
-IT
- |-- Ankit
- |-- Rahul
- |-- Amit
-
-Annotation:
-
-@OneToMany
-
-
-3. @OneToOne
-
-Example:
-
-One Employee <-> One Passport
-
-
-Ankit <-> Passport P1001
-
-Rahul <-> Passport P1002
-
-Annotation:
-
-@OneToOne
-
-
-4. @ManyToMany
-
-Example:
-
-One Student <-> Many Courses
-
-One Course <-> Many Students
-
-Ankit -> Java
-Ankit -> Spring
-
-Rahul -> Java
-Rahul -> SQL
-
-Annotation:
-
-@ManyToMany
-
-
-
-Unidirectional Relationship
-===========================
-
---Only one entity knows about the relationship.
-
-Example:
-
-public class Employee {
-
-    private Department department;
-}
-
---Here Employee contains the referernce of Department
-
-
---Employee knows Department.
-
---Department does not know Employee.
-
-
-Bidirectional Relationship
-==========================
-
---Both entities know about each other.
-
-Example:
-
-public class Employee {
-
-    private Department department;
-}
-
-
-public class Department {
-
-    private List<Employee> employees;
-}
-
-Visualization:
-
-Employee <-> Department
-
---Both entities can navigate to each other.
-
-
---An Employee object has its Department information.
---A Department object has its all Employee information.
-
-
-Important Relationship Annotations
-==================================
-
-During relationship mapping, we frequently use:
-
-
-@ManyToOne
-@OneToMany
-@OneToOne
-@ManyToMany
-
-@JoinColumn
-@JoinTable
-
-
-@JoinColumn
-===========
-
---Whenever JPA creates a Foreign Key column, the column name can be customized using:
-
-@JoinColumn
-
-Example:
-
-@ManyToOne
-@JoinColumn(name = "dept_id")
-private Department department;
-
-
-Generated Employee table:
-
-employee
--------------------
-emp_id
-emp_name
-salary
-email
-dept_id <- FK
-
-Here:
-
-dept_id
-
-is the Foreign Key column.
-
-
-@ManyToOne Mapping
-==================
-
-Why is @ManyToOne Important?
-
---In relational databases, the Foreign Key is typically stored in the child table.
-
-Example:
-
-employee
--------------------
-emp_id
-emp_name
-salary
-email
-dept_id  <- Foreign Key
-
---Since the Foreign Key exists in the Employee table, relationship mapping usually starts from the Employee side.
-
-
-
-Therefore:
-
-@ManyToOne
-
-is considered the most important relationship annotation in JPA.
-
-
-Example:
-
-Department Entity:
-
-Department.java:
-----------------
-
-@Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class Department {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer deptId;
-
-    private String deptName;
-
-    private String location;
-}
-
-
-Employee Entity:
-
-Employee.java:
---------------
-
-@Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class Employee {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer empId;
-
-    private String empName;
-
-    private Double salary;
-
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @ManyToOne
-    @JoinColumn(name = "dept_id")
-    private Department department;
-}
-
-
-
-Generated Database Tables:
-
-department table:
-
-dept_id (PK)
-dept_name
-location
-
-
-employee table:
-
-emp_id (PK)
-emp_name
-salary
-email
-dept_id (FK)
-
-
-
-Notice:
-
-dept_id
-
-references
-
-department.dept_id
-
-
-
-Generated Foreign Key Name:
----------------------------
-
-Without any configuration:
-
-@ManyToOne
-private Department department;
-
-Hibernate may generate:
-
-department_dept_id
-
-or something similar.
-
---To avoid auto-generated names, we generally use:
-
-@JoinColumn
-
-
---@JoinColumn annotation is used to customize the Foreign Key column name.
-
-
-Example:
-
-@ManyToOne
-@JoinColumn(name = "dept_id")
-private Department department;
-
-Generated Employee table:
-
-employee:
-
-emp_id
-emp_name
-salary
-email
-dept_id
-
-Now the FK column name becomes:
-
-dept_id
-
-instead of Hibernate's generated name.
-
-
-Creating the Relationship:
-===========================
-
-Department itDept = new Department();
-itDept.setDeptName("IT");
-itDept.setLocation("Mumbai");
-
-Employee emp = new Employee();
-emp.setEmpName("Ankit");
-emp.setSalary(50000.0);
-emp.setEmail("ankit@gmail.com");
-
-emp.setDepartment(itDept);
-
-Important:
-
-	emp.setDepartment(itDept);
-
-This line establishes the relationship.
-
-
-Saving Data:
-------------
-
-Saving Using Repository:
------------------------
-
-Assume:
-
-@Autowired
-private EmployeeRepository employeeRepository;
-
-and
-
-@Autowired
-private DepartmentRepository departmentRepository;
-
-First save Department:
-
-	departmentRepository.save(itDept);
-
-
-Then:
-
-	employeeRepository.save(emp);
-
-
-
-Generated SQL (simplified):
-
-INSERT INTO department (dept_name, location) VALUES ('IT', 'Mumbai');
-
-INSERT INTO employee (emp_name,salary,email,dept_id) VALUES ('Ankit',50000,'ankit@gmail.com',1);
-
-Notice:
-
-dept_id = 1
-
---is automatically inserted.
-
-
-
-Using Cascade:
-==============
-
-Without Cascade:
-
-departmentRepository.save(department);
-employeeRepository.save(employee);
-
---Two save operations required.
-
-
-With Cascade:
-
-@ManyToOne(cascade = CascadeType.ALL)
-@JoinColumn(name = "dept_id")
-private Department department;
-
-Now:
-
-	employeeRepository.save(employee);
-
---can automatically persist the Department if it is new.
-
-
 Other commonly used Cascade types are:
 
 CascadeType.PERSIST: When parent is saved, child is also saved.
@@ -4585,12 +3992,14 @@ Create Department:
 	Department dept = new Department();
 
 	dept.setDeptName("IT");
+	dept.setLocation("Mumbai");
 
 Create Employee:
 
 	Employee emp = new Employee();
 
 	emp.setEmpName("Ankit");
+	--
 
 Associate both sides:
 
@@ -4631,7 +4040,7 @@ Summery:
 
 @ManyToOne: creates the actual Foreign Key.
 
-@OneToMany: mainly provides reverse navigation.
+@OneToMany: mainly provides reverse navigation: using a third table
 
 mappedBy: prevents unnecessary join tables.
 
@@ -4751,6 +4160,16 @@ This is the same relationship.
 Do not create another table.
 
 we use: mappedBy
+
+
+
+---------------->
+
+start with mapping: manytoone, onetomany Unidirectional
+
+manytoone, onetomany Bidirectional
+
+
 
 
 

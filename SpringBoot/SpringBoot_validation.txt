@@ -1,0 +1,749 @@
+Exception Handling in Spring Boot application:
+=============================================
+
+Consider the following API:
+
+
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController{
+
+
+	@GetMapping("/{empId}")
+	public Employee getEmployee(@PathVariable Integer empId){
+
+    		if(empId < 100){
+        		throw new IllegalArgumentException("Employee Id should be greater than 100");
+    		}
+
+    		return new Employee(empId,"Rahul",500000);
+	}
+}
+
+
+Request:
+
+GET /wmployees/10
+
+Output:
+
+IllegalArgumentException
+
+Question:
+
+--Who catches this exception?
+
+Answer:
+
+--Spring Boot catches it automatically.
+
+
+--Spring Boot provides a default controller called:
+
+BasicErrorController
+
+--which handles unhandled exceptions and generates a JSON response.
+
+
+Internal Flow:
+--------------
+
+Request
+   ↓
+Controller
+   ↓
+Exception Occurred
+   ↓
+BasicErrorController
+   ↓
+JSON Error Response
+
+
+
+{
+   "timestamp":"2026-09-16T10:30:00",
+   "status":500,
+   "error":"Internal Server Error",
+   "message":"Employee Id should be greater than 100",
+   "path":"/employees/10"
+}
+
+This is the default Spring Boot behavior.
+
+
+
+Problem with Default Response:
+
+Suppose:
+
+	Employee Not Found
+
+Should return:
+
+	404 NOT FOUND
+
+But Spring Boot may return:
+
+	500 INTERNAL SERVER ERROR
+
+--if we don't handle it properly.
+
+--This is not API-friendly.
+
+
+
+Why Not Use Try-Catch Everywhere?
+-----------------------------------
+
+Many beginners write:
+
+@GetMapping("/{empId}")
+public Employee getEmployee(@PathVariable Integer empId){
+
+   try{
+
+      // business logic
+
+   }catch(Exception e){
+
+      // handle exception
+   }
+}
+
+
+--This creates problems.
+
+Imagine a Project with 200 APIs:
+
+EmployeeController
+DepartmentController
+ProjectController
+SalaryController
+AttendanceController
+
+Everywhere:
+
+try{
+}
+catch(){
+}
+
+Code becomes:
+
+Repetitive
+Difficult to maintain
+Ugly
+
+
+Spring Boot Recommendation:
+
+--Allow exceptions to propagate.
+--Spring Boot will handle them.
+
+
+Solution: @ExceptionHandler annotation
+---------------------------------------
+
+Spring Boot provides: @ExceptionHandler annotation
+
+Purpose:
+
+Catch Exception
+|
+Generate Custom Response
+
+
+
+
+Local Exception Handler:
+------------------------
+
+Local means:
+
+--Applicable only to the same controller
+
+
+Example:
+
+StudentManagementSystem
+
+
+Dependencies:
+
+Spring Web
+Devtools
+Lombok
+
+
+Folder Structure:
+
+
+src/main/java
+|
+|-- com.hdfc
+     |
+     |-- controller
+     |     |-- StudentController
+     |
+     |-- entity
+     |     |-- Student
+     |
+     |-- StudentManagementSystemApplication
+
+
+
+Student.java:
+-------------
+
+package com.hdfc.entity;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class Student {
+
+	
+	private Integer roll;
+	private String name;
+	private double marks;
+		
+}
+
+
+
+StudentController.java:
+-----------------------
+
+package com.hdfc.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.hdfc.entity.Student;
+
+@RestController
+@RequestMapping("/students")
+public class StudentController {
+
+	@GetMapping("/{roll}")
+	public Student getStudent(@PathVariable Integer roll) {
+
+		if (roll < 100) {
+
+			throw new IllegalArgumentException("Roll number should be greater than 100");
+		}
+
+		return new Student(roll, "Rahul", 500);
+	}
+
+}
+
+
+Request:
+
+GET http://localhost:8080/students/10
+
+Output:
+
+{
+    "timestamp": "2026-09-15T19:36:16.241Z",
+    "status": 500,
+    "error": "Internal Server Error",
+    "trace": ...
+    "message": "Roll number should be greater than 100",
+    "path": "/students/10"
+
+}
+
+
+--check the console: here also we can see the exception inside the log messages.
+
+
+
+Adding a local exception handler:
+---------------------------------
+
+Inside same controller:
+
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<String> handleException(IllegalArgumentException ex) {
+
+		return ResponseEntity
+				.status(HttpStatus.BAD_REQUEST)
+				.body(ex.getMessage());
+	}
+
+
+Now the Response will be:
+
+400 BAD REQUEST
+Roll number should be greater than 100
+
+Why is This Better?
+
+Before:
+
+{
+  "status":500
+}
+
+After:
+
+{
+   "message":
+   "Roll number should be greater than 100"
+}
+
+Client now knows exactly what happened.
+
+
+
+Flow Diagram:
+------------
+
+Request
+   ↓
+Controller
+   ↓
+Exception Occurs
+   ↓
+@ExceptionHandler
+   ↓
+ResponseEntity
+   ↓
+Custom Error Response
+
+
+
+Problem with Local Exception Handling:
+---------------------------------------
+
+Suppose we have:
+
+EmployeeController
+DepartmentController
+ProjectController
+SalaryController
+AttendanceController
+
+--Each controller contains:
+
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<String> handleException(IllegalArgumentException ex) {
+
+		return ResponseEntity
+				.status(HttpStatus.BAD_REQUEST)
+				.body(ex.getMessage());
+	}
+
+
+Same Exception Handler
+
+Result:
+
+Duplicate Code
+Difficult Maintenance
+Poor Design
+Violates DRY Principle
+
+(DRY = Don't Repeat Yourself)
+
+
+
+@ControllerAdvice annotation:
+-----------------------------
+
+
+@ControllerAdvice allows us to handle exceptions for the entire application from a single place.
+
+--Exception handlers defined inside a class annotated with @ControllerAdvice become global handlers applicable across multiple controllers.
+
+
+Without ControllerAdvice: 
+-------------------------
+
+--Each controller has its own exception handlers.
+
+EmployeeController
+     ↓
+Exception Handler
+
+DepartmentController
+     ↓
+Exception Handler
+
+ProjectController
+     ↓
+Exception Handler
+
+
+
+With ControllerAdvice:
+
+
+EmployeeController
+DepartmentController
+ProjectController
+AttendanceController
+SalaryController
+          ↓
+GlobalExceptionHandler
+
+One place.
+
+One implementation.
+
+Entire application covered.
+
+
+--Create a class called GlobalExceptionHandler inside the "com.hdfc.exception" package.
+
+--Define the excpetion handler method inside this class instead of defining inside the Controller class.
+
+--Annotate this class with @ControllerAdvice annotation
+
+Example:
+
+GlobalExceptionHandler.java:
+----------------------------
+
+package com.hdfc.exception;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<String> handleException(IllegalArgumentException ex) {
+
+		return ResponseEntity
+				.status(HttpStatus.NOT_FOUND)
+				.body(ex.getMessage());
+	}
+	
+	
+}
+
+
+Whenever any controller throws:
+
+Exception
+
+Spring searches:
+
+@ControllerAdvice
+
+--and delegates exception handling to it.
+
+
+
+Prefer Custom Exceptions:
+-------------------------
+
+Most beginners write:
+
+throw new IllegalArgumentException();
+
+or
+
+throw new RuntimeException();
+
+This works.
+
+But it creates tight coupling.
+
+--It is recommended to throw domain-specific custom exceptions instead of technology-specific exceptions.
+
+
+Better Approach
+
+Create:
+
+StudentNotFoundException 
+
+
+Example:
+
+--Create StudentNotFoundException class inside the com.hdfc.exception package.
+
+
+EmployeeNotFoundException.java:
+-------------------------------
+
+package com.hdfc.exception;
+
+public class StudentNotFoundException extends RuntimeException{
+
+	public StudentNotFoundException(String message) {
+		super(message);
+	}
+	
+	
+}
+
+
+
+Throwing Custom Exception:
+
+	@GetMapping("/{roll}")
+	public Student getStudent(@PathVariable Integer roll) {
+
+		if (roll < 100) {
+
+			throw new StudentNotFoundException("Roll number should be greater than 100");
+		}
+
+		return new Student(roll, "Rahul", 500);
+	}
+
+
+
+Handling Custom Exception Globally:
+----------------------------------
+
+--Modify the GlobalExceptionHandler.java:
+
+
+package com.hdfc.exception;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+	@ExceptionHandler(StudentNotFoundException.class)
+	public ResponseEntity<String> handleException(StudentNotFoundException ex) {
+
+		return ResponseEntity
+				.status(HttpStatus.NOT_FOUND)
+				.body(ex.getMessage());
+	}
+	
+	
+}
+
+
+
+Enterprise Standard Error Response:
+-----------------------------------
+
+--Every API should return a common format.
+
+Example:
+
+{
+   "timestamp":"2026-09-16T12:00:00",
+   "message":"Student not found",
+   "details":"uri=/employees/999"
+}
+
+
+
+Real-Life Analogy:
+------------------
+
+--Every company invoice follows:
+
+Invoice Number
+Date
+Customer
+Amount
+
+Same format everywhere.
+
+--Error responses should also follow a common format.
+
+
+Creating Error Response DTO:
+============================
+
+ErrorResponseDTO.java: inside com.hdfc.dto package
+----------------------
+
+
+package com.hdfc.dto;
+
+import java.time.LocalDateTime;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@ToString
+public class ErrorResponseDTO {
+
+	private LocalDateTime timestamp;
+
+    	private String message;
+
+        private String details;
+}
+
+
+
+Returning Custom Error DTO:
+--------------------------
+
+--Modify the GlobalExceptionHander.java class:
+
+
+package com.hdfc.exception;
+
+import java.time.LocalDateTime;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
+
+import com.hdfc.dto.ErrorResponseDTO;
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+	@ExceptionHandler(StudentNotFoundException.class)
+	public ResponseEntity<ErrorResponseDTO> handleException(StudentNotFoundException ex, WebRequest request) {
+
+		ErrorResponseDTO errorDto = new ErrorResponseDTO(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+	
+		
+		return ResponseEntity
+				.status(HttpStatus.NOT_FOUND)
+				.body(errorDto);
+	
+	}
+	
+	
+}
+
+
+Final Response:
+
+{
+   "timestamp":"2026-09-16T12:30:00",
+
+   "message": "Employee not found with id 999",
+
+   "details": "uri=/employees/999"
+}
+
+
+
+Generic Exception Handler:
+--------------------------
+
+What if some unexpected exception occurs?
+
+Example:
+
+int result = 10/0;
+
+or
+
+NullPointerException
+
+or
+
+SQLException
+
+
+--For this case we need to define a generic exception handler method:
+
+Example:
+
+
+package com.hdfc.exception;
+
+import java.time.LocalDateTime;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
+
+import com.hdfc.dto.ErrorResponseDTO;
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+	
+	//Handle specific StudentNotFoundException
+	@ExceptionHandler(StudentNotFoundException.class)
+	public ResponseEntity<ErrorResponseDTO> handleException(StudentNotFoundException ex, WebRequest request) {
+
+		ErrorResponseDTO errorDto = new ErrorResponseDTO(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+	
+		
+		return ResponseEntity
+				.status(HttpStatus.NOT_FOUND)
+				.body(errorDto);
+	
+	}
+	
+	
+	//Handle generic any other types of exceptions
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ErrorResponseDTO> handleOtherExceptions(Exception ex, WebRequest request) {
+
+		ErrorResponseDTO errorDto = new ErrorResponseDTO(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+	
+		
+		return ResponseEntity
+				.status(HttpStatus.NOT_FOUND)
+				.body(errorDto);
+	
+	}
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
