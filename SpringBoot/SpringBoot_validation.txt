@@ -360,13 +360,28 @@ Violates DRY Principle
 
 
 
-@ControllerAdvice annotation:
------------------------------
+@RestControllerAdvice annotation:
+--------------------------------
+
+--This annotation is the combination of:
+
+@ControllerAdvice + @ResponseBody annotations.
 
 
-@ControllerAdvice allows us to handle exceptions for the entire application from a single place.
+For REST APIs, most projects prefer:
 
---Exception handlers defined inside a class annotated with @ControllerAdvice become global handlers applicable across multiple controllers.
+@RestControllerAdvice
+
+instead of:
+
+@ControllerAdvice
+
+
+
+
+@RestControllerAdvice allows us to handle exceptions for the entire application from a single place.
+
+--Exception handlers defined inside a class annotated with @RestControllerAdvice become global handlers applicable across multiple controllers.
 
 
 Without ControllerAdvice: 
@@ -410,7 +425,7 @@ Entire application covered.
 
 --Define the excpetion handler method inside this class instead of defining inside the Controller class.
 
---Annotate this class with @ControllerAdvice annotation
+--Annotate this class with @RestControllerAdvice annotation
 
 Example:
 
@@ -424,14 +439,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<String> handleException(IllegalArgumentException ex) {
 
 		return ResponseEntity
-				.status(HttpStatus.NOT_FOUND)
+				.status(HttpStatus.BAD_REQUEST)
 				.body(ex.getMessage());
 	}
 	
@@ -445,7 +460,7 @@ Exception
 
 Spring searches:
 
-@ControllerAdvice
+@RestControllerAdvice
 
 --and delegates exception handling to it.
 
@@ -525,7 +540,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
 	@ExceptionHandler(StudentNotFoundException.class)
@@ -620,7 +635,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import com.hdfc.dto.ErrorResponseDTO;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
 	@ExceptionHandler(StudentNotFoundException.class)
@@ -686,7 +701,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import com.hdfc.dto.ErrorResponseDTO;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
 	
@@ -712,7 +727,7 @@ public class GlobalExceptionHandler {
 	
 		
 		return ResponseEntity
-				.status(HttpStatus.NOT_FOUND)
+				.status(HttpStatus.INTERNAL_SERVER_ERROR)
 				.body(errorDto);
 	
 	}
@@ -722,8 +737,444 @@ public class GlobalExceptionHandler {
 
 
 
+Exception Resolution Order:
+---------------------------
+
+Spring checks:
+
+Specific Handler First
+        ↓
+Generic Handler Later
+
+Example:
+
+	EmployeeNotFoundException
+
+handled by:
+
+	@ExceptionHandler(EmployeeNotFoundException.class)
 
 
+And any other types of exceptions will be handled by:
+
+	@ExceptionHandler(Exception.class)
+
+
+
+
+Request Data Validation in Spring Boot
+======================================
+
+
+--Whenever we accept data from the client using @RequestBody, we should validate that data before passing it to the Service Layer.
+
+--If the data is invalid, the request should be rejected immediately and a proper error response should be returned to the client.
+
+
+Example Request
+{
+   "employeeName":"",
+   "email":"abc",
+   "age":5,
+   "salary":-10000
+}
+
+
+Should this data be stored?
+
+Answer: NO
+
+Because:
+
+Employee Name is empty
+Email format is invalid
+Age is invalid
+Salary is invalid
+
+
+
+--Passing such invalid data to the database can lead to inconsistent and unreliable data.
+
+
+Real-Life Analogy:
+--------------------
+
+Imagine Airport Security.
+
+--Before a passenger is allowed to board the aircraft, several checks are performed:
+
+Passport Verification
+Visa Verification
+Ticket Verification
+Identity Verification
+
+--If any document is invalid:
+
+	ENTRY DENIED
+
+--The passenger never reaches the aircraft.
+
+Similarly, in a Spring Boot application, invalid data should never reach the Service Layer or Database Layer.
+
+
+
+Client Request 
+      ↓ 
+Validation 
+    ↓ 
+  Valid ? 
+   / \
+ Yes No 
+  /    \ 
+Service Reject Request
+
+
+
+Enabling Validation:
+----------------------
+
+--To use validation annotations in Spring Boot, add the following dependency:
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>
+        spring-boot-starter-validation
+    </artifactId>
+</dependency>
+
+This dependency uses:
+
+Jakarta Bean Validation
+(Hibernate Validator implementation)
+
+--and provides several validation annotations.
+
+
+Common Validation Annotations:
+
+@NotNull
+@NotNull
+@NotEmpty
+@NotBlank
+@Size
+@Email
+@Pattern
+@Min
+@Max
+@DecimalMin
+@DecimalMax
+@Past
+@Future
+@AssertTrue
+
+
+Example:
+
+EmployeeRequestDTO.java:
+-------------------------
+
+public class EmployeeRequestDTO {
+
+    @NotBlank(message = "Employee name is mandatory")
+    @Size(min = 3,max = 50,
+           message = "Name must be between 3 and 50 characters")
+    private String employeeName;
+
+    @NotBlank(message = "Email is mandatory")
+    @Email(message = "Please enter valid email")
+    private String email;
+
+    @Pattern(
+      regexp = "^[6-9][0-9]{9}$",
+      message = "Mobile number must be 10 digits")
+    private String mobile;
+
+    @Min(value = 18,
+         message = "Age must be at least 18")
+    @Max(value = 60,
+         message = "Age cannot exceed 60")
+    private Integer age;
+
+    @DecimalMin(
+      value = "10000.00",
+      message = "Salary must be at least 10000")
+    @DecimalMax(
+      value = "1000000.00",
+      message = "Salary exceeds allowed limit")
+    private Double salary;
+
+    @NotBlank(message = "Department is required")
+    private String department;
+
+    @Past(
+      message = "Date of birth must be past date")
+    private LocalDate dateOfBirth;
+
+    @Future(
+      message = "Joining date must be future date")
+    private LocalDate joiningDate;
+
+    @Pattern(
+      regexp = "Male|Female|Other",
+      message =
+      "Gender must be Male, Female or Other")
+    private String gender;
+
+    @Size(
+      min = 10,
+      max = 200,
+      message =
+      "Address must be between 10 and 200 characters")
+    private String address;
+
+    @AssertTrue(
+      message =
+      "Terms and conditions must be accepted")
+    private boolean acceptedTerms;
+}
+
+
+
+Activating Validation Using @Valid
+====================================
+
+--Validation annotations alone do not perform validation.
+
+--We must activate validation using the @Valid annotation.
+
+@PostMapping
+public EmployeeResponseDTO saveEmployee(@Valid @RequestBody EmployeeRequestDTO dto){
+
+    return service.saveEmployee(dto);
+}
+
+
+
+Validation Execution Flow:
+---------------------------
+
+Incoming Request 
+      |   
+ @RequestBody 
+      |
+   @Valid 
+      |
+Validation Engine
+      | 
+All Rules Checked
+      | 
+Validation Success? 
+      / \ 
+     Yes No 
+     /    \ 
+Controller Exception 
+   | 
+Service Layer
+
+
+--Whenever validation fails, Spring automatically throws:
+
+MethodArgumentNotValidException
+
+Example:
+
+{
+   "employeeName":"",
+   "email":"abc"
+}
+
+
+--Validation fails before the Service Layer is called.
+
+
+Handling Validation Exceptions:
+-------------------------------
+
+--Although Spring can return validation errors automatically, the default response is usually not suitable for enterprise applications.
+
+--Therefore, we handle the exception globally.
+
+
+@ExceptionHandler( MethodArgumentNotValidException.class) 
+public ResponseEntity<ErrorResponseDTO> handleValidationException(MethodArgumentNotValidException ex){ 
+
+	ErrorResponseDTO dto = new ErrorResponseDTO( 
+						LocalDateTime.now(), 
+						"Validation Error",
+		 				ex.getBindingResult() .getFieldError() .getDefaultMessage() ); 
+
+
+	return ResponseEntity 
+			.badRequest()
+			.body(dto); 
+
+}
+
+
+
+BindingResult:
+==============
+
+--The exception object contains:
+
+ex.getBindingResult()
+
+--This object stores all validation failures.
+
+
+
+
+getFieldError():
+----------------
+
+Returns the first validation error.
+
+FieldError error = ex.getBindingResult().getFieldError();
+
+Example:
+
+employeeName
+
+Message:
+
+Employee name is mandatory
+
+
+Limitation of getFieldError():
+------------------------------
+
+Suppose request contains:
+
+{
+   "employeeName":"",
+   "email":"abc",
+   "age":10,
+   "salary":500
+}
+
+There are four validation failures.
+
+However:
+
+getFieldError()
+
+returns only the first error.
+
+--This results in poor user experience because the client must repeatedly fix one error at a time.
+
+
+Enterprise Solution:
+---------------------
+
+--Return all validation errors in a single response.
+
+Example:
+
+{
+   "employeeName":
+      "Employee name is mandatory",
+
+   "email":
+      "Please enter valid email",
+
+   "age":
+      "Age must be at least 18",
+
+   "salary":
+      "Salary must be at least 10000"
+}
+
+
+--The client can correct everything in one attempt.
+
+
+getFieldErrors():
+-----------------
+
+Instead of:
+
+	getFieldError()
+
+use:
+
+	getFieldErrors()
+
+
+Difference:
+-----------
+
+Method			Returns
+
+getFieldError()		First Error
+getFieldErrors()	All Errors
+
+
+
+Creating ValidationErrorResponseDTO:
+
+
+ValidationErrorResponseDTO.java:
+-------------------------------
+
+public class ValidationErrorResponseDTO { 
+
+	private LocalDateTime timestamp; 
+	private Integer status; 
+	private Map<String,String> errors; 
+
+	public ValidationErrorResponseDTO() { } 
+	
+	public ValidationErrorResponseDTO(LocalDateTime timestamp, Integer status, Map<String,String> errors){
+
+		 this.timestamp = timestamp; 
+		 this.status = status; 
+		 this.errors = errors; 
+	} 
+
+	// Getters and Setters 
+
+}
+
+
+
+The Map stores:
+
+Field Name
+      ↓
+Error Message
+
+Example:
+
+{
+   "employeeName":
+       "Employee name is mandatory",
+
+   "email":
+       "Please enter valid email"
+}
+
+
+
+@ExceptionHandler(MethodArgumentNotValidException.class) 
+public ResponseEntity <ValidationErrorResponseDTO> handleValidationException( MethodArgumentNotValidException ex){
+
+	Map<String,String> errors = new HashMap<>(); 
+	
+	ex.getBindingResult()
+			.getFieldErrors()
+			.forEach(error -> { 
+					errors.put( error.getField(), error.getDefaultMessage());
+					}); 
+
+
+	ValidationErrorResponseDTO response = new ValidationErrorResponseDTO( 
+							LocalDateTime.now(), 
+							HttpStatus.BAD_REQUEST.value(),
+							 errors ); 
+
+	return new ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response); 
+
+}
 
 
 
