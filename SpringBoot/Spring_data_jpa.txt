@@ -3870,6 +3870,9 @@ dept.getEmployees().add(e1);
 dept.getEmployees().add(e2);
 
 
+11:20 am
+
+
 Save:
 
 	departmentRepository.save(dept);
@@ -4082,7 +4085,7 @@ public class Department {
     private String deptName;
 
     @OneToMany
-    private List<Employee> employees;
+    private List<Employee> employees = new ArrayList<>();
 }
 
 
@@ -4118,7 +4121,7 @@ and
 Inside Department Entity class:
 
 @OneToMany
-private List<Employee> employees;
+private List<Employee> employees = new ArrayList<>();
 
 Now JPA sees:
 
@@ -4583,6 +4586,8 @@ public class Course {
 
     private String courseName;
 }
+
+
 
 
 Hibernate creates:
@@ -5240,6 +5245,8 @@ Reduce response size
 Decouple Entity classes from API contracts
 
 
+
+--Fetch type: Eager and Lazy..
 
 
 

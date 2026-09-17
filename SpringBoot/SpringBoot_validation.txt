@@ -23,7 +23,7 @@ public class EmployeeController{
 
 Request:
 
-GET /wmployees/10
+GET /employees/10
 
 Output:
 
@@ -64,6 +64,7 @@ JSON Error Response
    "timestamp":"2026-09-16T10:30:00",
    "status":500,
    "error":"Internal Server Error",
+   "traces": .....
    "message":"Employee Id should be greater than 100",
    "path":"/employees/10"
 }
@@ -384,7 +385,7 @@ instead of:
 --Exception handlers defined inside a class annotated with @RestControllerAdvice become global handlers applicable across multiple controllers.
 
 
-Without ControllerAdvice: 
+Without RestControllerAdvice: 
 -------------------------
 
 --Each controller has its own exception handlers.
@@ -403,7 +404,7 @@ Exception Handler
 
 
 
-With ControllerAdvice:
+With RestControllerAdvice:
 
 
 EmployeeController
@@ -496,7 +497,7 @@ Example:
 --Create StudentNotFoundException class inside the com.hdfc.exception package.
 
 
-EmployeeNotFoundException.java:
+StudentNotFoundException.java:
 -------------------------------
 
 package com.hdfc.exception;
@@ -737,6 +738,7 @@ public class GlobalExceptionHandler {
 
 
 
+
 Exception Resolution Order:
 ---------------------------
 
@@ -853,7 +855,6 @@ Jakarta Bean Validation
 Common Validation Annotations:
 
 @NotNull
-@NotNull
 @NotEmpty
 @NotBlank
 @Size
@@ -866,6 +867,9 @@ Common Validation Annotations:
 @Past
 @Future
 @AssertTrue
+
+
+Refer: https://beanvalidation.org/2.0-jsr380/spec/#builtinconstraints-pattern
 
 
 Example:
