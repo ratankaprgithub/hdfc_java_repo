@@ -1,0 +1,4891 @@
+Introduction to JavaScript:
+============================
+
+
+--JavaScript (JS) is one of the most popular programming languages in the world.
+
+--Initially, JavaScript was created to make web pages interactive. 
+
+--Before JavaScript, web pages were mostly static, meaning users could only view content but could not interact with it dynamically.
+
+Using JavaScript, developers could:
+
+Respond to button clicks
+Validate form inputs
+Show alerts and notifications
+Hide or display HTML elements
+Change webpage content dynamically
+Create animations and interactive user interfaces
+
+Because of these capabilities, JavaScript became the language of the web.
+
+
+
+The Three Pillars of a Web Page:
+--------------------------------
+
+--A modern web application is built using three technologies:
+
+1. HTML:
+
+--Responsible for the structure of the webpage.
+
+Example:
+
+<h1>Welcome to HDFC Life</h1>
+<button>Click Me</button>
+
+--Think of HTML as the skeleton of the human body.
+
+
+2. CSS:
+
+--Responsible for styling and appearance.
+
+Example:
+
+h1{
+   color: blue;
+}
+
+--Think of CSS as the clothes and makeup.
+
+
+
+3. JavaScript:
+
+--Responsible for behavior and interactivity.
+
+Example:
+
+alert("Welcome User");
+
+--Think of JavaScript as the brain and nervous system that controls actions.
+
+
+
+
+Note: JavaScript Was Primarily Used for DOM Manipulation:
+
+--In the beginning, JavaScript was mainly used for DOM Manipulation.
+
+DOM stands for: Document Object Model
+
+--When a browser loads an HTML page, it converts the HTML document into a tree-like structure called the DOM.
+
+Example HTML:
+
+<body>
+   <h1>Welcome</h1>
+   <button>Click</button>
+</body>
+
+Browser internally creates:
+
+
+Document
+   |
+  Body
+  /   \
+H1   Button
+
+
+--Using JavaScript, we can access and modify these elements.
+
+Example:
+
+	document.getElementById("title")
+
+or
+
+	document.querySelector("h1")
+
+--Some common DOM operations:
+
+Change text content
+Change styles
+Add new elements
+Remove elements
+Handle button clicks
+Validate forms
+
+--For many years, JavaScript's primary role was DOM Manipulation inside web browsers.
+
+
+JavaScript Executes Inside the Browser:
+
+--JavaScript cannot execute by itself.
+
+It requires a JavaScript Runtime Environment.
+
+
+Initially, the only runtime environment available was the Browser.
+
+Popular browsers:
+
+Google Chrome
+Mozilla Firefox
+Microsoft Edge
+Safari
+
+--Whenever we write JavaScript code inside a webpage, the browser executes that code.
+
+
+Example:
+
+index.html:
+-------------
+
+
+<!DOCTYPE html>
+<html>
+
+	<head>
+    		<title>JavaScript Demo</title>
+	</head>
+
+
+	<body>
+
+		<h1>Hello JavaScript</h1>
+
+		<script>
+
+			console.log("Welcome to JavaScript");
+
+			alert("Welcome to JavaScript");
+
+		</script>
+
+	</body>
+
+</html>
+
+--When this page is opened inside the browser: 
+
+--On the browser console we can see the output of:
+
+	console.log("Welcome to JavaScript");
+
+
+To open the console:
+
+Right Click -> Inspect -> Console (F12)
+
+
+
+
+Q/- How Does the Browser Execute JavaScript?
+
+--Every browser contains a JavaScript Engine.
+
+--A JavaScript Engine is a software component responsible for:
+
+Reading JavaScript code
+Parsing the code
+Converting it into machine-understandable instructions
+Executing the code
+
+---Without a JavaScript Engine, browsers cannot run JavaScript.
+
+
+
+Popular JavaScript Engines:
+---------------------------
+
+| Browser | JS Engine      |
+| ------- | -------------- |
+| Chrome  | V8             |
+| Edge    | V8             |
+| Firefox | SpiderMonkey   |
+| Safari  | JavaScriptCore |
+
+
+
+The most famous JavaScript engine is:
+
+V8 Engine
+
+Developed by Google for Chrome Browser.
+
+--The V8 engine is responsible for executing JavaScript code inside Chrome.
+
+
+
+Birth of Node.js:
+================
+
+--Running JavaScript Outside the Browser:
+
+
+--Earlier, JavaScript had one major limitation:
+
+--JavaScript could run only inside a browser.
+
+--This means if you wanted to execute JavaScript code, 
+
+we need to embedd the js code inside the html file..
+
+
+JavaScript Code + Browser = Execution
+
+--Without a browser, JavaScript could not run.
+
+
+--Before Node.js, developers used different technologies for Frontend and Backend.
+
+Frontend:
+
+HTML
+CSS
+JavaScript
+
+Backend:
+
+Java
+PHP
+C#
+Python
+Ruby
+
+--A company often needed:
+
+Frontend Developers
+Backend Developers
+
+--because JavaScript could not run on the server.
+
+
+As we discussed earlier:
+
+Chrome Browser
+        |
+      V8 Engine
+
+--The V8 Engine is the component responsible for executing JavaScript code.
+
+Many engineers realized:
+
+--If we can use the V8 Engine outside the browser, JavaScript can run anywhere (Outside the browser).
+
+--This idea changed the future of web development.
+
+
+In 2009, Ryan Dahl created Node.js.
+
+His idea was simple:
+
+Take Google's V8 Engine.
+Embed it inside a C++ application.
+
+Add additional APIs for:
+File Handling
+Networking
+Operating System access
+Server Creation
+
+--The resulting software became:
+
+Node.js
+
+
+
+--Is Node.js a Programming Language?
+
+No.
+
+--Is Node.js a JavaScript Framework?
+
+No.
+
+
+Node.js is a JavaScript Runtime Environment.
+
+It allows JavaScript code to run outside the browser.
+
+
+
+Browser Runtime vs Node Runtime:
+===============================
+
+Browser Runtime:
+---------------
+
+Provides:
+
+document
+window
+alert()
+localStorage
+
+
+Example:
+
+document.getElementById("btn");
+
+Works in browser.
+
+
+Node Runtime:
+-------------
+
+Provides:
+
+fs
+http
+path
+os
+process
+
+Example:
+
+const fs = require("fs");
+
+Works in Node.js.
+
+
+Note: Browser APIs are unavailable in Node.js.
+
+Example:
+
+	document.getElementById("title");
+
+Output:
+
+ReferenceError: document is not defined
+
+because Node.js does not have a DOM.
+
+
+
+After Node.js
+
+Frontend: JavaScript
+
+Backend: JavaScript
+
+--This reduced the learning curve and increased productivity.
+
+
+Using Node.js we can build:
+
+1. Backend Applications
+
+Examples:
+
+Amazon
+Netflix
+Paytm
+Flipkart
+
+--Backend APIs can be built using Node.js.
+
+2. REST APIs
+
+Example:
+
+GET /employees
+POST /employees
+DELETE /employees/101
+
+
+3. Real-Time Applications
+
+Examples:
+
+WhatsApp
+Chat Applications
+Online Gaming
+
+
+4. Command Line Tools
+
+Example:
+
+npm
+npx
+vite
+
+All are Node.js-based tools.
+
+5. Desktop Applications
+
+Using:
+
+Electron + Node.js
+
+Examples:
+
+VS Code
+Slack
+Discord
+
+6. Cloud Functions:
+
+AWS Lambda
+
+7. AI Applications:
+
+TensorFlow.js
+
+
+8. Frontend Development:
+
+React
+Angular
+Vue
+
+
+9. Mobile Applications:
+
+React Native
+
+
+
+
+Full Stack JavaScript:
+-----------------------
+
+Frontend:
+
+React
+Angular
+Vue
+
+Backend:
+
+Node.js
+Express.js
+NestJS
+
+Database:
+
+MongoDB
+MySQL
+PostgreSQL
+
+
+
+Evolution of JavaScript:
+========================
+
+JavaScript has evolved over time.
+
+--Every few years, the ECMAScript committee introduces new features.
+
+ECMAScript (ES)
+
+--ECMAScript is the official standard/specification of JavaScript.
+
+Think of it as:
+
+ECMAScript = Rule Book
+
+JavaScript = Implementation
+
+
+
+JavaScript Timeline:
+--------------------
+
+ES3 (1999):
+
+Old JavaScript
+
+var name = "Ratan";
+
+
+ES5 (2009):
+
+--Introduced many improvements.
+
+Example:
+
+var arr = [10,20,30];
+
+arr.forEach(function(ele){
+   console.log(ele);
+});
+
+
+ES6 / ECMAScript 2015:
+
+--This was the biggest update in JavaScript history.
+
+--Most modern JavaScript applications use ES6+ features.
+
+
+Important ES6 Features:
+----------------------
+
+1. let Keyword:
+
+Before ES6:
+
+var age = 25;
+
+After ES6:
+
+let age = 25;
+
+
+2. const Keyword:
+
+const PI = 3.14;
+
+Constant values cannot be reassigned.
+
+
+3. Arrow Functions:
+
+Old Style:
+
+function greet(){
+   console.log("Hello");
+}
+
+ES6 Style:
+
+const greet = () => {
+   console.log("Hello");
+}
+
+
+
+4. Template Literals:
+
+Old Style:
+
+var name="Ratan";
+
+console.log("Welcome "+name);
+
+ES6 Style:
+
+let name="Ratan";
+
+console.log(`Welcome ${name}`);
+
+
+5. Default Parameters:
+
+function greet(name="Guest"){
+   console.log(name);
+}
+
+
+6. Destructuring:
+
+const person = {
+   name:"Ratan",
+   age:41
+};
+
+const {name,age} = person;
+
+console.log(name);
+
+
+7. Spread Operator:
+
+const arr1 = [10,20];
+const arr2 = [...arr1,30,40];
+
+console.log(arr2);
+
+Output:
+
+[10,20,30,40]
+
+
+ES6 Became Popular
+
+Because it:
+
+Reduced code length
+Improved readability
+Made coding easier
+Added modern programming features
+Improved developer productivity
+
+Today when developers say:
+
+Modern JavaScript
+
+they usually mean:
+
+ES6+
+
+
+
+Installing Node.js:
+====================
+
+--To execute JavaScript outside the browser, we need Node.js.
+
+Step 1
+
+Visit:
+
+Node.js Official Website
+
+Step 2
+
+Download the LTS Version.
+
+--This version is stable and recommended for production use.
+
+
+Step 3
+
+Run the installer.
+
+Step 4
+
+Open Terminal / Command Prompt.
+
+Verify installation:
+
+node -v
+
+Example Output:
+
+v24.x.x
+
+Verify npm:
+
+npm -v
+
+Example Output:
+
+11.x.x
+
+
+
+NPM: Node Package Manager
+=========================
+
+--npm is a command line tool installed along with NodeJs.
+
+--It is used to install third-party libraries and packages.
+
+Examples:
+
+Express.js
+React
+Angular CLI
+TypeScript
+Nodemon
+
+
+Executing JavaScript Outside Browser:
+--------------------------------------
+
+Create a folder:
+
+JavaScript_Demo 
+
+Open this folder inside the VS-Code IDE
+
+Create a file:
+
+app.js:
+-------
+
+console.log("Hello JavaScript");
+
+Save the file.
+
+--Open terminal inside the folder.
+
+Execute:
+
+node app.js
+
+Output:
+
+Hello JavaScript
+
+
+
+
+
+
+Variables in JavaScript:
+-------------------------
+
+--Variables are containers used to store data in memory.
+
+--We use variables whenever we want to store values that may be used later in our program.
+
+
+
+Examples:
+
+let name = "Rahul";
+let age = 38;
+let salary = 4600000;
+
+Here:
+
+name stores a string value.
+age stores a number.
+salary stores a number.
+
+
+Note: JS is a loosly type programming language, i.e to store any value we need not define its data type.
+
+
+Without variables:
+
+console.log("Ratan");
+console.log("Ratan");
+console.log("Ratan");
+
+With variables:
+
+let name = "Ratan";
+
+console.log(name);
+console.log(name);
+console.log(name);
+
+This improves readability and maintainability.
+
+
+
+Ways to Declare Variables:
+---------------------------
+
+--JavaScript provides three keywords for declaring variables:
+
+var
+let
+const
+
+Example:
+
+var name1 = "Ratan";
+
+let name2 = "Amit";
+
+const PI = 3.14;
+
+
+
+var Keyword:
+------------
+
+--Before ES6, var was the only way to create variables.
+
+Example:
+
+	var name = "Ratan";
+
+	console.log(name);
+
+--Although var still works, it has several problems and is generally avoided in modern JavaScript development.
+
+
+Problem 1: Redeclaration Allowed:
+
+--The same variable can be declared multiple times.
+
+	var name = "Ratan";
+
+	var name = "Rahul";
+
+	console.log(name);
+
+Output:
+
+Rahul
+
+--This can accidentally overwrite existing data and introduce bugs.
+
+--Imagine a project with thousands of lines of code where another developer unknowingly redeclares the same variable.
+
+
+Problem 2: Function Scope Instead of Block Scope:
+
+--This is the biggest problem with var.
+
+--var keyword is the function scoped but not the block scope.
+
+--A variable declared using var inside a function will act as a local variable, we can not access it outside that function.
+
+--But we declare a variable using var keyword inside a block { } then that variable will be leaked outside that block also.
+
+
+Block Scope Example
+
+A block is any code written inside:
+
+{
+    
+}
+
+
+Examples:
+
+if(true){
+
+}
+
+for(){
+
+}
+
+while(){
+
+}
+
+
+Example using var:
+
+if(true){
+
+    var age = 25;
+
+}
+
+console.log(age);
+
+Output:
+
+25
+
+--Even though age was declared inside the if block, it is still accessible outside.
+
+--This behavior is usually not desired.
+
+
+Another Example:
+
+for(var i=1;i<=3;i++){
+
+}
+
+console.log(i);
+
+Output:
+
+4
+
+--The variable survives outside the loop block.
+
+--The variable leaks outside the block.
+
+--This often causes unexpected bugs in large applications.
+
+
+
+let keyword:
+-------------
+
+--To solve the above var keyword related problem let keyword is introduced in ES6.
+
+
+Example1:
+
+Not Allowed.
+
+let name = "Ratan";
+
+let name = "Rahul";
+
+Output:
+
+SyntaxError
+
+This helps prevent accidental bugs.
+
+Example2: 
+
+if(true){
+
+    let age = 25;
+
+}
+
+console.log(age);
+
+Output:
+
+ReferenceError
+
+The variable is accessible only inside the block.
+
+This is the desired behavior.
+
+
+
+const Keyword:
+--------------
+
+--const is used when a value should not change.
+
+Example:
+
+const PI = 3.14;
+
+Reassignment Not Allowed:
+
+const PI = 3.14;
+
+PI = 3.14159;
+
+Output:
+
+TypeError
+
+
+
+
+JavaScript Data Types:
+----------------------
+
+--A Data Type defines what kind of value a variable can store.
+
+Example:
+
+let name = "Ratan";
+let age = 41;
+let isPlaced = true;
+
+--Each variable stores a different type of data.
+
+
+Primitive Data Types:
+---------------------
+
+--JavaScript has 7 primitive data types.
+
+
+1. Number
+
+Stores integers and decimal values.
+
+let age = 41;
+
+let salary = 45000.75;
+
+
+
+2. String
+
+Stores textual data.
+
+let name = "Ratan";
+
+let city = 'Chandigarh';
+
+
+
+3. Boolean
+
+Stores true or false.
+
+let isLoggedIn = true;
+
+let isAdmin = false;
+
+
+4. Undefined
+
+A variable declared but not assigned any value.
+
+let age;
+
+console.log(age);
+
+Output:
+
+undefined
+
+
+
+5. Null
+
+Represents intentional absence of value.
+
+let manager = null;
+
+
+6. BigInt
+
+Used for very large integers.
+
+let number = 12345678901234567890n;
+
+
+
+7. Symbol
+
+--Used to create unique identifiers.
+
+--creates completely unique and immutable primitive values.
+
+let id = Symbol("userId");
+
+
+
+
+Non-Primitive Data Types:
+------------------------
+
+1. Object
+
+
+let employee = {
+    name:"Ratan",
+    age:41
+};
+
+
+2. Array:
+
+let nums = [10,20,30,40];
+
+3. Function
+
+
+let foo = function(){
+	
+	console.log("Welcome to JS");
+
+};
+
+
+
+typeof Operator:
+================
+
+--Used to check data type.
+
+
+
+console.log(typeof 100);
+console.log(typeof "Ratan");
+console.log(typeof true);
+
+
+Output:
+
+number
+string
+boolean
+
+var x = 12;
+console.log(typeof(x)); // Output: number
+
+
+var salary= null;  //imp
+
+console.log(typeof(salary)); // Output: object
+
+
+var fruits = ["apple", "Banana","Mango"];
+
+console.log(typeof(fruits)); // Output: object
+
+
+var emp = {
+
+    id: 101,
+    name: "Ram",
+    address: "Panjab"
+};
+
+console.log(typeof(emp)); // Output: object
+
+
+function greet(){  
+    console.log("Welcome to Chitkara");
+}
+
+console.log(typeof(greet)); // Output: function
+
+
+
+Note: JavaScript is a loosely typed language, meaning you don't have to declare the data type of a variable explicitly, and it can change types dynamically.
+
+Example:
+
+let x =10;
+
+console.log(typeof x); //number
+
+x= "welcome";
+
+console.log(typeof x); // string
+
+
+
+
+
+printing in a descriptive manner: Output
+=================================
+ 
+var age= 30;
+
+option1:
+-------
+console.log("The age is",age);
+
+
+option2:
+--------
+console.log("The age is "+age);
+
+
+option3:
+-------
+
+var message = "The age is "+age;
+console.log(message);
+
+
+option4: using String template (multi-line string)
+--------
+var name= "Raj";
+var message = `The age is ${age}
+and name is ${name}`;
+
+console.log(message);
+
+
+
+
+
+
+Differentiate between ,(coma) and +
+====================================
+
+Case 1:
+
+var a = 2;
+var b = 3;
+var c = "hello";
+
+console.log(a,b,c);  // 2 3 hello
+console.log(a+b+c);  //5hello
+
+
+Case 2: 
+var a = 2;
+var b = 3;
+console.log(a+b);   // 5
+console.log(a,b);   // 2 3
+
+
+Case 3:
+
+console.log(10+10+"hdfc"); 
+console.log("hdfc"+10+10); 
+console.log("hdfc"+(10+10)); 
+
+
+
+Extra tips: using the + operator
+===========
+
+
+String + Anything: Results in string concatenation.
+Number + Boolean: Coerces booleans to numbers, then performs numeric addition.
+Null + Number: Coerces null to 0 and performs numeric addition.
+Undefined + Number: Results in NaN (Not a Number).
+Array + Array: Result in String(both array will be joined as a string)
+Object + Object: Result in String (objects are converted to "[object Object]") 
+
+
+
+
+
+
+Operators in JavaScript:
+========================
+
+1. Arithmetic Operators:
+------------------------
+
+Addition: +
+Subtraction: -
+Multiplication: *
+Division: /
+Modulus (Remainder): %
+Increment: ++
+Decrement: --
+exponent: **
+
+2. Assignment Operators:
+------------------------
+
+Assign: =
+Addition assignment: +=
+Subtraction assignment: -=
+Multiplication assignment: *=
+Division assignment: /=
+Modulus assignment: %=
+
+3. Relational Operators:
+------------------------
+
+
+Equal to: == or ===
+Not equal to: != or !==
+Greater than: >
+Greater than or equal to: >=
+Less than: <
+Less than or equal to: <=
+
+4. Logical Operators:
+---------------------
+
+Logical AND: &&
+Logical OR: ||
+Logical NOT: !
+
+5.Conditional (Ternary) Operator:
+---------------------------------
+
+condition ? expression1 : expression2
+
+
+
+
+
+
+Arithmetic operator precedence:
+===============================
+
+1. ()
+
+2. ** exponent
+
+3. * / % same precedence.. left to right
+
+4. + - same precedence.. left to right
+
+
+example:
+
+
+var x = 3 + 2 - 1 * 3**2 /2;
+
+
+console.log(x); 
+
+
+
+Difference Between == and ===
+===============================
+
+
+Loose Equality
+
+	console.log(10 == "10");
+
+Output:
+
+	true
+
+--Compare the value not the datatype (Because JavaScript performs type conversion)
+
+Strict Equality:
+
+console.log(10 === "10");
+
+Output:
+
+false
+
+--Because both value and data type must match.
+
+Always prefer === in modern JavaScript.
+
+
+
+JavaScript Type Conversion (Type Coercion):
+==========================================
+
+--Type Conversion (also called Type Coercion) is the process of converting a value from one data type to another.
+
+--JavaScript is a loosely typed language, which means it can automatically convert values between different data types whenever required.
+
+There are two types of type conversion:
+
+1. Implicit Conversion (Automatic Coercion)
+2. Explicit Conversion (Manual Coercion)
+
+
+1. Implicit Type Conversion (Automatic Coercion):
+--------------------------------------------------
+
+--JavaScript automatically converts values from one type to another based on the operation being performed.
+
+String Conversion:
+------------------
+
+--If one operand is a string and the other is not, JavaScript converts the non-string value into a string and performs concatenation.
+
+Example:
+
+console.log("The number is " + 5);
+
+Output:
+
+The number is 5
+
+Another Example:
+
+console.log("10" + 20);
+
+Output:
+
+1020
+
+
+Numeric Conversion:
+-------------------
+
+--Arithmetic operators such as -, *, /, and % try to convert operands into numbers.
+
+Example:
+
+console.log("10" - 2);
+
+Output:
+
+8
+
+Example:
+
+console.log("10" * 2);
+
+Output:
+
+20
+
+Example:
+
+console.log("apple" - 2);
+
+Output:
+
+NaN
+
+
+Boolean Conversion:
+
+--In conditional statements, JavaScript converts values into boolean values.
+
+The following values are considered Falsy:
+
+false
+0
+""
+null
+undefined
+NaN
+
+Example:
+
+if(0){
+    console.log("Hello");
+}
+else{
+    console.log("Hi");
+}
+
+Output:
+
+Hi
+
+
+2. Explicit Type Conversion (Manual Coercion):
+-----------------------------------------------
+
+--JavaScript provides built-in functions to manually convert values from one type to another.
+
+Convert to String:
+
+Use the String() function.
+
+Example:
+
+let num = 123;
+
+let str = String(num);
+
+or
+
+let num = 123;
+
+let str = 123+"";
+
+
+console.log(str);
+console.log(typeof str);
+
+Output:
+
+123
+string
+
+
+Convert to Number:
+
+
+Use the Number() function.
+
+Example:
+
+let str = "123";
+
+let num = Number(str);
+
+console.log(num+10);
+
+Output:
+
+133
+
+Example:
+
+console.log(Number(true));
+console.log(Number(false));
+
+Output:
+
+1
+0
+
+
+You can also use the unary + operator:
+
+console.log(typeof +"456"); // number
+
+let x = +"4444";
+
+console.log(typeof x); //number
+
+
+
+Important Notes:
+
+true      -> 1
+false     -> 0
+null      -> 0
+undefined -> NaN
+
+
+
+parseInt():
+
+--The parseInt() function converts a string into an integer (whole number).
+
+---It reads the string from left to right and stops when a non-numeric character is encountered.
+
+Example:
+
+console.log(parseInt("100") + 10); //110
+
+Example:
+
+console.log(parseInt("100abc") + 10); //110
+
+Example:
+
+console.log(parseInt("abc100") + 10); // NaN
+
+
+
+parseFloat():
+
+--The parseFloat() function converts a string into a decimal number.
+
+Example:
+
+console.log(parseFloat("10.55")); //10.55
+
+Example:
+
+console.log(parseFloat("10.55abc")); //10.55
+
+
+
+
+Note: JavaScript is also considered as C family language, so most of the basic building block are almost similar to C, Java, C++ programming language:
+
+like:
+
+Opeartors
+Conditional statements(if, if-else, if-else-if, nested if-else, switch-case)
+Iterative statements (for-loop, while loop, do-while loop, break, continue)
+
+Example:
+
+if-else:
+---------
+
+let age = 15;
+
+if(age >= 18){
+    console.log("Eligible to Vote");
+}
+else{
+    console.log("Not Eligible to Vote");
+}
+
+Output:
+
+Not Eligible to Vote
+
+
+if-else ladder:
+---------------
+
+if-else-if Ladder
+
+Used when multiple conditions need to be checked.
+
+Example:
+
+let marks = 75;
+
+if(marks >= 90){
+    console.log("Grade A");
+}
+else if(marks >= 75){
+    console.log("Grade B");
+}
+else if(marks >= 60){
+    console.log("Grade C");
+}
+else{
+    console.log("Grade D");
+}
+
+Output:
+
+Grade B
+
+
+switch Statement:
+
+
+--Used when there are multiple fixed choices.
+
+Example:
+
+let day = 3;
+
+switch(day){
+
+    case 1:
+        console.log("Monday");
+        break;
+
+    case 2:
+        console.log("Tuesday");
+        break;
+
+    case 3:
+        console.log("Wednesday");
+        break;
+
+    default:
+        console.log("Invalid Day");
+}
+
+Output:
+
+Wednesday
+
+
+Loops in JavaScript:
+====================
+
+
+for-loop:
+----------
+
+for(let i=1;i<=5;i++){
+
+    console.log(i);
+
+}
+
+Output:
+
+1
+2
+3
+4
+5
+
+
+Printing all the numbers in a single line:
+
+let result="";
+
+for(let i=1;i<=5;i++){
+
+    result = result+i+" ";
+
+}
+
+
+console.log(result);
+
+
+
+while Loop:
+----------
+
+let i = 1;
+
+while(i <= 5){
+
+    console.log(i);
+
+    i++;
+}
+
+Output:
+
+1
+2
+3
+4
+5
+
+
+do-while Loop:
+-------------
+
+The loop body executes at least once.
+
+Example:
+
+let i = 1;
+
+do{
+
+    console.log(i);
+
+    i++;
+
+}while(i <= 5);
+
+Output:
+
+1
+2
+3
+4
+5
+
+
+
+
+Special Loops for Arrays and Objects:
+=====================================
+
+--JavaScript provides additional loops that are commonly used.
+
+1. for...of Loop:
+-----------------
+
+Used to iterate over Arrays.
+
+Example:
+
+let nums = [10,20,30,40];
+
+for(let num of nums){
+
+    console.log(num);
+
+}
+
+Output:
+
+10
+20
+30
+40
+
+
+2. for...in Loop:
+-----------------
+
+--Used to iterate over Object properties.
+
+Example:
+
+let employee = {
+  
+    id:101,
+    name:"Ratan",
+    salary:50000
+};
+
+for(let key in employee){
+
+    console.log(key, employee[key]);
+
+}
+
+Output:
+
+id 101
+name Ratan
+salary 50000
+
+
+
+
+Array in JavaScript:
+====================
+
+--An Array is a collection of multiple values stored under a single variable name.
+
+--Instead of creating multiple variables, we can store all related values inside an array.
+
+Without Array:
+
+let num1 = 10;
+let num2 = 20;
+let num3 = 30;
+let num4 = 40;
+
+
+With Array
+
+let nums = [10, 20, 30, 40];
+
+--Here, all values are stored inside a single array.
+
+--First element will be at 0 index and the last element will be at length-1 index
+
+console.log(nums); 
+console.log(nums[0]);
+console.log(nums[nums.length-1]);
+
+Output:
+
+[ 10, 20, 30, 40 ]
+10
+40
+
+
+let arr = []; //empty array
+
+
+Iterating the elements of an array:
+-----------------------------------
+
+let names=["Ram","mohan","shyam","hari"];
+
+console.log(names);
+
+
+for(let i=0;i<names.length;i++){
+    console.log(names[i]);
+}
+
+
+or using for-of loop:
+
+
+for(let name of names){
+    console.log(name);
+}
+
+
+
+Characteristic of Array in JavaScript:
+---------------------------------------
+
+1. Arrays are Dynamic:
+
+--Unlike Java, JavaScript arrays can grow or shrink dynamically.
+
+let nums = [10, 20, 30];
+
+nums.push(40);
+
+console.log(nums);
+
+Output:
+
+[10, 20, 30, 40]
+
+
+2. Arrays Can Store Mixed Data Types:
+
+
+Java arrays store only one type of data.
+
+JavaScript arrays can store different types together.
+
+let arr = [10, "Ratan", true, 99.5 ];
+
+--Although possible, it is not considered a good practice in real-world applications.
+
+
+3. Javascript array is a free size array.
+
+Example:
+
+
+let arr=[]; //empty array
+
+console.log(arr.length); //0
+
+arr[10] = "hello";
+
+console.log(arr.length);//11
+
+arr[12]="hi";
+
+console.log(arr); //
+
+console.log(arr.length);//13
+
+
+
+
+Common Array Methods:
+=====================
+
+--In JS array is an inbuilt object.
+--This array object has several inbuilt functions:
+
+
+1. push:
+
+
+Adds an element at the end.
+
+let nums = [10, 20, 30];
+
+nums.push(40);
+
+console.log(nums);
+
+Output:
+
+[10, 20, 30, 40]
+
+
+2. pop()
+
+Removes the last element.
+
+let nums = [10, 20, 30, 40];
+
+console.log(arr.pop()); //40
+
+console.log(nums);
+
+Output:
+
+[10, 20, 30]
+
+
+
+3. unshift()
+
+Adds an element at the beginning.
+
+let nums = [20, 30];
+
+nums.unshift(10);
+
+console.log(nums);
+
+Output:
+
+[10, 20, 30]
+
+
+
+4. shift()
+
+Removes the first element.
+
+let nums = [10, 20, 30];
+
+nums.shift();
+
+console.log(nums);
+
+Output:
+
+[20, 30]
+
+
+5. indexOf()
+
+
+--it will return the index of the specified element inside an array.
+
+
+indexOf(item, start):
+
+item: The value to search for.
+start: Where to start the search. Default value is 0. 
+
+--if the item found then it will return its index otherwise will be return -1.
+
+example:
+
+let fruits = ["Banana", "Orange", "Apple", "Mango"];
+let index = fruits.indexOf("Apple");	//2
+
+console.log(index);// 2
+
+example:
+
+let fruits = ["Banana", "Orange", "Apple", "Mango"];
+let index = fruits.indexOf("pineapple"); //-1
+
+
+
+example:
+
+let fruits = ["Banana", "Orange", "Apple", "Mango", "Apple"];
+let index = fruits.indexOf("Apple", 3);	//4  // it will start from 3rd index
+
+
+--if start position is in negetive number then it will start the search from the end.
+
+example:
+
+
+let fruits = ["Banana", "Orange", "Apple", "Mango", "Apple"];
+let index = fruits.indexOf("Orange", -2);	//-1  // it will start from "Mango";
+
+let index = fruits.indexOf("Orange", -5);	//1  // it will start from "Banana";
+
+
+
+6. includes()
+
+Checks whether an element exists.
+
+let nums = [10, 20, 30];
+
+console.log(nums.includes(20));
+
+Output:
+
+true
+
+
+7. slice()
+
+
+--The slice() function is used to extract a portion of an array without modifying the original array. 
+
+--It takes two parameters: the starting index and the ending index (exclusive) of the portion to be extracted.
+
+--if we don't give the ending index, then it will extract till end
+
+example:
+
+let fruits = ['apple', 'banana', 'cherry', 'date', 'strawberry'];
+
+// Extract elements from index 1 to 3 
+let slicedFruits = fruits.slice(1, 4);
+
+
+console.log(slicedFruits);  // Output: ['banana', 'cherry', 'date']
+console.log(fruits);         // ['apple', 'banana', 'cherry', 'date', 'strawberry'];
+
+
+example:
+
+
+let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+// Extract elements from index 3 to the end
+let subarray = numbers.slice(3);
+
+console.log(subarray);  // Output: [4, 5, 6, 7, 8, 9]
+console.log(numbers);   // Original array is unchanged
+
+
+
+example: negetive index: it will start from reverse(end)
+	                                    
+let colors = ['red', 'orange', 'yellow', 'green', 'blue'];
+
+// Extract elements from the second-to-last element to the end
+let slicedColors = colors.slice(-2);
+
+console.log(slicedColors);  // Output: ['green', 'blue']
+console.log(colors);        // Original array is unchanged
+
+
+
+
+8. splice()
+
+Used to add, remove, or replace elements.
+
+- The first parameter is the index where it will start
+- The second parameter is the number of elements to be deleted
+- The remaining parameters are the elements to be added // it is optional
+
+
+
+--this function will return the deleted elements inside another array.
+
+example:
+
+
+let arr = [10,12,3,12,1,5];
+
+arr.splice(1,2,55,60,65); 
+
+1: here at 1st location the elements will be started.
+
+2: two elements will be deleted: 12, 3
+
+55, 60, 65: will be added:
+
+console.log(arr); // [10,55,60,65,12,1,5]
+
+example2:
+
+
+let arr = [10,12,3,12,1,5];
+
+arr.splice(0,0,55,60,65); 
+
+
+0: elements will be started from the 0th location
+0: element will be deleted.
+55,60,65: will be added
+
+console.log(arr); // [55,60,65,10,12,3,12,1,5]
+
+
+Q/- 
+
+let arr = ["apple","banana","chery","oranges","mango"];
+
+delete one element at index 2: chery
+
+
+arr.splice(2,1);
+
+console.log(arr); //["apple","banana","oranges","mango"];
+
+
+// Add 'pineapple' and 'grape' at index 2
+arr.splice(2, 0, "pineapple", "grape");
+
+
+console.log(arr); //["apple","banana","pineapple","grape","oranges","mango"];
+
+// Replace 'pineapple' with 'strawberry' at index 2
+arr.splice(2, 1, 'strawberry');
+
+console.log(arr); //["apple","banana","strawbery","grape","oranges","mango"];
+
+
+example:
+
+let fruits = ['apple', 'banana', 'cherry', 'date'];
+
+// Extract elements from index 1 to 2 (inclusive)
+let extracted = fruits.splice(1, 2);
+
+console.log(fruits);     // Output: ['apple', 'date']
+console.log(extracted);  // Output: ['banana', 'cherry']
+
+
+
+
+
+9. join(seperator):
+
+--The join() function returns an array as a string. Any separator can be specified. The default is comma (,).
+
+
+example:
+
+let arr = ["i","love","masai"];
+
+let x= arr.join();
+
+console.log(arr); //['i','love','masai']
+console.log(x); // i,love,masai
+
+let y= arr.join(" ");
+
+console.log(y); // i love masai
+
+let z= arr.join("::");
+
+console.log(z); // i::love::masai
+
+
+
+10. sort():
+
+
+--it will sort an array with natural sorting order.
+
+
+example:
+
+
+let arr = [5, 6, 7, 5, 9, 8, 5, 6, 8];
+
+arr.sort();
+
+
+console.log(arr); //[ 5, 5, 5, 6, 6, 7, 8, 8, 9]
+
+
+
+
+Q/- WAP to create an array from source array that contains distinct elements of the source array
+
+let src = [1, 2, 3, 1, 2, 3]
+let dest = [src[0]]; 1	//putting the first element inside the dest array
+
+for (let i = 1; i < src.length; i++) {
+  if (!dest.includes(src[i])) {
+    //you are hear means element in not in the array
+    dest.push(src[i]);
+  }
+}
+console.log(dest);
+
+
+another way:
+-----------
+
+let src = [1, 2, 3, 1, 2, 3];
+let dest = [];
+
+
+
+for (let i = 0; i < src.length; i++) {
+  if (dest.indexOf(src[i]) === -1) {
+    dest.push(src[i]);
+  }
+}
+
+console.log(dest);
+
+
+
+
+
+
+Playing with String:
+====================
+
+
+--A string is a sequence of characters enclosed in single or double quotes, and it's used to represent textual data.
+
+Example:
+
+let greeting = "Hello, world!";
+let name = 'Alice';
+
+
+
+
+example:
+
+let message = "HDFC Life";
+
+--here message is a variable which is pointing to the String object.
+
+--this String object is a group of charecter.(space is also considered as a charecter).
+
+
+--String are internally works based on array concept:
+
+--so here 'H' charecter is sotored at the location message[0] and 'e' charecter is stored at message[8]
+
+Example:
+
+
+for(let i=0;i< message.length; i++)
+{
+	console.log(message[i]);
+}
+
+//OR
+
+for(let c of message){
+    console.log(c);
+}
+
+
+Difference between Array and String:
+------------------------------------
+
+example1:
+
+let arr = ["W","E","L","C","O","M","E"];
+let str = "WELCOME";
+
+
+
+console.log(arr[0]); // 'W'
+console.log(str[0]); // 'W'
+
+
+console.log(arr.length); 
+console.log(str.length); // 
+
+
+console.log(arr); //["W","E","L","C","O","M","E"]
+console.log(str); //WELCOME
+
+
+
+
+
+example2: We can change the array elements by overwriting it.
+
+
+let arr = ["H","D","F","C"];
+
+
+arr[0]="h";
+
+console.log(arr); // ["h","D","F","C"];
+
+
+--But String are Immutable, meaning we can't change individual characters in the String. 
+--We can create a new String with the changes.
+
+
+example:
+
+let str = "HDFC";
+
+str[0]='h';
+
+console.log(str); //HDFC
+
+
+example: 
+
+let str = "HDFC";  //str is pointing to an object that has content HDFC
+
+str[0] = 'h';  //No change because String is Immutable
+
+console.log(str); // HDFC
+
+str = "HDFC Life";  //okay, now str is not pointing to object that contains HDFC.
+
+but it points to another object that has content "HDFC Life".
+
+because Immutability means you cannot make changes in the existing object but the letiable may point to another object.
+
+console.log(str); //HDFC Life
+
+
+
+--String is an immutable group of charecters, but we can mutate it by converting it into a seperate String:
+
+
+Approach1:
+
+
+let str = "HDFC"
+let bag = "";
+
+
+for(let i=0;i<str.length;i++)
+{
+
+	if(str[i] === 'H')
+	{
+		bag= bag+'h';
+	}
+	else
+	{
+		bag = bag+str[i];
+	}
+}
+
+console.log(str); // HDFC
+console.log(bag); // hdfc
+
+
+
+Approach2:
+
+--Inside a String object we have an inbuit function called: replace(--).
+--it will replace only the first match charecter
+
+example:
+
+let str = "HDFC";
+
+str.replace('H','h');
+
+console.log(str); // HDFC
+
+let newStr = str.replace('H','h');
+
+console.log(str); // HDFC
+console.log(newStr); // hDFC
+
+
+
+
+Q/- Removing a charecter from a String: "Hello, World" // removing the charecter ','.
+
+Approach1:
+
+let str = "Hello, World!";
+
+let bag ="";
+
+for(let i=0;i<str.length;i++)
+{
+
+if(str[i] === ',')
+{
+	continue;
+}
+
+bag= bag+str[i];
+}
+
+console.log(str);
+console.log(bag);
+
+
+Approach2:
+
+
+let str = "Hello, World!"";
+
+let charToRemove = ',';
+
+let newStr = str.replace(charToRemove, "");
+
+console.log(str);
+console.log(newStr);
+
+
+Q/ Inside a names array, count the names which starts from 'A'?
+
+
+let arr = ["Amit", "Sonu","Dinesh","Sunil","Amar","Venu","Ajit","Aanand"]; 
+
+let count=0;
+
+for(let i = 0;i<arr.length;i++)
+{
+
+let str = arr[i];
+
+if(str[0] === 'A')
+{
+count++;
+}
+
+
+}
+
+
+console.log(count);
+
+
+
+Q/- Inside a names array count the names which contains 'A'?
+
+
+
+let arr = ["Amit", "Sonu","Dinesh","Sunil","Amar","Venu","NAMAN","Ajit","Aanand"]; 
+
+
+let count=0;
+
+
+for(let i = 0;i<arr.length;i++)
+{
+
+let str = arr[i];
+
+for(let j=0;j<str.lenght;j++)
+{
+
+	if(str[j] === 'A')
+	{
+		count++;
+		break;
+	}
+
+}
+
+}
+
+
+
+
+length property:
+----------------
+
+console.log("HDFC".length);	//4
+console.log("Masai".length);	//5
+console.log("".length);		//0
+console.log(" ".length);	//1
+
+
+
+
+
+Q/- WAP to reverse a String. without the reverse() function ?
+
+
+let str = "Welcome";
+
+let bag="";
+
+for(let i=str.length-1; i>=0; i--)
+{
+
+bag = bag+str[i];
+
+}
+
+console.log("Original String:",str);
+console.log("Reverse String:",bag);
+
+
+
+Some of the inbuilt functions in String:
+========================================
+
+
+1. String toUpperCase();
+2. String toLowerCase();
+
+
+example1:
+
+let str = "Welcome";
+
+str.toUpperCase();
+
+console.log(str); // Welcome , becoz String is immutable
+
+
+example2:
+
+let str = "Welcome";
+
+let str2 = str.toUpperCase();
+
+console.log("Original String",str); //Welcome
+console.log("Modified String",str2); //WELCOME
+
+
+3. String trim(): It will trim the leading and trailing spaces from a string, it will not trim the spaces from the middle.
+
+example1:
+
+let str1= "  Welcome   ";
+
+let str2 = str1.trim();
+
+console.log(str1); // "  Welcome  "
+console.log(str2); //Welcome
+
+
+
+
+4. String charAt(index);  
+
+--It takes the 0 based index and returns the located charecter at that index.
+
+--If the index specified to charAt() is out of the string's length range, an empty string is returned.
+
+
+
+  
+5. String charCodeAt(index); it returns the char ASCII code located at that index. 
+
+
+example1:
+
+let str = "Diwali";
+console.log(str.charAt(0));	//'D'
+console.log(str.charAt(10)); // empty string
+
+console.log(str.charCodeAt(0));	//68
+
+
+ASCII
+------
+
+
+65-90 : 'A' - 'Z'
+97-122 : 'a' - 'z'
+48-57 : '0' - '9'
+32: space
+rest: special symbols.
+
+
+
+
+
+6. substr(start,numberofChar): extract numberofChar from a given string from the starting index.
+
+example:
+
+let str = "Diwali";
+console.log(str.substr(1,4));	//iwal
+console.log(str.substr(1,2));	//iw
+
+
+
+
+7. String replace(oldstring newstring): The replace() method replaces only the first match
+
+8. String replaceAll(oldstring newstring); It replaces all the matches
+
+example1:
+
+let text = "Hi abc abc";
+
+let newText = text.replace("abc", "pqr");
+
+console.log(newText);	//Hi pqr abc
+
+
+example2:
+
+let text = "Hi abc abc";
+
+let newText = text.replaceAll("abc", "pqr");
+
+console.log(newText);	//Hi pqr pqr
+
+
+
+9. integer indexOf(char);
+
+10. integer lastIndexOf(char)
+
+--it will work as similar as array.., if the char is not found then it will return -1.
+
+example:
+
+let str = "Welcome";
+
+console.log(str.indexOf('e')); //1
+console.log(str.lastIndexOf('e')); //5
+
+
+11. array split(-)
+12. boolean startsWith(str)
+13. boolean endsWith(str)
+
+
+Assignment:
+
+1. WAP to check if a String is palindrom or not.
+Sample input: NAMAN
+Sample Output: NAMAN is a palindrome String
+
+2. WAP to check to segragate vowels on the left hand side and consonants on right hand side of a String.
+Sample input: Chitkara
+Sample Output: araktihC
+
+3. WAP to remove duplicate charecters from a given string.
+Sample input: AABABCCDAB
+Sample output: ABCD
+
+
+
+
+
+
+Function in JavaScript:
+=======================
+
+
+--It is a named block of statement that is used to perform a particular task.
+
+--A function is used to make code reusable and it increases modularity in the code.
+
+syntax:
+
+
+function printSomething(a,b)
+{
+
+// 10000
+
+}
+
+
+
+
+--a function syntax is basically has 2 parts:
+
+1. function signature: 
+
+function functionName(parameter-list)
+
+2. function body:
+{
+// body of the function
+}
+
+
+
+--A function can be created with empty parameter list.
+
+example:
+
+function functionName()
+{
+ //body of function
+}
+
+
+
+**To execute a function; we have to call the function.
+
+
+--a function is having 2 section:
+
+1. defining a function // function author/creator will define a function
+2. calling a function // function caller will call a function.
+
+
+--Inside a function,we can write any number of statements.
+--A function can be called any number of times.
+--A function can call any other function.
+
+
+
+example: without a function
+
+let num1 = 10;
+let num2 = 20;
+
+let sum = num1+num2;
+
+console.log("The sum is", sum);
+
+--the above code is not reusable. i.e if we want to add the two numbers once again, we need to write the same logic again and again.
+
+--but using function we can make the above logic reusable:
+
+example
+
+//defining a function
+function addition()
+{
+
+	let num1 = 10;
+	let num2 = 20;
+
+	let sum = num1+num2;
+
+	console.log("The sum is", sum);
+
+}
+
+
+//calling the above function two times
+
+addition();
+addition();
+
+
+example2: Write a function to print the "Welcome User".
+
+//function defination
+function greet()
+{ 
+	console.log("Welcome User");
+}
+
+
+//calling the above function
+greet();
+
+
+console.log("Hi");
+greet();
+console.log("Hello");
+greet();
+greet();
+console.log("Bye");
+
+
+Q/- Writing a function to print 1 to 10;
+
+//function defination
+function doPrinting1To10()
+{
+
+	for(let i=1;i<=10;i++)
+	{
+		console.log(i);
+	}
+
+}
+
+//calling the above function
+doPrinting1To10();
+
+
+
+
+
+
+
+function with parameters:
+========================
+
+In a function the values on which operation is to be applied is written inside the function that makes it less useful because for every other values we have to make changes in the function itself.
+
+to overcome this problem, we have to provide value to the function from outside i.e. the place where function is called. and to hold those values we need to define the parameters inside the function.
+
+
+example: function without parameter:
+
+//function defination
+function doAddition()
+{
+
+let num1 = 10;
+let num2 = 20;
+
+let result = num1 + num2;
+console.log("The Result is:",result);
+
+}
+
+
+//function call
+doAddition();
+
+
+example: function with parameter
+
+//function defination
+function doAddition(n1,n2)  
+{
+
+console.log("n1 value is:",n1);
+console.log("n2 value is:",n2);
+
+let result = n1+n2;
+console.log("The Result is:",result);
+
+}
+
+
+//function call
+doAddition(10,20);
+doAddition(50,40);
+doAddition(100); // NaN (10+undefined) = NaN
+doAddition(); // NaN (undefined+undefined) = NaN
+
+
+
+
+Default Parameters:
+-------------------
+
+function greet(name="Guest"){
+    console.log(`Welcome ${name}`);
+}
+
+greet();
+greet("Ratan");
+
+Output:
+
+Welcome Guest
+Welcome Ratan
+
+
+
+
+
+
+
+
+
+--inside the function defination, n1 and n2 is called as parameters and while calling supplied values 10, 20 is called as an argument.
+
+
+Note: parameters defined inside the function, will act as a local letiable to that function.
+
+
+
+
+Q/- Write a function which takes a username as a parameter and print the greeting message to the that user.
+
+
+Q/- Write a function which takes username and password as a parameter and show the authentication message to the user.
+
+if username is "Admin" and password is "12345" then it should print "Welcome Admin" otherwise show the "Invalid Username or password".
+
+
+function doAuthentication(username,password)
+{
+
+
+	if(username === "Admin" && password === "12345")
+	{
+		console.log("Welcome Admin");
+	}
+	else
+	{
+		console.log("Invalid Username or Password");
+	}
+
+}
+
+doAuthentication("abc","123");
+doAuthentication("Admin","12345");
+
+
+
+
+Q/- Write a function to take String as a parameter and print the reverse of that string.
+
+"Welcome"
+
+
+function reverseString(str)
+{
+
+	let bag="";
+
+	for(let i=str.length-1; i>=0;i--)
+	{
+		bag = bag+str[i];
+	}
+
+	console.log(bag);
+
+}
+
+
+//calling the function 
+reverseString("Welcome");
+
+
+
+//Guess the Output
+
+let num =10;
+
+function increment(){
+num++;
+}
+
+
+increment();
+increment();
+
+console.log(num);
+
+
+
+
+Q/- Write a function which takes an numbers array as a parameter and print the maximum and minimum numbers from that array.
+
+
+
+
+
+
+function with return type:
+==========================
+
+
+--A function can return a value to the caller also.
+--returned value could be of any type (number, string, boolean, array, object, another function).
+--When a function reaches to the return statement, the function will stop executing.
+--if a function return any value, then the caller can hold that value inside any letiable for furthur operation on that value.
+
+
+example: Write a function which takes two numbers as a parameter and return the addition of those numbers.
+
+
+
+
+
+function doAddition(n1,n2)
+{
+
+	let result = n1+n2;
+	return result; // after this line function will stop the execution
+	
+
+
+}
+
+
+//calling the function
+
+doAddition(20,30); // here if we do not hold the returned value, then that value will be lost.
+
+
+let x=doAddition(20,30); //holding/catching the return value.
+
+console.log("The Result is:",x);
+
+
+Q/- write a function which takes a number and return the factorial of that number.
+
+
+function findFactorial(number)
+{
+
+	console.log("Finding the factorial starts..");
+
+	let fact=1;
+
+	for(let i=1;i<=number;i++)
+	{
+		fact = fact*i;
+	}
+
+	
+
+	console.log("Factorial is calculated..");
+	return fact;
+
+
+}
+
+
+//calling the function
+findFactorial(5); // here we loose the returned value
+
+let result = findFactorial(8);
+
+console.log(`The factorial of 8 is ${result}`);
+
+
+//console.log("The Factorial of 8 is", findFactorial(8));
+
+
+
+
+Q/- write a function which takes a String as a parameter and return all the vowel charecter present inside that string in the form of an array
+
+
+function getVowelArray(str)
+{
+
+	let arr = [];
+
+	for(let i=0;i<str.length;i++)
+	{
+
+		if("aeiouAEIOU".includes(str[i]))
+		{
+			arr.push(str[i]);
+		}
+
+	}
+
+	return arr;
+}
+
+
+//calling the function
+getVowelArray("Welcome"); //here we loose the returned value
+
+
+let result = getVowelArray("Welcome"); 
+console.log(result);
+
+console.log(getVowelArray("Chitkara University"));
+
+
+
+
+
+
+Q/- Write a function to validate a username:
+--username length should be minimum 8 charecter length.
+
+
+function validateUsername(username)
+{
+
+	if(username.length >=8)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+}
+
+//or
+
+
+function validateUsername(username)
+{
+
+	let isValid = false;
+
+	if(username.length >=8)
+	{
+		isValid = true;
+	}
+
+	return isValid;
+}
+
+//or
+
+
+function validateUsername(username)
+{
+
+
+	let isValid = username.length >=8 ? true: false;
+	
+
+	return isValid;
+}
+
+
+//or
+
+
+function validateUsername(username)
+{
+
+	return username.length >=8 ? true: false;
+	
+}
+
+
+//or
+
+function validateUsername(username)
+{
+
+	return username.length >=8;
+	
+}
+
+//calling the function
+
+ex1:
+
+validateUsername("abcd"); // will loose the return value
+
+ex2:
+
+let result = validateUsername("abcd1234");
+
+if(result)
+{
+console.log("Username is valid");
+}
+else
+{
+console.log("Username is Invalid");
+}
+
+
+
+
+ex3:
+
+if(validateUsername("abcd12345"))
+{
+console.log("Username is valid");
+}
+else
+{
+console.log("Username is Invalid");
+}
+
+
+
+
+
+
+Q/- Write a function which takes a password as a parameter and validate that password:
+
+--length should be minimum 8 charecter.
+--should contain atleast one uppercase
+--should contain atleast one lowercase
+--should contain atleast one digit
+
+
+
+
+approach1: 
+
+function validatePassword(password){
+
+
+	let result = true;
+
+	// Check if the password has a minimum length of 8 characters
+	if(password.length < 8)
+	{
+		result = false;
+	}
+
+
+	//// Check if the password contains at least one uppercase letter
+	let hasUpperCase = false;
+    	for (let i = 0; i < password.length; i++) 
+	{
+        	if (password[i] >= 'A' && password[i] <= 'Z') 
+		{
+            		hasUpperCase = true;
+            		break;
+        	}
+    	}
+
+    	if (!hasUpperCase) 
+	{
+        	result = false;
+    	}
+
+	// Check if the password contains at least one lowercase letter
+	let hasLowerCase = false;
+    	for (let i = 0; i < password.length; i++) 
+	{
+        	if (password[i] >= 'a' && password[i] <= 'z') 
+		{
+            		hasLowerCase = true;
+            		break;
+        	}
+    	}
+    
+	if (!hasLowerCase) 
+	{
+        	result= false;
+    	}
+
+	// Check if the password contains at least one digit
+	let hasDigit = false;
+    	for (let i = 0; i < password.length; i++) 
+	{
+        	if (password[i] >= '0' && password[i] <= '9') 
+		{
+            		hasDigit = true;
+            		break;
+        	}
+    	}
+
+    	if (!hasDigit) 
+	{
+        	result = false;
+    	}
+
+	return result;
+
+
+}
+
+
+//calling the function
+
+let password = "MyPassw0rd";
+
+if (isValidPassword(password)) 
+{
+    console.log("Password is valid.");
+} 
+else 
+{
+    console.log("Password is not valid.");
+}
+
+
+//or
+
+let result = isValidPassword("MyPassw0rd");
+
+if(result)
+{
+    console.log("Password is valid.");
+} 
+else 
+{
+    console.log("Password is not valid.");
+}
+
+
+
+
+Improved code of the above application:
+---------------------------------------
+
+
+function validatePassword(password) 
+{
+
+	// Check if the password has a minimum length of 8 characters
+    	if (password.length < 8) 
+    	{
+        	return false;
+    	}
+
+    	// Check if the password contains at least one uppercase letter
+    	let hasUpperCase = false;
+    	for (let i = 0; i < password.length; i++) 
+    	{
+        	if (password[i] >= 'A' && password[i] <= 'Z') 
+		{
+            		hasUpperCase = true;
+            		break;
+        	}
+    	}
+
+    	if (!hasUpperCase) 
+	{
+        	return false;
+    	}
+
+    	// Check if the password contains at least one lowercase letter
+    	let hasLowerCase = false;
+    	for (let i = 0; i < password.length; i++) 
+    	{
+        	if (password[i] >= 'a' && password[i] <= 'z') 
+		{
+            		hasLowerCase = true;
+            		break;
+        	}
+    	}
+	
+    	if (!hasLowerCase) 
+	{
+        	return false;
+    	}
+
+    	// Check if the password contains at least one digit
+    	let hasDigit = false;
+    	for (let i = 0; i < password.length; i++) 
+	{
+        	if (password[i] >= '0' && password[i] <= '9') 
+		{
+            		hasDigit = true;
+            		break;
+        	}
+    	}
+
+	if (!hasDigit) 
+	{
+        	return false;
+    	}
+
+
+
+    	// If all conditions are met, the password is valid
+    	return true;
+}
+
+
+
+This way, the function will return false as soon as any condition fails, and we don't need the result letiable.
+
+
+
+
+Nested function:
+================
+
+--Unlike Java, JavaScript supports nested functions also:
+
+Example:
+
+
+function outer(){
+
+console.log("inside outer function");
+
+function inner(){
+    console.log("inside inner function");
+}
+
+inner();
+
+
+}
+
+
+outer();
+
+
+
+
+
+The inner function is accessible only inside the outer function.
+The outer function cannot access local variables of the inner function.
+
+
+
+
+
+Taking Input from User in JavaScript:
+=====================================
+
+--The way we take input in JavaScript depends on where the code is running.
+
+1. Browser Environment
+
+--In a browser, we can use the built-in prompt() function to accept input from the user.
+
+--When prompt() is executed, the browser displays a popup dialog box where the user can enter a value.
+
+
+Example:
+
+let name = prompt("Enter your Name:");
+
+console.log("Welcome", name);
+
+Output:
+
+Input: Ratan
+
+Welcome Ratan
+
+
+Important Note:
+
+--The prompt() function always returns data as a String.
+
+Example:
+
+let age = prompt("Enter Age:");
+
+console.log(typeof age);
+
+Output:
+
+string
+
+--Therefore, if numeric input is required, use the Number() function.
+
+let age = Number(prompt("Enter Age:"));
+
+
+
+
+For Node module:
+================
+
+--Unlike browsers, Node.js does not provide the prompt() function by default.
+
+--For learning purposes, an easier approach is to use a third-party library called prompt-sync.
+
+
+Installation:
+
+--Open the terminal inside your project folder and execute:
+
+
+npm install prompt-sync
+
+
+--After successful installation, Node.js creates and updates the following resources:
+
+package.json
+package-lock.json
+node_modules/
+
+
+package.json:
+-------------
+
+--The package.json file contains information about the project.
+
+It stores:
+
+Project Name
+Project Version
+Project Description
+Dependencies used in the project
+Scripts and configuration settings
+
+--It is like pom.xml file in maven project
+
+Example:
+
+{
+  "name": "javascript-demo",
+  "version": "1.0.0",
+  "dependencies": {
+    "prompt-sync": "^4.2.0"
+  }
+
+
+
+Notice the ^ symbol.
+
+It means:
+
+I need version 4.2.0 or any compatible newer version.
+
+--Install version 4.2.0 or any compatible update
+without changing the major version.
+
+Allowed:
+
+4.2.1
+4.3.0
+4.5.7
+4.9.0
+
+Not Allowed:
+
+5.0.0
+
+because the major version changed from 4 -> 5.
+
+
+Tomorrow prompt-sync team releases:
+
+4.2.1
+4.2.2
+4.2.4
+
+Another developer on your team executes:
+
+npm install
+
+he might get:
+
+prompt-sync 4.2.2
+
+while you are using:
+
+prompt-sync 4.2.0
+
+Now both machines have different versions.
+
+This can create bugs.
+
+
+
+package-lock.json solves this problem
+
+
+
+
+package-lock.json:
+------------------
+
+--The package-lock.json file is automatically generated by npm.
+
+It stores the exact versions of all installed packages and their dependencies.
+
+Purpose:
+
+Ensures consistent installations across different systems.
+Helps all developers use the same package versions.
+
+Think of it as a detailed installation record of the project.
+
+
+This file says:
+
+Don't install any other version.
+
+Use exactly 4.2.0.
+
+Now every developer gets the same package version.
+
+
+node_modules Folder:
+-------------------
+
+--The node_modules folder contains the actual source code of all installed packages.
+
+Example:
+
+node_modules/
+    prompt-sync/
+    ...
+
+--The name of this file should be incuded inside the .gitIgnore file.
+
+
+
+package.json -> What packages are required 
+package-lock.json -> Exact versions installed 
+node_modules -> Actual package source code
+
+
+
+
+
+
+app.js:
+-------
+
+const prompt= require("prompt-sync")();
+
+let name= prompt("Enter Your name");
+let age= prompt("Enter Your age");
+
+console.log("name is: ",name);
+
+console.log("age is: ",age);
+
+
+
+Example2: Taking 2 numbers from the user and showing their sum:
+
+const prompt= require("prompt-sync")();
+
+let num1 = Number(prompt("Enter Number1: "));
+let num2 = Number(prompt("Enter Number2: "));
+
+console.log("Result is: ", num1+num2);
+
+
+
+
+
+Note: In versioning There are three common symbols:
+
+1. Exact Version
+
+
+"express": "5.1.0"
+
+Only:
+
+5.1.0
+
+
+2. Caret (^) (Major version should be same)
+
+"express": "^5.1.0"
+
+Allows:
+
+5.1.1
+5.2.0
+5.5.0
+
+Not:
+
+6.0.0
+
+
+
+3. Tilde (~): (Minor version should be same)
+
+"express": "~5.1.0"
+
+Allows:
+
+5.1.1
+5.1.2
+5.1.5
+
+Not:
+
+5.2.0
+
+
+
+
+Java Script Object:
+===================
+
+--inside a variable we can store a simple information like:
+
+example:
+
+let name = "Ram";
+let age = 26;
+let gender = "male";
+let address = "delhi";
+let married = false;
+
+
+
+
+
+--array is a data-structure using which we can store multiple values inside a variable.
+
+
+example:
+
+let details = ["Ram",26,"male","delhi",false];
+
+--the above array will not explain about any valid information.
+
+
+--to hold the meaningfull information, there is another data-structure is available inside the Java-script, called an Object.
+
+--In Java-script object, we hold the information in the form of kay-value pair.
+
+--Java-script objects are also called as "key-value pair" or "dictionary".
+
+dictionary:
+
+key---value
+university--- its meaning
+
+example: if we see any realtime form page in a webpage:
+
+--the form also will be in the form of key-value pair.
+
+name: "Ram"
+age: 26
+address: "delhi"
+gender: "male"
+email: "ram@gmail.com"
+hobbie: "coding"
+
+
+Java script object syntax:
+--------------------------
+
+let x = {key: value, key: value,...};
+
+let y = {}; //empty object
+
+let z= []; //empty array
+
+
+
+
+console.log(y);
+console.log(z);
+
+
+example:
+
+let user = {name: "Ram", age: 26, address: "delhi", gender: "male", married: false};
+
+
+//or
+
+let user = {
+
+name: "Ram",
+age: 26,
+address: "delhi",
+gender: "male",
+married: false
+
+};
+
+
+console.log(user);
+
+
+--here key should not be duplicate, if we define the duplicate key, then it will override the previous value.
+
+example:
+
+
+let x= {a: 10, b: 20, c: 30, a: 40};
+
+console.log(a); // {a: 40, b:20, c: 30};
+
+
+--the value of an object can be any type like: number, string, boolean, array, null, undefined, function, another-object.
+
+
+example:
+
+
+let user = {
+
+roll: 101,
+name: "Ram",
+marks: 500,
+hobbies: ["coding", "playing"],
+married: false,
+salary: null,
+spouse: undefined,
+address: {
+
+	city: "mumbai",
+	state: "Maharastra",
+	pin: 454213
+}
+
+}
+
+
+console.log(user);
+
+
+Note: the key of an object should always be in a string format, where double quote is optional.
+
+example
+
+
+let user = {
+
+"roll": 101,
+"name": "Ram",
+"marks": 500,
+"hobbies": ["coding", "playing"],
+"married": false,
+"salary": null,
+"spouse": undefined 
+
+}
+
+
+console.log(user);
+ 
+
+
+Q/- WAP to create an object of student with the following details and print the object.
+
+
+roll, name, age, address, gender, hobbies, email, phone, smoking
+
+
+ 
+Accessing the information from an object:
+-----------------------------------------
+
+--to access any information from an object, we have 2 ways:
+
+1. using dot notation
+2. using bracket notation
+
+example:
+
+
+let user = {
+
+roll: 101,
+name: "Ram",
+marks: 500,
+hobbies: ["coding", "playing"],
+married: false,
+salary: null,
+spouse: undefined 
+
+}
+
+
+//accessing the name of the user:
+
+using dot notation:
+------------------
+
+let n = user.name;
+console.log("The name of user is:",n);
+
+//or
+
+console.log("The name of user is:",user.name);
+
+console.log("The age of user is:",user.age);
+
+console.log("The Hobbies of user is:",user.hobbies);
+
+//or
+
+console.log("The Hobbies of user is:");
+
+for(let i=0;i<user.hobbies.length;i++)
+{
+	console.log(user.hobbies[i]);
+}
+
+
+using bracket notation:
+-----------------------
+
+
+let n = user["name"]; // bracket notation
+let n = user.name; // dot notation
+
+console.log("The name of user is:", n);
+
+//or
+
+console.log("The name of user is:",user["name"]);
+
+console.log("The age of user is:",user["age"]);
+
+console.log("The Hobbies of user is:",user["hobbies"]);
+
+
+//or
+
+
+
+console.log("The Hobbies of user is:");
+
+for(let i=0;i<user["hobbies"].length;i++)
+{
+	console.log(user["hobbies"][i]);
+}
+
+
+
+
+difference between dot and bracket notation:
+---------------------------------------------
+
+--using bracket notation we can access any values from an object by the help of any variable also.
+
+example:
+
+let field = "marks"; // here we can assign any key dynamically for which we need the information.
+
+console.log(user[field]);
+
+--but we can not use this approach using dot notation.
+
+example:
+
+console.log(user.field); // undefined
+
+
+
+adding a new entry inside an existing object.
+=============================================
+
+
+let user = {
+
+roll: 101,
+name: "Ram",
+marks: 500,
+hobbies: ["coding", "playing"],
+married: false,
+salary: null,
+spouse: undefined 
+
+}
+
+
+
+
+using dot notation:
+-------------------
+
+user.age=25;
+console.log(user);
+
+using bracket notation:
+-----------------------
+
+user["email"]="ram@gmail.com";
+console.log(user);
+
+
+
+update any existing entry inside an object.
+===========================================
+
+
+let user = {
+
+roll: 101,
+name: "Ram",
+marks: 500,
+hobbies: ["coding", "playing"],
+married: false,
+salary: null,
+spouse: undefined 
+
+}
+
+
+
+
+using dot notation:
+-------------------
+
+user.salary=5000;
+console.log(user);
+
+using bracket notation:
+-----------------------
+
+user["married"]= true;
+console.log(user);
+
+
+
+delete an entry from an existing object:
+========================================
+
+
+
+let user = {
+
+roll: 101,
+name: "Ram",
+marks: 500,
+hobbies: ["coding", "playing"],
+married: false,
+salary: null,
+spouse: undefined 
+
+}
+
+
+
+using dot notation:
+-------------------
+
+delete user.spouse;
+console.log(user);
+
+using bracket notation:
+-----------------------
+
+delete user["married"];
+console.log(user);
+
+
+
+Nested Object:
+===============
+
+
+
+--In Java-script an object is a key-value pair, where value can be of any type, it can be another object as well.
+
+example:
+
+let user = {
+
+roll: 100,
+name: "Ramesh",
+age: 25,
+marks: 500,
+address: {
+	 city: "Indore",
+	 state: "MP",
+	 country: "India",
+	 pin: 576576
+	},
+email: "ramesh@gmail.com"
+
+};
+
+
+
+console.log(user.name);
+console.log(user["name"]);
+
+
+console.log(user.address);
+console.log(user["address"]);
+
+console.log(user.address.city);
+console.log(user["address"]["city"]);
+
+
+
+accessing each entries from an object:
+======================================
+
+
+Note: Unlike array, Java-script object does not follow index based position of entries, the entries can be in random order.
+
+--unlike array there is no any "length" property available inside a Java-script object.
+
+--array syntax is [] where as Java-script object syntax is {}.
+
+ 
+--In order to access each entries from an Object one by one we need to make use of a special type of for-loop called: 
+"for-in" loop.
+
+
+example:
+
+
+let user = {
+
+roll: 101,
+name: "Ram",
+marks: 500,
+hobbies: ["coding", "playing"],
+married: false,
+salary: null,
+spouse: undefined 
+
+}
+
+
+for(let key in user) // here each key from the object will be loaded inside the "key" variable
+{		   
+	console.log(key);
+}
+
+
+//or
+
+for(let key in user)
+{
+	console.log(key,"==========",user[key]);
+}
+
+
+Example:
+
+
+
+let user = {
+
+roll: 10,
+name: "Ram",
+email: "ram@gmail.com",
+gender: "male",
+address: {
+
+	city: "indore",
+	state: "MP",
+	country: "India",
+	pin: 423232
+
+}
+
+};
+
+
+
+for(let i in user.address){
+
+console.log(i,"  ",user.address[i]);
+
+
+}
+
+
+OR
+
+
+
+for(let key in user){
+
+    if(typeof user[key] === "object"){
+
+        console.log(key + ":");
+
+        for(let innerKey in user[key]){
+
+            console.log("   " + innerKey + " : " + user[key][innerKey]);
+
+        }
+
+    }
+    else{
+
+        console.log(key + " : " + user[key]);
+
+    }
+
+}
+
+
+
+
+
+
+
+Array of Objects:
+=================
+
+single student object:
+---------------------
+
+let student = {roll: 100, name: "Ram", address: "Delhi", marks: 800};
+
+console.log(student);
+
+
+5 students objects: array of 5 student object.
+----------------------------------------------
+
+
+
+let students = [
+
+{roll: 101, name: "Ram", address: "Delhi", marks: 800},
+{roll: 102, name: "Ravi", address: "Indore", marks: 700},
+{roll: 103, name: "Dinesh", address: "Bhopal", marks: 600},
+{roll: 104, name: "Vinay", address: "Mumbai", marks: 820},
+{roll: 105, name: "Sunil", address: "Pune", marks: 900}
+
+];
+
+
+
+console.log(students.length); //5
+console.log(students);
+console.log(students[1]); //{roll: 102, name: "Ravi", address: "Indore", marks: 700}
+
+
+
+for(let i=0;i<students.length;i++)
+{
+
+	//getting a single student object.
+
+	let student = students[i];
+
+	console.log("Roll is :",student.roll);
+	console.log("Name is :",student.name);
+	console.log("Address is :",student.address);
+	console.log("Marks is :",student.marks);
+
+		
+	console.log("============================");
+
+
+}
+
+
+//OR
+
+
+
+    
+for(let i=0;i<students.length;i++)
+{
+    
+	let student = students[i];
+    
+        for(let k in student)
+        {
+            console.log(k,"  ",student[k]);
+        }
+        
+        console.log("============================");
+    
+}
+    
+    
+
+adding a new Student object inside the above list of Students(array of students):
+================================================================================
+
+
+students.push({roll: 108, name: "Manoj", address: "patna", marks: 720});
+
+//or
+
+
+let newStudent = {roll: 110, name: "Varun", address: "Bhopal", marks: 710};
+students.push(newStudent);
+
+
+
+Assignment:
+-----------
+
+Say we have following arrays:
+
+let subjects = ["English", "Hindi", "Physics", "Chemistry", "Maths"]
+let marks = [67, 76, 77, 66, 89]
+
+create a function that accept both arrays as parameter and return an object in which element of first array are keys and elements of second array are values.
+
+Expected output:
+
+{
+	'English': 67,
+	'Hindi': 76,
+	'Physics': 77,
+	'Chemistry': 66,
+	'Maths': 89
+}
+
+Solution:
+----------
+
+
+function getObject(sub, mk) {
+  //Empty object
+  let obj = {};
+
+  //iterate on each element of the array
+  for (let i = 0; i < sub.length; i++) {
+
+    //adding one entry inside the object
+    obj[sub[i]] = mk[i];
+  }
+
+  return obj;
+}
+
+
+
+
+
+
+
+function foo() {
+
+  let subjects = ['English', 'Hindi', 'Physics', 'Chemistry', 'Maths']
+  let marks = [67, 76, 77, 66, 89]
+
+  let object = getObject(subjects, marks);
+
+  console.log(object);
+}
+
+//calling the function
+foo();
+
+Output:
+
+{'English': 67, 'Hindi': 76, 'Physics': 77, 'Chemistry': 66, 'Maths': 89}
+
+
+
+Creating function for an Object:
+=================================
+
+syntax:
+
+
+let obj-name = {
+
+key: value,
+key: value,
+function-name: function(parameter-list)
+		{
+			// body of the function
+		},
+
+key: value
+
+
+};
+
+
+
+
+
+--here function-name will be one of the key of the object.
+
+example:
+
+
+let student = {
+
+name: "Ramesh",
+age: 25,
+address: "delhi",
+display: function(){
+
+		console.log("Welcome, this is the display function");
+	},
+smoking: false
+};
+
+
+console.log(student);
+console.log(student.name);
+student.display(); // calling the display function.
+
+
+Note: if a function is defined inside an object, it is called as a method of that object.
+
+--we can define any number of local variables inside the function of an object. and we can access the local variables inside that function directly.
+
+--but inorder to access the properties of object inside the function of that object, we need to make use of 'this' keyword.
+
+--'this' keyword represents the current object.
+
+example:
+
+
+let student = {
+
+name: "Ramesh",  // object variable or instance variable
+age: 25,              
+address: "delhi",  
+display: function(){
+	
+		let x=20; //local variables
+		let y=30; //local variables
+		console.log("Welcome, this is the display function");
+		console.log("The value of x and y is ",x,y); //local variables are accessable directly
+		//console.log("The value of name and age is ",name,age); //object or instance variables are not accessable
+									 //directly
+
+		console.log("The value of name and age is ",this.name,this.age);
+		
+
+	},
+smoking: false
+};
+
+
+
+student.display();
+
+
+
+example2:
+---------
+
+let student = {
+
+name: 'Anuj',
+age: 20,
+display: function(){
+	//console.log("Name: " + name + " Age: " + age); Error
+	console.log("Name: " + this.name + " Age: " + this.age);
+	}
+}
+
+student.display();
+
+
+
+Output
+
+Name: Anuj Age: 20
+
+
+
+
+
+
+
+
+example4:
+----------
+
+
+let simpleInterest = {
+  
+principleAmount: 1000,
+interestRate: 8.0,
+timePeriod: 2.0,
+  
+calculate: function(panelty) 
+           {
+              let si = (this.principleAmount * this.interestRate * this.timePeriod / 100) + panelty;
+              console.log("Simple interest amount with panelty is " + si);
+           }
+}
+
+
+
+
+
+simpleInterest.calculate(0);
+simpleInterest.calculate(10);
+
+Output
+
+Simple interest amount with panelty is 160
+Simple interest amount with panelty is 170
+
+
+simplateInterest.principleAmount = 2000;
+simpleInterest.calculate(10);
+
+
+
+
+
+
+
+Assignment:
+-----------
+
+Create an object that contains product details: name, price(in INR), discount(in %), gst(in %)
+create a function that is to return selling price of the product
+
+Solution:
+---------
+
+
+let product = {
+
+name: "PQR",
+price: 800,
+discount: 10,
+gst: 2.5,
+
+calculate: function(){
+		let sellingPrice = this.price + (this.gst * this.price / 100) - (this.discount * this.price / 100);
+		return sellingPrice;
+	     }
+}
+
+let sp = product.calculate();
+console.log("the selling price is " + sp);
+
+
+//or
+
+console.log("the selling price is " + product.calculate());
+
+
+Output:
+the selling price is 740
+
+
+
+
+
+
+
+
+
+
+Assignment: create an Account object with the following properties:
+
+accountNo, name, balance
+
+and with following 2 functionalities:
+
+withdraw, checkBalance
+
+
+
+let account = {
+
+
+accountNo: 43232,
+name: "Ramesh",
+balance: 50000,
+
+withdraw: function(amount){
+		
+		if(amount <= this.balance)
+		{
+			this.balance = this.balance - amount;
+			console.log("Amount withdwran: please collect the cash", amount);
+		}
+		else
+		{
+			console.log("Insufficient balance");
+		}
+
+	  },
+
+checkBalance: function(){
+
+			console.log("Your Balance is:",this.balance);
+		}
+
+}
+
+
+
+
+
+//calling the function:
+
+//account.withdraw(80000); //Insufficient balance
+
+
+account.withdraw(40000);
+
+account.checkBalance();
+
+
+
+
+Task: Add deposit functionality to the above object.
+
+
+
+Assignment2:
+-----------
+WAP to create a collage object haiving an empty list of students, define a functionality inside this object which should be able to take roll, name, address and marks as a parameter, using these parameter create a student object and add that object inside the list of students.
+
+--print the list of students.
+
+
+
+ 
+let collage = {
+
+
+students: [],
+
+addStudent: function(r, n, a, m){
+
+		let student= {};//empty object
+
+		student.roll = r;
+		student.name = n;
+		student.address = a;
+		student.marks=m;
+
+		this.students.push(student);
+
+	},
+
+print: function(){
+
+		for(let i=0;i<this.students.length;i++)
+		{
+			let student =  this.students[i];
+
+			console.log("Roll is: ",student.roll);
+			console.log("Name is: ",student.name);
+			console.log("Address is: ",student.address);
+			console.log("Marks is: ",student.marks);
+			consoe.log("=======================");
+
+		}		
+
+	}
+
+
+}
+
+
+
+console.log(collage.students);// []
+
+collage.addStudent(100,"Dinesh","Indore",500);
+collage.addStudent(101,"Sumit","Pune",520);
+collage.addStudent(102,"Manoj","Mumbai",600);
+collage.addStudent(103,"Mukesh","Delhi",700);
+
+
+console.log(collage.students);
+
+
+
+Q/- add a function inside the above collage object to print each student details in descriptive manner:
+
+like:
+
+Roll is 100
+Name is Dinesh
+Address is Indore
+Marks is 500
+================
+Roll is 101
+Name is Sumit
+Address is Pune
+Marks is 520
+==============
+--
+--
+
+
+
+
+Object creation with Factory function:
+======================================
+
+
+Factory function:
+-----------------
+
+--A factory function is a function that returns an object. 
+--It allows for the creation of multiple instances of objects with the same structure, without the need for a constructor function or class. 
+--The main advantage of a factory function is that it provides more flexibility than using constructors or classes.
+
+
+Characteristics:
+---------------
+--A factory function does not use the new keyword.
+--It can return different objects each time it’s called.
+
+
+Example1:
+
+
+function createStudent(roll, name, marks){
+
+let obj={};
+
+obj.roll= roll;
+obj.name= name;
+obj.marks= marks;
+
+return obj;
+
+}
+
+
+--creating student object based on the above factory function.
+
+
+let s1 = createStudent(10,"Rahul",800);
+
+console.log(s1);
+
+
+
+Factory function to create an object with a method/function:
+------------------------------------------------------------
+
+
+
+function createStudent(roll, name, marks){
+
+    let obj={};
+    
+    obj.roll= roll;
+    obj.name= name;
+    obj.marks= marks;
+
+    obj.introduce= function(){
+        console.log("Inside the introduce function");
+        console.log("Roll is", this.roll);
+        console.log("Name is", this.name);
+        console.log("Marks is", this.marks);
+    }
+    
+    return obj;
+    
+    }
+    
+
+    let s1 = createStudent(10,"Rahul",800);
+
+    s1.introduce();
+
+
+
+
+
+
+Object Creation with Constructor function:
+===========================================
+
+Constructor Function:
+---------------------
+
+--A constructor function is used to create objects in JavaScript similar to the factory function, but here we need to make use of "new" keyword.
+
+--Here we need not create any object inside the function explicitly and need not return any object from this constructor function. 
+
+--Constructor function name typically starts with an uppercase letter to follow the convention of capitalizing constructor names.
+
+
+Example:
+
+
+
+function Student(roll, name, marks){
+
+    this.roll= roll;
+    this.name= name;
+    this.marks= marks;
+
+    this.introduce= function(){
+        console.log("Inside the introduce function");
+        console.log("Roll is", this.roll);
+        console.log("Name is", this.name);
+        console.log("Marks is", this.marks);
+    }
+    
+    }
+    
+
+    let s1 = new Student(10,"Rahul",800);
+
+    console.log(s1);
+    s1.introduce();
+
+
+
+
+Object creation with class:
+============================
+
+--A class is a template for creating objects. 
+--Classes were introduced in ECMAScript 6 (ES6) and provide a syntactic sugar over constructor functions. 
+--Classes can have constructors and methods defined within them.
+
+Example:
+
+
+class Student{
+
+    constructor(roll, name, marks){
+        this.roll=roll;
+        this.name=name;
+        this.marks= marks;
+    }
+
+
+    introduce(){
+        console.log("Inside the introduce function");
+        console.log("Roll is", this.roll);
+        console.log("Name is", this.name);
+        console.log("Marks is", this.marks);
+    }
+
+
+
+}
+
+
+let s1 = new Student(10,"Raj",500);
+
+console.log(s1);
+s1.introduce();
+
+
+let s2= new Student(20,"Simran",600);
+
+
+console.log(s2);
+s2.introduce();
+
+
+
+
+Difference Between JavaScript Object and JSON:
+==============================================
+
+JavaScript Object			JSON
+
+Used inside JavaScript programs		Used for data exchange
+
+Keys may be quoted or unquoted		Keys must be enclosed in double quotes
+
+Can contain functions			Cannot contain functions
+
+Can be directly manipulated		Usually transferred as text
+
+JavaScript specific			Language independent
+
+
+
+
+
+
+
+JSON.stringify():
+=================
+
+--The JSON.stringify() method converts a JavaScript Object into a JSON String.
+
+Syntax:
+
+JSON.stringify(object)
+
+
+
+Example
+
+
+let user = {
+    id: 101,
+    name: "Ram",
+    email: "ram@gmail.com"
+};
+
+let jsonData = JSON.stringify(user);
+
+console.log(jsonData);
+console.log(typeof jsonData);
+
+Output:
+
+{"id":101,"name":"Ram","email":"ram@gmail.com"}
+string
+
+
+
+Why Do We Need It?
+
+When sending data to:
+
+REST APIs
+Backend Servers
+Files
+Local Storage
+
+--the data is often converted into JSON format before transmission.
+
+
+JSON.parse():
+==============
+
+--The JSON.parse() method converts a JSON String back into a JavaScript Object.
+
+Syntax:
+
+JSON.parse(jsonString)
+
+
+Example:
+
+let jsonData = '{"id":101,"name":"Ram","email":"ram@gmail.com"}';
+
+let user = JSON.parse(jsonData);
+
+console.log(user);
+
+console.log(user.name);
+
+Output:
+
+{ id: 101, name: 'Ram', email: 'ram@gmail.com' }
+Ram
+
+
+
+Real World Flow:
+----------------
+
+JavaScript Object
+        |
+        | JSON.stringify()
+        ↓
+     JSON String
+        |
+        | Sent over Network
+        ↓
+     JSON String
+        |
+        | JSON.parse()
+        ↓
+JavaScript Object
+
+
+
+
+
+
+
+
+
+
+
+
+
+
