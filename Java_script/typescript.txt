@@ -1,0 +1,2192 @@
+TypeScript:
+===========
+
+--TypeScript (TS) is a superset of JavaScript.
+
+This means:
+
+Valid JavaScript + Extra Features = TypeScript
+
+--Every JavaScript program is also a valid TypeScript program.
+
+--TypeScript was developed and is maintained by Microsoft. It was first released in 2012.
+
+
+In JavaScript, variables can change their datatype at runtime.
+
+Example:
+
+let age = 25;
+
+age = "Twenty Five";   // Allowed
+
+--No error occurs during coding.
+
+The error is discovered only while running the application.
+
+--For small applications this is manageable.
+
+--For large enterprise applications:
+
+Banking Applications
+Insurance Applications
+E-Commerce Platforms
+ERP Systems
+
+runtime errors become costly.
+
+--TypeScript solves this problem using:
+
+Static Type Checking
+let age:number = 25;
+
+age = "Twenty Five";    // Error
+
+--Error is detected during compilation itself.
+
+
+
+
+How TypeScript Works?
+=====================
+
+--Browser understands only JavaScript.
+
+--Browser cannot execute TypeScript directly.
+
+--So TypeScript code must be converted into JavaScript.
+
+This process is called:
+
+Transpilation:
+
+
+
+TypeScript Code (.ts)
+          |
+          |
+         TSC
+(TypeScript Compiler)
+          |
+          |
+JavaScript Code (.js)
+          |
+          |
+       Browser / NodeJS
+
+--TypeScript compiler generates clean JavaScript code
+
+
+TypeScript Compiler:
+---------------------
+
+TypeScript compiler command:
+
+	tsc filename.ts
+
+Example:
+
+	tsc app.ts
+
+Generated file:
+
+	app.js
+
+
+Install TypeScript:
+
+	npm install -g typescript
+
+Step 3: Verify Installation
+
+	tsc -v
+
+
+JavaScript vs TypeScript:
+=========================
+
+| JavaScript                     | TypeScript                                      |
+| ------------------------------ | ----------------------------------------------- |
+| Dynamically Typed              | Statically Typed                                |
+| Errors found at Runtime        | Errors found at Compile Time                    |
+| Runs directly in Browser       | Needs compilation                               |
+| Suitable for small/medium apps | Suitable for large applications                 |
+| ES6 Features                   | ES6 + Interfaces + Generics + Advanced Features |
+
+
+
+Important Features of TypeScript:
+=================================
+
+--TypeScript provides everything available in JavaScript plus:
+
+
+1. Static Typing:
+
+let age:number = 25;
+
+
+2. Interfaces:
+
+interface User{
+    name:string;
+}
+
+
+3. Generics:
+
+function echo<T>(data:T):T{
+    return data;
+}
+
+
+4. Access Modifiers:
+
+public
+private
+protected
+
+
+5. Better IDE Support
+
+Auto Completion
+IntelliSense
+Navigation
+Refactoring Support
+
+
+TypeScript + NodeJS
+====================
+
+In modern backend development:
+
+TypeScript
+     +
+NodeJS
+     +
+Express
+     +
+Database
+
+--Most modern frameworks use TypeScript extensively:
+
+Angular
+NestJS
+NextJS
+Express Applications
+Enterprise NodeJS Projects
+
+
+
+Typical TypeScript Development Flow:
+-----------------------------------
+
+Create app.ts
+      ↓
+Write TypeScript Code
+      ↓
+Compile using tsc
+      ↓
+Generate app.js
+      ↓
+Run using NodeJS
+
+
+
+Example:
+
+tsc app.ts
+
+node app.js
+
+
+
+1. Typed Variables:
+------------------
+
+--One of the biggest advantages of TypeScript is that we can explicitly specify the datatype of a variable.
+
+Syntax:
+
+	variableName : datatype
+
+Example:
+
+let age:number = 30;
+
+let name:string = "Ratan";
+
+let isActive:boolean = true;
+
+--TypeScript compiler checks the datatype during compilation.
+
+
+Advantages of Typed Variables:
+==============================
+
+1. Prevent Invalid Assignments
+------------------------------
+
+let age:number = 25;
+
+age = "Twenty Five"; // Error
+
+
+2. Compile-Time Error Detection
+
+Many bugs are caught before execution.
+
+3. Better Readability
+
+let employeeSalary:number;
+
+--From the declaration itself we know the expected datatype.
+
+
+4. Better IDE Support
+
+Auto Completion
+Error Highlighting
+Refactoring Support
+
+
+2. Function Parameters with Types:
+----------------------------------
+
+--Variables are not the only things that can be typed.
+
+--Function parameters can also be typed.
+
+Example:
+
+function display(id:number, name:string):void {
+
+    console.log(id);
+    console.log(name);
+
+}
+
+
+Invalid call:
+
+	display("101","Ratan");
+
+Compiler Error.
+
+Valid call:
+
+	display(101,"Ratan");
+
+
+
+Important Data Types in TypeScript:
+-----------------------------------
+
+--TypeScript supports all JavaScript datatypes plus some additional types.
+
+boolean
+number
+string
+array
+any
+
+
+1. Boolean:
+
+Stores:
+
+true
+false
+
+Example:
+
+let isLoggedIn:boolean = true;
+
+let isAdmin:boolean = false;
+
+
+2 Number:
+
+Used for:
+
+Integer
+Decimal
+Binary
+Octal
+Hexadecimal
+
+Example:
+
+let age:number = 30;
+
+let price:number = 99.99;
+
+
+3 String
+
+Stores textual data.
+
+Example:
+
+let name:string = "Ratan";
+
+let city:string = 'Bangalore';
+
+
+4. Array:
+
+--Stores multiple values.
+
+Syntax 1:
+
+	let numbers:number[] = [10,20,30];
+
+Syntax 2:
+
+	let numbers:Array<number> = [10,20,30];
+
+Both are correct
+
+
+Example:
+
+let names:string[] = [
+    "Ram",
+    "Shyam",
+    "Mohan"
+];
+
+Accessing:
+
+for(let name of names){
+
+    console.log(name);
+
+}
+
+
+
+5. Any
+
+--Acts like traditional JavaScript variable.
+
+Can hold any datatype.
+
+Example:
+
+	let data:any;
+
+	data = 100;
+
+	data = "Hello";
+
+	data = true;
+
+All are valid.
+
+
+--Use only when necessary.
+
+Example:
+
+let response:any;
+
+Typically used while handling:
+
+External APIs
+Dynamic JSON
+Third-party libraries
+
+--Avoid excessive use because it bypasses TypeScript's type checking.
+
+
+Function Return Types:
+-----------------------
+
+--TypeScript allows us to specify the return type.
+
+Example:
+
+function add(a:number,b:number):number{
+
+    return a+b;
+
+}
+
+Usage:
+
+let result:number = add(10,20);
+
+console.log(result);
+
+
+
+
+
+Optional Parameters:
+--------------------
+
+--By default, every parameter is mandatory in TypeScript.
+
+Example:
+
+function buildName(firstName:string,lastName:string): string{
+
+    return firstName+" "+lastName;
+
+}
+
+Valid:
+
+console.log(buildName("Rahul","Kumar"));
+
+Invalid:
+
+buildName("Rahul");
+
+Compiler Error.
+
+
+Making Parameter Optional
+
+Use:
+
+?
+
+Example:
+
+function buildName(firstName:string, lastName?:string): string{
+
+    return firstName+" "+lastName;
+
+}
+
+
+
+Important Rule:
+
+--Optional parameters must come after required parameters.
+
+Correct:
+
+function demo(id:number, name?:string)
+
+Wrong:
+
+function demo(name?:string,id:number)
+
+
+
+Real World Example
+
+Student registration:
+
+function registerStudent(
+    name:string,
+    email:string,
+    phone?:string
+){
+
+}
+
+--Phone number may or may not be provided.
+
+
+Default Parameters:
+--------------------
+
+--Sometimes we want a parameter to have a default value.
+
+Example:
+
+function greet(
+    name:string="Guest"
+){
+
+    console.log(
+        `Welcome ${name}`
+    );
+
+}
+
+Usage:
+
+greet();
+
+Output:
+
+Welcome Guest
+
+
+
+
+Union Types:
+-------------
+
+--One of the most powerful features of TypeScript.
+
+--A variable can hold multiple possible datatypes.
+
+Syntax:
+
+datatype1 | datatype2
+
+Example:
+
+let employeeId: number | string;
+
+Meaning:
+
+employeeId = 101;
+
+Valid.
+
+employeeId = "EMP101";
+
+Valid.
+
+employeeId = true;
+
+Invalid.
+
+--In many enterprise applications:
+
+Employee ID may be:
+
+101
+
+or
+
+"EMP101"
+
+--Union types support both possibilities.
+
+Another Example:
+
+function search(keyword:string|number){
+
+    console.log(keyword);
+
+}
+
+Valid:
+
+	search("Laptop");
+
+	search(101);
+
+Invalid:
+
+	search(true);
+
+Compiler Error.
+
+
+
+
+Type Aliases:
+-------------
+
+--As projects grow, object definitions become repetitive.
+
+Without Type Alias:
+
+let book1:{
+    name:string,
+    author:string,
+    price:number
+};
+
+Again:
+
+let book2:{
+    name:string,
+    author:string,
+    price:number
+};
+
+
+Repeated code.
+
+
+Creating a Type Alias
+
+Syntax:
+
+type TypeName = {
+    ...
+}
+
+Example:
+
+type Book = {
+
+    name:string;
+
+    author:string;
+
+    price:number;
+
+};
+
+
+
+Usage:
+
+let book1:Book = {
+
+    name:"Java",
+
+    author:"James",
+
+    price:500
+
+};
+
+
+let book2:Book = {
+
+    name:"Spring Boot",
+
+    author:"Rod Johnson",
+
+    price:700
+
+};
+
+
+
+Real World Example:
+-------------------
+
+--Very common in NodeJS APIs.
+
+type User = {
+
+    id:number;
+
+    name:string;
+
+    email:string;
+
+};
+
+Usage:
+
+function saveUser(user:User){
+--
+}
+
+
+Type aliases used for better readability, maintainability and reusability.
+
+
+Example:
+
+type Employee
+
+is easier to understand than repeatedly writing:
+
+{
+   id:number;
+   name:string;
+   salary:number;
+}
+
+
+Object Types:
+==============
+
+--In TypeScript, we can define the structure of an object.
+
+Example:
+
+let person:{
+    name:string,
+    age:number
+};
+
+person = {
+
+    name:"Ratan",
+    age:41
+
+};
+
+console.log(person);
+
+Here TypeScript ensures:
+
+name must be string
+age must be number
+
+
+person = {};
+
+Compiler Error.
+
+Because required properties are missing.
+
+
+
+Classes in TypeScript:
+=======================
+
+--A TypeScript class can contain:
+
+Properties
+Constructor
+Methods
+Getters
+Setters
+
+
+
+Example:
+
+class Employee{
+
+    id:number;
+
+    name:string;
+
+    constructor(id:number,name:string){
+
+        this.id=id;
+        this.name=name;
+
+    }
+
+    show(){
+
+        console.log(this.id);
+        console.log(this.name);
+
+    }
+
+}
+
+
+let e = new Employee(101,"Ratan" );
+
+e.show();
+
+
+
+Shorter TypeScript Syntax:
+--------------------------
+
+--TypeScript provides a shorthand syntax.
+
+Instead of:
+
+class Employee {
+
+    id:number;
+    name:string;
+
+    constructor(id:number,name:string){
+        this.id=id;
+        this.name=name;
+    }
+
+}
+
+
+
+we can write:
+
+class Employee {
+
+    constructor(public id:number,public name:string){
+    }
+
+}
+
+
+
+TypeScript automatically:
+
+Creates properties
+Assigns values
+Reduces boilerplate code
+
+This is very common in Angular and modern TypeScript projects.
+
+
+
+Classes help us:
+
+Model real-world entities
+Group data and behavior
+Improve code organization
+
+Examples:
+
+Employee
+Customer
+Product
+Order
+User
+Account
+
+
+
+Access Modifiers
+=================
+
+TypeScript supports:
+
+public
+private
+protected
+
+Unlike JavaScript.
+
+
+
+--These modifiers we can apply on:
+
+properties/variables
+methods/functions inside the class
+constructors
+
+Modifiers are not applicable to:
+
+class/interface
+interface members 
+standalone functions
+
+
+
+
+
+1. Public
+----------
+
+--Default access modifier.
+
+--Accessible everywhere.
+
+Example:
+
+class Employee{
+
+    public name:string;
+
+}
+
+or simply
+
+class Employee{
+
+    name:string;
+
+}
+
+Both are same.
+
+
+Usage:
+
+	let e = new Employee();
+
+	e.name="Ratan";
+
+Allowed.
+
+
+2. Private:
+-----------
+
+Accessible only inside the same class.
+
+Example:
+
+class Employee{
+
+    private salary:number;
+
+}
+
+Usage:
+
+	let e = new Employee();
+
+	e.salary = 50000;
+
+Compiler Error.
+
+--Private members increase encapsulation.
+
+
+3. Protected:
+-------------
+
+Accessible:
+
+Inside class
+Inside child classes
+
+Not accessible outside.
+
+Example:
+
+class Employee{
+
+    protected name:string;
+
+}
+
+
+
+Most common style:
+
+
+class Employee{
+
+    constructor(private id:number,private name:string,private salary:number){
+
+    }
+
+    show(){
+
+        console.log(this.name);
+
+    }
+
+}
+
+
+
+Inheritance:
+------------
+
+--Inheritance allows one class to acquire properties and methods of another class.
+
+Syntax:
+
+class Child extends Parent
+
+Example
+
+class Animal{
+
+    speak(){
+
+        console.log("Animal Sound");
+
+    }
+
+}
+
+class Dog extends Animal{
+
+}
+
+Usage:
+
+let d = new Dog();
+
+d.speak();
+
+Output:
+
+Animal Sound
+
+
+Inheritance with Protected Members:
+-------------------------------------
+
+Example:
+
+class Animal{
+
+    constructor(protected name:string){
+
+    }
+
+    speak(){
+
+        console.log(this.name +" makes a noise");
+
+    }
+
+}
+
+Child Class:
+
+class Dog extends Animal{
+
+    private color:string;
+
+    constructor(name:string,color:string="white"){
+
+        super(name);
+
+        this.color=color;
+
+    }
+
+}
+
+
+let d= new Dog("tommy");
+
+d.speak();
+
+
+
+Note: The method overriding rules are almost the same as Java: 
+
+same method name, 
+compatible parameters, 
+compatible return type, 
+cannot reduce visibility, 
+and use override keyword just like Java's @Override."
+
+The biggest differences are:
+
+1. No final methods.
+2. No abstract method enforcement exactly like Java (though TypeScript has abstract classes).
+3. Method overloading works differently.
+4. override is a keyword, not an annotation.
+
+
+
+
+Readonly Modifier inside a class:-
+---------------------------------
+
+
+--Properties within a class can be defined as read-only using the ‘readonly’ keyword.
+
+--Such properties must be initialized at their declaration or in the constructor.
+
+
+class Employee {
+
+readonly id: number;
+name: string;
+
+constructor(id: number, name: string) {
+	this.id = id;
+	this.name = name;
+}
+}
+
+const emp: Employee = new Employee(100, 'Hari');
+
+emp.id = 200; // error - 'id' is a read-only property
+emp.name = 'Krishna';
+
+
+
+
+Getters and Setters:-
+--------------------
+
+
+class Employee{
+
+    private _id:number;
+    private _name:string;
+    private _sal:number;
+
+    get id() :number{
+        return this._id;
+    }
+
+    set id(newId:number){
+        this._id=newId;
+    }
+
+
+    get name() :string{
+        return this._name;
+    }
+
+    set name(newName:string){
+        this._name=newName;
+    }
+
+
+    get sal() :number{
+        return this._sal;
+    }
+
+    set sal(newSal:number){
+        this._sal=newSal;
+    }
+}
+
+
+let e=new Employee();
+
+e.id=100;      //here id(-) is a setter method but here it act as a property.
+e.name="ram";
+e.sal=6000;
+
+console.log(e.id);  //here id() is a getter method but here it act as a property.
+console.log(e.name);
+console.log(e.sal);
+
+
+
+
+static members :- 
+===============
+
+class Circle {
+
+static PI: number = 3.14;
+
+static calculateArea(radius: number) {
+	return Circle.PI * radius * radius;
+   }
+}
+
+
+console.log('PI:', Circle.PI); 	// PI: 3.14
+console.log('Area of circle:', Circle.calculateArea(5));  // Area of circle: 78.5
+
+
+
+
+
+Abstract class:-
+================
+
+--similar to Java:
+
+
+ex:-
+
+
+abstract class Animal {
+
+	abstract makeSound(): void;
+	
+	move(): void {
+		console.log("roaming the earth...");
+	}
+}
+
+class Cat extends Animal {
+	makeSound(): void {
+		console.log('meow...');
+	}
+}
+
+
+
+
+let c=new Cat();
+
+c.makeSound();
+c.move();
+
+
+Upcasting in TypeScript (Same as Java)
+=======================================
+
+Java:
+
+Animal a = new Dog();
+
+TypeScript:
+
+class Animal{
+
+    speak(){
+        console.log("Animal Sound");
+    }
+
+}
+
+class Dog extends Animal{
+
+    bark(){
+        console.log("Bow Bow");
+    }
+
+}
+
+let a:Animal = new Dog();
+
+
+Here:
+
+let a:Animal = new Dog();
+
+is upcasting.
+
+The reference type is Animal.
+
+The object type is Dog.
+
+
+
+Dynamic Method Dispatch: It is also same as Java:
+------------------------
+
+ava:
+
+Animal a = new Dog();
+
+a.speak();
+
+If Dog overrides speak(), Dog's version executes.
+
+Same in TypeScript.
+
+Example:
+
+class Animal{
+
+    speak(){
+        console.log("Animal Sound");
+    }
+
+}
+
+class Dog extends Animal{
+
+    speak(){
+        console.log("Dog Barking");
+    }
+
+}
+
+let a:Animal = new Dog();
+
+a.speak();
+
+Output:
+
+Dog Barking
+
+The method selected depends on the actual object (Dog), not the reference type (Animal).
+
+This is runtime polymorphism / dynamic dispatch.
+
+
+
+
+Downcasting in TypeScript: Similar to Java:
+--------------------------
+
+Java:
+
+Animal a = new Dog();
+
+Dog d = (Dog)a;
+
+TypeScript equivalent:
+
+let a:Animal = new Dog();
+
+let d = a as Dog;
+
+or
+
+let d = <Dog>a;
+
+Both are valid.
+
+--This is called Type Assertion.
+
+
+Safe Downcasting:
+-------------------
+
+Java:
+
+if(a instanceof Dog){
+    Dog d = (Dog)a;
+}
+
+
+TypeScript:
+
+if(a instanceof Dog){
+
+    let d = a as Dog;
+
+    d.bark();
+
+}
+
+--This is the recommended approach.
+
+
+Interface in TypeScript:
+========================
+
+
+--Why Do We Need Interfaces in TypeScript?
+
+Suppose we have a function:
+
+function greet(user:any){
+
+    console.log("Hello " + user.name);
+
+}
+
+Problem:
+
+greet({firstName:"Ratan"});
+
+
+Output:
+
+	Hello undefined
+
+Runtime issue.
+
+
+--We want a contract that says:
+
+Any object passed to greet()
+must contain a name property.
+
+--This is where Interfaces help.
+
+
+An Interface defines a contract.
+
+Syntax:
+
+interface User{
+
+    name:string;
+
+}
+
+
+Now,
+
+function greet(user:User){
+
+    console.log("Hello " + user.name);
+
+}
+
+Valid:
+
+	greet({name:"Ratan"});
+
+Invalid:
+
+	greet({firstName:"Ratan"});
+
+Compiler Error.
+
+
+Important Difference from Java:
+===============================
+
+Java:
+
+class Customer
+implements User
+
+--must explicitly implement the interface.
+
+TypeScript:
+
+No need.
+
+--If the object contains the required properties, it automatically satisfies the interface.
+
+This is called:
+
+	Structural Typing
+
+
+Example:
+
+
+interface User{
+    name:string;
+    age: number;
+}
+
+
+function showUser(user:User):void{
+
+    console.log("User name :",user.name);
+    console.log("User Age: ",user.age);
+}
+
+
+showUser({name: "Raj",age: 25});
+//showUser({name:"Raj"}); //ERROR
+
+
+
+
+Optional Properties inside an Interface:
+-----------------------------------------
+
+--Sometimes some properties may or may not exist.
+
+Use:
+
+?
+
+Example:
+
+interface User{
+
+    name:string;
+
+    age?:number;
+
+}
+
+Valid:
+
+let u1:User={
+
+    name:"Ratan",
+
+    age:41
+
+};
+
+
+let u2:User={
+
+    name:"Ratan"
+
+};
+
+Both are valid.
+
+
+
+Methods Inside Interface:
+=========================
+
+--Interfaces can also define methods.
+
+Example:
+
+interface Person{
+
+    firstName:string;
+
+    introduceSelf(lastName:string):void;
+
+}
+
+
+Usage:
+
+const p:Person={
+
+    firstName:"Ratan",
+
+    introduceSelf(lastName:string){
+
+        console.log(`Hello ${this.firstName} ${lastName}`);
+
+    }
+
+};
+
+
+
+Interface with Classes:
+========================
+
+Exactly similar to Java.
+
+Example:
+
+interface Person{
+
+    display():void;
+
+}
+
+
+class Customer implements Person{
+
+    display(){
+
+        console.log("Customer Display");
+
+    }
+
+}
+
+let c = new Customer();
+
+c.display();
+
+
+Multiple Interfaces:
+-------------------
+
+Just like Java.
+
+interface X{
+
+    show():void;
+
+}
+
+interface Y{
+
+    display():void;
+
+}
+
+
+class Customer
+implements X,Y{
+
+    show(){}
+
+    display(){}
+
+}
+
+
+
+
+Interface References:
+----------------------
+
+interface Person{
+
+    display():void;
+
+}
+
+
+
+
+class Customer implements Person{
+
+    display(){
+
+        console.log("Display");
+
+    }
+
+    show(){
+
+        console.log("Show");
+
+    }
+
+}
+
+
+Upcasting:
+
+let p:Person = new Customer();
+
+Allowed.
+
+--Only interface methods visible:
+
+p.display(); // OK
+
+p.show(); // Error
+
+Downcasting:
+
+let c = p as Customer;
+
+c.show();
+
+Exactly like Java.
+
+
+
+Type Alias vs Interface:
+=========================
+
+type Employee = {
+
+    id:number;
+
+    name:string;
+
+};
+
+Equivalent Interface:
+
+interface Employee{
+
+    id:number;
+
+    name:string;
+
+}
+
+
+Use Interface:
+
+For:
+
+Objects
+Classes
+Contracts
+API Models
+DTOs
+Mostly used in Oop
+
+
+
+Use Type Alias:
+
+For:
+
+Union Types
+Tuple Types
+Custom Complex Types
+
+Example:
+
+type Id = number | string;
+
+--Interface cannot do this.
+
+
+
+Generic Function:
+----------------
+
+
+Consider the following function:
+
+function fun1(data: string):string{
+    return data;
+}
+
+
+console.log(fun1("hello")); //Valid
+console.log(fun1(10)); //Error
+
+
+
+--To make the above function can work with any data type:
+
+
+function fun1<T>(data:T) :T{
+
+    return data;
+
+}
+
+
+
+Generic Example:
+
+
+function printValue<T>(value:T): void{
+
+    console.log(value);
+
+}
+
+Usage:
+
+	printValue<string>("Ratan");
+
+	printValue<number>(100);
+
+	printValue<boolean>(true);
+
+Same function.
+
+Different datatypes.
+
+
+
+
+Generic Class Example:
+=====================
+
+
+class Box<T>{
+
+    data:T;
+
+    constructor(data:T){
+
+        this.data=data;
+
+    }
+
+}
+
+Usage:
+
+let b1 = new Box<string>("Hello");
+
+let b2 = new Box<number>(100);
+
+
+
+Generic Constraints:
+--------------------
+
+Suppose:
+
+class Person{}
+
+
+class Admin extends Person{}
+
+class Manager extends Person{}
+
+We want only Person or its subclasses.
+
+function process<T extends Person>(obj:T) :T{
+
+    return obj;
+
+}
+
+
+
+Valid:
+
+process(new Admin() );
+process(new Manager() );
+
+Invalid:
+
+process("Hello");
+
+Compiler Error.
+
+
+
+
+Module System in JavaScript / TypeScript:
+=========================================
+
+--A module is simply a file that contains related code:
+
+Variables
+Functions
+Classes
+Interfaces
+Types
+etc.
+
+
+--which can be shared with other files.
+
+
+Example:
+
+
+employee.ts:
+
+function greet(): void{
+    console.log("Hello");
+}
+
+--Another file may need this function.
+
+--Instead of rewriting the code, we can export and import it.
+
+
+Without modules:
+-----------------
+
+--All code in one file
+
+--As applications grow, keeping all code in a single file becomes difficult.
+
+Problems:
+
+Difficult to maintain
+Difficult to debug
+Code duplication
+Naming conflicts
+Poor team collaboration
+
+--To solve these problems, applications are divided into multiple files called Modules.
+
+With modules:
+
+employee.ts
+student.ts
+product.ts
+order.ts
+
+--Each file has its own responsibility.
+
+
+Exporting a Function:
+--------------------
+
+
+math.ts
+-------
+
+export function add(a:number,b:number):number{
+
+ return a+b; 
+
+}
+
+export function multiply(a:number,b:number):number{
+
+ return a*b; 
+
+}
+
+
+
+app.ts:
+--------
+
+import { add, multiply } from "./math.js"; 
+
+console.log(add(10,20)); 
+console.log(multiply(10,20));
+
+
+
+Benefits:
+
+Better organization
+Reusability
+Maintainability
+Easier testing
+Team collaboration
+
+
+
+
+Export Keyword:
+---------------
+
+--The export keyword makes a member available outside the current module.
+
+We can export:
+
+Variables
+Functions
+Classes
+Interfaces
+Type Aliases
+
+
+Exporting Variables:
+
+	export const PI = 3.14;
+
+
+Exporting Functions:
+
+export function add(a:number,b:number):number{
+    return a+b;
+}
+
+
+
+Exporting Classes:
+
+export class Employee {
+
+    constructor(public id:number,public name:string){
+    }
+
+}
+
+
+
+
+Exporting Interfaces:
+
+
+export interface User {
+
+    id:number;
+    name:string;
+
+}
+
+
+
+Import Keyword:
+----------------
+
+--The import keyword is used to access exported members from another module.
+
+
+1. Import Specific Members:
+
+import { add, multiply } from "./math.js";
+
+console.log(add(10,20));
+console.log(multiply(10,20));
+
+
+2. Import Single Member:
+
+	import { add } from "./math.js";
+
+
+3. Import All Members:
+
+import * as MathUtil from "./math.js";
+
+console.log(MathUtil.add(10,20));
+console.log(MathUtil.multiply(10,20));
+
+
+Named Exports:
+===============
+
+--When multiple members are exported individually, they are called Named Exports.
+
+Example:
+
+math.ts
+-------
+
+export function add(){}
+export function multiply(){}
+export const PI = 3.14;
+
+Import:
+
+import { add, multiply, PI } from "./math.js";
+
+
+Characteristics:
+
+Multiple exports allowed.
+Imported using curly braces {}.
+
+
+Default Export:
+================
+
+--A module can have one default export.
+
+Example:
+
+Employee.ts:
+-----------
+
+export default class Employee {
+
+    constructor(public id:number,public name:string){
+    }
+
+}
+
+
+
+Import:
+
+import Employee from "./Employee.js";
+
+let e = new Employee(101,"Ratan");
+
+Characteristics:
+
+Only one default export per file.
+Imported without curly braces.
+
+
+Named Export vs Default Export:
+-------------------------------
+
+Named Export:
+
+	export function add(){}
+
+Import:
+
+	import { add } from "./math.js";
+
+
+
+Default Export:
+
+	export default class Employee{}
+
+Import:
+
+	import Employee from "./Employee.js";
+
+
+
+
+If we are initializing the npm project initially by:
+
+npm init
+
+make sure 
+
+package.json contains:
+
+ "type": "commonJs",
+
+--change this to:
+
+ "type": "module",
+
+
+
+
+
+
+File Level Export:
+------------------
+
+--Sometimes developers prefer to write all code first and export everything at the end of the file.
+
+Example:
+
+math.ts:
+--------
+
+function add(a:number,b:number){
+    return a+b;
+}
+
+function multiply(a:number,b:number){
+    return a*b;
+}
+
+const PI = 3.14;
+
+export { add, multiply, PI };
+
+Importing:
+
+import { add, multiply, PI } from "./math.js";
+
+Advantages:
+
+Keeps implementation code clean.
+Easy to see all exported members in one place.
+Commonly used in large projects.
+
+
+Export Aliasing:
+---------------
+
+--We can export members using different names.
+
+Example:
+
+function add(a:number,b:number){
+    return a+b;
+}
+
+export { add as sum };
+
+Import:
+
+import { sum } from "./math.js";
+
+console.log(sum(10,20));
+
+
+
+
+
+
+
+CommonJS Module System (Old Node.js):
+=====================================
+
+--Before ES Modules, Node.js used CommonJS.
+
+--CommonJS is the older module system used by Node.js before ES Modules were introduced.
+
+Exporting:
+
+math.js:
+---------
+
+function add(a,b){
+    return a+b;
+}
+
+module.exports = { add };
+
+Importing
+
+const math = require("./math");
+
+console.log(math.add(10,20));
+
+Output:
+
+30
+
+--require() is a CommonJS function used to load another module.
+
+Example:
+
+const math = require("./math");
+
+Meaning:
+
+--Load the math module and return whatever is exported from that file.
+
+Think of it as:
+
+"Bring the exported content of another file into this file."
+
+
+ES Modules (Modern JavaScript):
+-----------------------------
+
+Modern JavaScript uses:
+
+export
+import
+
+Example:
+
+export function greet(){}
+import { greet } from "./app.js";
+
+--This is the standard module system used in modern JavaScript and TypeScript applications.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

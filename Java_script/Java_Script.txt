@@ -3412,6 +3412,10 @@ Installation:
 
 npm install prompt-sync
 
+or
+
+npm install --save-dev @types/prompt-sync
+
 
 --After successful installation, Node.js creates and updates the following resources:
 
@@ -4876,6 +4880,1865 @@ JavaScript Object
         ↓
 JavaScript Object
 
+
+
+
+
+setTimeout() function:
+======================
+
+
+--setTimeout() executes a function once after a specified delay.
+
+Syntax:
+
+setTimeout(callbackFunction, delayInMilliseconds);
+
+Example:
+
+setTimeout(() => {
+    console.log("Hello HDFC");
+}, 3000);
+
+
+Output after 3 seconds:
+
+Hello HDFC
+
+
+
+
+Example 1:
+
+console.log("Start");
+
+setTimeout(() => {
+    console.log("Inside Timeout");
+}, 5000);
+
+console.log("End");
+
+Output:
+
+Start
+End
+
+(after 5 sec)
+
+Inside Timeout
+
+
+Example 2:
+
+function greet() {
+    console.log("Good Morning");
+}
+
+setTimeout(greet, 2000);
+
+Output:
+
+Good Morning
+
+after 2 seconds.
+
+Notice:
+
+setTimeout(greet, 2000);
+
+
+
+setInterval():
+================
+
+--Runs repeatedly after a fixed interval.
+
+Syntax:
+
+setInterval(callback, interval);
+
+Example
+
+setInterval(() => {
+    console.log("Hello");
+}, 2000);
+
+Output:
+
+Hello
+Hello
+Hello
+Hello
+...
+
+Every 2 seconds.
+
+
+Example: Live Clock:
+
+
+setInterval(() => {
+    console.log(new Date());
+}, 1000);
+
+Output:
+
+Current Time
+Current Time
+Current Time
+...
+
+every second.
+
+Stopping setInterval():
+
+const intervalId = setInterval(() => {
+    console.log(new Date());
+}, 1000);
+
+
+setTimeout(() => {
+    clearInterval(intervalId);
+    console.log("Timer Stopped");
+}, 5000);
+
+
+
+Asynchronous Programming in JavaScript:
+======================================
+
+Imagine an HDFC banking application.
+
+Scenario 1: Synchronous Execution
+
+--A customer requests account details.
+
+	console.log("Fetching account details");
+	console.log("Showing account details");
+
+Output:
+
+Fetching account details
+Showing account details
+
+Execution happens line-by-line.
+
+--JavaScript waits for one statement to finish before moving to the next.
+
+
+This is called:
+
+Synchronous Programming (Blocking execution)
+
+Tasks execute one after another.
+
+
+Real Problem:
+
+--Suppose fetching account details takes 5 seconds.
+
+console.log("Fetching account details");
+
+// takes 5 seconds
+
+console.log("Showing account details");
+
+--If JavaScript waits for 5 seconds:
+
+Fetching account details
+
+(waiting...)
+
+Showing account details
+
+--The entire application becomes slow.
+
+--The user interface freezes.
+
+This is not acceptable for modern applications.
+
+Note: synchronous programming is blocking by nature.
+
+
+
+
+Asynchronous Programming:
+-------------------------
+
+--Instead of waiting for a task to finish, JavaScript delegates that task and continues executing the remaining code.
+
+Example:
+
+console.log("Before");
+
+setTimeout(() => {
+    console.log("Reading data from Database");
+}, 2000);
+
+console.log("After");
+
+Output:
+
+Before
+After
+Reading data from Database
+
+
+Notice carefully:
+
+JavaScript did NOT wait for 2 seconds.
+
+It immediately printed:
+
+Before
+After
+
+and after 2 seconds:
+
+Reading data from Database
+
+This is called:
+
+Asynchronous (Non-Blocking) Execution
+
+
+Note: JavaScript is a single thread application.
+
+
+Q/- If JavaScript is Single Threaded, then how does it perform asynchronous operations?
+
+
+--Whenever Node.js executes JavaScript code, four major components work together:
+
+1. Call Stack
+2. Node.js APIs (or Browser APIs)
+3. Callback Queue
+4. Event Loop
+
+--Think of them as employees working together inside a company.
+
+
+Real-Life Analogy: Restaurant
+-----------------
+
+Suppose you visit a restaurant.
+
+Customer      -> User
+Waiter        -> JavaScript Thread
+Kitchen       -> Node.js APIs
+Order Queue   -> Callback Queue
+Manager       -> Event Loop
+
+
+Scenario
+
+You order:
+
+Pizza
+Burger
+Cold Drink
+
+
+
+The waiter:
+
+1. Takes order
+2. Gives it to kitchen
+3. Continues serving other customers
+
+--The waiter does NOT stand idle waiting.
+
+Similarly:
+
+JavaScript does not wait
+for asynchronous tasks.
+
+
+
+Call Stack:
+----------
+
+--Call Stack is a data structure that stores function calls.
+
+JavaScript executes code using the Call Stack.
+
+Example:
+
+function fun3() {
+    console.log("fun3");
+}
+
+function fun2() {
+    fun3();
+}
+
+function fun1() {
+    fun2();
+}
+
+fun1();
+
+
+
+
+
+
+| fun3() | <- Top
+|--------|
+| fun2() |
+|--------|
+| fun1() |
+----------
+
+Call Stack
+
+
+--So, fun3() will be executed and it will be popped out,
+--then fun2()
+--then fun1()
+
+--> After execution all the fun1() the Call Stack  will be empty.
+
+
+Important Rule:
+---------------
+
+--JavaScript can execute only ONE function at a time.
+
+Because:
+
+It is a Single Thread application and,
+It has only Single Call Stack for entire application.
+
+
+
+Consider:
+
+console.log("Start");
+
+setTimeout(() => {
+    console.log("Timeout Executed");
+}, 2000);
+
+console.log("End");
+
+Output:
+
+Start
+End
+Timeout Executed
+
+
+Step-by-Step Execution:
+-----------------------
+
+Step 1:
+
+console.log("Start");
+
+Call Stack:
+
+console.log
+
+Output:
+
+Start
+
+---Stack becomes empty.
+
+
+Step 2:
+
+setTimeout(...)
+
+Call Stack:
+
+setTimeout
+
+Node.js sees:
+
+Delay = 2000ms
+
+--and delegates the timer to Node.js Runtime APIs.
+
+--The callback is NOT executed immediately.
+
+**setTimeout is removed from stack.
+
+
+Step 3:
+
+console.log("End");
+
+Output:
+
+End
+
+--Call Stack becomes empty again.
+
+
+Step 4:
+
+After 2 seconds:
+
+--Timer Completes by the NodeJs Runtime API.
+
+
+Callback moves to: Callback Queue
+
+Queue:
+
+--------------------
+| Timeout Callback |
+--------------------
+
+
+
+Step 5:
+
+Event Loop checks:
+
+--Is Call Stack Empty?
+
+Answer:
+
+YES
+
+Then:
+
+Move Callback
+from Queue
+to Stack
+
+--Callback executes.
+
+Output:
+
+Timeout Executed
+
+
+Event Loop:
+===========
+
+--The Event Loop continuously checks:
+
+1. Is Call Stack Empty?
+2. Is there any callback waiting?
+
+--If both conditions are satisfied:
+
+Move callback
+from Queue
+to Stack
+
+and execute it.
+
+
+
+Example: Trace the execution:
+
+
+
+console.log("1");
+
+setTimeout(() => {
+    console.log("2");
+}, 3000);
+
+console.log("3");
+
+setTimeout(() => {
+    console.log("4");
+}, 1000);
+
+console.log("5");
+
+
+
+
+Output
+1
+3
+5
+4
+2
+
+
+Because:
+
+4 waits 1 second
+2 waits 3 seconds
+
+So:
+
+4 enters queue first
+
+and executes first.
+
+
+
+
+Callback Queue (Task Queue):
+----------------------------
+
+--When an asynchronous task completes:
+
+Its callback is placed inside
+the Callback Queue.
+
+The callback waits there until:
+
+**Call Stack becomes empty.
+
+
+
+Example3:
+
+
+setTimeout(() => {
+    console.log("Task 1");
+}, 1000);
+
+setTimeout(() => {
+    console.log("Task 2");
+}, 1000);
+
+
+After 1 second:
+
+Queue becomes:
+
+Task1
+Task2
+
+Execution order:
+
+Task1
+Task2
+
+FIFO
+
+(First In First Out)
+
+
+Node.js Runtime APIs:
+====================
+
+--In browsers we say:
+
+	Browser APIs
+
+--In Node.js we have:
+
+	Node Runtime APIs
+
+Examples:
+
+setTimeout
+setInterval
+File System
+Network Calls
+Database Calls
+HTTP Requests
+DNS
+
+--These APIs execute outside the Call Stack.
+
+
+Example: Reading File:
+----------------------
+
+const fs = require("fs");
+
+console.log("Start");
+
+fs.readFile("data.txt", "utf8", (err, data) => {
+    console.log(data);
+});
+
+console.log("End");
+
+
+Output:
+
+Start
+End
+(File Content)
+
+Because:
+
+readFile()
+is asynchronous
+
+Node delegates file reading to its runtime system.
+
+
+Important:
+----------
+
+--Is setTimeout(0) executed immediately?
+
+Example:
+
+console.log("Start");
+
+setTimeout(() => {
+    console.log("Timeout");
+}, 0);
+
+console.log("End");
+
+Output:
+
+Start
+End
+Timeout
+
+--Many developers think:
+
+0ms means immediate execution
+
+Wrong.
+
+It means:
+
+Execute as soon as possible
+after stack becomes empty
+
+--The callback still goes through:
+
+Queue
+Event Loop
+Call Stack
+
+
+JavaScript Has Multiple types of Queues:
+------------------------------------------
+
+Many developers think:
+
+One Callback Queue
+
+--But internally JavaScript maintains different queues.
+
+The most important are:
+
+1. Macrotask Queue
+2. Microtask Queue
+
+
+
+Macrotask Queue:
+---------------
+
+Also called:
+
+Task Queue
+Callback Queue
+Timer Queue
+
+Examples:
+
+setTimeout()
+setInterval()
+I/O callbacks
+
+
+Analogy:
+
+Think of Macrotasks as:
+
+Normal Service Tickets
+
+--Customers wait in a regular queue.
+
+
+Microtask Queue:
+-----------------
+
+--Microtasks have higher priority.
+
+Examples:
+
+Promise.then()
+Promise.catch()
+Promise.finally()
+queueMicrotask()
+
+Analogy
+
+Think of Microtasks as:
+
+VIP Customers
+
+--Whenever a VIP arrives:
+
+Serve VIP First
+Then Serve Regular Queue
+
+
+
+Event Loop Rule:
+===============
+
+The Event Loop follows this rule:
+
+1. Execute all synchronous code
+
+2. Empty ALL Microtasks
+
+3. Execute ONE Macrotask
+
+4. Repeat
+
+
+Remember:
+
+Microtask Queue
+always has higher priority
+than Macrotask Queue
+
+
+
+Example:
+
+
+console.log("Start");
+
+setTimeout(() => {
+    console.log("Timeout");
+}, 0);
+
+Promise.resolve()
+       .then(() => {
+           console.log("Promise");
+       });
+
+console.log("End");
+
+
+Execution:
+
+Synchronous Part
+
+Output:
+
+Start
+End
+
+
+Queues:
+
+1.Macrotask Queue:
+
+	Timeout
+
+2. Microtask Queue:
+
+	Promise
+
+
+Event Loop says:
+
+Process Microtasks First
+
+Output:
+
+	Promise
+
+Then:
+
+	Timeout
+
+Final Output
+
+Start
+End
+Promise
+Timeout
+
+
+
+Important Event Loop Rule:
+-------------------------
+
+--The Event Loop empties the ENTIRE Microtask Queue before touching Macrotasks.
+
+Example:
+
+
+console.log("Start");
+
+setTimeout(() => {
+    console.log("Timeout");
+}, 0);
+
+Promise.resolve()
+       .then(() => console.log("P1"));
+
+Promise.resolve()
+       .then(() => console.log("P2"));
+
+Promise.resolve()
+       .then(() => console.log("P3"));
+
+console.log("End");
+
+Output:
+
+Start
+End
+P1
+P2
+P3
+Timeout
+
+
+All Promises finished
+before Timeout started
+
+
+
+Promise in JavaScript:
+=====================
+
+Q/- Why Do We Need Promise?
+
+
+Suppose we have a function:
+
+function getUserById(id) {
+
+    setTimeout(() => {
+
+        console.log("Reading user from Database");
+
+        let user = {
+            id: id,
+            name: "Ratan"
+        };
+
+        return user;
+
+    }, 2000);
+
+}
+
+
+
+Now consume it:
+
+
+console.log("Before");
+
+const user = getUserById(10);
+
+console.log(user);
+
+console.log("After");
+
+
+Output:
+
+Before
+undefined
+After
+
+Reading user from Database
+
+Why undefined?
+
+Many people think:
+
+return user;
+
+should return the user object.
+
+Wrong.
+
+The callback executes after 2 seconds.
+
+But the function itself finishes immediately.
+
+Therefore:
+
+getUserById()
+returns
+
+undefined
+
+before the database result arrives.
+
+
+Real World Example:
+-------------------
+
+Suppose:
+
+Customer asks:
+"Give me my account balance"
+
+The bank server needs:
+
+Database Query
+Network Call
+Security Checks
+
+--All these operations take time.
+
+Therefore:
+
+Result is not available immediately.
+
+--JavaScript needs a way to represent:
+
+A value that will come later.
+
+That is exactly what Promise does.
+
+
+
+--A Promise is an object that represents the eventual completion or failure of an asynchronous operation.
+
+Simple definition:
+
+--Promise is a container that will hold a future result.
+
+
+
+
+Real Life Analogy:
+-------------------
+
+Imagine:
+
+--You order a laptop from Amazon.
+
+--Immediately after ordering:
+
+Do you have laptop?
+
+NO
+
+What do you have?
+
+--A promise that laptop will arrive.
+
+Possible outcomes:
+
+	Delivered Successfully
+
+or
+
+	Delivery Failed
+
+Exactly how Promise works.
+
+
+Promise States:
+
+
+--Every Promise has 3 states.
+
+1. Pending
+2. Fulfilled (Resolved)
+3. Rejected
+
+
+
+
+State 1: Pending
+
+--When Promise is created:
+
+Work is still happening
+
+Example:
+
+--Database query running
+
+State:
+
+	Pending
+
+
+State 2: Fulfilled
+
+--Operation completed successfully.
+
+User Found
+
+State:
+
+	Fulfilled
+
+
+State 3: Rejected
+
+--Operation failed.
+
+Database Down
+
+State:
+
+	Rejected
+
+
+Promise Lifecycle:
+
+
+          Pending
+             |
+      ----------------
+      |              |
+   Resolve        Reject
+      |              |
+ Fulfilled      Rejected
+
+
+
+Creating a Promise:
+-------------------
+
+Syntax:
+
+const promiseObj = new Promise( (resolve, reject) => {
+					--
+					--
+    			       }
+);
+
+
+
+--JavaScript automatically provides two callback functions:
+
+resolve()
+reject()
+
+
+
+resolve()
+
+Used when:
+
+	Operation Successful
+
+Example:
+
+	resolve(user);
+
+
+reject()
+
+Used when:
+
+	Operation Failed
+
+Example:
+
+	reject(new Error("User Not Found"));
+
+
+
+Promise Example1:
+
+
+const promiseObj = new Promise( (resolve, reject) => {
+
+        				resolve("Success");
+    				}
+		);
+
+
+console.log(promiseObj);
+
+
+State:
+
+Fulfilled
+
+
+Promise Example2:
+
+const promiseObj = new Promise((resolve, reject) => {
+
+        reject(new Error("Something Failed"));
+    }
+);
+
+
+console.log(promiseObj);
+
+
+
+State:
+
+Rejected
+
+
+Database Example:
+-----------------
+
+--Let's convert our database function into a Promise.
+
+
+function getUserById(id) {
+
+    return new Promise((resolve, reject) => {
+
+            setTimeout(() => {
+
+                console.log("Reading from Database");
+
+                const user = {
+                    id: id,
+                    name: "Ratan"
+                };
+
+                resolve(user);
+
+            }, 2000);
+
+        });
+
+}
+
+
+
+
+console.log("before");
+
+const user = getUserById(10);
+console.log(user);
+
+console.log("after");
+
+
+Output:
+
+before
+Promise { <pending> }
+after
+reading from DB
+
+
+
+Consuming a Promise:
+====================
+
+--Once a Promise is created, We can consume it using:
+
+
+.then()
+.catch()
+.finally()
+
+--These methods are used by the Consumer.
+
+
+Consuming a Promise using then():
+---------------------------------
+
+Syntax
+
+promiseObject.then(successCallback);
+
+--The callback receives the value passed to:
+
+resolve(value);
+
+
+Example:
+
+
+console.log("before");
+
+const user = getUserById(10);
+user.then(user => console.log(user));
+
+console.log("after");
+
+
+
+Output:
+
+before
+after
+reading from DB
+{ id: 10, name: 'Ratan' }
+
+
+
+
+Handling Errors using catch():
+-------------------------------
+
+What if something goes wrong?
+
+Example:
+
+
+function getUserById(id){
+
+return new Promise((resolve, reject) =>{
+
+
+	setTimeout(()=>{
+
+		if(id > 0){
+		console.log("reading from DB");
+
+		let user={
+			id: id,
+			name: "Ratan"
+
+		};
+
+		resolve(user);
+	}else{
+
+		reject(new Error("Invalid user id:"));
+	}
+
+
+	},2000);
+});
+
+}
+
+
+
+consuming:
+----------
+
+
+console.log("before");
+
+const user = getUserById(-10);
+
+user.then(user => console.log(user))
+     .catch(err => console.log(err.message));
+
+console.log("after");
+
+
+
+Another example:
+----------------
+
+const loanApproved = true;
+
+function applyLoan(){
+
+    return new Promise((resolve,reject)=>{
+
+            setTimeout(()=>{
+
+                if(loanApproved){
+
+                    resolve("Loan Approved");
+
+                }else{
+
+                    reject(new Error("Loan Rejected"));
+
+                }
+
+            },2000);
+
+        });
+
+}
+
+
+
+Consumer:
+
+applyLoan()
+    .then(msg => console.log(msg))
+    .catch(err => console.log(err.message));
+
+
+finally():
+-----------
+
+--Sometimes we need code that should execute regardless of success or failure.
+
+Example:
+
+Close DB Connection
+Hide Loader
+Stop Spinner
+Release Resources
+
+For that we use:
+
+.finally()
+
+
+
+
+Example:
+
+
+applyLoan()
+    .then(msg => console.log(msg))
+    .catch(err => console.log(err.message))
+    .finally(() => console.log("Request completed.."));
+
+
+
+Output if Success:
+
+Loan Approved
+Request Completed
+
+Output if Failure:
+
+Loan Rejected
+Request Completed
+
+
+Promise Chaining:
+===================
+
+Suppose:
+
+Step 1
+
+Fetch User
+
+	getUserById(10)
+
+returns:
+
+{
+   id:10,
+   githubUsername:"ratan"
+}
+
+Step 2
+
+Using github username
+
+fetch repositories.
+
+	getRepositories(username)
+
+
+Step 3
+
+Display repositories.
+
+
+
+
+First Approach (Nested):
+========================
+
+
+getUserById(10)
+    	.then(user => {
+
+        	console.log(user);
+
+        	getRepositories(user.githubUsername)
+        				.then(repos => console.log(repos))
+        				.catch(err => console.log(err));
+
+    		})
+    		.catch(err =>console.log(err));
+
+
+Works.
+
+But nesting grows quickly.
+
+
+
+Better Approach: Promise Chaining:
+--------------------------------
+
+getUserById(10)
+    .then(user => {
+
+        	console.log(user);
+
+        	return getRepositories(user.githubUsername));
+	
+	})
+
+    .then(repos => console.log(repos))
+
+    .catch(err => console.log(err));
+
+
+--Here only one catch block is enough.
+
+
+Why One catch() is Usually Enough:
+------------------------------------
+
+Consider:
+
+getUserById(10)
+
+    .then(user => {
+
+        return getRepositories(user.githubUsername);
+
+    })
+
+    .then(repos => {
+
+        return getRepositoryFiles(repos[0]);
+
+    })
+
+    .then(files => console.log(files))
+
+    .catch(err => console.log(err));
+
+
+
+If any Promise fails:
+
+getUserById()
+
+OR
+
+getRepositories()
+
+OR
+
+getRepositoryFiles()
+
+The same catch() handles it.
+
+--This is one of the biggest advantages of Promise Chaining.
+
+
+
+
+Student Activity:
+=================
+
+--Create two Promise-producing functions:
+
+getCustomerById(id)
+
+returns:
+
+{
+   customerId:101,
+   accountNumber:"ACC123"
+}
+
+and
+
+getTransactions(accountNumber)
+
+returns:
+
+["TXN1","TXN2","TXN3"]
+
+--Consume them using Promise Chaining.
+
+Expected Flow:
+
+Fetch Customer
+↓
+Get Account Number
+↓
+Fetch Transactions
+↓
+Print Transactions
+
+
+
+Async / Await:
+==============
+
+
+Consider the previous example:
+
+
+getUserById(10)
+
+    .then(user => {
+
+        return getRepositories(user.githubUsername);
+
+    })
+
+    .then(repos => {
+
+        return getRepositoryFiles(repos[0]);
+
+    })
+
+    .then(files => console.log(files))
+
+    .catch(err => console.log(err));
+
+
+
+
+Nothing wrong with this.
+
+But imagine:
+
+Fetch User
+↓
+Fetch Repositories
+↓
+Fetch Commits
+↓
+Fetch Files
+↓
+Generate Report
+
+Then we may end up writing:
+
+getUser()
+.then(...)
+.then(...)
+.then(...)
+.then(...)
+.then(...)
+.catch(...)
+
+As the chain grows, readability decreases.
+
+To solve this problem JavaScript introduced:
+
+Async/Await
+
+
+---Async/Await is a syntactic sugar over Promises that allows us to write asynchronous code in a synchronous-looking manner.
+
+Simple definition:
+
+--Async/Await helps us consume Promises more cleanly and more readably.
+
+
+Before Promises:
+
+getUser(() => {
+
+    getRepos(() => {
+
+        getCommits(() => {
+
+            getFiles(() => {
+
+            });
+
+        });
+
+    });
+
+});
+
+This was called:
+
+Callback Hell
+or
+Pyramid of Doom
+
+
+Promises solved it:
+
+getUser()
+    .then(getRepos)
+    .then(getCommits)
+    .then(getFiles);
+
+Async/Await made it even cleaner:
+
+
+const user = await getUser();
+const repos = await getRepos();
+const commits = await getCommits();
+const files = await getFiles();
+
+
+
+Understanding await:
+--------------------
+
+Consider a Promise:
+
+function getUserById(id) {
+
+    return new Promise((resolve) => {
+
+        setTimeout(() => {
+
+            resolve({
+                id: id,
+                name: "Ratan"
+            });
+
+        }, 2000);
+
+    });
+
+}
+
+
+
+
+Promise Consumption:
+
+	getUserById(10).then(user => console.log(user));
+
+Using await:
+
+	const user = await getUserById(10);
+
+
+
+What happens?
+
+Wait until Promise resolves
+↓
+Take resolved value
+↓
+Store it in user variable
+
+
+Step 2: We Can't use await Everywhere !
+
+This will fail:
+
+const user = await getUserById(10);
+
+Error:
+
+	await is only valid inside async functions
+
+
+Rule 1
+
+Whenever you use:
+
+	await
+
+it must be inside:
+
+	async function
+
+
+Example:
+
+async function fun1() {
+
+    const user = await getUserById(10);
+
+    console.log(user);
+
+}
+
+Now it works.
+
+
+
+
+Example1:
+
+
+function getUserById(id) {
+
+    return new Promise((resolve) => {
+
+        setTimeout(() => {
+
+            resolve({
+                id: id,
+                name: "Ratan"
+            });
+
+        }, 2000);
+
+    });
+
+}
+
+
+Consumer:
+
+async function fetchUser() {
+
+    const user = await getUserById(10);
+
+    console.log(user);
+
+}
+
+fetchUser();
+
+
+Multiple Await Example
+-----------------------
+
+Consider:
+
+function getUserById(id) {
+
+    return Promise.resolve({
+        id: id,
+        gitHubUserName: "ratan"
+    });
+
+}
+
+function getRepositories(username) {
+
+    return Promise.resolve([
+        "Repo1",
+        "Repo2",
+        "Repo3"
+    ]);
+
+}
+
+
+Using Promise Chaining:
+------------------------
+
+getUserById(10)
+    .then(user => {
+
+        return getRepositories(
+            user.gitHubUserName
+        );
+
+    })
+    .then(repos => {
+
+        console.log(repos);
+
+    });
+
+
+
+Using Async/Await:
+------------------
+
+async function fun1() {
+
+    const user = await getUserById(10);
+
+    console.log(user);
+
+    const repos =await getRepositories(user.gitHubUserName);
+
+    console.log(repos);
+
+}
+
+fun1();
+
+Simple.
+
+Readable.
+
+Linear.
+
+
+
+Note: Every async function automatically returns a Promise.
+
+Even this:
+
+async function fun1() {
+    return "HDFC";
+}
+
+Internally becomes:
+
+Promise.resolve("HDFC");
+
+
+const result = fun1();
+
+console.log(result);
+
+Output:
+
+Promise { HDFC }
+
+
+
+
+Error Handling:
+================
+
+Suppose:
+
+function getUserById(id) {
+
+    return new Promise(
+        (resolve, reject) => {
+
+            if(id > 0){
+
+                resolve({
+                    id:id,
+                    name:"Ratan"
+                });
+
+            }else{
+
+                reject(
+                    new Error(
+                        "Invalid User Id"
+                    )
+                );
+
+            }
+
+        });
+
+}
+
+Using Promise:
+--------------
+
+
+getUserById(-1)
+    .catch(err => {
+        console.log(err.message);
+    });
+
+
+
+Using Async/Await:
+------------------
+
+async function fun1() {
+
+    try {
+
+        const user = await getUserById(-1);
+
+        console.log(user);
+
+    }
+    catch(err){
+
+        console.log(err.message);
+
+    }
+
+}
+
+fun1();
+
+Output:
+
+Invalid User Id
 
 
 
