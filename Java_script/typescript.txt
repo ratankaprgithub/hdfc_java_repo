@@ -102,6 +102,29 @@ Step 3: Verify Installation
 	tsc -v
 
 
+To execute the .ts file:
+
+tsc app.ts & node app.js
+
+
+--To execute the .ts file directly: install:
+
+npm install -g tsx
+
+
+Now, 
+
+tsx app.ts
+
+OR
+
+tsx app
+
+
+
+
+
+
 JavaScript vs TypeScript:
 =========================
 
@@ -109,7 +132,7 @@ JavaScript vs TypeScript:
 | ------------------------------ | ----------------------------------------------- |
 | Dynamically Typed              | Statically Typed                                |
 | Errors found at Runtime        | Errors found at Compile Time                    |
-| Runs directly in Browser       | Needs compilation                               |
+| Runs directly in Browser       | Needs Transpilation                             |
 | Suitable for small/medium apps | Suitable for large applications                 |
 | ES6 Features                   | ES6 + Interfaces + Generics + Advanced Features |
 
@@ -1853,6 +1876,9 @@ app.ts:
 --------
 
 import { add, multiply } from "./math.js"; 
+//OR
+//import { add, multiply } from "./math";
+
 
 console.log(add(10,20)); 
 console.log(multiply(10,20));

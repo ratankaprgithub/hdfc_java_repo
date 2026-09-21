@@ -1,0 +1,5222 @@
+Testing Fundamentals & QA Concepts:
+==================================
+
+Why do companies spend so much money on testing?
+
+The answer is:
+
+Because software quality matters.
+
+
+What Is Software Quality?
+
+--Imagine you order food using Swiggy or Zomato.
+
+You order:
+
+Paneer Butter Masala
+Butter Naan
+Cold Drink
+
+You pay online.
+
+After 30 minutes, the order arrives.
+
+But:
+
+Paneer is missing
+Wrong drink delivered
+Payment deducted twice
+
+Would you call this a quality service?
+
+No.
+
+
+The application technically worked.
+
+You were able to:
+
+Open the app
+Select food
+Make payment
+Place order
+
+Everything worked.
+
+--Yet the overall experience was poor.
+
+
+Software quality is not just about:
+
+	"Does the application run?"
+
+It is also about:
+
+	Does it satisfy the customer's expectations?
+
+
+Software Quality means:
+
+--The degree to which software meets customer expectations and business requirements.
+
+A quality application should:
+
+Work correctly
+Meet business requirements
+Be reliable
+Be secure
+Be easy to use
+Provide a good user experience
+
+
+Real World Example: UPI Payment
+-------------------
+
+Suppose you transfer:
+
+10,000 from Account A to Account B
+
+Expected:
+
+Account A = -10000
+
+Account B = +10000
+
+--Everything is correct.
+
+
+Now imagine this happens:
+
+Account A = -10000
+
+Account B = No Credit
+
+Money disappears.
+
+
+Technically:
+
+Button worked
+API worked
+Database updated partially
+
+But would you trust such a banking application?
+
+Obviously not.
+
+--This is a software quality problem.
+
+
+What Is A Bug?
+==============
+
+--The biggest enemy of software quality is:
+
+Bug
+
+
+A bug is:
+
+--A difference between expected behavior and actual behavior.
+
+Example 1:
+
+Requirement: Password must contain at least 8 characters.
+
+User enters: 123
+
+Application accepts it.
+
+Expected: Validation Error
+
+Actual: Password Accepted
+
+Since:
+
+Expected != Actual
+
+--This is a bug.
+
+
+Example 2: 
+
+Requirement: User should be redirected to Dashboard after login.
+
+Actual: Blank Page Appears
+
+Again:
+
+Expected != Actual
+
+Therefore: Bug Found
+
+
+
+Q/- Why Bugs Happen?
+---------------------
+
+Many beginners assume:
+
+	Good developers don't write bugs.
+
+This is impossible.
+
+--Every developer writes bugs.
+
+--Even Google, Amazon, Microsoft and OpenAI release bugs.
+
+Reasons:
+
+1. Requirement Misunderstanding:
+
+Business says:
+
+	Minimum age should be 18.
+
+Developer misunderstands requirement.
+
+Application behaves incorrectly.
+
+
+2. Human Mistakes:
+
+Developer writes:
+
+	if(age > 18)
+
+instead of
+
+	if(age >= 18)
+
+--One small symbol creates a defect.
+
+
+3. Integration Issues:
+
+Suppose:
+
+Payment Service works
+Order Service works
+
+--Individually both are correct.
+
+But when they communicate:
+
+Payment Success
+Order Not Created
+
+System fails.
+
+
+
+4. Last-Minute Changes:
+
+Business changes requirements near release.
+
+New code is written.
+New defects are introduced.
+
+
+
+
+Cost of Fixing Bugs:
+====================
+
+
+Scenario 1:
+
+Architect is preparing blueprint.
+
+You notice: Bathroom is missing.
+
+Easy fix.
+
+	Just update drawing.
+
+Cost: Very Low
+
+
+Scenario 2:
+
+House construction has started.
+
+Walls already built.
+
+Now you realize bathroom is missing.
+
+Need:
+
+	Break wall
+	Rebuild wall
+	Redo plumbing
+
+Cost increases.
+
+
+Scenario 3:
+
+House completed.
+
+Family moved in.
+
+Now bathroom problem discovered.
+
+	Need major reconstruction.
+
+Cost becomes huge.
+
+Software Works Exactly The Same Way
+
+--The later a bug is discovered, the more expensive it becomes.
+
+
+1. Bug Found During Development:
+
+--Developer fixes immediately.
+
+Example:
+
+if(age > 18)
+
+changed to
+
+if(age >= 18)
+
+Time: 5 minutes
+
+
+2. Bug Found During Testing
+
+
+Now:
+
+Tester finds bug
+Tester raises defect
+Developer investigates
+Developer fixes
+Build deployed
+Tester retests
+
+
+Time: Several hours
+
+
+2. Bug Found In Production
+
+Now, imagine customers discover the issue.
+
+
+Suddenly:
+
+Customers impacted
+Customers complain
+Support tickets created
+Management gets involved
+Emergency release required
+
+Possible consequences:
+
+Revenue loss
+Customer dissatisfaction
+Brand damage
+Business loss
+
+--Cost becomes very high.
+
+
+Real Example:
+-------------
+
+Suppose Amazon has a bug.
+
+For one hour:
+
+	Buy Now button stops working.
+
+Result:
+
+	Millions of dollars lost.
+
+One small bug.
+
+	Huge business impact.
+
+
+
+Important Principle:
+
+Remember this statement:
+
+--The cost of fixing a bug increases dramatically as it moves from Development -> Testing -> Production.
+
+
+
+Why Testing is required ?
+==========================
+
+--At this point, we know:
+
+Software should be high quality
+Bugs reduce quality
+Bugs are unavoidable
+
+So a question naturally arises:
+
+--How do we find bugs before customers find them to improve the software quality?
+
+The answer is: Software Testing
+
+
+Software Testing:
+-----------------
+
+--Software Testing is the process of verifying and validating software to ensure it behaves as expected.
+
+The primary purpose of testing is:
+
+--Find defects before customers find them.
+
+
+Simple Analogy:
+
+Imagine a school examination.
+
+Teacher asks: 2 + 2 = ?
+
+Expected: 4
+
+Student writes: 5
+
+Difference found.
+
+Error detected.
+
+--Testing works exactly the same way.
+
+Tester compares:
+
+Expected Result
+vs
+Actual Result
+
+If they differ: Bug Found
+
+
+
+*****************************************
+
+
+
+Quality Assurance (QA):
+========================
+
+--Now that we understand why bugs are expensive, let's understand how companies try to prevent them.
+
+The answer is: Quality Assurance (QA)
+
+
+Quality Assurance (QA) is the overall process of ensuring that software meets expected quality standards before it reaches customers.
+
+QA is much broader than testing.
+
+QA focuses on:
+
+Preventing defects
+Improving processes
+Maintaining standards
+Reducing risks
+
+
+Simple Analogy:
+--------------
+
+Imagine a restaurant.
+
+Customers expect:
+
+Good food
+Clean environment
+Safe ingredients
+
+
+A restaurant owner can improve quality by:
+
+Training chefs
+Using fresh ingredients
+Maintaining hygiene
+Following cooking standards
+
+--These activities help prevent bad food from being served.
+
+This entire system represents:
+
+Quality Assurance
+
+
+--QA Is Not Just Testing
+
+Many beginners think:
+
+QA = Testing
+
+--This is not completely correct.
+
+--Testing is only one part of QA.
+
+
+
+QA also includes:
+
+Requirement Reviews
+Design Reviews
+Code Reviews
+Coding Standards
+Security Reviews
+Testing
+
+--All of these contribute to quality.
+
+
+What Is A QA Engineer?
+-----------------------
+
+Now let's talk about the person.
+
+--A QA Engineer is responsible for verifying that the software behaves correctly under different conditions.
+
+Think of a QA Engineer as:
+
+Customer Representative
+
+--The QA Engineer tries to think like a customer.
+
+--A QA Engineer asks questions such as:
+
+What if the user enters invalid data?
+What if the internet connection is lost?
+What if the server is unavailable?
+What if payment fails?
+What if the user clicks the button multiple times?
+
+--The objective is to identify defects before customers experience them.
+
+
+Developer vs QA Engineer Mindset:
+---------------------------------
+
+--Both developers and QA Engineers want the same thing:
+
+High-quality software
+
+But they often think differently.
+
+Developer Mindset:
+------------------
+
+A developer generally focuses on:
+
+	How should the feature work?
+
+Example:
+
+Requirement: User should login successfully.
+
+Developer verifies:
+
+Valid Username
+Valid Password
+Login Success
+
+Feature works.
+
+Developer is satisfied.
+
+
+QA Engineer Mindset:
+---------------------
+
+A QA Engineer focuses on:
+
+	How can this feature fail?
+
+The QA Engineer verifies:
+
+Wrong Password
+Blank Username
+Blank Password
+Special Characters
+Locked Account
+Expired Account
+Network Failure
+Session Timeout
+
+--The QA Engineer explores failure scenarios and edge cases.
+
+
+Q/- Why Both Roles Are Important ?
+----------------------------------
+
+Imagine an airplane.
+
+Engineers design and build the aircraft.
+
+But before passengers fly:
+
+Safety inspections happen
+System checks happen
+Failure scenarios are tested
+
+Both activities are necessary.
+
+Software works exactly the same way.
+
+Developer builds
+QA validates
+
+--Together they improve quality
+
+
+
+Quality Assurance vs Testing:
+==============================
+
+| Quality Assurance (QA)       | Software Testing                     |
+| ---------------------------- | ------------------------------------ |
+| Prevent defects              | Find defects                         |
+| Process-oriented             | Product-oriented                     |
+| Proactive                    | Reactive                             |
+| Entire development lifecycle | Verification phase                   |
+| Reviews, Standards, Audits   | Test Cases, Execution, Bug Reporting |
+
+
+
+Restaurant Analogy Revisited
+
+Imagine a restaurant.
+
+Developer:
+
+	Chef preparing food
+
+QA Engineer:
+
+	Food inspector tasting food
+	
+
+Quality Assurance:
+
+	Kitchen cleanliness
+	Chef training
+	Ingredient quality
+	Cooking standards
+	Food inspection process
+
+--Everything together creates quality.
+
+
+
+
+
+SDLC (Software Development Life Cycle):
+========================================
+
+Before learning STLC (Software Testing Life Cycle), we must first understand the bigger picture.
+
+A very common beginner question is:
+
+"Where does testing actually fit in software development?"
+
+To answer this, we need to understand SDLC.
+
+SDLC stands for: Software Development Life Cycle
+
+--It is a structured process used to build software from an idea to a working product.
+
+--Think of SDLC as a roadmap that guides a software project from start to finish.
+
+
+Real-Life Analogy: Building a House
+------------------
+
+Imagine you want to build a house.
+
+Would you immediately start laying bricks?
+
+No.
+
+First:
+
+Understand requirements
+Create blueprint
+Estimate budget
+Build structure
+Inspect quality
+Hand over house
+
+--Software development follows a similar process.
+
+
+Why Do We Need SDLC?
+---------------------
+
+--Without a process, software projects become chaotic.
+
+Imagine a team where:
+
+Requirements are unclear
+Developers start coding immediately
+No testing is done
+No deployment plan exists
+
+Result:
+
+Missed deadlines
+Poor quality
+Customer dissatisfaction
+Increased costs
+
+--SDLC helps avoid these problems.
+
+
+
+Main Phases of SDLC:
+---------------------
+
+--Most software projects follow these stages:
+
+1. Requirement Gathering
+2. Analysis
+3. Design
+4. Development
+5. Testing
+6. Deployment
+7. Maintenance
+
+Let's understand each phase.
+
+
+Phase 1: Requirement Gathering:
+-------------------------------
+
+--This is the most important phase.
+
+--If requirements are wrong, the entire project can fail.
+
+What Happens Here?
+
+Business stakeholders explain:
+
+What problem needs to be solved?
+Who will use the application?
+What features are required?
+
+
+
+Example
+
+Suppose a bank wants: Online Loan Management System
+
+Business may provide requirements such as:
+
+Customer Registration
+Loan Application
+Loan Approval
+EMI Calculation
+Payment Tracking
+
+
+Analogy:
+
+Imagine ordering a custom-built house.
+
+Before construction starts, you discuss:
+
+Number of rooms
+Parking space
+Kitchen size
+Budget
+
+--This is similar to requirement gathering.
+
+
+Phase 2: Analysis:
+-------------------
+
+--After gathering requirements, the team analyzes them.
+
+Questions include:
+
+Are requirements feasible?
+What technologies are needed?
+What are the risks?
+How much effort is required?
+
+Example
+
+Requirement: System should support 1 million users.
+
+Team analyzes:
+
+Database capacity
+Server requirements
+Scaling strategy
+
+
+
+
+Phase 3: Design
+----------------
+
+Now the solution is planned.
+
+--Architects and senior developers create the system design.
+
+Design Includes:
+
+1. High-Level Design (HLD)
+
+Big-picture architecture.
+
+Example:
+
+Frontend
+Backend
+Database
+External Services
+
+
+
+2. Low-Level Design (LLD)
+
+Detailed implementation plan.
+
+Example:
+
+Classes
+Tables
+APIs
+Relationships
+
+
+House Analogy:
+
+--This phase is similar to creating a blueprint before constructing a house.
+
+--Without a blueprint, construction becomes risky.
+
+
+
+Phase 4: Development
+--------------------
+
+--Now developers start writing code.
+
+--This is where requirements and designs are converted into a working application.
+
+
+Example:
+
+Spring Boot developers may create:
+
+Controllers
+Services
+Repositories
+Security Configuration
+REST APIs
+
+Frontend developers create:
+
+Screens
+Forms
+Components
+Validations
+
+
+
+Important Point:
+
+	Many beginners think software is mostly coding.
+
+In reality:
+
+	Coding is only one phase of SDLC.
+
+
+Phase 5: Testing
+-----------------
+
+--Once development is completed, the application is tested.
+
+--This is where QA Engineers become heavily involved.
+
+
+Objective:
+
+Verify:
+
+Does the application work correctly?
+Does it meet requirements?
+Can defects be identified before release?
+
+
+Example
+
+For a Login Feature:
+
+QA verifies:
+
+Valid Login
+Invalid Login
+Blank Fields
+Locked User
+Session Timeout
+
+
+Important:
+
+--Testing is not performed because developers are bad.
+
+Testing is performed because:
+
+Software is complex
+Humans make mistakes
+Requirements change
+
+
+
+
+Phase 6: Deployment
+-------------------
+
+--After successful testing, the application is released to users.
+
+Examples
+
+Deployment to:
+
+Production Server
+AWS
+Azure
+Google Cloud
+
+
+Example
+
+After testing a Spring Boot application:
+
+Docker Image Created
+Application Deployed
+Users Start Using It
+
+
+
+Phase 7: Maintenance
+---------------------
+
+--Deployment is not the end.
+
+Software continues to evolve.
+
+Activities:
+
+Bug Fixes
+Performance Improvements
+Security Updates
+New Features
+
+
+
+Real Example:
+
+WhatsApp launched years ago.
+
+Yet today it still receives:
+
+Bug Fixes
+Security Updates
+Feature Enhancements
+This is maintenance.
+
+
+
+Complete SDLC Flow:
+-------------------
+
+Requirement Gathering
+          ↓
+      Analysis
+          ↓
+        Design
+          ↓
+    Development
+          ↓
+      Testing
+          ↓
+     Deployment
+          ↓
+    Maintenance
+
+
+Where Does QA Fit?
+==================
+
+--Many beginners think QA participates only during Testing.
+
+In reality, QA can contribute throughout SDLC.
+
+Requirement Phase
+
+	Review requirements.
+
+Design Phase
+
+	Identify potential risks.
+
+Development Phase
+
+	Review testability.
+
+Testing Phase
+
+	Execute tests.
+
+Maintenance Phase
+
+	Verify fixes.
+
+Example: Online Shopping Application
+
+
+Requirement
+
+	Customer should place orders online.
+
+Analysis
+
+	Estimate traffic and storage needs.
+
+Design
+
+	Design database and APIs.
+
+Development
+
+	Write backend and frontend code.
+
+Testing
+
+	Verify ordering process.
+
+Deployment
+
+	Release application.
+
+Maintenance
+
+	Fix bugs and add features.
+
+
+
+STLC (Software Testing Life Cycle):
+==================================
+
+SDLC describes:
+
+How software is developed
+from idea to deployment.
+
+Now let's learn something more specific.
+
+A common question is:
+
+"What does a QA Engineer actually do after requirements are received?"
+
+The answer is:
+
+STLC
+(Software Testing Life Cycle)
+
+
+--It is a structured process followed by QA Engineers to plan, design, execute, and complete testing activities.
+
+
+Simple Definition
+
+STLC is:
+
+A sequence of activities performed by the testing team to ensure software quality.
+
+
+
+SDLC vs STLC:
+=============
+
+| SDLC                                             | STLC                        |
+| ------------------------------------------------ | --------------------------- |
+| Software Development Life Cycle                  | Software Testing Life Cycle |
+| Entire software project                          | Only testing activities     |
+| Followed by Business, Architects, Developers, QA | Mainly followed by QA Team  |
+| Covers development and testing                   | Covers only testing         |
+
+
+House Construction Analogy:
+--------------------------
+
+SDLC:
+
+Building the entire house:
+
+Requirement
+Design
+Construction
+Inspection
+Handover
+
+
+STLC:
+
+Only the inspection activities:
+
+Inspection Planning
+Inspection Checklist
+Inspection Execution
+Issue Reporting
+Final Approval
+
+
+Why Do We Need STLC?
+---------------------
+
+--Imagine a tester receives a new application.
+
+Without a process:
+
+Start clicking randomly
+Miss important scenarios
+Forget test cases
+Release defects
+
+--Testing becomes unreliable.
+
+STLC provides a systematic approach.
+
+It ensures:
+
+Better coverage
+Consistent testing
+Proper documentation
+Higher quality
+
+
+
+Phases of STLC:
+----------------
+
+--Most organizations follow these stages:
+
+1. Requirement Analysis
+2. Test Planning
+3. Test Case Design
+4. Test Environment Setup
+5. Test Execution
+6. Test Closure
+
+Let's understand each one.
+
+
+
+Phase 1: Requirement Analysis:
+------------------------------
+
+--This is the first phase of STLC.
+
+--Before testing anything, QA Engineers must understand what needs to be tested.
+
+Questions Asked:
+
+What is the feature?
+What should happen?
+What should not happen?
+Are requirements clear?
+Are requirements testable?
+
+
+Example
+
+Requirement: Password must contain 8 to 20 characters.
+
+QA immediately identifies:
+
+Valid Cases:
+
+8 characters
+15 characters
+20 characters
+
+
+Invalid Cases:
+
+7 characters
+21 characters
+Blank password
+
+
+Q/- Why Requirement Analysis Matters?
+
+--Many defects originate from unclear requirements.
+
+If requirements are misunderstood:
+
+Wrong test cases
+Wrong implementation
+Missed defects
+
+
+Real-Life Analogy:
+
+
+Teacher announces: Exam next week.
+
+Before studying, students ask:
+
+Which subjects?
+Which chapters?
+What is the pattern?
+
+--This is similar to Requirement Analysis.
+
+
+
+Phase 2: Test Planning
+----------------------
+
+--Once requirements are understood, testing must be planned.
+
+Objective
+
+Decide:
+
+What to test
+Who will test
+When to test
+How to test
+
+
+Typical Questions:
+
+How many testers are required?
+What is the timeline?
+What are the risks?
+Which tools will be used?
+
+
+
+Example
+
+Project: Online Banking System
+
+Plan may include:
+
+2 QA Engineers
+15 Days Testing
+API Testing
+UI Testing
+Regression Testing
+
+
+
+Real-Life Analogy:
+
+--Imagine organizing a wedding.
+
+Before the event:
+
+Budget
+Venue
+Guests
+Food
+Decorations
+
+--must be planned.
+
+--Testing works the same way.
+
+
+
+Phase 3: Test Case Design
+-------------------------
+
+--After planning, QA Engineers write test cases.
+
+What Is A Test Case?
+
+--A test case is a documented procedure used to verify a specific functionality.
+
+Example
+
+Feature: Login
+
+Test Case:
+Login with valid credentials
+
+Expected Result:
+User should login successfully.
+
+
+Another Test Case:
+
+Test Case:
+Login with invalid password
+
+Expected Result:
+Error message displayed.
+
+Q/- Why Write Test Cases?
+
+Without test cases:
+
+	Important scenarios may be forgotten.
+
+Test cases provide:
+
+Consistency
+Coverage
+Documentation
+
+
+Real-Life Analogy:
+
+Pilot before takeoff:
+
+--Uses a checklist.
+
+--Even experienced pilots don't rely on memory.
+
+Test cases are similar checklists.
+
+
+Phase 4: Test Environment Setup
+--------------------------------
+
+--Before testing begins, the testing environment must be prepared.
+
+Environment Includes:
+
+Application
+Database
+Servers
+Test Data
+External Services
+
+
+
+Example:
+
+For a Spring Boot Application:
+
+Backend Server
+MySQL Database
+Test User Accounts
+Third-Party APIs
+
+--must be available.
+
+
+If environment is incorrect:
+
+Testing results become unreliable.
+
+
+Real-Life Analogy:
+
+Before cooking:
+
+Ingredients
+Gas Stove
+Utensils
+
+--must be ready.
+
+Otherwise cooking cannot begin.
+
+
+Phase 5: Test Execution
+-----------------------
+
+--Now actual testing starts.
+
+QA Engineers execute test cases one by one.
+
+Possible Results: 
+
+Pass
+
+Expected Result = Actual Result
+
+Fail
+
+Expected Result ≠ Actual Result
+
+Bug Found.
+
+
+Example:
+
+Requirement: Login with valid credentials
+
+Expected: Dashboard Opens
+
+Actual: Error Page Appears
+
+Result: Fail
+
+--Defect reported.
+
+
+
+During Execution:
+
+QA may:
+
+Execute tests
+Capture screenshots
+Log defects
+Retest fixes
+
+
+
+Phase 6: Test Closure
+----------------------
+
+--After testing is completed, activities are formally closed.
+
+Questions Answered:
+
+How many test cases executed?
+How many passed?
+How many failed?
+What defects remain?
+
+Example
+
+Total Test Cases = 100
+Passed = 95
+Failed = 5
+
+
+Deliverables:
+
+Test Summary Report
+Defect Report
+Lessons Learned
+
+
+Real-Life Analogy:
+
+After a cricket tournament:
+
+Teams review:
+
+Wins
+Losses
+Performance
+Improvements
+
+--This is similar to Test Closure.
+
+
+Example: Login Feature Through STLC
+-----------------------------------
+
+Requirement Analysis
+
+	Understand login requirements.
+
+Test Planning
+
+	Plan login testing.
+
+Test Case Design
+
+	Create login test cases.
+
+Environment Setup
+
+	Prepare application and database.
+
+Test Execution
+
+	Run login tests.
+
+Test Closure
+
+	Prepare final report.
+
+
+
+
+Functional Testing vs Non-Functional Testing:
+==============================================
+
+
+When QA Engineers test an application, they usually verify two things:
+
+1. Does the application work correctly?
+2. How well does the application work?
+
+These two questions give rise to:
+
+Functional Testing
+and
+Non-Functional Testing
+
+
+Real-Life Analogy: Buying a Car
+------------------
+
+Suppose you buy a new car.
+
+--You want answers to two different questions.
+
+Question 1:
+
+Can the car:
+
+Start properly?
+Move forward?
+Apply brakes?
+Turn left and right?
+
+If the answer is yes:
+
+The functionality is working.
+
+
+Question 2:
+
+Now you ask:
+
+How fast can it go?
+How much fuel does it consume?
+Is it comfortable?
+Is it safe?
+
+--Now you're evaluating quality attributes.
+
+Software works exactly the same way.
+
+
+Functional Testing:
+-------------------
+
+Functional Testing verifies whether the application behaves according to business requirements.
+
+Simply put:
+
+Does the system do what it is supposed to do?
+
+
+Example: Login Feature
+
+Requirement: User should login using valid credentials.
+
+Tester verifies:
+
+Valid username
+Valid password
+Successful login
+
+Requirement: Wrong password should show an error message.
+
+Tester verifies:
+
+Invalid password
+Error message displayed
+
+Here we are checking:
+
+Correct behavior
+
+This is Functional Testing.
+
+
+Characteristics of Functional Testing:
+--------------------------------------
+
+Functional Testing focuses on:
+
+Features
+Business Rules
+Validations
+Workflows
+User Actions
+
+
+Real Example: ATM Machine
+--------------
+
+Requirement: User can withdraw money.
+
+Tester checks:
+
+Insert card
+Enter PIN
+Select amount
+Cash dispensed
+
+Requirement: Incorrect PIN should be rejected.
+
+Tester verifies:
+
+Wrong PIN
+Access denied
+
+These are Functional Tests.
+
+
+
+More Functional Testing Examples:
+--------------------------------
+
+1. E-Commerce Website
+
+Verify:
+
+User Registration
+Login
+Search Product
+Add To Cart
+Place Order
+Payment
+
+
+2. Banking Application
+
+Verify:
+
+Fund Transfer
+Balance Inquiry
+Statement Download
+Bill Payment
+
+
+3. Spring Boot API
+
+Verify:
+
+GET /employees
+POST /employees
+PUT /employees/{id}
+DELETE /employees/{id}
+
+--All of these validate functionality.
+
+
+Non-Functional Testing:
+------------------------
+
+Now let's look at a different perspective.
+
+Suppose login works perfectly.
+
+Question:
+
+	Is that enough?
+
+Not always.
+
+Imagine a login page takes:
+
+	45 seconds
+
+to authenticate the user.
+
+Technically:
+
+	Login works
+
+But users will be frustrated.
+
+This introduces: Non-Functional Testing
+
+
+--Non-Functional Testing verifies quality attributes of a system.
+
+Simply put:
+
+	How well does the system perform its functions?
+
+
+
+Common Quality Attributes:
+-------------------------
+
+Non-functional testing evaluates:
+
+Performance
+Security
+Usability
+Reliability
+Scalability
+Availability
+
+
+
+Example 1: Performance Testing
+
+Requirement:
+
+	Login should complete within 2 seconds.
+
+Tester measures response time.
+
+Questions:
+
+Is it fast?
+Is it responsive?
+Can it handle traffic?
+
+
+Example 2: Security Testing
+
+Requirement:
+
+	Only authenticated users should access accounts.
+
+Tester checks:
+
+Unauthorized access
+Privilege escalation
+SQL Injection
+XSS attacks
+
+
+Example 3: Usability Testing
+
+Question:
+
+	Can users easily use the application?
+
+Example:
+
+Easy navigation
+Clear buttons
+Readable screens
+
+
+Example 4: Scalability Testing
+
+Question:
+
+	Can the application handle growth?
+
+Example:
+
+100 users
+1000 users
+10000 users
+
+
+
+Real-World Example: Amazon Sale
+-------------------
+
+During a major sale:
+
+--Millions of users visit simultaneously.
+
+Functional Testing verifies:
+
+Search works
+Cart works
+Payment works
+
+Non-Functional Testing verifies:
+
+Site remains fast
+Servers remain stable
+No crashes occur
+
+--Both are equally important.
+
+
+
+
+Functional vs Non-Functional Testing:
+=====================================
+
+| Functional Testing      | Non-Functional Testing      |
+| ----------------------- | --------------------------- |
+| What system does        | How system behaves          |
+| Feature verification    | Quality verification        |
+| Business requirements   | Quality attributes          |
+| Login works             | Login is fast               |
+| Payment succeeds        | Payment scales under load   |
+| User registration works | Registration remains secure |
+
+
+
+Another Easy Analogy:
+
+Imagine a restaurant.
+
+Functional Testing
+
+Check:
+
+Food ordered
+Food delivered
+
+--Requirement satisfied.
+
+Non-Functional Testing
+
+Check:
+
+Food served quickly
+Food tastes good
+Restaurant is clean
+Service is pleasant
+
+--Quality attributes verified.
+
+
+Playwright is primarily used for:
+
+Functional Testing
+
+Examples:
+
+Login
+Checkout
+Search
+Form Submission
+API Validation
+
+
+Playwright can also assist in some basic:
+
+Performance Checks
+Accessibility Checks
+
+But its main purpose is:
+
+Functional Automation Testing
+
+
+
+
+Smoke Testing, Sanity Testing & Regression Testing:
+===================================================
+
+--These are three of the most commonly used testing terms in real software projects.
+
+As a trainer, you'll hear statements like:
+
+Please do a smoke test after deployment.
+Can someone perform sanity testing on the fix?
+We need full regression before release.
+
+
+Let's understand them is through a real-life example.
+
+
+
+Real-Life Analogy: Buying a New Car
+--------------------
+
+--Suppose you purchase a new car from a showroom.
+
+--Before driving it for hundreds of kilometers, what do you check first?
+
+Does the engine start?
+Do the brakes work?
+Do the headlights turn on?
+Can the car move?
+
+
+You are not testing every feature.
+
+You are simply checking:
+
+--Is the car basically usable?
+
+--This is the idea behind Smoke Testing.
+
+
+Smoke Testing:
+--------------
+
+--Smoke Testing is a quick verification performed to ensure that the application's most critical functionalities are working.
+
+Purpose:
+
+Determine whether the build is stable enough for further testing.
+
+
+Why the Name "Smoke"?
+
+--The term comes from hardware engineering.
+
+--When engineers powered on a newly assembled circuit board:
+
+If smoke came out,
+something was seriously wrong.
+
+If no smoke appeared:
+
+Basic verification passed.
+
+--The software industry adopted the same concept.
+
+
+
+
+Example: E-Commerce Application
+
+After a new deployment, QA may verify:
+
+Application launches
+Login works
+Products load
+Cart opens
+Payment page opens
+
+If any of these fail:
+
+Build rejected.
+
+--No detailed testing begins.
+
+
+Example: Banking Application
+
+Smoke Testing may verify:
+
+Login
+Balance Inquiry
+Fund Transfer Screen
+Logout
+
+--Only core functionality.
+
+
+
+Characteristics of Smoke Testing:
+--------------------------------
+
+Quick
+Shallow
+Critical Features Only
+Performed on Every New Build
+
+
+
+--Smoke Testing is a preliminary test performed to verify that 
+the critical functionalities of a build are working 
+and the build is stable for further testing.
+
+
+
+Sanity Testing:
+---------------
+
+Now imagine a different situation.
+
+A bug is reported:
+
+	Password Reset is not working.
+
+Developer fixes the issue and sends a new build.
+
+Do we test the entire application again?
+
+No.
+
+First we verify:
+
+Did this specific fix actually work?
+
+--This is called Sanity Testing.
+
+
+--Sanity Testing is focused testing performed after a bug fix or small change to verify that the particular functionality works correctly.
+
+Purpose:
+
+	Validate the specific change.
+
+
+
+Example
+
+Bug:
+
+	User cannot reset password.
+
+Developer fixes the issue.
+
+QA verifies:
+
+Reset password
+Email link
+New password creation
+Login with new password
+
+QA is not checking:
+
+Shopping cart
+Product search
+Order history
+
+--Those areas were unrelated to the fix.
+
+
+Real-Life Analogy:
+-----------------
+
+--Imagine your mobile phone speaker stops working.
+
+Technician repairs it.
+
+When you receive the phone back, what do you check first?
+
+	Does the speaker work now?
+
+You don't immediately test:
+
+Camera
+Bluetooth
+WiFi
+Fingerprint Sensor
+
+--You first verify the repaired part.
+
+This is Sanity Testing.
+
+
+
+Characteristics of Sanity Testing:
+----------------------------------
+
+Narrow Scope
+Focused Testing
+After Bug Fix
+After Small Changes
+
+
+--Sanity Testing verifies that a specific bug fix or small change works correctly before detailed testing continues.
+
+
+Regression Test:
+=================
+
+Now let's look at another scenario.
+
+Suppose developers add a new feature:
+
+	UPI Payment
+
+The feature works perfectly.
+
+But a new question arises:
+
+--Did this new change accidentally break existing features?
+
+--This is where Regression Testing comes in.
+
+
+--Regression Testing ensures that existing functionality continues to work after changes are introduced.
+
+Purpose:
+
+	Verify that new changes have not broken previously working features.
+
+
+Example:
+
+Application already supports:
+
+	Credit Card Payment
+	Net Banking
+
+Now developers add:
+
+	UPI Payment
+
+QA must verify:
+
+UPI works
+Credit Card still works
+Net Banking still works
+
+
+Another Example
+
+Developer modifies Login Module.
+
+QA may verify:
+
+Login
+Registration
+Forgot Password
+Session Management
+
+--Because these features may be affected.
+
+
+Real-Life Analogy:
+
+--Suppose a mechanic repairs your car's steering system.
+
+Before returning the car:
+
+Check steering
+Check brakes
+Check suspension
+Check wheel alignment
+
+Why?
+
+--Because changes in one area can affect others.
+
+This is Regression Testing.
+
+
+
+Characteristics of Regression Testing:
+-------------------------------------
+
+Broad Scope
+Time Consuming
+Repeated Frequently
+Excellent Candidate For Automation
+
+
+Why Automation is Important for Regression?
+-------------------------------------------
+
+Imagine:
+
+500 Test Cases
+
+--Running them manually after every release is expensive.
+
+Automation tools like:
+
+Playwright
+Selenium
+Cypress
+
+--help execute regression suites quickly.
+
+--This is one of the primary reasons organizations adopt automation testing.
+
+
+
+Smoke vs Sanity vs Regression:
+------------------------------
+
+
+| Smoke Testing            | Sanity Testing                 | Regression Testing               |
+| ------------------------ | ------------------------------ | -------------------------------- |
+| Verifies build stability | Verifies a specific fix/change | Verifies old features still work |
+| Broad but shallow        | Narrow and focused             | Broad and detailed               |
+| Before detailed testing  | After bug fix                  | After code changes               |
+| Critical features only   | Specific feature               | Entire impacted application      |
+| Fast                     | Very Fast                      | Usually Time Consuming           |
+
+
+
+Easy Way to Remember:
+---------------------
+
+Smoke Testing:
+
+	Can we start testing?
+
+Sanity Testing:
+	
+	Did this specific fix work?
+
+Regression Testing:
+	
+	Did we accidentally break anything?
+
+
+
+Real Project Flow:
+-------------------
+
+Suppose developers deliver Build v2.0.
+
+Step 1
+
+	Perform: Smoke Testing
+
+	Result: Build Stable
+
+Step 2
+
+	Execute detailed testing.
+
+	Bug discovered.
+
+Step 3
+
+	Developer fixes bug.
+
+Perform:
+
+	Sanity Testing
+
+	Result: Fix Verified
+
+Step 4
+
+Before release:
+
+Perform:
+
+	Regression Testing
+
+	Result: No Existing Features Broken
+
+
+
+Integration Testing, System Testing & User Acceptance Testing (UAT):
+=====================================================================
+
+
+Smoke Testing
+Sanity Testing
+Regression Testing
+
+--These testing types focus on verifying application stability, bug fixes, and preventing unintended side effects.
+
+Now let's move one level higher and answer another important question:
+
+"At what level are we testing the application?"
+
+Are we testing:
+
+One module?
+Multiple modules together?
+The entire application?
+The application from the business user's perspective?
+
+These questions lead us to:
+
+Integration Testing
+System Testing
+User Acceptance Testing (UAT)
+
+
+Real-Life Analogy: Building a Car
+-------------------
+
+Imagine a car manufacturer.
+
+The car contains:
+
+Engine
+Gearbox
+Brakes
+Steering
+Dashboard
+
+--Each component may work perfectly by itself.
+
+But does that guarantee the complete car will work?
+
+No.
+
+Questions arise:
+
+Does the engine communicate properly with the gearbox?
+Do all systems work together?
+Can the customer actually drive the car and approve it?
+
+These questions correspond to:
+
+Integration Testing
+System Testing
+User Acceptance Testing
+
+
+
+Integration Testing:
+--------------------
+
+--Integration Testing verifies that multiple modules or components work correctly together.
+
+Why Do We Need Integration Testing?
+
+A common misconception is:
+
+Module A works
+Module B works
+
+--Therefore the system works
+
+This is not always true.
+
+--Most defects occur when components interact.
+
+
+Example: Online Shopping Application
+------------------------------------
+
+Suppose we have:
+
+Order Service
+Payment Service
+Inventory Service
+
+Individually:
+
+Order Service works
+Payment Service works
+Inventory Service works
+
+But what happens when:
+
+Customer places order
+        ↓
+Payment succeeds
+        ↓
+Inventory not updated
+
+--Now the modules are failing together.
+
+--This is exactly what Integration Testing tries to identify.
+
+
+Banking Example:
+----------------
+
+Customer performs:
+
+Fund Transfer
+
+Flow:
+
+Account Service
+       ↓
+Transaction Service
+       ↓
+Notification Service
+
+Tester verifies:
+
+Money transferred
+Transaction recorded
+SMS sent
+
+--All services must work together.
+
+
+Real-Life Analogy:
+-----------------
+
+Imagine a cricket team.
+
+Every player is talented.
+Batsman good
+Bowler good
+Wicketkeeper good
+
+--But can they perform as a team?
+
+--That can only be verified when they play together.
+
+Integration Testing is similar.
+
+
+Characteristics of Integration Testing:
+----------------------------------------
+
+Focuses on module interaction
+Verifies data flow
+Verifies communication
+Detects interface issues
+
+
+System Testing:
+==============
+
+Now let's move one level higher.
+
+--Suppose all modules are integrated successfully.
+
+Question:
+
+	Does the complete application work as expected?
+
+This is called:
+
+	System Testing
+
+System Testing verifies the complete integrated application as a whole.
+
+
+What Is Tested?
+
+--The entire system is tested from end to end.
+
+
+
+--End-to-End Testing is generally considered a type of System Testing that focuses on validating complete business workflows 
+from the user's perspective. While System Testing verifies the entire integrated application, 
+End-to-End Testing verifies complete user journeys that may span multiple modules, databases, APIs, and external systems.
+
+
+System Testing
+=
+Testing the complete application.
+
+End-to-End Testing
+=
+Testing a complete business workflow
+from start to finish.
+
+
+
+
+Example: E-Commerce Website
+---------
+
+Tester performs:
+
+   Login
+      ↓
+Search Product
+      ↓
+  Add To Cart
+      ↓
+  Checkout
+      ↓
+  Payment
+      ↓
+Order Confirmation
+
+--Complete workflow verified.
+
+
+Example: Banking Application
+----------
+
+Tester performs:
+
+   Login
+      ↓
+Check Balance
+      ↓
+Transfer Money
+      ↓
+   Logout
+
+
+--Entire user journey tested.
+
+
+Real-Life Analogy:
+------------------
+
+Returning to the car example.
+
+After assembling:
+
+Engine
+Gearbox
+Steering
+Brakes
+
+--the manufacturer performs a full road test.
+
+Questions:
+
+Can the car start?
+Can it accelerate?
+Can it brake?
+Can it complete a journey?
+
+--This is System Testing.
+
+
+
+Characteristics of System Testing:
+---------------------------------
+
+Tests complete application
+End-to-end validation
+Business workflow verification
+Performed before release
+
+
+
+Difference Between Integration and System Testing:
+-------------------------------------------------
+
+| Integration Testing                      | System Testing                         |
+| ---------------------------------------- | -------------------------------------- |
+| Tests interaction between modules        | Tests complete application             |
+| Focus on interfaces                      | Focus on end-to-end workflow           |
+| Module level                             | Application level                      |
+| Example: Order Service ↔ Payment Service | Example: Complete order placement flow |
+
+
+
+User Acceptance Testing (UAT):
+=============================
+
+Now comes the final stage.
+
+Suppose:
+
+Developers are happy
+QA team is happy
+System Testing passed
+
+
+Can we release immediately?
+
+Not necessarily.
+
+
+Business stakeholders must verify:
+
+	Does the system satisfy business requirements?
+
+This is called:
+
+	User Acceptance Testing
+
+
+User Acceptance Testing (UAT) is performed by business users or customers to verify that the application meets their needs and expectations.
+
+
+
+Important Point:
+
+
+QA verifies:
+
+	Does the system work correctly?
+
+Business verifies:
+
+	Does the system solve the business problem?
+
+
+Example
+
+Requirement: Bank should calculate EMI correctly.
+
+Developers implement it.
+QA verifies calculations.
+
+Business team performs UAT and asks:
+
+Is EMI calculated according to company policy?
+Are all regulations followed?
+Are reports correct?
+
+--Only business can answer these questions.
+
+
+Real-Life Analogy:
+------------------
+
+Imagine building a house.
+
+Engineer completes construction.
+Inspector verifies safety.
+
+But finally:
+
+House Owner Visits
+
+Owner decides:
+
+Kitchen layout good?
+Bedroom size acceptable?
+Requirements satisfied?
+Owner approval is equivalent to UAT.
+
+
+
+Who Performs UAT?
+-----------------
+
+Usually:
+
+	Business Users
+	Customers
+	Product Owners
+	Domain Experts
+
+Not usually:
+
+	Developers
+	QA Engineers
+
+
+Characteristics of UAT:
+----------------------
+
+Business-focused
+Customer-focused
+Final validation
+Performed before production release
+
+
+
+
+
+Defect (Bug) Life Cycle:
+========================
+
+So far we have learned:
+
+Software Quality
+   ↓
+Testing
+  ↓
+STLC
+ ↓
+Testing Types
+
+--Now let's learn something that every QA Engineer, Developer, Scrum Master and Project Manager deals with daily:
+
+Defect (Bug) Life Cycle
+
+This topic is extremely important because finding a bug is only the beginning.
+
+The real challenge is:
+
+How does a bug move from discovery to closure?
+
+
+What Is A Defect?
+------------------
+
+--A Defect (or Bug) is any deviation between expected behavior and actual behavior.
+
+Example:
+
+Requirement: User should login successfully using valid credentials.
+
+Actual:
+
+Valid credentials entered
+↓
+Blank page appears
+
+Result:
+
+Defect Found
+
+
+Finding A Bug Is Not Enough:
+----------------------------
+
+Many beginners think:
+
+Tester found bug
+↓
+Work completed
+
+Not true.
+
+After finding a bug:
+
+Bug must be reported
+     ↓
+Assigned
+     ↓
+  Fixed
+    ↓
+ Retested
+   ↓
+ Closed
+
+--This complete journey is called:
+
+Defect Life Cycle
+
+
+
+Real-Life Analogy:
+-------------------
+
+Imagine you notice a pothole on a road.
+
+What happens?
+
+Problem Identified
+     ↓
+Complaint Registered
+    ↓
+Assigned to Department
+    ↓
+Repair Work Started
+    ↓
+Road Fixed
+   ↓
+Inspection Done
+   ↓
+Complaint Closed
+
+
+
+--Software defects follow a very similar process.
+
+Typical Defect Life Cycle:
+---------------------------
+
+Most companies use a flow similar to:
+
+New
+ ↓
+Assigned
+ ↓
+Open
+ ↓
+Fixed
+ ↓
+Retest
+ ↓
+Closed
+
+--Sometimes additional states exist:
+
+Rejected
+Deferred
+Duplicate
+Reopened
+
+Let's understand each state.
+
+
+1. New:
+
+This is the first state.
+
+--A tester discovers a defect and reports it in Jira, Azure DevOps, Bugzilla, etc.
+
+Example
+
+Requirement: Password must contain at least 8 characters.
+
+Actual: 123
+
+accepted successfully.
+
+Tester logs a defect.
+
+Status: New
+
+What Information Is Usually Added?
+
+Title
+Description
+Steps to Reproduce
+Expected Result
+Actual Result
+Screenshots
+Severity
+Priority
+
+
+
+2. Assigned:
+
+After defect creation:
+
+Project Lead / Scrum Master / Manager assigns it to a developer.
+
+Status becomes: Assigned
+
+Example:
+
+Bug #101
+ ↓
+Assigned to Rahul
+
+
+3. Open:
+
+Developer starts investigating.
+
+Status becomes: Open
+
+Meaning:
+
+Developer is analyzing the issue.
+
+Developer may:
+
+Debug code
+Check logs
+Reproduce issue
+Analyze root cause
+
+
+Example:
+
+Developer discovers:
+
+	if(password.length() > 8)
+
+instead of
+
+	if(password.length() >= 8)
+
+Root cause identified.
+
+4. Fixed:
+
+Developer corrects the issue.
+
+Status: Fixed
+
+Important:
+
+Fixed ≠ Verified
+
+--Developer believes the defect is fixed.
+
+--QA still needs to verify it.
+
+
+
+Real-Life Analogy
+-----------------
+
+Mechanic says:
+
+	Car repaired.
+
+Would you immediately trust it?
+
+No.
+
+	You would test drive the car.
+
+Same thing happens in software.
+
+5. Retest:
+
+QA receives the new build.
+
+Now tester verifies:
+
+	Did the fix actually work?
+
+This activity is called: Retesting
+
+Example:
+
+Previously:
+
+123
+
+was accepted.
+
+Now QA verifies again.
+
+Application correctly rejects it.
+
+Good sign.
+
+
+
+What Happens During Retesting?
+
+QA checks:
+
+Original issue fixed?
+Expected behavior working?
+No unexpected behavior introduced?
+
+
+6. Closed
+
+If retesting succeeds:
+
+Status becomes: Closed
+
+Meaning:
+
+	Defect verified and completed.
+
+Life cycle completed.
+
+New
+ ↓
+Assigned
+ ↓
+Open
+ ↓
+Fixed
+ ↓
+Retest
+ ↓
+Closed
+
+
+
+
+Reopened Defect
+
+Sometimes developers believe a bug is fixed.
+
+But QA finds the issue still exists.
+
+Example
+
+Developer claims:
+
+	Login issue fixed.
+
+QA tests:
+
+	Issue still occurring.
+
+Status becomes: Reopened
+
+Flow:
+
+Fixed
+ ↓
+Retest
+ ↓
+Issue Still Exists
+  ↓
+Reopened
+
+
+
+Real-Life Analogy:
+
+
+Mechanic repairs your bike.
+
+You drive home.
+Problem still exists.
+You return to the workshop.
+Repair request is reopened.
+
+
+Rejected Defect:
+
+	Sometimes what QA reports is not actually a defect.
+
+Example
+
+Requirement says:
+
+	Minimum age = 21
+
+Tester mistakenly believes:
+
+	Minimum age should be 18
+
+and reports a bug.
+
+Developer checks requirement.
+
+System behaves correctly.
+
+Status: Rejected
+
+
+Meaning:
+
+	Not a valid defect.
+
+
+
+Duplicate Defect:
+
+	Two testers report the same issue.
+
+Example:
+
+Bug #101
+Login Button Not Working
+
+Bug #115
+Cannot Login
+
+	Both represent the same problem.
+
+Second bug becomes: Duplicate
+
+
+
+Deferred Defect:
+
+Sometimes the bug is valid but fixing it immediately is not worth the effort.
+
+Example
+
+Minor UI issue:
+
+	Footer alignment slightly incorrect
+
+Release is tomorrow.
+
+Business decides:
+
+	Fix later.
+
+Status: Deferred
+
+Meaning:
+
+Valid bug
+but postponed.
+
+
+Real Project Example:
+
+
+Suppose HDFC Internet Banking has a bug.
+
+QA discovers:
+
+Fund Transfer fails
+when amount = 50,000
+
+Flow:
+
+Tester logs defect
+  ↓
+ New
+
+Assigned to Developer
+  ↓
+Assigned
+
+Developer Investigates
+  ↓
+Open
+
+Code Fixed
+  ↓
+Fixed
+
+QA Tests Again
+    ↓
+Retest
+
+Issue Resolved
+  ↓
+Closed
+
+
+
+Common Defect Statuses:
+=======================
+
+| Status    | Meaning                      |
+| --------- | ---------------------------- |
+| New       | Defect reported              |
+| Assigned  | Assigned to developer        |
+| Open      | Under investigation          |
+| Fixed     | Developer fixed issue        |
+| Retest    | QA verifying fix             |
+| Closed    | Issue verified               |
+| Reopened  | Issue still exists           |
+| Rejected  | Not a valid bug              |
+| Duplicate | Same defect already reported |
+| Deferred  | Fix postponed                |
+
+
+
+
+Severity vs Priority:
+=====================
+
+Many beginners think:
+
+	Severity = Priority
+
+But they are completely different.
+
+In real projects, a QA Engineer often assigns both:
+
+Severity
+Priority
+
+when reporting a defect.
+
+
+Real-Life Analogy:
+
+Imagine you are driving to work.
+
+Suddenly:
+
+	Car tire punctures.
+
+Question 1:
+
+	How serious is the problem?
+
+Answer:
+
+	Very Serious
+
+--because the car cannot be driven safely.
+
+This represents: Severity
+
+Question 2:
+
+	How quickly must it be fixed?
+
+Suppose:
+
+	You need to reach the airport in 30 minutes.
+
+Then:
+
+	Fix Immediately
+
+This represents: Priority
+
+
+Severity:
+---------
+
+Severity indicates:
+
+	How much impact the defect has on the application.
+
+In simple words:
+
+	How serious is the bug?
+
+
+Severity is usually a technical assessment.
+
+It focuses on:
+
+System behavior
+Data loss
+Application crash
+Business functionality impact
+
+
+
+Priority:
+---------
+
+Priority indicates:
+
+	How urgently the defect should be fixed.
+
+In simple words:
+
+	How quickly should we fix it?
+
+
+Priority is usually driven by:
+
+Business needs
+Release timelines
+Customer impact
+Management decisions
+
+
+
+Severity = How Bad?
+
+Priority = How Soon?
+
+
+Severity Levels:
+
+--Most organizations classify severity into:
+
+Critical
+High
+Medium
+Low
+
+
+Critical Severity:
+-------------------
+
+--Application becomes unusable.
+
+Examples:
+
+Application crashes
+Database corruption
+Payment failure
+Data loss
+
+
+
+Banking Example:
+
+Customer transfers: 50,000
+
+Money debited.
+Money not credited.
+
+This is: Critical Severity
+
+
+High Severity:
+-------------
+
+Major functionality broken.
+
+--Application still works partially.
+
+Example:
+
+Login not working
+Checkout not working
+Fund transfer unavailable
+
+
+
+Medium Severity:
+----------------
+
+--Feature works incorrectly but workaround exists.
+
+Example:
+
+Incorrect validation message
+Search sorting issue
+Minor calculation issue
+
+
+Low Severity:
+-------------
+
+Minor issue with little business impact.
+
+Examples:
+
+Spelling mistake
+Alignment issue
+UI formatting issue
+
+
+Priority Levels:
+===============
+
+Usually:
+
+High
+Medium
+Low
+
+
+High Priority:
+--------------
+
+Must be fixed immediately.
+
+Examples:
+
+Production issue
+Customer-facing issue
+Release blocker
+
+
+
+Medium Priority:
+----------------
+	
+Fix in upcoming sprint.
+
+
+Low Priority:
+-------------
+
+Can be fixed later.
+
+
+
+
+Severity vs Priority Matrix:
+============================
+
+Many people assume:
+
+High Severity = High Priority
+
+Not always.
+
+
+Case 1: High Severity + High Priority
+
+Example:
+
+	Payment gateway not working.
+
+Impact:
+
+	Revenue loss
+
+Fix:
+
+	Immediately
+
+
+Case 2: High Severity + Low Priority
+
+Example:
+
+A rarely used feature crashes.
+
+Only:
+
+	Internal Admin Tool
+
+is affected.
+
+--Feature is scheduled for removal next month.
+
+Severity:
+
+	High
+
+because the feature crashes.
+
+Priority:
+
+	Low
+
+because business doesn't care much about it now.
+
+Case 3: Low Severity + High Priority
+
+Example:
+
+Company CEO will demonstrate the application tomorrow.
+
+Home page contains:
+
+	Company Name Spelling Mistake
+
+Technically:
+
+	Low Severity
+
+But because:
+
+	Important Demo Tomorrow
+
+Priority becomes:
+
+	High
+
+Case 4: Low Severity + Low Priority
+
+Example:
+
+	Footer alignment issue
+
+Business impact:
+
+	Very small
+
+Can wait.
+
+
+Who Decides Severity?
+
+Usually:
+
+	QA Engineer
+
+because QA understands the technical impact.
+
+Who Decides Priority?
+
+Usually:
+
+	Product Owner
+	Project Manager
+	Business Team
+
+because priority depends on business needs.
+
+
+Severity vs Priority
+---------------------
+
+| Severity               | Priority                                  |
+| ---------------------- | ----------------------------------------- |
+| Technical Impact       | Business Urgency                          |
+| How serious?           | How soon?                                 |
+| Usually assigned by QA | Usually assigned by Business/Product Team |
+| Focus on application   | Focus on business needs                   |
+
+
+
+
+
+Writing Effective Bug Reports:
+==============================
+
+Finding a bug is important.
+
+But in real projects, simply saying:
+
+	Login is not working.
+
+is not enough.
+
+--A developer cannot fix a bug based on such a vague statement.
+
+The developer needs:
+
+What happened?
+How to reproduce it?
+What was expected?
+What actually happened?
+Evidence?
+
+This information is provided through a: 
+
+Bug Report
+
+
+--A Bug Report is a document that describes a defect in a structured and reproducible manner.
+
+Its purpose is:
+
+	Help developers understand, reproduce, and fix the defect quickly.
+
+
+Real-Life Analogy:
+
+Imagine calling a car mechanic and saying:
+
+	My car is broken.
+
+Will the mechanic understand the problem?
+
+	No.
+
+
+Instead you provide details:
+
+	Car Model: Hyundai Creta
+
+	Problem: Engine doesn't start.
+
+	When?: Morning after parking overnight.
+
+	What happens?: Starter rotates but engine doesn't start.
+
+Now the mechanic has enough information.
+
+Bug reporting works exactly the same way.
+
+
+Why Are Good Bug Reports Important?
+---------------------------------
+
+Poor bug reports cause:
+
+Confusion
+Delays
+Repeated discussions
+Incorrect fixes
+
+Good bug reports help:
+
+Developers reproduce issue quickly
+Faster resolution
+Better communication
+Improved product quality
+
+
+Components Of A Bug Report:
+---------------------------
+
+Most tools like:
+
+Jira
+Azure DevOps
+Bugzilla
+HP ALM
+
+--contain similar fields.
+
+
+1. Bug ID
+
+Unique identifier.
+
+Example:
+
+BUG-101
+BUG-202
+JIRA-455
+
+--Usually generated automatically.
+
+
+2. Bug Title (Summary)
+
+The title should clearly explain the problem.
+
+Bad Title: Login Issue
+
+Too vague.
+
+Better Title
+
+	User receives HTTP 500 error when logging in with valid credentials.
+
+Now everyone understands the issue.
+
+Good Bug Title Formula
+
+What?
++
+Where?
++
+Under What Condition?
+
+Example:
+
+	Checkout page crashes when payment amount exceeds ₹50,000.
+
+
+3. Environment:
+
+Specify where the defect occurred.
+
+Example:
+
+Environment: QA
+
+Browser: Chrome 140
+
+OS: Windows 11
+
+Why?
+
+--Because the issue may not occur everywhere.
+
+
+
+4. Preconditions:
+
+--Conditions that must exist before executing the test.
+
+Example:
+
+User account exists.
+User is logged in.
+Product available in inventory.
+
+
+5. Steps To Reproduce:
+
+--Perhaps the most important section.
+
+--It tells developers exactly how to recreate the issue.
+
+Poor Example
+
+	Login failed.
+
+
+Good Example:
+
+1. Open application.
+2. Click Login.
+3. Enter valid username.
+4. Enter valid password.
+5. Click Sign In.
+
+--Now developers can follow the same steps.
+
+
+Characteristics Of Good Steps:
+-----------------------------
+
+Simple
+Sequential
+Numbered
+Reproducible
+
+
+6. Expected Result:
+
+--What should happen according to requirements?
+
+Example:
+
+User should be redirected
+to Dashboard page.
+
+
+7. Actual Result:
+
+What actually happened?
+
+Example:
+
+Application displays
+HTTP 500 Internal Server Error.
+
+
+Easy Formula:
+
+Expected
+vs
+Actual
+
+--This is the heart of every bug report.
+
+
+8. Severity:
+
+--Indicates technical impact.
+
+Example:
+
+Critical
+High
+Medium
+Low
+
+
+9. Priority:
+
+--Indicates urgency.
+
+Example:
+
+High
+Medium
+Low
+
+
+10. Attachments:
+
+--Evidence is extremely valuable.
+
+Examples:
+
+Screenshots
+Screen Recordings
+Logs
+Network Traces
+
+
+Why Attachments Matter?
+
+Suppose QA reports:
+
+	Application crashed.
+	
+Developer cannot see it.
+
+	A screenshot immediately shows:
+
+Error message
+Stack trace
+UI state
+
+--making investigation much easier.
+
+
+Characteristics Of A Good Bug Report:
+------------------------------------
+
+A good bug report should be:
+
+Clear
+Concise
+Reproducible
+Objective
+Evidence-based
+
+
+Equivalence Partitioning (EP):
+===============================
+
+--This is one of the most important test case design techniques in software testing.
+
+In real projects, testers face a common problem:
+
+How can we test thoroughly
+without writing thousands of test cases?
+
+Imagine a requirement:
+
+	Age must be between 18 and 60.
+
+
+Possible inputs:
+
+18
+19
+20
+21
+22
+...
+59
+60
+
+Should we test every value?
+
+No
+
+That would be time-consuming and inefficient.
+
+This is where:
+
+Equivalence Partitioning (EP)
+
+helps.
+
+
+What Is Equivalence Partitioning?
+---------------------------------
+
+--Equivalence Partitioning is a test case design technique in which input data is divided into groups (partitions), 
+and one representative value is selected from each group for testing.
+
+The idea is:
+
+--If one value from a group works correctly, the remaining values in the same group are expected to behave similarly.
+
+
+Real-Life Analogy:
+-----------------
+
+Suppose a teacher has 100 answer sheets.
+
+Do they weigh every sheet individually to check paper quality?
+
+No.
+
+	They may randomly inspect a few sheets.
+
+Why?
+
+	Because all sheets come from the same batch.
+
+	One sheet represents the group.
+
+Equivalence Partitioning follows the same principle.
+
+
+
+Why Use EP?
+-----------
+
+Without EP:
+
+More Test Cases
+More Time
+More Effort
+
+With EP:
+
+Fewer Test Cases
+Good Coverage
+Less Effort
+
+
+
+Example 1: Age Validation
+
+Requirement: Age must be between 18 and 60.
+
+Possible partitions:
+
+Invalid Partition 1
+
+Age < 18
+
+Examples:
+
+1
+10
+15
+17
+
+All should be rejected.
+
+
+Valid Partition
+
+18 ≤ Age ≤ 60
+
+Examples:
+
+18
+25
+40
+55
+60
+
+All should be accepted.
+
+
+Invalid Partition 2
+
+Age > 60
+
+Examples:
+
+61
+70
+80
+90
+
+All should be rejected.
+
+
+
+How Many Test Cases?
+
+Without EP:
+
+	Possibly hundreds
+
+With EP:
+
+	Choose one value from each partition.
+
+Example:
+
+10
+25
+70
+
+	Only 3 test cases.
+
+
+Why Does This Work?
+
+Because we assume:
+
+All values inside a partition
+behave similarly.
+
+If: 25
+
+is accepted,
+
+then:
+
+30
+35
+40
+
+--should also be accepted.
+
+Example2: Password Length
+
+Requirement: Password length must be between 8 and 20 characters.
+
+Partitions:
+
+Invalid:
+
+	Length < 8
+
+Representative:
+
+	abc
+
+
+Valid:
+
+	Length 8–20
+
+Representative:
+
+	password123
+
+
+Invalid
+
+	Length > 20
+
+Representative:
+
+	abcdefghijklmnopqrstuvwxy
+
+
+Positive And Negative Partitions:
+---------------------------------
+
+EP usually creates:
+
+1. Valid Partition
+
+Input should be accepted.
+
+Example:
+
+35
+
+
+2. Invalid Partition
+
+Input should be rejected.
+
+Example:
+
+15
+
+Good testers always test both.
+
+
+
+
+Another Example: Username Length
+
+Requirement:
+
+Username length:
+5–15 characters.
+
+
+
+Partitions:
+
+
+| Partition | Example             | Expected |
+| --------- | ------------------- | -------- |
+| < 5       | abc                 | Reject   |
+| 5–15      | john123             | Accept   |
+| > 15      | verylongusername123 | Reject   |
+
+
+
+Real Project Example:
+---------------------
+
+Suppose an API accepts:
+
+{
+   "quantity": ?
+}
+
+Requirement:
+
+--Quantity must be between 1 and 100.
+
+
+Instead of testing:
+
+1
+2
+3
+4
+...
+100
+
+Use EP:
+
+0
+50
+150
+
+
+Steps To Apply EP:
+===================
+
+
+Step 1
+
+Read requirement.
+
+Example:
+
+Age must be between 18 and 60.
+
+
+Step 2:
+
+Identify partitions.
+
+<18
+
+18–60
+
+>60
+
+
+Step 3
+
+Choose one representative value.
+
+10
+30
+70
+
+
+Step 4
+
+--Create test cases.
+
+Done.
+
+
+
+Boundary Value Analysis (BVA):
+-------------------------------
+
+Equivalence Partitioning (EP)
+
+--where we divide inputs into groups and test one representative value from each group.
+
+But there is a problem.
+
+Many real-world defects do not occur in the middle of a range.
+
+They occur at the edges.
+
+For example:
+
+Requirement: Age must be between 18 and 60.
+
+Most bugs are found around:
+
+17
+18
+19
+
+59
+60
+61
+
+rather than:
+
+25
+35
+45
+
+--This leads us to one of the most powerful testing techniques:
+
+Boundary Value Analysis (BVA)
+
+--Boundary Value Analysis is a test design technique that focuses on testing values at the boundaries of valid and invalid partitions.
+
+Simple meaning:
+
+	Most bugs occur at the edges, so test the edges carefully.
+
+
+Real-Life Analogy:
+
+
+Suppose a bridge is designed to support:
+
+Maximum Weight = 10 Tons
+
+Would engineers test:
+
+1 Ton
+2 Tons
+3 Tons
+
+only?
+
+No.
+
+They would test around:
+
+9.9 Tons
+10 Tons
+10.1 Tons
+
+--because that's where failures are most likely.
+
+Software behaves similarly.
+
+
+
+Why BVA Exists?
+----------------
+
+
+Developer accidentally writes:
+
+	if(age > 18 && age < 60)
+
+instead of:
+
+	if(age >= 18 && age <= 60)
+
+
+What happens?
+
+18 rejected
+60 rejected
+
+Bug found.
+
+
+This type of bug is extremely common.
+
+That's why testers focus on boundaries.
+
+
+Relationship Between EP and BVA:
+--------------------------------
+
+Suppose requirement:
+
+	Age must be between 18 and 60.
+
+EP gives:
+
+<18
+18–60
+>60
+
+BVA says:
+
+Test around the boundaries
+of these partitions.
+
+General BVA Rule:
+
+For a range:
+
+Min = 18
+Max = 60
+
+Test:
+
+Min - 1
+
+Min
+
+Min + 1
+
+Max - 1
+
+Max
+
+Max + 1
+
+--This is the most important formula in BVA.
+
+
+
+
+Example 1: Age Validation
+
+Requirement:
+
+	Age must be between 18 and 60.
+
+Boundaries:
+
+18
+60
+
+
+Test Cases:
+
+| Input | Expected |
+| ----- | -------- |
+| 17    | Reject   |
+| 18    | Accept   |
+| 19    | Accept   |
+| 59    | Accept   |
+| 60    | Accept   |
+| 61    | Reject   |
+
+
+Notice:
+
+We are testing around the boundaries.
+
+
+EP vs BVA
+----------
+
+Equivalence Partitioning
+
+Focus: Partitions
+
+Example:
+
+10
+25
+70
+
+Boundary Value Analysis:
+
+Focus: Edges
+
+Example:
+
+17
+18
+19
+59
+60
+61
+
+
+Best Practice
+
+In real projects:
+
+EP + BVA
+
+are almost always used together.
+
+Example:
+
+Requirement:
+
+Age = 18–60
+
+EP Test Cases:
+
+10
+30
+70
+
+
+
+BVA Test Cases:
+
+17
+18
+19
+59
+60
+61
+
+--Together they provide excellent coverage.
+
+
+Decision Table Testing:
+-----------------------
+
+Equivalence Partitioning (EP)
+
+Boundary Value Analysis (BVA)
+
+These techniques work very well when a single input field has rules like:
+
+Age = 18 to 60
+Marks = 0 to 100
+Password Length = 8 to 20
+
+--But what happens when multiple conditions together determine the result?
+
+
+For example:
+
+Loan Approval depends on:
+
+Age
+Salary
+Credit Score
+
+--Now the output depends on combinations of inputs.
+
+--EP and BVA alone are not sufficient.
+
+This is where:
+
+Decision Table Testing
+
+becomes useful.
+
+
+Decision Table Testing is a test design technique used when the application's behavior depends on multiple conditions and business rules.
+
+It helps us verify all important combinations of conditions.
+
+
+
+Real-Life Analogy:
+
+Suppose a restaurant offers a discount.
+
+Rules:
+
+Member Customer?
+YES / NO
+
+Order Above 1000?
+YES / NO
+
+Discount Policy:
+
+Member + Order > 1000
+20% Discount
+
+Member + Order <= 1000
+10% Discount
+
+Non-Member + Order > 1000
+5% Discount
+
+Non-Member + Order <= 1000
+No Discount
+
+--Would you manually think through every combination?
+
+Possible.
+
+--But as conditions increase, complexity grows rapidly.
+
+--Decision Tables organize these combinations clearly.
+
+
+Structure Of A Decision Table:
+-------------------------------
+
+A decision table usually contains:
+
+Conditions
+Actions
+
+
+General Format:
+
+
+| Conditions  | Rule1 | Rule2 | Rule3 | Rule4 |
+| ----------- | ----- | ----- | ----- | ----- |
+| Condition A | Y     | Y     | N     | N     |
+| Condition B | Y     | N     | Y     | N     |
+| Action      | A1    | A2    | A3    | A4    |
+
+
+
+
+
+Example 1: Loan Approval
+
+Requirement:
+
+Loan Approved only if:
+
+Salary >= 50,000
+
+Credit Score >= 700
+
+Conditions:
+
+Salary >= 50k ?
+Credit Score >= 700 ?
+
+
+Decision Table:
+
+| Salary >= 50k | Credit Score >= 700 | Result  |
+| ------------- | ------------------- | ------- |
+| Yes           | Yes                 | Approve |
+| Yes           | No                  | Reject  |
+| No            | Yes                 | Reject  |
+| No            | No                  | Reject  |
+
+
+
+Test Cases:
+
+| TC | Salary | Credit Score | Expected |
+| -- | ------ | ------------ | -------- |
+| 1  | 60000  | 750          | Approve  |
+| 2  | 60000  | 650          | Reject   |
+| 3  | 40000  | 750          | Reject   |
+| 4  | 40000  | 650          | Reject   |
+
+
+
+Notice:
+
+We are testing all possible combinations.
+
+
+
+Banking Example:
+
+--Suppose HDFC Credit Card Approval Rule:
+
+Age >= 21
+Salary >= 40,000
+Credit Score >= 700
+
+How many combinations?
+
+	Three conditions.
+
+Each condition has:
+
+Yes
+No
+
+Total combinations:
+
+2³ = 8
+
+
+Decision Table:
+
+
+| Age | Salary | Score | Result  |
+| --- | ------ | ----- | ------- |
+| Y   | Y      | Y     | Approve |
+| Y   | Y      | N     | Reject  |
+| Y   | N      | Y     | Reject  |
+| Y   | N      | N     | Reject  |
+| N   | Y      | Y     | Reject  |
+| N   | Y      | N     | Reject  |
+| N   | N      | Y     | Reject  |
+| N   | N      | N     | Reject  |
+
+
+
+When To Use Decision Table Testing?
+-----------------------------------
+
+Use it when:
+
+Multiple Conditions
+Business Rules
+Eligibility Logic
+Discount Logic
+Approval Workflows
+
+Examples:
+
+Loan Approval
+Insurance Eligibility
+Tax Calculation
+Coupon Validation
+Credit Card Approval
+
+
+When Not To Use It?
+
+Not suitable for:
+
+Simple Range Validation
+
+Age Limits
+Password Length
+Marks Validation
+
+
+For these:
+
+EP
+BVA
+
+are usually better.
+
+
+
+State Transition Testing:
+-------------------------
+
+Now let's look at another type of system where the output depends on:
+
+Current State
+
+of the application.
+
+This leads us to:
+
+State Transition Testing
+
+
+What Is A State?
+----------------
+
+--A State is simply the current condition or status of a system.
+
+
+Real-Life Examples:
+
+1. Traffic Signal
+
+Possible states:
+
+Red
+Yellow
+Green
+
+
+2. ATM Card
+
+Possible states:
+
+Card Inserted
+PIN Verified
+Transaction In Progress
+Transaction Completed
+
+
+3. User Account
+
+Possible states:
+
+Active
+Locked
+Disabled
+
+--At any moment, the system is in one state.
+
+
+
+State Transition:
+-----------------
+
+A State Transition means:
+
+Moving from one state
+to another state.
+
+
+Example:
+
+Traffic Signal
+
+Red
+ ↓
+Green
+ ↓
+Yellow
+ ↓
+Red
+
+Each movement is a transition.
+
+
+
+State Transition Testing:
+-------------------------
+
+State Transition Testing verifies that a system behaves correctly when moving from one state to another.
+
+Simple meaning:
+
+	Verify that the correct action occurs when the system changes state.
+
+
+Why Do We Need It?
+
+--Many applications behave differently depending on their current state.
+
+For example:
+
+Requirement:
+
+User gets 3 login attempts.
+
+After 3 failures,
+account should be locked.
+
+Question:
+
+If we test only one login attempt, will we find bugs?
+
+No
+
+--Because the important behavior occurs after multiple state changes.
+
+
+Real-Life Analogy: ATM Machine
+-------------------
+
+Consider ATM usage.
+
+Initial State:
+
+	Card Not Inserted
+
+Action:
+
+	Insert Card
+
+New State:
+
+	Card Inserted
+
+Action:
+
+	Enter Correct PIN
+
+New State:
+
+	Authenticated
+
+Action:
+
+	Withdraw Cash
+
+New State:
+
+	Transaction Complete
+
+--System changes state continuously.
+
+--State Transition Testing verifies these movements.
+
+
+
+Example 1: Login Account Locking
+-------------------------------
+
+Requirement:
+
+After 3 consecutive failed logins,
+account should be locked.
+
+States:
+
+Active
+Locked
+
+
+
+Transitions:
+
+Active
+ ↓
+Wrong Password (1)
+
+Active
+ ↓
+Wrong Password (2)
+
+Active
+ ↓
+Wrong Password (3)
+
+Locked
+
+
+
+
+State Diagram:
+---------------
+
+Active
+   |
+Wrong Password
+   |
+Active
+   |
+Wrong Password
+   |
+Active
+   |
+Wrong Password
+   |
+Locked
+
+
+Test Cases:
+-----------
+
+Case 1:
+
+Wrong Password
+Wrong Password
+Correct Password
+
+Expected:
+
+	Login Success
+
+Account still active.
+
+
+Case 2:
+
+Wrong Password
+Wrong Password
+Wrong Password
+
+Expected:
+
+	Account Locked
+
+
+Case 3:
+
+Account Locked
+
+	Correct Password
+
+Expected:
+
+	Access Denied
+
+
+This is classic State Transition Testing.
+
+
+
+When To Use State Transition Testing?
+------------------------------------
+
+Use it when:
+
+System behavior depends
+on previous actions.
+
+Examples:
+
+ATM
+Login Locking
+Order Processing
+Workflow Systems
+Banking Applications
+Approval Systems
+
+
+When Not To Use It?
+
+Not useful for:
+---------------
+
+
+Simple Input Validation
+Age Validation
+Marks Validation
+Password Length Checks
+
+For those:
+
+EP
+BVA
+
+are better choices.
+
+
+
+
+API & Web Basics for Testers:
+=============================
+
+
+Frontend vs Backend:
+---------------------
+
+1. Frontend
+
+What users see.
+
+Examples:
+
+Buttons
+Forms
+Tables
+Pages
+
+
+Technologies:
+
+HTML
+CSS
+JavaScript
+React
+Angular
+
+
+2.Backend
+
+Business logic.
+
+Examples:
+
+Login Validation
+Payment Processing
+Account Management
+
+Technologies:
+
+Spring Boot
+Node.js
+Django
+Flask
+
+Example
+
+When user clicks:
+
+Transfer Money
+
+Frontend only collects data.
+
+Actual transfer happens in: Backend
+
+3. Database:
+
+Stores information permanently.
+
+Examples:
+
+Customers
+Accounts
+Orders
+Payments
+
+Examples:
+
+MySQL
+PostgreSQL
+Oracle
+MongoDB
+
+
+
+
+
+
+
+Complete flow of a modern web application:
+
+
+Complete Request Flow
+
+Suppose user logs in.
+
+Browser
+   ↓
+Login Request
+   ↓
+Spring Boot API
+   ↓
+Database
+   ↓
+Validate Credentials
+   ↓
+Response
+   ↓
+Browser
+
+
+
+Now,
+
+Suppose Login Page shows:
+
+	Login Failed
+
+Question:
+
+Where is the problem?
+
+Frontend?
+API?
+Backend?
+Database?
+
+--A tester who understands API flow can investigate much faster.
+
+
+
+Example Bug Investigation:
+---------------------------
+
+Login not working.
+
+Tester opens:
+
+Browser DevTools
+→ Network Tab
+
+Sees:
+
+POST /login
+
+returns:
+
+	500 Internal Server Error
+
+Immediately understands:
+
+Backend Issue
+
+instead of UI issue.
+
+
+
+HTTP Methods (Quick Revision)
+
+
+GET
+
+Retrieve data.
+
+GET /products
+
+Example:
+
+Show all products.
+
+
+
+POST
+
+Create new data.
+
+POST /products
+
+Example:
+
+Create Product
+
+
+
+PUT
+
+Replace entire resource.
+
+PUT /products/10
+
+
+PATCH
+
+Partial update.
+
+PATCH /products/10
+
+Update only price.
+
+
+
+DELETE
+
+Remove resource.
+
+DELETE /products/10
+
+
+Important Status Codes:
+----------------------
+
+200 OK
+Request Successful
+
+201 Created
+Resource Created
+
+400 Bad Request
+Client sent invalid data
+
+401 Unauthorized
+Authentication required
+
+403 Forbidden
+Authenticated but access denied
+
+404 Not Found
+Resource not found
+
+500 Internal Server Error
+Backend failure
+
+
+
+Network Tab For Testers:
+------------------------
+
+Open Browser:
+
+F12
+↓
+Network Tab
+
+Observe:
+
+Request URL
+Method
+Headers
+Payload
+Response
+Status Code
+Response Time
+
+
+Real Example:
+
+Suppose Login fails.
+
+Network Tab shows:
+
+POST /login
+
+	500 Internal Server Error
+
+Conclusion:
+
+	Backend Issue
+
+Suppose:
+
+POST /login
+
+	200 OK
+
+but page still shows error.
+
+Conclusion:
+
+Frontend/UI Issue
+
+
+What Is API Testing?
+---------------------
+
+--API Testing means validating backend behavior without UI.
+
+Example:
+
+Instead of clicking Login page:
+
+POST /login
+
+directly.
+
+Verify:
+
+Status Code
+Response Body
+Headers
+Token
+Response Time
+
+
+We have some framework such as Playwright which can perform:
+
+Test UI:
+
+Click Button
+Fill Form
+Verify Text
+
+
+Test APIs:
+
+GET
+POST
+PUT
+DELETE
+
+Monitor Network Calls
+
+Intercept Requests
+Mock Responses
+Validate APIs
+
+
+
+
+Mountebank:
+===========
+
+Mountebank is an open-source software tool used for service virtualization and API mocking.
+
+Think of it as a fake server that can simulate APIs, databases, or external services during testing.
+
+https://www.mbtest.dev/
+
+Suppose:
+
+Frontend Team Ready
+
+Backend Team Not Ready
+
+Should testing stop?
+
+No.
+
+Create a fake backend using Mountebank.
+
+Frontend
+   ↓
+Mountebank
+   ↓
+Mock Response
+
+Example:
+
+GET /products
+
+returns:
+
+[
+  {
+    "id": 1,
+    "name": "Laptop"
+  }
+]
+
+even though actual backend is not available.
+
+
+
+Installation:
+
+Since it is a Node.js-based tool:
+
+npm install -g mountebank
+
+Start server:
+
+mb
+
+Default port:
+
+2525
+
+How It Works
+
+You define an imposter (fake service).
+
+Example:
+
+{
+  "port": 3000,
+  "protocol": "http",
+  "stubs": [
+    {
+      "responses": [
+        {
+          "is": {
+            "statusCode": 200,
+            "body": {
+              "message": "Hello"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+
+Now:
+
+GET http://localhost:3000
+
+returns:
+
+{
+  "message": "Hello"
+}
+
+
+--We can also make use of some readymade fake API like Jsonplaceholder also.
+
+
+https://jsonplaceholder.typicode.com?utm_source=chatgpt.com
+
+
+
+
+Testing Pyramid:
+================
+
+Imagine a hospital.
+
+To check a patient's health:
+
+Would doctors immediately perform a heart surgery?
+
+No
+
+They start with:
+
+Basic Tests
+ ↓
+Blood Test
+ ↓
+X-Ray
+ ↓
+Advanced Investigation
+
+--The same idea applies to software testing.
+
+We should perform:
+
+Many Small Tests
+Few Medium Tests
+Very Few End-to-End Tests
+
+
+What Is The Testing Pyramid?
+
+The Testing Pyramid is a guideline that tells us:
+
+How many tests should exist
+at each testing level.
+
+Visualization:
+
+
+            --------
+            UI Tests 
+           (Few Tests)
+        ------------------
+           API Tests/integration Test 
+         (Some More Tests)
+    ----------------------------
+           Unit Tests
+        (Most Of The Tests)
+
+
+Why A Pyramid Shape?
+
+Because:
+
+Unit Tests
+↓
+Fast
+Cheap
+Easy
+
+UI Tests
+↓
+Slow
+Expensive
+Fragile
+
+Therefore:
+
+Many Unit Tests
+
+Some API Tests
+
+Few UI Tests
+
+
+
+
+
+
+
+
+
+
+
+
+

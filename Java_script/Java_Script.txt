@@ -4702,7 +4702,7 @@ Example:
 
 
 function Student(roll, name, marks){
-
+   
     this.roll= roll;
     this.name= name;
     this.marks= marks;
@@ -4712,8 +4712,8 @@ function Student(roll, name, marks){
         console.log("Roll is", this.roll);
         console.log("Name is", this.name);
         console.log("Marks is", this.marks);
-    }
-    
+    }   
+ 
     }
     
 
@@ -5004,6 +5004,8 @@ setTimeout(() => {
 
 
 
+
+
 Asynchronous Programming in JavaScript:
 ======================================
 
@@ -5197,7 +5199,7 @@ Call Stack
 --then fun2()
 --then fun1()
 
---> After execution all the fun1() the Call Stack  will be empty.
+--> After execution the fun1() the Call Stack  will be empty.
 
 
 Important Rule:
@@ -6056,6 +6058,8 @@ console.log("before");
 const user = getUserById(10);
 user.then(user => console.log(user));
 
+//getUserById(10).then( data => console.log(data));
+
 console.log("after");
 
 
@@ -6458,7 +6462,7 @@ Async/Await made it even cleaner:
 
 
 const user = await getUser();
-const repos = await getRepos();
+const repos = await getRepos(user.gitHubUsername);
 const commits = await getCommits();
 const files = await getFiles();
 
@@ -6739,9 +6743,6 @@ fun1();
 Output:
 
 Invalid User Id
-
-
-
 
 
 
