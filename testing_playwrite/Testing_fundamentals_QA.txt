@@ -1018,6 +1018,8 @@ Maintenance
 
 
 
+
+
 STLC (Software Testing Life Cycle):
 ==================================
 
@@ -2182,6 +2184,7 @@ Perform:
 	Regression Testing
 
 	Result: No Existing Features Broken
+
 
 
 
@@ -5177,7 +5180,7 @@ Visualization:
             UI Tests 
            (Few Tests)
         ------------------
-           API Tests/integration Test 
+     API Tests/integration Test 
          (Some More Tests)
     ----------------------------
            Unit Tests
@@ -5210,7 +5213,7 @@ Few UI Tests
 
 
 
-
+11:30 am
 
 
 

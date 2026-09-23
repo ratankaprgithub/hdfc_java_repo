@@ -101,6 +101,9 @@ Step 3: Verify Installation
 
 	tsc -v
 
+npm install -D typescript
+
+
 
 To execute the .ts file:
 
@@ -198,6 +201,8 @@ NestJS
 NextJS
 Express Applications
 Enterprise NodeJS Projects
+React
+
 
 
 

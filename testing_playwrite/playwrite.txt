@@ -1,0 +1,3960 @@
+Playwrite:
+==========
+
+
+Need of Test Automation:
+------------------------
+
+--Suppose your company has developed an Online Banking Application.
+
+Features:
+
+Login
+Account Details
+Fund Transfer
+Transaction History
+Profile Update
+
+--Before every release, the QA team must verify that everything works correctly.
+
+Imagine:
+
+500 Test Cases
+10 Releases per Month
+
+--Manual testing becomes repetitive, time-consuming, and expensive.
+
+
+Real Life Analogy
+
+Suppose you own a restaurant.
+
+Every morning before opening:
+
+You check:
+
+Lights working?
+Fan working?
+Gas working?
+Water available?
+Billing machine working?
+
+Now imagine doing this manually every day.
+
+Instead, you hire a helper.
+
+You simply say:
+
+Open restaurant and verify everything.
+
+--The helper performs all checks automatically.
+
+--Playwright is that helper. It opens the browser and performs actions automatically just like a human user.
+
+
+What is Playwright?
+--------------------
+
+--Playwright is an Open-Source Automation Testing Framework developed by Microsoft.
+
+It is primarily used for:
+
+End-to-End Testing (E2E)
+UI Testing
+API Testing
+
+--It was officially released in 2020 and is built on Node.js.
+
+
+Official Website:
+
+https://playwright.dev
+
+
+What Can Playwright Do?
+-----------------------
+
+--Playwright can automate browser actions such as:
+
+Open Browser
+Open Website
+Enter Text
+Click Buttons
+Select Dropdowns
+Upload Files
+Download Files
+Verify Results
+Test APIs
+
+
+Human vs Playwright
+-------------------
+
+Human User:
+
+Open Website
+Click Login
+Enter Email
+Enter Password
+Click Submit
+Verify Dashboard
+
+Playwright:
+
+--Performs the same steps automatically using code.
+
+
+
+End-to-End (E2E) Testing:
+-------------------------
+
+--End-to-End Testing verifies the complete workflow of an application from the user's perspective.
+
+Example
+
+E-Commerce Website:
+
+Login
+   ↓
+Search Product
+   ↓
+Add To Cart
+   ↓
+Payment
+   ↓
+Order Confirmation
+
+Testing this entire flow is called:
+
+End-to-End Testing
+
+
+Q/- Is Playwright a Library or a Framework?
+
+Answer: Both
+
+As a Library:
+
+Provides APIs such as:
+
+page.goto()
+page.click()
+page.fill()
+expect()
+
+As a Framework:
+
+Playwright Test provides:
+
+Test Runner
+Assertions
+Reporting
+Parallel Execution
+Screenshots
+Retries
+Fixtures
+Tracing
+
+
+
+
+Features of Playwrite:
+----------------------
+
+1. Cross browser support
+
+--Playwright supports all major browser engines.
+
+a. Chromium
+
+Used by:
+
+Google Chrome
+Microsoft Edge
+Opera
+Brave
+
+b. Firefox:
+
+Used by:
+
+Mozilla Firefox
+
+c. WebKit
+
+Used by:
+
+Apple Safari
+
+
+
+2. Cross language support:
+
+
+Playwright supports:
+
+JavaScript
+TypeScript
+Java
+Python
+C#
+
+--This allows teams to use the language they are most comfortable with.
+
+
+Most modern companies prefer:
+
+TypeScript + Playwright
+
+because TypeScript provides:
+
+Auto-completion
+Type Safety
+Better Maintainability
+
+
+3. Cross-Platform Support
+
+--A test script written on one platform can generally be executed on any supported platform without modification.
+
+Playwright works on:
+
+Windows
+Linux
+macOS
+
+4. API Testing
+
+--Playwright provides built-in support for REST API testing.
+
+It can be used to:
+
+Send API requests
+Validate responses
+Verify headers
+Test authentication
+Perform integration testing
+
+without requiring a separate API testing tool.
+
+Supported operations include:
+
+GET
+POST
+PUT
+PATCH
+DELETE
+
+It allows verification of:
+
+Response Body
+Response Headers
+Status Codes
+Response Time
+
+Example:
+
+const response = await request.get('/users');
+
+expect(response.status()).toBe(200);
+
+
+
+5. Automatic Waiting (Auto-Wait)
+
+--One of Playwright's most powerful features is Auto-Waiting.
+
+--Before performing an action, Playwright automatically waits for the target element to become ready.
+
+Example:
+
+await page.click("#loginBtn");
+
+--Before clicking, Playwright automatically checks:
+
+Is the element visible?
+Is it attached to the DOM?
+Is it enabled?
+Is it stable?
+
+--Only then does it perform the action.
+
+Benefit
+
+--This significantly reduces synchronization issues and flaky tests.
+
+
+Synchronization Problem:
+-------------------------
+
+--A synchronization problem occurs when:
+
+Automation Test Script Speed > Application Response Speed
+
+--The automation script executes faster than the application can respond.
+
+In Selenium, we often need to use:
+
+Explicit Wait
+Fluent Wait
+Implicit Wait
+
+--to handle such situations.
+
+--In Playwright, many of these waits are handled automatically through Auto-Waiting.
+
+
+
+Suppose code says:
+
+await page.click("#loginBtn");
+
+Internally:
+
+Playwright
+    |
+Locate Button
+    |
+Wait Until Visible
+    |
+Move Mouse
+    |
+  Click
+
+Notice:
+
+	Auto Waiting
+
+This is Playwright's superpower.
+
+You don't need lots of explicit waits.
+
+
+Real Time Analogy
+
+Imagine you order tea.
+
+Selenium behaves like:
+
+"Tea ready or not, I am drinking now."
+
+Sometimes failure.
+
+Playwright behaves like:
+
+"I will wait until tea arrives, then drink."
+
+Much more reliable.
+
+
+
+Q/- What is Flakiness?
+
+--A flaky test is a test that behaves inconsistently.
+
+
+Example:
+
+Run 1 -> PASS
+Run 2 -> FAIL
+Run 3 -> PASS
+Run 4 -> FAIL
+
+--Even though the application did not change.
+
+--Playwright's auto-waiting helps reduce flakiness.
+
+
+
+6. Handling Complex Elements:
+
+--Playwright can easily interact with modern web elements such as:
+
+	Shadow DOM
+
+--Used by many modern UI frameworks.
+
+	iFrames
+
+--Embedded webpages inside a webpage.
+
+--These elements are often difficult to automate using traditional automation tools.
+
+
+
+7. Parallel Execution
+
+--Playwright supports parallel execution of test cases.
+
+--Multiple tests can run simultaneously across:
+
+Different browsers
+Different browser contexts
+Multiple workers
+
+Benefit:
+
+Faster Execution
+Reduced Testing Time
+Better Resource Utilization
+
+
+
+
+8. Built-in Reporting
+
+Playwright provides built-in reporting support.
+
+Supported report formats include:
+
+HTML Report
+JSON Report
+JUnit Report
+
+It also integrates with third-party reporting tools.
+
+Benefits
+Easy test result analysis
+Failure investigation
+Test execution summary
+
+
+
+Built-in Tools Provided by Playwright:
+-------------------------------------
+
+--Playwright offers several powerful tools that help testers and developers during test creation and debugging.
+
+1. Playwright Inspector
+
+Playwright Inspector is an interactive debugging tool.
+
+Features:
+
+Step-by-step test execution
+Pause and resume execution
+Verify locators in real time
+View executed actions
+Debug failing tests
+
+Benefit:
+
+--Helps identify locator and synchronization issues quickly.
+
+
+2. Code Generator (Codegen)
+
+--Code Generator records user actions performed in the browser and automatically converts them into Playwright test scripts.
+
+Example
+
+If you:
+
+Open Website
+Enter Username
+Enter Password
+Click Login
+
+--Codegen automatically generates:
+
+await page.goto(...);
+await page.fill(...);
+await page.click(...);
+
+Benefit:
+
+--Useful for beginners and rapid test creation.
+
+3. Trace Viewer
+
+--Trace Viewer is a powerful debugging and failure-analysis tool.
+
+It records:
+
+Screenshots
+Network Requests
+DOM Snapshots
+Test Steps
+Console Logs
+Timing Information
+
+Benefits:
+
+Investigate failed tests easily
+Understand what happened during execution
+Analyze flaky tests
+Replay test execution visually
+
+--Think of Trace Viewer as a "black box recorder" for your test execution.
+
+
+
+
+Playwright vs Selenium (High Level)
+-----------------------------------
+
+Most companies earlier used Selenium.
+
+Playwright is becoming popular because it solves many Selenium problems.
+
+
+Selenium Flow:
+
+  Test Script
+      ↓
+  WebDriver
+      ↓
+ Browser Driver
+      ↓
+   Browser
+
+Requires:
+
+ChromeDriver
+GeckoDriver
+EdgeDriver
+
+--Separate driver management.
+--Many synchronization issues.
+
+
+Playwright Flow:
+
+ Test Script
+      ↓
+ Playwright
+      ↓
+   Browser
+
+Benefits:
+
+No Driver Management
+Faster Execution
+More Stable
+Less Flaky Tests
+
+
+Q/- Where Is Playwright Used?
+
+1. Web Testing
+
+Examples:
+
+Amazon
+Flipkart
+Swiggy
+Zomato
+
+2. Smoke Testing:
+
+--Quick verification after deployment.
+
+3. Regression Testing
+
+--Run all test cases before release.
+
+4. API Testing
+
+GET
+POST
+PUT
+PATCH
+DELETE
+
+5. End-to-End Testing
+
+--Complete business workflow automation.
+
+
+
+Real Company Example:
+--------------------
+
+Suppose HDFC Life releases:
+
+Version 1.1
+
+After deployment we must verify:
+
+Login works
+Registration works
+Payment works
+Dashboard works
+
+--Instead of hiring 20 testers for repetitive work:
+
+--Playwright executes all tests in minutes.
+
+
+Complete workflow:
+
+Login
+   ↓
+Search Product
+   ↓
+Add To Cart
+   ↓
+Payment
+   ↓
+Order Confirmation
+
+Single automated test.
+
+
+
+
+playwrite architecture:
+======================
+
+refer: playwrite_architecture.png
+
+--Playwright architecture may look complex at first, but it is actually very similar to ordering food in a restaurant.
+
+Restaurant Analogy
+
+Imagine:
+
+You (Customer) -> Write the test script.
+Waiter -> Playwright API.
+Kitchen Manager -> Browser Server.
+Kitchen Sections -> Browser Contexts.
+Chef -> Real Browser (Chrome/Firefox/WebKit).
+Food Preparation Area -> Your Application Under Test.
+
+You don't directly talk to the chef.
+
+You give instructions to the waiter.
+
+The waiter communicates with the kitchen.
+
+Similarly, your Playwright code never directly communicates with Chrome or Firefox.
+
+
+Architecture Overview:
+---------------------
+
+Test Script
+      ↓
+Playwright API
+      ↓
+  WebSocket
+      ↓
+Browser Server
+      ↓
+Browser Context
+      ↓
+Real Browser
+      ↓
+Application Under Test
+
+--Response returns through the same path
+
+
+
+
+1. Client / Language Binding:
+-------------------------------
+
+--This is where we write our automation code.
+
+Playwright supports multiple languages:
+
+JavaScript
+TypeScript
+Python
+Java
+C#
+
+Example: Typescript
+
+
+test("Login Test", async ({ page }) => {
+
+    await page.goto("https://abc.com");
+    await page.fill("#username", "admin");
+    await page.click("#login");
+
+});
+
+--Here we are writing code in TypeScript.
+
+
+Analogy:
+---------
+
+--Think of this as writing instructions on a paper:
+
+"Open the website."
+
+"Enter username."
+
+"Click Login."
+
+These instructions are not executed directly by the browser.
+
+They first go to Playwright API.
+
+
+
+
+
+2. Playwright API:
+
+
+--Playwright API acts as a bridge between our test script and the browser.
+
+Common APIs:
+
+page.goto()
+page.click()
+page.fill()
+page.locator()
+expect()
+
+Example:
+
+await page.goto("https://google.com");
+await page.fill("#search","Playwright");
+await page.click("#searchBtn");
+
+--Playwright API converts these commands into browser actions.
+
+
+Analogy:
+
+In the restaurant:
+
+You tell the waiter:
+
+Bring water.
+Bring pizza.
+
+--The waiter converts your request into actions and forwards it to the kitchen.
+
+Similarly:
+
+page.click()
+
+--is translated by Playwright API into browser actions.
+
+
+
+3. WebSocket Communication:
+
+--This is one of Playwright's biggest strengths.
+
+--Playwright communicates with browsers using a WebSocket connection.
+
+A WebSocket provides:
+
+Two-way communication
+Real-time communication
+Persistent connection
+
+Unlike HTTP:
+
+	Request -> Response -> Connection Closed
+
+Every request requires a new connection(It is a stateless protocol).
+
+WebSocket keeps the connection open:
+
+	Client <-------> Browser
+
+continuously.
+
+--Websocket is a statefull protocol.
+
+
+Analogy
+
+Imagine a phone call.
+
+HTTP:
+
+Call
+Speak
+Disconnect
+
+Call Again
+Speak
+Disconnect
+
+
+WebSocket: 
+
+Call Once
+Keep Talking
+Keep Listening
+
+--Playwright uses this second approach.
+
+--Therefore communication becomes very fast.
+
+
+
+4. Browser Server
+
+Browser Server is the central manager of Playwright architecture.
+
+Responsibilities:
+
+Launch browser
+Create browser contexts
+Manage tabs/pages
+Manage resources
+Communicate with browser
+
+--It receives commands from Playwright API and forwards them to the actual browser.
+
+
+Analogy
+
+--Think of Browser Server as a Hotel Manager.
+
+The manager:
+
+Allocates rooms
+Creates bookings
+Handles guests
+Tracks resources
+Handle Operations
+
+Similarly Browser Server manages browser resources.
+
+
+
+5. Browser Context
+
+A Browser Context is one of the most important concepts in Playwright.
+
+A Browser Context is an isolated browser session.
+
+Each context has its own:
+
+Cookies
+Local Storage
+Session Storage
+Cache
+IndexedDB
+
+
+Example
+
+Suppose we open:
+
+const context1 = await browser.newContext();
+const context2 = await browser.newContext();
+
+Now:
+
+Context1 → User A
+Context2 → User B
+
+Both are completely independent.
+
+
+Analogy
+
+Think of a browser context as an incognito window.
+
+Suppose:
+
+Incognito Window 1
+
+Login:
+
+user1@gmail.com
+
+and
+
+Incognito Window 2
+
+Login:
+
+user2@gmail.com
+
+Neither session knows about the other.
+
+This isolation is exactly what Browser Context provides.
+
+
+Why Browser Context is Powerful?
+
+Without contexts:
+
+Need 2 Chrome Browsers
+Consumes More RAM
+Slower
+
+With contexts:
+
+One Browser
+Multiple Isolated Sessions
+Less Memory
+Faster Execution
+
+--This is one of the biggest advantages of Playwright.
+
+
+Real Company Example:
+---------------------
+
+Suppose HDFC Life wants to test:
+
+Customer A Login
+Customer B Login
+
+at the same time.
+
+Instead of opening:
+
+Chrome 1
+Chrome 2
+
+Playwright opens:
+
+1 Browser
+     ↓
+2 Contexts
+
+--Faster and memory efficient.
+
+
+
+6. Real Browsers
+
+--Playwright does not use a fake browser.
+
+It automates real browsers:
+
+Chromium:
+
+Chrome
+Edge
+Opera
+Brave
+
+Firefox:
+
+Mozilla Firefox
+
+WebKit:
+
+Safari Engine
+
+
+Example:
+
+const browser = await chromium.launch();
+or
+const browser = await firefox.launch();
+or
+const browser = await webkit.launch();
+
+
+Analogy:
+
+Imagine testing a car.
+
+--Instead of testing on a toy car,
+
+you test on the actual:
+
+Honda
+BMW
+Audi
+
+--Similarly Playwright tests on real browsers.
+
+
+
+
+7. Application Under Test (AUT)
+
+AUT means:
+
+Application Under Test
+
+This is the actual website or web application we want to test.
+
+Examples:
+
+Amazon
+Flipkart
+Facebook
+Banking Portal
+HDFC Life Application
+
+Example:
+
+await page.goto("https://amazon.in");
+
+Amazon becomes the AUT.
+
+
+
+Complete Request Flow:
+---------------------
+
+Suppose we execute:
+
+	await page.click("#login");
+
+Internally:
+
+
+Test Script
+      ↓
+Playwright API
+      ↓
+ WebSocket
+      ↓
+Browser Server
+      ↓
+Browser Context
+      ↓
+Real Browser
+      ↓
+Application Under Test
+
+
+Complete Response Flow:
+-----------------------
+
+After the browser performs the action:
+--Response comes back through the same path:
+
+
+AUT
+ ↓
+Browser
+ ↓
+Browser Context
+ ↓
+Browser Server
+ ↓
+WebSocket
+ ↓
+Playwright API
+ ↓
+Test Script
+
+
+
+Browser Server vs Real Browser:
+===============================
+
+Real Browser:
+--------------
+
+--The real browser is the actual application that renders webpages.
+
+Examples:
+
+Chrome
+Edge
+Firefox
+Safari
+
+Its job is:
+
+Render HTML/CSS
+Execute JavaScript
+Handle user interactions
+Load web pages
+
+Think:
+
+Chrome.exe
+Firefox.exe
+msedge.exe
+
+--These are real browser processes running on your machine.
+
+
+Browser Server:
+--------------
+
+--The Browser Server is a controller/manager process that sits between Playwright and the browser.
+
+Its job is:
+
+Receive commands from Playwright
+Create browser contexts
+Open tabs/pages
+Manage browser resources
+Send commands to the browser
+Return responses back to Playwright
+
+It does not render webpages.
+
+
+| Browser Server    | Real Browser         |
+| ----------------- | -------------------- |
+| Manager           | Worker               |
+| Controls browser  | Renders web pages    |
+| Creates contexts  | Executes JS          |
+| Creates tabs      | Loads HTML/CSS       |
+| Manages resources | Handles user actions |
+
+
+
+Analogy: Hotel
+
+Browser Server = Hotel Manager
+
+Responsibilities:
+
+Create Room
+Allocate Room
+Track Guests
+Manage Resources
+
+
+Real Browser = Actual Room
+
+Responsibilities:
+
+Guest Stays Here
+Actual Work Happens Here
+
+--Manager manages.
+
+--Room does the real work.
+
+
+
+Example:
+
+Suppose your code is:
+
+const browser = await chromium.launch();
+const context = await browser.newContext();
+const page = await context.newPage();
+
+await page.goto("https://google.com");
+
+Internally:
+
+Browser Server Handles:
+
+Launch Chromium
+Create Context
+Create Page
+Manage Communication
+
+Real Browser Handles:
+
+Render Google Page
+Execute Google's JavaScript
+Load Images
+Handle DOM
+
+
+
+
+
+Playwright supports three browser engines:
+==========================================
+
+Chromium
+Firefox
+WebKit
+
+--These are not just browser names; they are different browser engines used by many popular browsers.
+
+
+1. Chromium
+
+Chromium is Google's open-source browser project.
+
+It is the foundation for:
+
+Google Chrome
+Microsoft Edge
+Opera
+Brave
+
+
+Chromium is the complete browser project.
+
+It contains:
+
+Chromium
+│
+├── V8 Engine
+├── Blink Rendering Engine (To parse the HTML tags)
+├── Network Stack
+├── Security Sandbox
+├── Tab Management
+├── Cookie Management
+├── Local Storage
+├── Browser UI
+└── Developer Tools
+
+--V8 is just one component inside Chromium.
+
+
+
+Features:
+
+Fast performance
+Excellent developer tools
+Widely used browser engine
+Supports latest web standards quickly
+
+
+Playwright Example:
+
+import { chromium } from '@playwright/test';
+
+const browser = await chromium.launch();
+
+Real World Usage:
+
+--Most users on the internet use Chromium-based browsers, so Chromium testing covers a large percentage of users.
+
+
+2. Firefox
+
+Firefox is developed by Mozilla.
+
+Unlike Chrome, Firefox uses its own browser engine.
+
+Main Components:
+
+Gecko Rendering Engine
+SpiderMonkey JavaScript Engine
+
+
+
+
+Playwright Example:
+
+import { firefox } from '@playwright/test';
+
+const browser = await firefox.launch();
+
+Why Test on Firefox?
+
+--Sometimes an application works perfectly in Chrome but behaves differently in Firefox because both use different rendering engines.
+
+--Testing on Firefox helps identify browser-specific issues.
+
+
+
+
+3. WebKit
+
+WebKit is the browser engine used by Apple Safari.
+
+Main Components:
+
+WebKit Rendering Engine
+JavaScriptCore (Nitro) Engine
+
+
+Features:
+
+Used by Safari
+Important for Apple ecosystem
+Required for iPhone/iPad browser compatibility testing
+
+Playwright Example:
+
+import { webkit } from '@playwright/test';
+
+const browser = await webkit.launch();
+
+
+Why Test on WebKit?
+
+If your application has Apple users:
+
+iPhone
+iPad
+Mac Safari
+
+then WebKit testing becomes very important.
+
+
+
+Think of:
+
+Car Brand = Browser
+
+Engine = Browser Engine
+
+Example:
+
+Honda City
+Honda Amaze
+Honda Elevate
+
+All may use different variants of Honda engines.
+
+Similarly:
+
+Chrome
+Edge
+Opera
+Brave
+
+are different browsers built on Chromium.
+
+
+
+Playwright Installation:
+========================
+
+Pre-Requisites:
+
+Install Node.js (LTS Version Recommended)
+
+Verify installation:
+
+node -v
+npm -v
+
+
+Install Visual Studio Code (VS Code)
+Create and open a project folder in VS Code (PlaywrightDemo)
+
+
+--Open the terminal and execute:
+
+
+npm init -y
+
+
+This creates:
+
+PlaywrightDemo
+│
+└── package.json
+
+
+Install Playwright:
+-------------------
+
+npm init playwright@latest
+
+--Follow the installation wizard and select the required options.
+
+--After successful installation, Playwright creates files and folders similar to:
+
+Project Structure After Installation:
+
+
+PlaywrightDemo
+│
+├── tests
+│     |--example.spec.ts
+|
+├── playwright.config.ts
+│
+├── package.json
+│
+├── package-lock.json
+│
+└── node_modules
+
+
+tests Folder:
+-------------
+Contains test files.
+
+Example:
+
+tests
+│
+├── login.spec.ts
+├── product.spec.ts
+
+
+
+What is .spec.ts ?
+-----------------
+
+Convention:
+
+.spec.ts
+
+means:
+
+Playwright Test File
+
+Examples:
+
+login.spec.ts
+payment.spec.ts
+user.spec.ts
+
+
+playwright.config.ts:
+----------------------
+
+--One of the most important files.
+
+Equivalent to:
+
+application.properties
+or
+application.yml
+
+in Spring Boot.
+
+
+Example:
+
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+
+  timeout: 30000,
+
+  use: {
+    headless: true
+  }
+
+});
+
+
+What Can We Configure?
+----------------------
+
+1. Timeouts
+
+	timeout: 30000
+
+30 seconds
+
+2. Browser Visibility
+
+	headless: true
+or
+	headless: false
+
+3. Screenshots
+	
+	screenshot
+
+4. Videos
+
+	video
+
+5. Reports
+
+	reporter
+
+etc..
+
+Headless vs Headed Mode
+----------------------
+
+Headless:
+
+	Browser runs invisibly.
+
+headless: true
+
+Faster execution.
+
+Default mode.
+
+
+Headed:
+
+	Browser opens visibly.
+
+headless: false
+
+Useful for learning and debugging.
+
+
+
+
+Verify Installation
+--------------------
+
+--Check the installed Playwright version:
+
+npx playwright --version
+
+
+
+Running Tests:
+--------------
+
+Run all tests:
+
+npx playwright test
+
+Execution Flow:
+
+npx playwright test
+        ↓
+  Read Config
+        ↓
+ Launch Browser
+        ↓
+  Execute Test
+        ↓
+ Generate Report
+
+
+Run Single Test File:
+----------------------
+
+npx playwright test login.spec.ts
+or
+npx playwright test tests/login.spec.ts
+
+
+
+Run Browser Visibly:
+-------------------
+
+
+npx playwright test --headed
+
+or
+
+npx playwright test tests/login.spec.ts --headed
+
+--Based on the headless/headed section.
+
+
+HTML Report:
+------------
+
+After execution:
+
+npx playwright show-report
+
+--A beautiful HTML report opens in browser.
+
+
+Real Company Workflow:
+----------------------
+
+Jenkins
+   ↓
+npx playwright test
+   ↓
+HTML Report
+   ↓
+Email Team
+
+--Entire testing becomes automated.
+
+
+
+Common Installation Errors:
+---------------------------
+
+--These are exactly the issues many students face.
+
+Error 1:
+
+Cannot find name 'process'
+
+Reason:
+
+TypeScript cannot find Node.js type definitions.
+
+
+Fix:
+
+1. Install TypeScript
+
+npm install --save-dev typescript
+OR
+npm install -D typescript
+
+
+2. Install Node Types:
+
+npm install -D @types/node
+
+
+3. Create tsconfig.json
+
+Generate:
+
+npx tsc --init
+
+
+Example:
+
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "types": ["node"]
+  }
+}
+
+
+Error 2:
+
+Type 'undefined' is not assignable...
+
+Fix:
+
+4. Change: Inside tsconfig.json file
+
+"exactOptionalPropertyTypes": true
+
+to
+
+"exactOptionalPropertyTypes": false
+
+or remove it completely
+
+
+Error 3:
+
+ECMAScript imports and exports cannot be written in a CommonJS file
+
+Reason:
+
+Mixing ES Modules with CommonJS.
+
+5. Fix:
+
+package.json
+
+Change:
+
+"type": "commonjs"
+to
+"type": "module"
+
+
+6. Restart TypeScript Server
+
+Method 1:
+
+Ctrl + Shift + P
+
+Then:
+
+TypeScript: Restart TS Server
+
+Method 2:
+
+Close VS Code
+Open Again
+
+
+Playwright Test Structure & Your First Automation Script
+=========================================================
+
+Before writing Playwright code, understand these four objects:
+
+Browser
+   ↓
+Context
+   ↓
+ Page
+   ↓
+Element
+
+
+1. Browser:
+
+--A browser is the actual browser application.
+
+Examples:
+
+Chrome
+Firefox
+Edge
+
+Think:
+
+Shopping Mall
+
+
+2. Context:
+
+--A Context is an isolated browser session.
+
+Think:
+
+  Shopping Mall
+      ↓
+   One Family
+
+--Each family has its own shopping experience.
+
+
+3. Page:
+
+--A Page is a browser tab.
+
+Think:
+
+Shopping Mall
+      ↓
+    Family
+      ↓
+    Shop
+
+One tab = One Page
+
+
+4. Element
+
+--Anything visible on a webpage.
+
+Examples:
+
+<input>
+<button>
+<a>
+<div>
+
+Think:
+
+Shop
+ ↓
+Products
+
+Visual Representation:
+----------------------
+
+Browser
+   ↓
+Context
+   ↓
+ Page
+   ↓
+Textbox
+Button
+Dropdown
+
+
+2. Our First Test
+
+Create a file:
+
+tests/login.spec.ts
+
+First Playwright Test:
+
+
+import {test, expect} from '@playwright/test';
+
+
+test("My First Test", async ({page}) =>{
+
+  await page.goto("https://playwright.dev");
+
+  await expect(page).toHaveTitle("Fast and reliable end-to-end testing for modern web apps | Playwright");
+
+
+});
+
+
+
+--Every Playwright test starts with test() function.
+
+--For each test case we write a separate test() function.
+
+
+
+Understanding async:
+--------------------
+
+Most browser actions take time:
+
+Open website
+Click button
+Enter text
+Download file
+
+--JavaScript cannot assume these actions finish instantly.
+
+Therefore Playwright uses:
+
+async
+
+--An async function can use await.
+
+
+Understanding await:
+---------------------
+
+Example:
+
+await page.goto("https://playwright.dev");
+
+Meaning:
+
+Open Website
+Wait Until Loaded
+Then Execute Next Statement
+
+It simply means:
+
+Wait Until Website Loads
+Then Continue
+
+
+**Note: Most Playwright actions return a Promise, so they are usually used with await.
+
+Examples:
+
+await page.goto(...);
+await page.click(...);
+await page.fill(...);
+await page.selectOption(...);
+await page.check(...);
+await page.waitForTimeout(...);
+
+
+
+What is page?
+--------------
+
+--Playwright automatically creates a browser tab.
+
+async ({ page })
+
+Think:
+
+	Chrome Tab
+
+--Every interaction happens through the page object.
+
+
+What is goto() ?
+----------------
+
+await page.goto('https://playwright.dev');
+
+Meaning:
+
+	Open URL
+
+--Equivalent to manually typing a URL in the browser address bar.
+
+
+Execution Flow:
+---------------
+
+When the test runs:
+
+Start Test
+    ↓
+Open Browser
+    ↓
+Open New Tab
+    ↓
+Navigate To URL
+    ↓
+ Finish
+
+
+
+First Real Automation:
+----------------------
+
+Now let's automate a real login page.
+
+
+tests/login.spec.ts
+--------------------
+
+import { test } from '@playwright/test';
+
+test('Login Test', async ({ page }) => {
+
+    await page.goto("https://the-internet.herokuapp.com/login");
+
+    await page.fill("#username","tomsmith");
+
+    await page.fill("#password","SuperSecretPassword!");
+
+    await page.click("button[type='submit']");
+
+});
+
+
+
+What Happens Internally?
+
+Step 1:
+
+	await page.goto(...)
+
+Open Login Page
+
+
+Step 2:
+
+	await page.fill('#username','tomsmith')
+
+Locate Textbox
+      ↓
+Enter Value
+
+Step 3:
+
+	await page.fill('#password','*****')
+
+Locate Password Field
+        ↓
+Enter Password
+
+Step 4:
+
+	await page.click(...)
+
+Locate Login Button
+       ↓
+Perform Click
+
+
+
+
+Assertion:
+==========
+
+
+--Automation without verification is useless.
+
+Suppose:
+
+	Login Button Clicked
+
+--How do we know login succeeded?
+
+Need Verification.
+
+--This verification is called:
+
+Assertion
+
+Example:
+
+await expect(page).toHaveTitle("Dashboard");
+
+Meaning:
+
+Expected = Dashboard
+
+Actual = Dashboard
+
+	PASS
+
+Failure Example:
+
+Expected = Dashboard
+
+Actual = Login
+
+	FAIL
+
+
+Example:
+
+
+import { expect, test } from '@playwright/test';
+
+test('Login Test', async ({ page }) => {
+
+    await page.goto("https://the-internet.herokuapp.com/login");
+
+    await page.fill("#username","tomsmith");
+
+    await page.fill("#password","SuperSecretPassword!");
+
+    await page.click("button[type='submit']");
+
+    await expect(page).toHaveURL(/secure/);
+});
+
+
+After login:
+
+Expected URL contains:
+
+secure
+
+Example:
+
+https://xyz.com/secure
+
+	PASS
+
+Otherwise:
+
+	FAIL
+
+
+
+
+Commonly Used Actions:
+======================
+
+Open URL:
+
+	await page.goto(url);
+
+Enter Text:
+
+	await page.fill(locator,value);
+Click:
+
+	await page.click(locator);
+
+Get Text:
+
+	await page.textContent(locator);
+
+
+
+Auto-Waiting Superpower:
+------------------------
+
+--Suppose login button appears after 3 seconds.
+
+Selenium:
+
+	Thread.sleep(3000);
+
+Often required.
+
+Playwright:
+
+	await page.click('#loginBtn');
+
+--Playwright automatically waits before clicking.
+
+Note: Playwright has different default timeouts for different operations.
+
+1. Test Timeout (Default: 30 seconds)
+
+A complete test can run for a maximum of 30 seconds by default.
+
+test("My Test", async ({ page }) => {
+    // Entire test must finish within 30 seconds
+});
+
+Error:
+
+Test timeout of 30000ms exceeded
+
+You can change it:
+
+test.setTimeout(60000); // 60 seconds
+
+
+2. Expect Timeout (Default: 5 seconds)
+
+Assertions such as:
+
+	await expect(page).toHaveTitle("My Title");
+
+or
+
+	await expect(locator).toBeVisible();
+
+--will auto-retry for 5 seconds by default.
+
+
+You can increase it:
+
+	await expect(page).toHaveTitle("My Title", { timeout: 10000 } );
+
+
+3. Action Timeout (Default: No Limit)
+
+Actions such as:
+
+await page.click();
+await page.fill();
+await page.goto();
+
+--have no specific timeout by default (0 = unlimited).
+
+--However, they are still constrained by the overall test timeout (30 seconds).
+
+
+
+Creating Playwright Tests – Multiple Approaches:
+================================================
+
+Approach 1: Manual Test Creation:
+--------------------------------
+
+--This is the most common and recommended approach.
+
+--In this method, the tester writes the automation code manually.
+
+
+Step 1: Create a Test File
+
+tests/
+ └── login.spec.ts
+
+Step 2: Import Playwright Modules
+
+	import { test, expect } from '@playwright/test';
+
+Step 3: Write Test
+
+test('Verify Playwright Homepage', async ({ page }) => {
+
+    await page.goto('https://playwright.dev');
+
+    await expect(page).toHaveTitle(/Playwright/);
+
+});
+
+
+Step 4: Execute Test
+
+	npx playwright test
+
+Advantages:
+
+Complete control over test code.
+Produces clean and maintainable scripts.
+Best for large projects.
+Easier to apply design patterns.
+Preferred by experienced automation engineers.
+
+
+Disadvantages:
+
+Requires Playwright knowledge.
+Takes more time initially.
+
+
+Approach 2: Using Playwright Code Generator (Codegen)
+------------------------------------------------------
+
+--Playwright provides a built-in tool called Code Generator.
+
+--It records user actions and automatically generates Playwright code.
+
+Step 1: Launch Code Generator
+
+	npx playwright codegen
+
+
+Step 2: Browser Opens
+
+Two windows appear:
+
+	Browser Window
+	Playwright Inspector
+
+Step 3: Perform Actions
+
+Example:
+
+Open website
+Enter username
+Enter password
+Click Login button
+
+
+
+Step 4: Code Gets Generated Automatically:
+
+Generated code:
+
+import { test, expect } from '@playwright/test';
+
+test('generated test', async ({ page }) => {
+
+    await page.goto('https://example.com');
+
+    await page.getByLabel('Username').fill('admin');
+
+    await page.getByLabel('Password').fill('admin123');
+
+    await page.getByRole('button', { name: 'Login' }).click();
+
+});
+
+
+
+Step 5: Copy Code
+
+Paste generated code into your project.
+
+Advantages:
+
+Very fast.
+Good for beginners.
+Useful for learning locators.
+Quickly generates initial scripts.
+
+
+Disadvantages:
+
+Generated code often needs cleanup.
+May contain unnecessary steps.
+Not ideal for framework design.
+
+Approach 3: Using Playwright VS Code Extension
+-----------------------------------------------
+
+Microsoft provides an official Playwright extension for Visual Studio Code.
+
+The extension can record actions directly inside VS Code.
+
+
+Step 1: Install Extension
+
+Open VS Code Extensions.
+
+Search:
+
+Playwright Test for VS Code
+
+Install the extension.
+
+
+Step 2: Open Playwright Project
+
+
+Step 3: Open Testing Panel
+
+Click:
+
+Testing Icon
+
+in the left sidebar.
+
+Step 4: Record New Test
+
+Choose:
+
+Record New Test
+
+Step 5: Browser Opens
+
+Perform actions on the browser.
+
+Step 6: Test Generated Automatically
+
+VS Code creates:
+
+test('Generated Test', async ({ page }) => {
+
+});
+
+and fills actions automatically.
+
+Additional Features:
+
+Run Test
+Debug Test
+Show Trace
+Show Errors
+Record Actions
+
+All from VS Code itself.
+
+Advantages:
+
+No terminal commands needed.
+Easy debugging.
+Integrated development experience.
+
+Disadvantages:
+
+Still requires code cleanup.
+Less flexible than manual scripting.
+
+
+Approach 4: Using MCP (Model Context Protocol) + AI
+====================================================
+
+--MCP allows AI tools to interact with browsers, applications, files, APIs, and development environments.
+
+--AI can observe browser actions and generate Playwright scripts automatically.
+
+Concept
+
+Traditional Workflow:
+---------------------
+
+Tester
+   ↓
+Writes Code
+   ↓
+Playwright
+
+
+AI Workflow:
+------------
+
+Tester
+   ↓
+AI Assistant
+   ↓
+Playwright Script Generated
+
+Example Workflow
+
+Step 1
+
+Provide instruction:
+
+Open HDFC Life website.
+Search for Term Insurance.
+Verify Premium Calculator is visible.
+
+Step 2
+
+AI understands the task.
+
+Step 3
+
+AI generates Playwright script.
+
+Example:
+
+test('Term Insurance Search', async ({ page }) => {
+
+    await page.goto('https://www.hdfclife.com');
+
+    await page.getByRole('link', {
+        name: 'Term Insurance'
+    }).click();
+
+    await expect(page.locator('.calculator'))
+        .toBeVisible();
+
+});
+
+Step 4
+
+Review and execute generated script.
+
+Advantages:
+
+Very fast script creation.
+Reduces repetitive coding.
+Helpful for beginners.
+
+Disadvantages:
+
+Generated code may need validation.
+Locators may require improvement.
+Human review is still necessary.
+
+
+
+
+Approach 5: Using Playwright AI Agents:
+---------------------------------------
+
+--Modern AI agents can perform browser actions, understand UI elements, and generate automation tests.
+
+Examples:
+
+Playwright MCP integrations
+OpenAI-based Agents
+Browser Automation Agents
+AI Testing Assistants
+
+
+Steps:
+
+Step 1: Provide Requirement
+
+Login to OrangeHRM
+Verify Dashboard
+Logout Successfully
+
+
+Step 2: AI Agent Launches Browser
+
+The agent interacts with the website.
+
+Step 3: Agent Observes Elements
+
+Examples:
+
+Username Field
+Password Field
+Login Button
+Dashboard
+Logout Link
+
+
+Step 4: Agent Generates Script
+
+
+test('Login Test', async ({ page }) => {
+
+    await page.goto('https://opensource-demo.orangehrmlive.com');
+
+    await page.getByPlaceholder('Username')
+        .fill('Admin');
+
+    await page.getByPlaceholder('Password')
+        .fill('admin123');
+
+    await page.getByRole('button', {
+        name: 'Login'
+    }).click();
+
+    await expect(page).toHaveURL(/dashboard/);
+
+});
+
+
+Step 5: Execute and Validate
+
+Review generated code before adding it to the framework.
+
+Advantages:
+
+Minimal manual effort.
+Faster test generation.
+Useful for rapid prototyping.
+
+
+Disadvantages:
+
+AI may generate incorrect locators.
+Human review remains essential.
+Not a replacement for automation knowledge.
+
+
+Industry Recommendation:
+------------------------
+
+--A skilled Playwright Automation Engineer should:
+
+1. Understand Manual Coding thoroughly.
+
+2. Use Codegen for quick locator generation.
+
+3. Use VS Code Extension for debugging and recording.
+
+4. Use AI tools (MCP/Agents) to improve productivity.
+
+5. Always review generated code before committing it to production.
+
+Rule of Thumb:
+
+AI can generate tests quickly.
+Automation Engineers ensure tests are reliable,
+maintainable, and production-ready.
+
+
+
+Locators - The Heart of Playwright:
+===================================
+
+What is a Locator?
+
+--A Locator is a mechanism used by Playwright to find an element on a webpage at any moment.
+
+Without locators, Playwright cannot:
+
+Click Buttons
+Enter Text
+Select Dropdowns
+Upload Files
+Verify Elements
+
+Think of a locator as:
+
+Address of an element inside a webpage.
+
+
+--A Locator identifies a specific element among hundreds of elements present on a webpage.
+
+
+Real-Life Analogy:
+------------------
+
+Suppose your wife says:
+
+--Bring my red handbag.
+
+You enter a room containing:
+
+10 Bags
+5 Suitcases
+3 Backpacks
+
+How will you find the correct bag?
+
+Possible identifiers:
+
+Color
+Brand
+Tag
+Location
+
+Similarly, a webpage may contain:
+
+100 Buttons
+50 Textboxes
+200 Links
+
+--Playwright needs a way to identify the correct element.
+
+--That identification mechanism is called a Locator.
+
+
+page.locator():
+--------------
+
+--The most commonly used API for locating elements.
+
+Syntax:
+
+const element = page.locator("selector");
+
+
+
+Example:
+
+const emailBox = page.locator("#email");
+
+Think:
+
+Page
+ ↓
+Find Element
+ ↓
+Store Reference
+
+
+Advantages:
+
+Auto Waiting
+Reusable
+Readable
+Recommended by Playwright
+
+Example:
+
+const loginBtn = page.locator("#loginBtn");
+
+await loginBtn.click();
+
+Instead of:
+
+await page.click("#loginBtn");
+
+Large projects usually prefer locators.
+
+
+
+Basic Locators:
+===============
+
+1. ID Locator
+
+--Most preferred locator whenever available.
+
+HTML:
+
+<input id="email">
+
+Locator:
+
+await page.locator("#email").fill("admin@gmail.com");
+
+or
+
+await page.fill("#email","admin@gmail.com");
+
+2. Name Locator
+
+HTML:
+
+<input name="email">
+
+Locator:
+
+await page.locator('[name="email"]')
+	   .fill("admin@gmail.com");
+
+
+Understanding CSS Attribute Selector:
+------------------------------------
+
+Syntax:
+
+[name="value"]
+
+Example:
+
+[name="email"]
+
+Meaning:
+
+Find element
+whose name attribute = email
+Example
+
+HTML:
+
+<input name="username">
+
+Playwright:
+
+await page.fill('[name="username"]','admin');
+
+
+3. Tag Name Locator
+
+HTML:
+
+<button>
+ Login
+</button>
+
+Locator:
+
+await page.locator("button").click();
+
+Problem with Tag Locators:
+--------------------------
+
+Consider:
+
+<button>Save</button>
+<button>Delete</button>
+<button>Login</button>
+<button>Submit</button>
+
+Which button will Playwright click?
+
+Usually the first matching button.
+
+Therefore:
+
+Tag Locator
+   ↓
+Not Reliable
+
+
+Playwright expects:
+
+1 Locator = 1 Element
+
+
+--Avoid using tag locators when multiple matching elements exist.
+
+
+Even though we can locate different buttons:
+
+await page.locator("button").first().click();
+
+await page.locator("button").last().click();
+
+await page.locator("button").nth(0).click();  //Save
+
+await page.locator("button").nth(1).click(); //Delete
+
+
+But not recommended...
+
+
+
+4. Placeholder Locator
+
+--Modern applications frequently use placeholders.
+
+HTML:
+
+<input placeholder="Enter Email" />
+
+Traditional Locator:
+
+await page.locator('[placeholder="Enter Email"]');
+
+Playwright Recommended:
+
+await page.getByPlaceholder("Enter Email")
+	   .fill("admin@gmail.com");
+
+
+5. Text Locator
+
+Sometimes an element has visible text.
+
+Example:
+
+<button>Login</button>
+
+Playwright provides:
+
+await page.getByText("Login").click();
+
+Real Example
+
+<a>Logout</a>
+
+Locator:
+
+await page.getByText("Logout")
+          .click();
+
+
+Why Text Locators Are Powerful?
+
+Users see:
+
+Login
+Logout
+Submit
+Register
+
+not:
+
+#btn123
+#xyz001
+
+--Text locators often make tests more readable.
+
+Example
+await page.getByText("Sign In")
+          .click();
+
+
+
+6. Label locator:
+
+Forms often use labels.
+
+
+<label>Username</label>
+<input type="text">
+
+or
+
+<label for="username">Username</label>
+<input id="username">
+
+Playwright Locator
+
+await page.getByLabel('Username').fill('Ratan');
+
+
+
+
+Mini Exercise:
+
+Given:
+
+<input id="username">
+
+<input placeholder="Password">
+
+<button>Login</button>
+
+Write locators.
+
+Answer:
+
+await page.locator("#username");
+
+await page.getByPlaceholder("Password");
+
+await page.getByText("Login");
+
+
+
+
+Advanced Locators:
+===================
+
+page.locator("#username")
+page.getByText("Login")
+page.getByPlaceholder("Email")
+
+--Life is good when developers provide:
+
+<input id="username">
+
+Unfortunately in real projects:
+
+<input class="input-field">
+<input class="input-field">
+<input class="input-field">
+
+No ID.
+No Name.
+No Placeholder.
+
+Now what?
+
+--We need advanced locators.
+
+
+
+
+1. getByRole():
+---------------
+
+What is Role?
+
+--Every accessible HTML element has a semantic role.
+
+Example:
+
+<button>Login</button>
+
+Role: button
+
+Common Roles:
+
+
+| HTML Element    | Role     |
+| --------------- | -------- |
+| button          | button   |
+| input type=text | textbox  |
+| a               | link     |
+| select          | combobox |
+| checkbox        | checkbox |
+| radio           | radio    |
+| table           | table    |
+
+
+
+Playwright recommends:
+
+getByRole()
+
+--because it mimics how assistive technologies (screen readers) interact with webpages.
+
+--It is usually more stable than CSS/XPath.
+
+
+Example:
+
+<button>Login</button>
+
+Playwright
+
+await page.getByRole('button').click();
+
+
+Better Version:
+
+await page.getByRole('button', {name: 'Login'})
+	 .click();
+
+Why?
+
+Suppose page contains:
+
+<button>Save</button>
+<button>Delete</button>
+<button>Login</button>
+
+Without name:
+
+page.getByRole('button')
+
+Multiple matches.
+
+With name:
+
+page.getByRole('button', {
+    name:'Login'
+})
+
+Unique match.
+
+
+Banking Example:
+
+<button>Submit Proposal</button>
+
+Locator:
+
+await page.getByRole('button', { name:'Submit Proposal' })
+	  .click();
+
+
+Why Industry Likes getByRole()
+-----------------------------
+
+Imagine developer changes:
+
+<button class="btn1">Login</button>
+
+to
+
+<button class="btn2">Login</button>
+
+CSS locator may break.
+
+But:
+
+getByRole('button',{name:'Login'})
+
+still works.
+
+
+
+
+
+What is CSS Selector?
+--------------------
+
+--CSS Selectors were originally created for styling webpages.
+
+Example:
+
+#username {
+   color:red;
+}
+
+
+--Playwright can use the same selectors to locate elements.
+
+Example:
+
+<input id="username">
+
+Playwright:
+
+await page.locator("#username").fill("Ratan");
+
+
+2. Class Selector
+
+<input class="textbox">
+
+Locator:
+
+await page.locator(".textbox").fill("Admin");
+
+
+<button class="login-btn">Login </button>
+
+
+await page.locator(".login-btn").click();
+
+
+Problem with Class Selectors:
+----------------------------
+
+<button class="btn">Save</button>
+
+<button class="btn">Delete</button>
+
+<button class="btn">Login</button>
+
+Locator:
+
+page.locator(".btn")
+
+--returns multiple elements.
+
+--This creates ambiguity.
+
+
+2. Multiple Classes
+
+
+<button class="btn primary login">Login</button>
+
+Locator:
+
+await page.locator(".btn.primary.login").click();
+
+Meaning:
+
+Must have:
+
+btn
+AND
+primary
+AND
+login
+
+
+Wrong Way:
+
+".btn .primary .login"
+
+--This means descendants, not multiple classes.
+
+
+3. Attribute Selector
+
+<input type="email">
+
+Locator:
+
+await page.locator('[type="email"]');
+
+
+4. Multiple Attribute Selectors
+
+HTML:
+
+<input type="text" name="username">
+
+Locator:
+
+await page.locator('[type="text"][name="username"]');
+
+Meaning:
+
+type=text
+AND
+name=username
+
+
+5. Descendant Selector
+
+
+<div>
+
+   <form>
+
+      <input id="username">
+
+   </form>
+
+</div>
+
+Locator:
+
+page.locator("div input")
+
+Meaning:
+
+Find input
+inside div
+at any level
+
+
+Visual Representation:
+
+div
+│
+├── form
+	└── input
+
+
+--Works because input is a descendant.
+
+
+6. Direct Child Selector (>)
+
+<div>
+
+   <input>
+
+</div>
+
+Locator:
+
+page.locator("div > input")
+
+Meaning:
+
+Input must be
+direct child
+of div
+
+
+Example
+
+Works:
+
+div
+│
+└── input
+
+Does NOT work:
+
+div
+│
+└── form
+      │
+      └── input
+
+--because input is not direct child.
+
+
+
+7. nth-child()
+
+<ul>
+
+	<li>Apple</li>
+
+	<li>Mango</li>
+
+	<li>Orange</li>
+
+</ul>
+
+Locator:
+
+page.locator("li:nth-child(2)")
+
+Selects: Mango
+
+
+Suppose table:
+
+<tr> 
+<td>Ratan</td>
+</tr>
+
+<tr>
+<td>Tarun</td>
+</tr>
+
+Second row:
+
+page.locator("tr:nth-child(2)")
+
+
+8. nth-of-type()
+
+<div></div>
+
+<p>First</p>
+
+<p>Second</p>
+
+<p>Third</p>
+
+
+Locator:
+
+page.locator("p:nth-of-type(2)")
+
+Result:
+
+Second
+
+
+Difference:
+
+nth-child()
+
+	Counts all children.
+
+nth-of-type()
+
+	Counts only matching type.
+
+
+Example:
+
+<div></div>
+
+<p>First</p>
+
+<span></span>
+
+<p>Second</p>
+
+
+p:nth-child(2)
+
+First
+
+p:nth-of-type(2)
+
+Second
+
+
+
+XPath:
+=======
+
+XPath stands for:
+
+XML Path Language
+
+Originally created for XML navigation.
+
+Today heavily used for HTML element identification.
+
+Absolute XPath:
+
+Example:
+
+/html/body/div/form/input
+
+Avoid it.
+
+Why?
+
+--One UI change breaks everything.
+
+
+Relative XPath:
+
+Preferred.
+
+Example:
+
+//input
+
+Meaning:
+
+--Find all input elements
+
+
+Locate by Attribute:
+-------------------
+
+<input id="username">
+
+XPath:
+
+//input[@id='username']
+
+Playwright:
+
+await page.locator('//input[@id="username"]');
+
+
+Locate by Text:
+---------------
+
+HTML:
+
+<button>Login</button>
+
+XPath:
+
+//button[text()='Login']
+
+Playwright:
+
+await page.locator('//button[text()="Login"]').click();
+
+
+
+contains():
+-----------
+
+Most commonly used XPath function.
+
+<button>Login Now</button>
+
+XPath:
+
+//button[contains(text(),'Login')]
+
+Matches:
+
+Login
+Login Now
+Login Here
+
+
+starts-with():
+--------------
+
+<input id="user123">
+
+XPath:
+
+//input[starts-with(@id,'user')]
+
+Matches:
+
+user123
+userABC
+userXYZ
+
+
+
+CSS vs XPath:
+-------------
+
+| CSS         | XPath                |
+| ----------- | -------------------- |
+| Faster      | Slightly slower      |
+| Easy        | More powerful        |
+| Recommended | Use only when needed |
+| Readable    | Complex sometimes    |
+
+
+
+
+Locator Strategy (Industry Approach)
+------------------------------------
+
+
+--Playwright documentation generally encourages a user-facing approach:
+
+
+1. getByRole()
+2. getByLabel()
+3. getByPlaceholder()
+4. getByText()
+5. ID Locator
+6. Name Locator
+7. CSS Selectors
+8. XPath
+9. Tag Locator
+
+
+Why?
+
+--Because UI structure changes frequently.
+
+--Semantic locators are usually more stable.
+
+
+
+Locator chaining:
+-----------------
+
+--Locator Chaining is a technique where we first locate a parent element and then search for child elements inside it.
+
+--Instead of searching the entire webpage, Playwright restricts the search to a specific section of the page.
+
+Why Use Locator Chaining?
+
+Improves readability.
+Reduces ambiguity when multiple matching elements exist.
+Makes tests more stable and maintainable.
+Useful for forms, tables, cards, dialogs, and complex UI components.
+
+
+Example 1: Form Section
+
+
+<form class="login-form">
+    <input placeholder="Username">
+    <input placeholder="Password">
+    <button>Login</button>
+</form>
+
+Playwright:
+
+const form = page.locator('.login-form');
+
+await form.getByPlaceholder('Username').fill('admin');
+await form.getByPlaceholder('Password').fill('admin123');
+await form.getByRole('button', { name: 'Login' }).click();
+
+
+Example 2: Direct Chaining
+
+
+await page.locator('.login-form')
+    	  .getByRole('button', { name: 'Login' })
+           .click();
+
+
+
+Example 3: Table Row
+
+<tr>
+    <td>Ratan</td>
+    <td>Trainer</td>
+    <td><button>Edit</button></td>
+</tr>
+
+Playwright:
+
+const row = page.getByRole('row').filter({ hasText: 'Ratan' });
+
+await row.getByRole('button', { name: 'Edit' }).click();
+
+
+
+What is an Assertion?
+======================
+
+
+An automation script without verification has little value.
+
+Suppose your script:
+
+await page.fill('#username','admin');
+await page.fill('#password','admin123');
+await page.click('#loginBtn');
+
+Question:
+
+Did login succeed?
+
+How do we verify it?
+
+Answer:
+
+Assertion
+
+An Assertion compares:
+
+Expected Result vs Actual Result
+
+
+Assertion Syntax:
+-------------------
+
+await expect(actual)
+       .matcher(expected);
+
+Example:
+
+await expect(page)
+       .toHaveURL(/dashboard/);
+
+
+Without Assertion:
+
+Script Executes
+       ↓
+May Contain Bug
+       ↓
+Still Appears Successful
+
+
+
+With Assertion:
+
+Script Executes
+       ↓
+Verification Happens
+       ↓
+PASS or FAIL
+
+
+Web-First Assertions:
+---------------------
+
+--Traditional automation tools often verify immediately.
+
+Example:
+
+assertEquals("Dashboard", actualTitle);
+
+Problem:
+
+	Page Still Loading
+
+Result:
+
+	Random Failure
+
+
+Playwright uses:
+
+Web-First Assertions
+
+Meaning:
+
+--Before verification, Playwright automatically waits for the expected condition.
+
+--This significantly reduces flaky tests.
+
+
+Example:
+
+await expect(page.getByText("Welcome"))
+	    .toBeVisible();
+
+Playwright will wait until:
+
+Element Appears
+OR
+Timeout Occurs
+
+before failing.
+
+
+
+1. toBeVisible()
+----------------
+
+--One of the most commonly used assertions.
+
+Example 
+
+<button>Login</button>
+
+Playwright:
+
+await expect(page.getByText("Login"))
+	.toBeVisible();
+
+Verification:
+
+Element Exists
+AND
+Visible To User
+
+
+Banking Example:
+
+After Login:
+
+	Welcome Ratan
+
+Assertion:
+
+await expect(page.getByText("Welcome Ratan"))
+			.toBeVisible();
+
+
+When to Use?
+
+Verify:
+
+Buttons
+Labels
+Error Messages
+Success Messages
+Dashboard Elements
+
+
+
+2. toHaveText()
+---------------
+
+
+Verifies exact text.
+
+<h1>Welcome Admin</h1>
+
+Playwright
+
+await expect(
+ page.locator("h1")
+).toHaveText(
+ "Welcome Admin"
+);
+
+
+Exact Match Required
+
+Expected: Welcome Admin
+
+Actual: Welcome Admin
+
+	PASS
+
+Expected: Welcome Admin
+
+Actual: Welcome User
+
+	FAIL
+
+Real Example:
+
+
+await expect(
+ page.locator(".status")
+).toHaveText(
+ "Approved"
+);
+
+
+
+
+3. toContainText()
+-------------------
+
+Checks partial text.
+
+
+<h1>Welcome Ratan Kumar</h1>
+
+Assertion:
+
+await expect(
+ page.locator("h1")
+).toContainText(
+ "Ratan"
+);
+
+PASS
+
+because: Welcome Ratan Kumar
+
+contains: Ratan
+
+Real Enterprise Example:
+
+
+Transaction Status:
+
+Transaction Completed Successfully
+
+Assertion:
+
+await expect(
+ page.locator(".msg")
+).toContainText(
+ "Completed"
+);
+
+
+4. toHaveValue()
+----------------
+
+Used with:
+
+<input>
+
+elements.
+
+Example:
+
+<input value="Ratan">
+
+Assertion:
+
+await expect(
+ page.locator("#username")
+).toHaveValue(
+ "Ratan"
+);
+
+
+
+Use Cases
+
+Verify:
+
+Username
+Customer ID
+Email
+Search Box
+
+
+Example:
+
+await page.fill(
+ '#customerId',
+ 'CUST101'
+);
+
+await expect(
+ page.locator('#customerId')
+).toHaveValue(
+ 'CUST101'
+);
+
+
+
+5. toBeChecked()
+----------------
+
+Used with:
+
+Checkbox
+Radio Button
+
+HTML
+
+<input type="checkbox" checked>
+
+Assertion:
+
+await expect(
+ page.getByRole(
+   'checkbox'
+ )
+).toBeChecked();
+
+
+Real Example:
+
+Terms & Conditions
+
+await page
+.getByRole('checkbox')
+.check();
+
+await expect(
+ page.getByRole('checkbox')
+).toBeChecked();
+
+
+
+6. toBeEnabled()
+----------------
+
+--Verifies element is enabled.
+
+<button>Submit</button>
+
+Assertion:
+
+await expect(page.getByRole('button', {name:'Submit'}))
+	.toBeEnabled();
+
+
+Real Example:
+
+After form validation:
+
+Submit Button
+
+becomes enabled.
+
+Verify:
+
+await expect(
+ submitButton
+).toBeEnabled();
+
+
+
+Opposite
+toBeDisabled()
+
+
+
+7. toHaveURL()
+---------------
+
+Verifies current URL.
+
+Example
+
+await expect(page)
+       .toHaveURL(/dashboard/);
+
+Current URL:
+
+https://hdfc.com/dashboard
+
+PASS
+
+Exact URL Example:
+
+await expect(page)
+.toHaveURL('https://hdfc.com/dashboard');
+
+
+Common Usage
+
+Verify:
+
+Login Success
+Navigation
+Redirects
+
+
+8. toHaveTitle()
+----------------
+
+--Verifies browser title.
+
+<title>Dashboard</title>
+
+Assertion:
+
+await expect(page)
+      .toHaveTitle('Dashboard');
+
+Real Example:
+
+await page.goto('https://playwright.dev');
+
+await expect(page)
+.toHaveTitle(/Playwright/);
+
+
+
+Positive Assertion:
+------------------
+
+Checking something exists.
+
+Example:
+
+await expect(
+ page.getByText('Dashboard'))
+    .toBeVisible();
+
+
+Negative Assertion:
+---------------------
+
+Checking something does not exist.
+
+Example:
+
+await expect(
+ page.getByText('Login')
+ ).not.toBeVisible();
+
+Very useful.
+
+
+Real Enterprise Example
+
+After Login:
+
+Expected:
+
+Dashboard Visible
+Login Page Hidden
+
+Assertions:
+
+await expect(
+ page.getByText('Dashboard')
+).toBeVisible();
+
+await expect(
+ page.getByText('Login')
+).not.toBeVisible();
+
+
+
+Auto Waiting:
+===============
+
+--One of Playwright's strongest features.
+
+Traditional Problem
+
+Suppose page loads after:
+
+3 Seconds
+
+Automation executes after:
+
+1 Second
+
+Result:
+
+	Element Not Found
+
+
+Selenium Approach:
+
+Thread.sleep(3000);
+
+Problems:
+
+Slow
+Hardcoded
+Unreliable
+
+
+
+Playwright Approach:
+
+await page.click('#loginBtn');
+
+--Playwright automatically waits.
+
+What Does Playwright Check?
+
+Before click:
+
+Element Exists
+Element Visible
+Element Stable
+Element Enabled
+Element Receives Events
+
+Only then click happens.
+
+These are called:
+
+Actionability Checks
+
+
+
+Actionability Checks:
+--------------------
+
+Before:
+
+await page.click(...)
+
+Playwright verifies:
+
+Visible
+
+	Can user see it?
+
+Stable
+
+	Is animation finished?
+
+Enabled
+
+	Can it be clicked?
+
+Receives Events
+
+	Not blocked by another element.
+
+Example:
+
+
+await page
+.getByRole('button',{name:'Login'})
+.click();
+
+--Playwright waits automatically.
+
+
+
+Real Enterprise Example:
+------------------------
+
+Insurance Portal Login
+
+
+await page.goto(url);
+
+await page
+.getByLabel("Username")
+.fill("admin");
+
+await page
+.getByLabel("Password")
+.fill("admin123");
+
+await page
+.getByRole('button',{
+   name:'Login'
+})
+.click();
+
+await expect(page)
+.toHaveURL(
+ /dashboard/
+);
+
+await expect(page.getByText("Welcome Admin"))
+.toBeVisible();
+
+
+
+
+
+
+
+
+
+
+
+
+
