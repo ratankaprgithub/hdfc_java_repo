@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Registration Form</title>
+</head>
+
+<body bgcolor="wheat">
+
+    <h2>User Registration Form</h2>
+
+    <form action="dashboard.html">
+
+        <!-- Username -->
+        <label for="username">Enter Username:</label>
+        <input type="text" id="username" name="username" placeholder="Enter Username" />
+
+        <br><br>
+
+        <!-- Password -->
+        <label for="password">Enter Password:</label>
+        <input type="password" id="password" name="password" placeholder="Enter Password" />
+
+        <br><br>
+
+        <!-- Gender -->
+        <label>Gender:</label>
+
+        <input type="radio" id="male" name="gender" value="M" />
+        <label for="male">Male</label>
+
+        <input type="radio" id="female" name="gender" value="F" />
+        <label for="female">Female</label>
+
+        <br><br>
+
+        <!-- Courses -->
+        <label>Courses:</label>
+
+        <input type="checkbox" id="java" name="course" value="Java" />
+        <label for="java">Java</label>
+
+        <input type="checkbox" id="spring" name="course" value="Spring Boot" />
+        <label for="spring">Spring Boot</label>
+
+        <input type="checkbox" id="react" name="course" value="React" />
+        <label for="react">React</label>
+
+        <br><br>
+
+        <!-- City Dropdown -->
+        <label for="city">Select City:</label>
+
+        <select id="city" name="city">
+
+            <option value="">--Select City--</option>
+
+            <option value="bangalore">Bangalore</option>
+
+            <option value="hyderabad">Hyderabad</option>
+
+            <option value="pune">Pune</option>
+
+            <option value="chandigarh">Chandigarh</option>
+
+        </select>
+
+        <br><br>
+
+        <!-- Date -->
+        <label for="dob">Date of Birth:</label>
+
+        <input type="date" id="dob" name="dob" />
+
+        <br><br>
+
+        <!-- Email -->
+        <label for="email">Email:</label>
+
+        <input type="email" id="email" name="email" placeholder="Enter Email" />
+
+        <br><br>
+
+        <!-- Submit Button -->
+        <input type="submit" value="Register" />
+
+    </form>
+
+</body>
+
+</html>

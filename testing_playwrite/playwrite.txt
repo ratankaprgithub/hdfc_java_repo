@@ -2457,6 +2457,43 @@ maintainable, and production-ready.
 
 
 
+
+Disabling the Auto-Generated HTML Report:
+----------------------------------------
+
+--By default, when tests fail and the HTML reporter is enabled, 
+Playwright may automatically start a local web server and open the HTML report.
+
+Example:
+
+Serving HTML report at http://localhost:9323
+Press Ctrl+C to quit.
+
+--If you do not want the report to open automatically 
+and prefer to view it only when needed, 
+
+--modify the reporter configuration in playwright.config.ts.
+
+Change:
+
+reporter: ['html'],
+
+to:
+
+reporter: [['html', { open: 'never' }]],
+
+This will:
+
+--Generate the HTML report after test execution.
+--Prevent Playwright from automatically launching the report server.
+--Allow you to open the report manually whenever required.
+
+To view the report later, run:
+
+npx playwright show-report
+
+
+
 Locators - The Heart of Playwright:
 ===================================
 
@@ -2524,6 +2561,10 @@ const element = page.locator("selector");
 
 
 
+--It will return te Locator object, Not the promise.
+--So, No await is needed because Playwright is not performing any action yet.
+
+
 Example:
 
 const emailBox = page.locator("#email");
@@ -2548,20 +2589,26 @@ Example:
 
 const loginBtn = page.locator("#loginBtn");
 
+console.log(loginBtn); 
+
 await loginBtn.click();
 
-Instead of:
+Instead of:(Older style)
 
 await page.click("#loginBtn");
 
 Large projects usually prefer locators.
+
+Locator object is reusable.
+
 
 
 
 Basic Locators:
 ===============
 
-1. ID Locator
+1. ID Locator:
+---------------
 
 --Most preferred locator whenever available.
 
@@ -2571,13 +2618,27 @@ HTML:
 
 Locator:
 
+
+Option1: recommended
+
 await page.locator("#email").fill("admin@gmail.com");
 
-or
+//const emailBox = page.locator("#email");
+//await emailBox.fill("admin@gmail.com");
+//await emailBox.clear();
+//await emailBox.fill("ratan@gmail.com");
+
+
+Option2:
 
 await page.fill("#email","admin@gmail.com");
 
-2. Name Locator
+Not reusable..
+
+
+
+2. Name Locator:
+----------------
 
 HTML:
 
@@ -2587,6 +2648,13 @@ Locator:
 
 await page.locator('[name="email"]')
 	   .fill("admin@gmail.com");
+
+//OR
+
+const email=  page.locator("[name='email']");
+await email.fill("admin@gmail.com");
+
+
 
 
 Understanding CSS Attribute Selector:
@@ -2612,10 +2680,12 @@ HTML:
 
 Playwright:
 
-await page.fill('[name="username"]','admin');
+await page.locator('[name="username"]')
+	   .fill("admin@gmail.com");
 
 
-3. Tag Name Locator
+3. Tag Name Locator:
+--------------------
 
 HTML:
 
@@ -2671,25 +2741,81 @@ But not recommended...
 
 
 
-4. Placeholder Locator
+4. Placeholder Locator:
+-----------------------
+
 
 --Modern applications frequently use placeholders.
 
-HTML:
+Example:
+
 
 <input placeholder="Enter Email" />
 
-Traditional Locator:
+Traditional Locator approach:
 
-await page.locator('[placeholder="Enter Email"]');
+Using a CSS Attribute Selector:
 
-Playwright Recommended:
+	await page.locator('[placeholder="Enter Email"]')
+			.fill("admin@gmail.com");
+
+
+Playwright Recommended Approach:
+
+--Playwright provides a dedicated locator for placeholder text:
+
 
 await page.getByPlaceholder("Enter Email")
 	   .fill("admin@gmail.com");
 
 
-5. Text Locator
+
+Why Use getByPlaceholder()?:
+--------------------------
+
+More readable and self-explanatory.
+Easier to understand than CSS attribute selectors.
+Aligns with Playwright's user-centric locator strategy.
+Improves test maintainability.
+
+
+
+Important Note:
+
+--Playwright provides several built-in user-facing locators such as:
+
+getByRole()
+getByLabel()
+getByPlaceholder()
+getByText()
+getByTestId()
+
+However, Playwright does not provide:
+
+getById()
+getByName()
+getByClass()
+getByTag()
+
+For such cases, use:
+
+page.locator(...)
+
+Example:
+
+await page.locator("#email").fill("admin@gmail.com");
+
+await page.locator('[name="username"]').fill("admin");
+
+await page.locator(".login-btn").click();
+
+await page.locator("button").click();
+
+
+
+5. Text Locator:
+----------------
+
 
 Sometimes an element has visible text.
 
@@ -2734,6 +2860,8 @@ await page.getByText("Sign In")
 
 
 6. Label locator:
+------------------
+
 
 Forms often use labels.
 
@@ -2817,28 +2945,13 @@ Example:
 
 Role: button
 
-Common Roles:
-
-
-| HTML Element    | Role     |
-| --------------- | -------- |
-| button          | button   |
-| input type=text | textbox  |
-| a               | link     |
-| select          | combobox |
-| checkbox        | checkbox |
-| radio           | radio    |
-| table           | table    |
-
-
 
 Playwright recommends:
 
 getByRole()
 
---because it mimics how assistive technologies (screen readers) interact with webpages.
+--because it is most recommended locator strategy because it locates elements the same way screen readers and accessibility tools identify them.
 
---It is usually more stable than CSS/XPath.
 
 
 Example:
@@ -2907,6 +3020,43 @@ getByRole('button',{name:'Login'})
 
 still works.
 
+What is ARIA?
+
+ARIA stands for:
+
+Accessible Rich Internet Applications
+
+--ARIA is a W3C standard that helps browsers, screen readers, and assistive technologies understand the purpose of UI elements.
+
+
+
+Most Important HTML Elements and Their Roles:
+
+--These are the roles you'll use most often in Playwright.
+
+| HTML Element              | Implicit Role |
+| ------------------------- | ------------- |
+| `<button>`                | button        |
+| `<a href="">`             | link          |
+| `<input type="text">`     | textbox       |
+| `<textarea>`              | textbox       |
+| `<input type="checkbox">` | checkbox      |
+| `<input type="radio">`    | radio         |
+| `<select>`                | combobox      |
+| `<option>`                | option        |
+| `<img>`                   | img           |
+| `<table>`                 | table         |
+| `<tr>`                    | row           |
+| `<td>`                    | cell          |
+| `<th>`                    | columnheader  |
+| `<ul>` / `<ol>`           | list          |
+| `<li>`                    | listitem      |
+| `<h1>` to `<h6>`          | heading       |
+| `<form>`                  | form          |
+| `<nav>`                   | navigation    |
+| `<main>`                  | main          |
+| `<header>`                | banner        |
+| `<footer>`                | contentinfo   |
 
 
 
@@ -3947,9 +4097,2980 @@ await expect(page.getByText("Welcome Admin"))
 .toBeVisible();
 
 
+Keyboard Actions:
+=================
+
+--Playwright provides the keyboard API to simulate user keyboard interactions
+ such as typing text, pressing keys, using shortcuts, and navigating forms..
+
+Why Use Keyboard Actions?
+
+Simulate real user behavior.
+Test keyboard shortcuts.
+Handle forms and search boxes.
+Verify accessibility and navigation.
 
 
 
+press():
+--------
+
+--Used to simulate a keyboard key press.
+
+Example:
+
+await page.keyboard.press('Enter');
+
+Equivalent to:
+
+User Presses Enter Key
+
+
+Real Example:
+
+Google Search
+
+	await page.goto('https://google.com');
+
+await page.locator('textarea')
+	   .fill('Playwright');
+
+await page.keyboard.press('Enter');
+
+
+Common Keys:
+------------
+
+| Key       | Usage                |
+| --------- | -------------------- |
+| Enter     | Submit Form          |
+| Tab       | Move Focus           |
+| Escape    | Close Dialog         |
+| Backspace | Delete Character     |
+| ArrowDown | Dropdown Navigation  |
+| ArrowUp   | Navigation           |
+| Control   | Shortcut Combination |
+| Shift     | Capital Letters      |
+
+
+
+Using Tab Key:
+-------------
+
+<input id="username">
+<input id="password">
+
+Playwright:
+
+await page.fill('#username','Ratan');
+
+await page.keyboard.press('Tab');
+
+await page.keyboard.type('admin123');
+
+
+type():
+-------
+
+--Types characters one by one.
+
+await page.keyboard.type('Hello World');
+
+Equivalent to:
+
+H
+e
+l
+l
+o
+
+typed individually.
+
+
+
+Difference: fill() vs type():
+-----------------------------
+
+fill():
+
+await page.fill('#username','Ratan');
+
+Internally:
+
+Clear Existing Value
+Insert New Value
+
+Fast.
+
+type():
+
+await page.type('#username','Ratan');
+
+Internally:
+
+R
+a
+t
+a
+n
+
+one character at a time.
+
+--Useful when UI listens to typing events.
+
+Example: Auto Suggestion Search
+
+Amazon Search:
+
+await page.type('#search','iphone');
+
+--Autocomplete may appear after each key press.
+
+
+Keyboard Shortcuts:
+-------------------
+
+
+1. Select All
+
+Windows: 
+
+await page.keyboard.press('Control+A');
+
+Mac:
+
+await page.keyboard.press('Meta+A');
+
+
+2. Copy
+
+await page.keyboard.press('Control+C');
+
+3. Paste:
+
+await page.keyboard.press('Control+V');
+
+
+4. Cut:
+
+await page.keyboard.press('Control+X');
+
+
+Real Example:
+
+<input id="username">
+<input id="username2">
+
+Test:
+
+await page.fill('#username', 'Ratan');
+
+await page.keyboard.press('Control+A');
+
+await page.keyboard.press('Control+C');
+
+await page.click('#username2');
+
+await page.keyboard.press('Control+V');
+
+await expect(page.locator('#username2'))
+	.toHaveValue('Ratan');
+
+
+
+Mouse Actions:
+===============
+
+--Playwright provides the mouse API to simulate user mouse interactions 
+such as clicking, double-clicking, right-clicking, hovering, dragging, and moving the mouse pointer.
+
+Why Use Mouse Actions?:
+
+Simulate real user interactions.
+Test menus and tooltips.
+Handle drag-and-drop operations.
+Verify hover effects.
+Test context menus (right-click).
+
+
+1. Click:
+
+--Perform Basic action
+
+--Performs a left mouse click.
+
+await page.locator("#loginBtn").click();
+
+Equivalent to:
+
+Left Mouse Click
+
+
+2. Double Click
+
+--Performs two consecutive clicks.
+
+await page.locator("#editBtn")
+          .dblclick();
+
+Use cases:
+
+Open files
+Edit records
+Select text
+
+
+
+3. Right Click (Context Menu)
+
+await page.locator("#file")
+          .click({ button: "right" });
+
+Equivalent to:
+
+Right Mouse Click
+
+Copy
+Paste
+Rename
+Delete
+
+menu appears.
+
+
+4. Hover
+
+--Moves the mouse pointer over an element.
+
+await page.locator("#products")
+          .hover();
+
+await page.getByText("Laptops") 
+.click();
+
+
+Equivalent to:
+
+Move Mouse
+Over Products Menu
+
+and then click on Laptops
+
+
+Use cases:
+
+Dropdown menus
+Tooltips
+Hidden buttons
+
+
+5. Drag and Drop
+
+--Move an element from one location to another.
+
+await page.locator("#source")
+          .dragTo(page.locator("#target"));
+
+Real Example
+
+Kanban Board
+
+To Do
+ ↓
+In Progress
+ ↓
+Done
+
+--Tasks are dragged between columns.
+
+
+
+File Upload:
+============
+
+--Many web applications allow users to upload files 
+such as images, PDFs, resumes, Excel files, and documents.
+
+--Playwright provides the setInputFiles() method to upload files.
+
+
+HTML Example:
+
+<input type="file" id="resume" />
+
+
+Upload a Single File:
+
+await page.locator("#resume")
+          .setInputFiles("resume.pdf");
+
+
+Upload Multiple Files:
+
+HTML:
+
+<input type="file" id="docs" multiple />
+
+Playwright:
+
+await page.locator("#docs")
+          .setInputFiles([
+              "resume.pdf",
+              "photo.jpg"
+          ]);
+
+
+Upload Using Absolute Path:
+
+await page.locator("#resume")
+          .setInputFiles(
+              "C:/Users/Ratan/Documents/resume.pdf"
+          );
+
+Remove Uploaded File:
+
+await page.locator("#resume")
+          .setInputFiles([]);
+
+--This clears the selected file.
+
+
+
+Verify Uploaded File Name:
+
+
+HTML:
+
+<input type="file" id="resume">
+
+Playwright:
+
+await page.locator("#resume")
+          .setInputFiles("resume.pdf");
+
+await expect(
+    page.locator("#resume")
+).toHaveValue(/resume\.pdf/);
+
+
+
+Important Note:
+
+--File upload works only with:
+
+<input type="file">
+
+--Playwright directly interacts with the file input element 
+and does not need to open the native operating system file chooser window.
+
+
+
+
+File Download:
+-------------
+
+--Many web applications allow users to download files such as PDFs, invoices, reports, Excel sheets, images, and documents.
+
+Playwright provides built-in support for handling file downloads.
+
+Why Handle Downloads?
+
+Verify that a file is downloaded successfully.
+Validate the downloaded file name.
+Verify file content.
+Test report generation functionality.
+
+
+Download Workflow:
+
+Click Download
+      ↓
+Browser Receives File
+      ↓
+Save File
+
+
+Example:
+
+HTML:
+
+<a href="report.pdf" download>Download Report</a>
+
+
+Basic File Download:
+
+const downloadPromise = page.waitForEvent('download');
+
+await page.getByText('Download Report')
+          .click();
+
+const download = await downloadPromise;
+
+
+Get Downloaded File Name:
+
+console.log(await download.suggestedFilename());
+
+
+Example Output:
+
+report.pdf
+
+
+Save Downloaded File:
+
+
+await download.saveAs('downloads/report.pdf');
+
+
+The file will be stored inside:
+
+downloads/
+    report.pdf
+
+
+Complete Example:
+
+const downloadPromise = page.waitForEvent('download');
+
+await page.locator('#downloadBtn')
+          .click();
+
+const download = await downloadPromise;
+
+await download.saveAs('downloads/report.pdf');
+
+
+Verify Downloaded File Name:
+
+expect(await download.suggestedFilename()).
+toBe('report.pdf');
+
+
+Download Workflow:
+------------------
+
+Wait For Download Event
+          ↓
+Click Download Button
+          ↓
+Capture Download Object
+          ↓
+     Save File
+          ↓
+  Verify File Name
+
+
+
+Screenshots:
+=============
+
+--Screenshots are used to capture the current state of a webpage during test execution.
+
+They are useful for:
+
+Debugging failed tests
+Evidence
+Capturing application state
+Visual verification
+Reporting and documentation
+
+
+await page.screenshot({path:'page.png'});
+
+
+Example: Capture Full Page Screenshot
+
+await page.goto(
+ 'https://playwright.dev'
+);
+
+await page.screenshot({
+ path:'home.png'
+});
+
+
+
+Example: Capture Full Page Including Scrollable Area
+
+await page.screenshot({
+    path: 'fullpage.png',
+    fullPage: true
+});
+
+--This captures the entire webpage, including content below the visible screen.
+
+
+Example: Capture Specific Element Screenshot
+
+HTML:
+
+<div id="profile">
+    User Profile
+</div>
+
+
+Playwright:
+
+await page.locator("#profile")
+          .screenshot({
+              path: 'profile.png'
+          });
+
+--Only the selected element is captured.
+
+
+Screenshot Workflow:
+--------------------
+
+Open Page
+    ↓
+Perform Actions
+    ↓
+Capture Screenshot
+    ↓
+Save Image
+
+
+Example:
+
+Capture Screenshot After Login:
+
+await page.fill("#username", "admin");
+
+await page.fill("#password", "admin123");
+
+await page.click("#loginBtn");
+
+await page.screenshot({
+    path: 'dashboard.png'
+});
+
+
+
+Capture Screenshot on Failure:
+-----------------------------
+
+
+Playwright Configuration file:
+
+export default defineConfig({
+
+    use: {
+
+        screenshot: 'only-on-failure'
+
+    }
+
+});
+
+
+Options:
+--------
+
+'off' -> No screenshots
+
+'on' -> Screenshot for every test
+
+'only-on-failure' -> Screenshot only when test fails
+
+
+It will create a screenshot file inside the playwright-report/data folder
+
+
+
+
+Test Runner:
+============
+
+
+--A Test Runner is a software component that:
+
+Discovers Tests
+      ↓
+Executes Tests
+      ↓
+Generates Results
+      ↓
+Creates Reports
+
+--Without a Test Runner:
+
+You write tests
+but cannot manage them efficiently.
+
+
+Responsibilities of Test Runner:
+--------------------------------
+
+--Playwright Test Runner handles:
+
+
+Test Discovery
+Test Execution
+Parallel Execution
+Retries
+Reporting
+Tag Filtering
+Hooks
+Fixtures
+
+
+Example:
+
+
+import { test } from '@playwright/test';
+
+test('Login Test', async ({ page }) => {
+
+});
+
+--The moment we write:
+
+test()
+
+--Playwright Test Runner detects it automatically.
+
+
+Test Discovery:
+---------------
+
+--Suppose project structure:
+
+tests
+ ├── login.spec.ts
+ ├── dashboard.spec.ts
+ └── payment.spec.ts
+
+
+Command:
+
+	npx playwright test
+
+--Runner automatically discovers:
+
+login.spec.ts
+dashboard.spec.ts
+payment.spec.ts
+
+--and executes them.
+
+
+
+How Does Playwright Identify Tests?
+
+By default:
+
+*.spec.ts
+*.test.ts
+
+
+Examples:
+
+login.spec.ts
+payment.spec.ts
+user.test.ts
+
+
+
+1. test() function:
+-------------------
+
+--Basic unit of execution.
+
+Syntax:
+
+test('Test Name', async ({ page }) => {
+
+});
+
+
+Naming Best Practice:
+
+
+Bad:
+
+test('Test1', async()=>{})
+
+Good:
+
+test('User should login successfully', async ()=>{} );
+
+--Readable reports.
+
+
+2. test.only():
+----------------
+
+--Run only one test.
+
+Example
+
+test.only('Login Test', async ({ page }) => {
+
+});
+
+
+If File Contains:
+
+
+test('A', ()=>{});
+
+test.only('B', ()=>{});
+
+test('C', ()=>{});
+
+
+Execution:
+
+Only B Runs
+
+
+
+Why Use?
+
+--During debugging.
+
+Example:
+
+100 Tests
+
+Need to debug: Login Test
+
+Run only: test.only()
+
+
+
+
+Important Warning:
+
+Never commit:
+
+	test.only()
+
+to production repository.
+
+Why?
+
+--Entire test suite gets skipped.
+
+
+
+3. test.skip()
+---------------
+
+--Skip a test.
+
+Example
+
+test.skip(
+ 'Payment Test',
+  async ({ page }) => {
+
+ });
+
+Execution:
+
+Skipped:
+
+Use Cases
+
+Feature not ready.
+Known defect exists.
+Temporary exclusion.
+
+
+
+
+Running All Files:
+
+	npx playwright test
+
+Run specific file:
+
+	npx playwright test login.spec.ts
+
+Run specific folder:
+
+	npx playwright test tests/auth
+
+Run specific test name:
+
+	npx playwright test -g "Login"
+
+
+grep (-g):
+
+
+
+Very useful.
+
+Example:
+
+test(
+ 'Login Success',
+ ()=>{}
+);
+
+test(
+ 'Login Failure',
+ ()=>{}
+);
+
+Command:
+
+npx playwright test -g "Login"
+
+Runs:
+
+Both Tests
+
+
+Headed Mode
+============
+
+Default:
+
+	Headless
+
+--Invisible browser.
+
+Visible browser:
+
+npx playwright test --headed
+
+
+
+Debug Mode:
+===========
+
+--Very important.
+
+npx playwright test --debug
+
+Opens:
+
+Playwright Inspector
+
+Used for debugging.
+
+
+
+UI Mode:
+=========
+
+--One of Playwright's best features.
+
+Command:
+
+	npx playwright test --ui
+
+Launches:
+
+	Interactive Test Runner
+
+Benefits:
+
+Run Tests
+View Results
+Inspect Failures
+Replay Execution
+
+
+
+Parallel Execution:
+====================
+
+--One of Playwright's biggest strengths.
+
+Without Parallelism
+
+Test 1 → 10 sec
+Test 2 → 10 sec
+Test 3 → 10 sec
+
+Total = 30 sec
+
+--With Parallelism
+
+Test 1
+Test 2
+Test 3
+
+Run simultaneously.
+
+Total:
+
+~10 sec
+
+
+Workers:
+========
+
+Worker = Parallel Execution Unit
+
+Example
+
+	workers: 4
+
+Meaning:
+
+4 Tests
+Can Execute Simultaneously
+
+Inside Config file:
+
+export default defineConfig({
+
+  workers: 4
+
+});
+
+
+Real Example:
+-------------
+
+2000 Tests
+
+1 Worker
+   ↓
+4 Hours
+
+8 Workers
+   ↓
+40 Minutes
+
+
+Fully Parallel:
+---------------
+
+Inside Config file:
+
+	fullyParallel: true
+
+--Allows maximum parallel execution.
+
+
+Retries:
+=========
+
+--Automation can fail because:
+
+Network Issue
+Slow Response
+Temporary Failure
+
+
+Retries help.
+
+Config
+
+	retries: 2
+
+Meaning:
+
+Fail
+ ↓
+Retry 1
+ ↓
+Retry 2
+
+
+Example:
+
+export default defineConfig({
+
+   retries: 2
+
+});
+
+
+Reporter:
+===========
+
+--Reporter generates results.
+
+Built-in Reporters
+
+list
+dot
+html
+json
+junit
+
+HTML Reporter:
+
+Config
+
+	reporter: 'html'
+
+Run:
+
+	npx playwright test
+
+Open Report:
+
+	npx playwright show-report
+
+HTML Report Contains
+
+Passed Tests
+Failed Tests
+Screenshots
+Videos
+Execution Time
+
+
+
+List Reporter:
+---------------
+
+reporter: 'list'
+
+Output:
+
+Login Test
+Dashboard Test
+Payment Test
+
+
+JUnit Reporter:
+---------------
+
+Used by:
+
+Jenkins
+Azure DevOps
+GitHub Actions
+
+Example:
+
+reporter: 'junit'
+
+Produces XML report.
+
+
+
+
+
+Hooks in Playwright:
+====================
+
+--Hooks are special methods that execute:
+
+Before Tests
+OR
+After Tests
+
+--without writing the same code repeatedly.
+
+
+Real Life Analogy:
+-------------------
+
+--Suppose every day you go to the gym.
+
+Before workout:
+
+Wear Shoes
+Drink Water
+Warm Up
+
+After workout:
+
+Stretch
+Drink Water
+Go Home
+
+You do this every day.
+
+--Instead of writing these steps inside every workout exercise:
+
+Bench Press
+Squats
+Deadlift
+
+--you perform them automatically.
+
+--Hooks work exactly the same way.
+
+
+Problem Without Hooks:
+-----------------------
+
+Suppose we have 3 tests.
+
+
+test('Login Test', async ({ page }) => {
+
+   await page.goto(url);
+
+   await login();
+
+});
+
+test('Profile Test', async ({ page }) => {
+
+   await page.goto(url);
+
+   await login();
+
+});
+
+test('Payment Test', async ({ page }) => {
+
+   await page.goto(url);
+
+   await login();
+
+});
+
+
+
+Problem:
+
+Duplicate Code
+
+Every test performs login.
+
+
+Solution:
+-----------
+
+Move common code into:
+
+	beforeEach()
+
+
+
+
+What Types of Hooks Exist?
+-------------------------
+
+| Hook       | Runs                  |
+| ---------- | --------------------- |
+| beforeEach | Before every test     |
+| afterEach  | After every test      |
+| beforeAll  | Once before all tests |
+| afterAll   | Once after all tests  |
+
+
+1. beforeEach()
+----------------
+
+--Most commonly used hook.
+
+Runs before every test.
+
+Example:
+
+import { test } from '@playwright/test';
+
+test.beforeEach(async ({ page }) => {
+
+   await page.goto('https://example.com');
+
+});
+
+
+test('Test A', async ({ page }) => {
+
+});
+
+test('Test B', async ({ page }) => {
+
+});
+
+
+
+
+Execution Flow:
+
+beforeEach
+     ↓
+Test A
+
+beforeEach
+     ↓
+Test B
+
+
+
+Visual Representation:
+
+
+beforeEach
+     ↓
+Login Test
+
+beforeEach
+     ↓
+Profile Test
+
+beforeEach
+     ↓
+Payment Test
+
+
+
+Real Login Example:
+--------------------
+
+test.beforeEach(async ({ page }) => {
+
+   await page.goto(url);
+
+   await page.fill(
+      '#username',
+      'admin'
+   );
+
+   await page.fill(
+      '#password',
+      'admin123'
+   );
+
+   await page.click(
+      '#loginBtn'
+   );
+
+});
+
+Now every test starts from:
+
+Logged In State
+Benefits
+Less Code
+
+--Reusable
+--Easy Maintenance
+
+
+
+2. afterEach():
+---------------
+
+--Runs after every test.
+
+Example:
+
+test.afterEach(async ({ page }) => {
+
+   console.log('Test Completed');
+
+});
+
+
+
+Execution Flow:
+
+Test A
+    ↓
+afterEach
+
+Test B
+    ↓
+afterEach
+
+
+Real Usage:
+
+Common tasks:
+
+Logout
+Cleanup Data
+Delete Test Records
+Take Screenshot
+
+
+Example:
+
+test.afterEach(async ({ page }) => {
+
+   await page.screenshot({
+
+      path:'result.png'
+
+   });
+
+});
+
+
+
+3. beforeAll()
+---------------
+
+--Runs only once.
+
+Example:
+
+test.beforeAll(async () => {
+
+   console.log('Starting Suite');
+
+});
+
+
+
+Execution Flow:
+
+beforeAll
+    ↓
+Test A
+    ↓
+Test B
+    ↓
+Test C
+
+
+--Only one time.
+
+
+
+Real Usage:
+----------
+
+Expensive operations:
+
+Create Test Data
+Generate Token
+Database Setup
+Environment Setup
+
+
+Example:
+
+test.beforeAll(async () => {
+
+   await createCustomer();
+
+});
+
+Customer created once.
+
+--All tests use it.
+
+
+4. afterAll()
+--------------
+
+--Runs once after all tests.
+
+Example:
+
+test.afterAll(async () => {
+
+   console.log('Suite Finished');
+
+});
+
+
+Execution Flow:
+
+
+beforeAll
+
+Test A
+
+Test B
+
+Test C
+
+afterAll
+
+
+
+
+Real Usage:
+
+Cleanup.
+
+Examples:
+
+Delete Customer
+Delete Policy
+Close DB Connection
+Remove Temp Files
+
+
+Example:
+
+test.afterAll(async () => {
+
+   await deleteCustomer();
+
+});
+
+
+
+Hook Execution Order:
+--------------------
+
+test.beforeAll(() => {
+
+   console.log('beforeAll');
+
+});
+
+test.beforeEach(() => {
+
+   console.log('beforeEach');
+
+});
+
+test.afterEach(() => {
+
+   console.log('afterEach');
+
+});
+
+test.afterAll(() => {
+
+   console.log('afterAll');
+
+});
+
+test('A', () => {
+
+   console.log('A');
+
+});
+
+test('B', () => {
+
+   console.log('B');
+
+});
+
+
+Output:
+
+beforeAll
+
+beforeEach
+A
+afterEach
+
+beforeEach
+B
+afterEach
+
+afterAll
+
+
+
+Visual Representation:
+----------------------
+
+beforeAll
+
+ ├─ beforeEach
+ │      ↓
+ │    Test A
+ │      ↓
+ │   afterEach
+ │
+ ├─ beforeEach
+ │      ↓
+ │    Test B
+ │      ↓
+ │   afterEach
+ │
+afterAll
+
+
+
+
+Fixtures in Playwright:
+=======================
+
+--Fixtures are reusable objects that Playwright automatically creates and provides to tests.
+
+Think of them as:
+
+	Ready-To-Use Resources
+
+--that Playwright injects into your test.
+
+
+Example:
+
+
+test('Login Test', async ({ page }) => {
+
+});
+
+
+--Playwright automatically provides:
+
+page
+
+--You don't create it manually.
+
+Question:
+
+Who created:
+
+	page
+
+Answer:
+
+	Playwright Fixture System
+
+
+Without Fixtures:
+
+const browser = await chromium.launch();
+
+const context = await browser.newContext();
+
+const page = await context.newPage();
+
+Every test would need:
+
+Browser Creation
+Context Creation
+Page Creation
+Cleanup
+
+--Repeated again and again.
+
+
+With Fixtures:
+
+test('Login', async ({ page }) => {
+
+});
+
+--Everything is already available.
+
+Note: Playwrite framework uses Dependency mechanism to inject the page object inside our test related callback function.
+
+
+--Playwright provides several built-in fixtures.
+
+Most commonly used:
+
+
+| Fixture     | Purpose          |
+| ----------- | ---------------- |
+| page        | Browser Tab      |
+| browser     | Browser Instance |
+| context     | Browser Context  |
+| request     | API Testing      |
+| browserName | Current Browser  |
+
+
+
+
+
+1. Page Fixture
+
+--Most frequently used fixture.
+
+--It Represents:
+
+	One Browser Tab
+
+
+Example:
+
+
+test(
+ 'Google',
+
+ async ({ page }) => {
+
+   await page.goto(
+     'https://google.com'
+   );
+
+ });
+
+Visual Representation
+
+Browser
+ └─ Tab
+      ↓
+     Page
+
+--Operations Performed Using Page:
+
+Navigation
+Click
+Fill
+Assertions
+Screenshots
+
+
+
+
+2. Browser Fixture
+
+--Represents the actual browser.
+
+Example
+
+test(
+ 'Browser Example',
+
+ async ({ browser }) => {
+
+ });
+
+
+Visual Representation
+
+Browser
+ ├─ Context 1
+ ├─ Context 2
+ └─ Context 3
+
+
+Real Usage:
+
+--Create multiple contexts.
+
+Example:
+
+test(
+ 'Multi User Test',
+
+ async ({ browser }) => {
+
+   const context1 = await browser.newContext();
+
+   const context2 = await browser.newContext();
+
+ });
+
+
+Real Example:
+
+--Customer and Admin logged in simultaneously.
+
+Admin User
+Customer User
+
+--Different contexts.
+--Same browser.
+
+
+
+
+3. Context Fixture
+
+--A Browser Context is an isolated browser session.
+
+Real Life Analogy
+
+Chrome Browser:
+
+Normal Window
+Incognito Window
+
+Each has separate:
+
+Cookies
+Cache
+Local Storage
+
+--Playwright Context works similarly.
+
+
+Visual Representation:
+
+Browser
+ ├─ Context A
+ │     └─ Page
+ │
+ └─ Context B
+       └─ Page
+
+Example:
+
+test(
+ 'Context Example',
+
+ async ({ context }) => {
+
+ });
+
+
+--Allows independent users.
+
+Example:
+
+User A Logged In
+User B Logged Out
+
+without interference.
+
+Create New Page Using Context:
+
+	const page2 = await context.newPage();
+
+Example:
+
+test(
+ 'Multiple Tabs',
+
+ async ({ context }) => {
+
+   const page1 = await context.newPage();
+
+   const page2 = await context.newPage();
+
+ });
+
+
+
+Browser vs Context vs Page
+-----------------------------
+
+Visual Representation
+
+Browser
+ ├─ Context
+ │      ├─ Page
+ │      ├─ Page
+ │
+ └─ Context
+        ├─ Page
+
+
+Comparison:
+----------
+
+| Object  | Represents        |
+| ------- | ----------------- |
+| Browser | Chrome / Firefox  |
+| Context | Incognito Session |
+| Page    | Browser Tab       |
+
+
+Fixture Lifecycle:
+-------------------
+
+Playwright automatically:
+
+Create Fixture
+       ↓
+Use Fixture
+       ↓
+Destroy Fixture
+
+Example
+
+test(
+ 'Login',
+
+ async ({ page }) => {
+
+ });
+
+
+Flow:
+
+Create Page
+Run Test
+Close Page
+
+--Automatic.
+
+Which prevents:
+
+No resource leakage.
+No manual cleanup.
+
+
+Page Object Model (POM):
+========================
+
+--Page Object Model (POM) is a design pattern used in automation frameworks.
+
+The basic idea is:
+
+One Page
+      ↓
+One Class
+
+
+Example::
+
+Login Page
+      ↓
+LoginPage.ts
+
+Dashboard Page
+      ↓
+DashboardPage.ts
+
+Customer Page
+      ↓
+CustomerPage.ts
+
+
+
+Problem Without POM:
+---------------------
+
+Consider a simple login test.
+
+test('Login Test', async ({ page }) => {
+
+    await page.goto(url);
+
+    await page.fill(
+      '#username',
+      'admin'
+    );
+
+    await page.fill(
+      '#password',
+      'admin123'
+    );
+
+    await page.click(
+      '#loginBtn'
+    );
+
+});
+
+Looks fine.
+
+Now imagine:
+
+100 Tests
+
+Every test contains:
+
+page.fill('#username')
+page.fill('#password')
+page.click('#loginBtn')
+
+--Repeated everywhere.
+
+
+What Happens If Locator Changes?
+
+Developer changes:
+
+<input id="username">
+to
+<input id="userName">
+
+Now:
+
+100 Tests Fail
+
+You must update:
+
+100 Locations
+
+--Huge maintenance problem.
+
+
+POM Solution:
+
+Move locators into one place.
+
+	LoginPage.ts
+
+--Now locator changes only once.
+
+
+POM Architecture:
+-----------------
+
+Without POM:
+
+Tests
+   ↓
+Directly Access Locators
+
+With POM:
+
+ Tests
+   ↓
+Page Objects
+   ↓
+Web Elements
+
+
+
+Visual Representation:
+---------------------
+
+LoginTest
+     ↓
+LoginPage
+     ↓
+Username Locator
+Password Locator
+Login Button
+
+
+
+
+Typical Playwright Project Structure:
+-------------------------------------
+
+project
+ |
+ ├─ tests
+ │    └─ login.spec.ts
+ │
+ ├─ pages
+ │    ├─ LoginPage.ts
+ │    ├─ DashboardPage.ts
+ │    └─ CustomerPage.ts
+ │
+ ├─ fixtures
+ ├─ utils
+ └─ test-data
+
+
+
+Creating First Page Object:
+---------------------------
+
+Create:
+
+pages
+  └─ LoginPage.ts
+
+
+Basic Structure:
+
+
+import { Page } from '@playwright/test';
+
+export class LoginPage {
+
+}
+
+
+
+--every page object needs:
+
+Playwright Page
+
+--to interact with browser.
+
+
+Constructor Injection:
+----------------------
+
+import { Page } from '@playwright/test';
+
+export class LoginPage {
+
+   constructor(private page: Page) {
+
+   }
+
+}
+
+
+--Page object receives dependency.
+
+
+Adding Locators:
+----------------
+
+Example:
+
+import { Page } from '@playwright/test';
+
+export class LoginPage {
+
+   constructor(private page: Page) 
+   {
+   }
+
+   username = this.page.locator('#username');
+
+   password = this.page.locator('#password');
+
+  // loginButton = this.page.locator('#loginBtn');
+
+   loginButton = this.page.getByRole('button', { name:'Login' } );
+
+
+}
+
+
+
+Creating Actions:
+-----------------
+
+--A page object should expose:
+
+	Business Actions
+
+not low-level operations.
+
+Bad:
+
+page.fill()
+page.click()
+page.locator()
+
+--inside every test.
+
+Good:
+
+	login()
+
+method.
+
+Example
+
+async login(username:string, password:string){
+
+   await this.username.fill(username);
+
+   await this.password.fill(password);
+
+   await this.loginButton.click();
+
+}
+
+
+
+
+Complete LoginPage:
+--------------------
+
+import { Page } from '@playwright/test';
+
+export class LoginPage {
+
+   constructor(private page: Page) {
+   }
+
+   username = this.page.locator('#username');
+
+   password = this.page.locator('#password');
+
+   loginButton = this.page.locator('#loginBtn');
+
+   async login(user:string,pass:string){
+
+      await this.username.fill(user);
+
+      await this.password.fill(pass);
+
+      await this.loginButton.click();
+
+      expect(...)
+
+   }
+
+}
+
+
+
+
+
+Using LoginPage In Test:
+-------------------------
+
+
+import { test } from '@playwright/test';
+
+import { LoginPage } from '../pages/LoginPage';
+
+test('Login Test',
+
+ 	async ({ page }) => {
+
+   	const loginPage = new LoginPage(page);
+
+   	await page.goto(url);
+
+   	await loginPage.login('admin','admin123');
+
+	
+
+ });
+
+
+
+
+Benefits:
+
+Test becomes:
+
+Readable
+Maintainable
+Business Focused
+
+
+
+Creating Dashboard Page:
+------------------------
+
+
+Create:
+
+DashboardPage.ts
+
+Example
+
+import { Page, expect } from '@playwright/test';
+
+export class DashboardPage {
+
+   constructor(private page: Page) 
+   {
+   }
+
+   welcomeText = this.page.locator('.welcome');
+
+   async verifyDashboard(){
+
+      await expect(this.welcomeText)
+		.toBeVisible();
+
+   }
+
+}
+
+
+Using Multiple Page Objects:
+----------------------------
+
+
+test('Login Test',
+
+ async ({ page }) => {
+
+   const loginPage = new LoginPage(page);
+
+   const dashboardPage = new DashboardPage(page);
+
+   await loginPage.login('admin','admin123');
+
+   await dashboardPage
+      		.verifyDashboard();
+
+ });
+
+
+
+
+Real Banking Example:
+--------------------
+
+Consider HDFC Portal.
+
+Modules:
+
+Login
+Customer
+Policy
+Claims
+Payments
+
+Page Classes:
+
+LoginPage.ts
+CustomerPage.ts
+PolicyPage.ts
+ClaimsPage.ts
+PaymentPage.ts
+
+--Each page contains:
+
+Locators
+Actions
+Assertions
+
+--related only to that page.
+
+
+
+Data Driven Testing (DDT):
+==========================
+
+Data Driven Testing means:
+
+Same Test Logic
+        +
+Different Test Data
+
+
+
+Instead of writing:
+
+Login Test For Admin
+Login Test For Manager
+Login Test For Customer
+
+separately,
+
+we write:
+
+	One Login Test
+
+--and supply multiple users.
+
+
+Problem Without Data Driven Testing:
+-----------------------------------
+
+Example:
+
+test('Admin Login', async ({ page }) => {
+
+   await login('admin','admin123');
+
+});
+
+Another Test:
+
+
+test('Manager Login', async ({ page }) => {
+
+   await login('manager','manager123');
+
+});
+
+Another Test:
+
+
+test('Customer Login', async ({ page }) => {
+
+   await login('customer','customer123');
+
+});
+
+Problem:
+
+Duplicate Test Logic
+Only data changes.
+
+
+
+Solution:
+
+Move data outside.
+Keep logic inside test.
+
+Benefits of Data Driven Testing:
+
+Less Code
+Easy Maintenance
+Reusable Tests
+Scalable Framework
+Better Coverage
+
+
+JSON For Login Testing:
+------------------------
+
+Create:
+
+test-data
+   └─ users.json
+
+
+[
+  {
+    "username":"admin",
+    "password":"admin123"
+  },
+  {
+    "username":"manager",
+    "password":"manager123"
+  },
+  {
+    "username":"customer",
+    "password":"customer123"
+  }
+]
+
+
+
+Each object represents:
+
+One User
+
+
+Importing JSON:
+---------------
+
+import users from '../test-data/users.json';
+
+console.log(users);
+
+contains:
+
+All User Records
+
+
+Accessing Data:
+---------------
+
+Example
+
+console.log(users[0].username);
+
+Output: admin
+
+
+console.log(users[1].username);
+
+Output: manager
+
+
+
+Complete Example:
+-----------------
+
+
+import { test } from '@playwright/test';
+
+import users from '../test-data/users.json';
+
+for(const user of users){
+
+   test( `Login - ${user.username}`,
+
+    async ({ page }) => {
+
+      await page.goto(url);
+
+      await page.fill('#username',user.username);
+
+      await page.fill('#password',user.password);
+
+      await page.click('#loginBtn');
+
+   });
+
+}
+
+
+
+Combining DDT with POM:
+------------------------
+
+--Real frameworks rarely use raw locators.
+
+
+Example
+
+const loginPage = new LoginPage(page);
+
+
+Test:
+
+
+for(const user of users){
+
+ test(`Login ${user.username}`,
+
+  async ({ page }) => {
+
+    const loginPage = new LoginPage(page);
+
+    await loginPage.login(user.username,user.password);
+
+ });
+
+}
+
+
+
+
+
+Parameterized Tests:
+===================
+
+--In practice, most Data Driven Tests are implemented using parameterized tests. The primary difference is that parameterized tests often store data inside the test file, whereas Data Driven Testing typically retrieves data from external sources.
+
+
+
+Parameterized Testing means:
+
+One Test Logic
+       +
+Multiple Parameters
+       =
+Multiple Test Executions
+
+
+Instead of writing:
+
+test('Add Customer A', ()=>{});
+test('Add Customer B', ()=>{});
+test('Add Customer C', ()=>{});
+
+we can write:
+
+One Test
++
+Multiple Parameters
+
+
+
+Without parameterization::
+--------------------------
+
+test('Login Admin', ()=>{});
+test('Login Manager', ()=>{});
+test('Login Customer', ()=>{});
+
+Problem:
+
+	Duplicate Logic
+
+Solution:
+
+forEach()
+or
+for...of
+
+
+Data Driven Testing vs Parameterized Testing:
+---------------------------------------------
+
+Data Driven Testing (DDT):
+
+Data comes from:
+
+JSON
+Excel
+CSV
+Database
+API
+
+Example
+
+	import users from '../test-data/users.json';
+
+--Data is external.
+
+
+Parameterized Testing:
+
+--Data is usually defined inside test code.
+
+Example:
+
+const users = ['admin','manager','customer'];
+
+
+Comparison:
+----------
+
+| Data Driven Testing   | Parameterized Testing  |
+| --------------------- | ---------------------- |
+| External Data Source  | Data Inside Test       |
+| JSON/CSV/Excel        | Arrays/Objects         |
+| Large Data Sets       | Small Data Sets        |
+| Data Management Focus | Test Reusability Focus |
+
+
+
+Most real-world frameworks use:
+
+Parameterized Tests
+         +
+Data Driven Testing
+
+together.
+
+
+
+Basic Parameterized Test
+-------------------------
+
+Example:
+
+const users = ['admin','manager','customer'];
+
+Test Generation:
+
+users.forEach(user => {
+
+ test( `Login ${user}`,
+
+  async ({ page }) => {
+
+  }
+
+ );
+
+});
+
+
+Generated Tests:
+
+Login admin
+Login manager
+Login customer
+
+
+Parameterized Login Example:
+----------------------------
+
+--Inside a single file only..
+
+const users = [
+
+ {
+   username:'admin',
+   password:'admin123'
+ },
+
+ {
+   username:'manager',
+   password:'manager123'
+ }
+
+];
+
+
+
+Test:
+
+users.forEach(user => {
+
+ test(`Login ${user.username}`,
+
+  async ({ page }) => {
+
+    await page.goto(url);
+
+    await page.fill(
+      '#username',
+      user.username
+    );
+
+    await page.fill(
+      '#password',
+      user.password
+    );
+
+    await page.click(
+      '#loginBtn'
+    );
+
+ });
+
+});
+
+
+Execution:
+
+Playwright generates:
+
+Login admin
+Login manager
+
+as independent tests.
+
+
+
+Parameterized Tests with POM:
+------------------------------
+
+Industry Standard.
+
+Example
+
+const users = [
+
+ {
+   username:'admin',
+   password:'admin123'
+ },
+
+ {
+   username:'manager',
+   password:'manager123'
+ }
+
+];
+
+
+Using LoginPage:
+
+users.forEach(user => {
+
+ test(`Login ${user.username}`,
+
+  async ({ page }) => {
+
+    const loginPage =new LoginPage(page);
+
+    await loginPage.login(user.username,user.password);
+
+ });
+
+});
+
+
+
+Tags in Playwright:
+====================
+
+--Tags are labels attached to tests.
+
+They help us:
+
+Group Tests
+Filter Tests
+Execute Specific Tests
+
+--instead of running the entire test suite.
+
+
+Without tags:
+
+	npx playwright test
+
+runs:
+
+	ALL TESTS
+
+which may take:
+
+	2 Hours
+
+Sometimes we need:
+
+Quick Verification
+Only important tests.
+
+--Tags solve this problem.
+
+Example:
+
+Login Tests
+Customer Tests
+Payment Tests
+Policy Tests
+Claims Tests
+
+Tag them:
+
+@smoke
+@sanity
+@regression
+
+--and run only what is required.
+
+
+
+Common Industry Tags:
+----------------------
+
+Most organizations use:
+
+@smoke
+@sanity
+@regression
+@functional
+@api
+@ui
+
+
+
+Tagging Tests:
+--------------
+
+Common practice:
+
+--Add Tags To Test Title
+
+Example:
+
+test('@smoke Login Test',
+
+ async ({ page }) => {
+
+ });
+
+Another Example:
+
+test('@regression Customer Creation',
+
+ async ({ page }) => {
+
+ });
+
+Another Example
+
+test('@sanity Payment Module',
+
+ async ({ page }) => {
+
+ });
+
+
+
+Running Tests Using Tags:
+--------------------------
+
+1. Run Smoke Tests:
+
+npx playwright test --grep "@smoke"
+
+Execution
+
+	Only Smoke Tests
+
+run.
+
+2. Run Regression Tests
+
+	npx playwright test --grep "@regression"
+
+
+3. Run Sanity Tests:
+
+	npx playwright test --grep "@sanity"
+
+
+
+grep means:
+
+	Search Matching Pattern
+
+Example
+
+test('@smoke Login');
+
+test('@regression Customer');
+
+test('@sanity Payment');
+
+Command
+
+npx playwright test --grep "@smoke"
+
+Result
+
+	Login Test Only
+
+
+
+
+Tagging Using Object Syntax:
+----------------------------
+
+Modern Playwright supports:
+
+test('Login Test',
+ {
+   tag: '@smoke'
+ },
+ async ({ page }) => {
+
+ });
+
+
+
+Dropdown Handling:
+==================
+
+--A Dropdown allows users to select one or more values from a list.
+
+
+<select id="accountType">
+
+   <option>Savings</option>
+
+   <option>Current</option>
+
+   <option>Salary</option>
+
+</select>
+
+
+Playwright Method:
+
+	selectOption()
+
+--used for HTML <select> elements.
+
+
+
+Example:
+
+await page.locator('#accountType')
+	.selectOption('Savings');
+
+
+Select By Value:
+----------------
+
+<select id="accountType">
+
+   <option value="sav">
+      Savings
+   </option>
+
+   <option value="cur">
+      Current
+   </option>
+
+</select>
+
+
+Playwright:
+
+await page.locator('#accountType')
+		.selectOption('sav');
+
+
+
+
+Verify Selected Value:
+-----------------------
+
+await expect(page.locator('#accountType'))
+		.toHaveValue('sav');
+
+
+Multi Select Dropdown:
+-----------------------
+
+
+<select multiple id="skills">
+
+  <option value="java">
+     Java
+  </option>
+
+  <option value="spring">
+     Spring
+  </option>
+
+  <option value="playwright">
+     Playwright
+  </option>
+
+</select>
+
+
+
+Select Multiple Values:
+
+await page.locator('#skills')
+.selectOption(['java','spring']);
+
+
+
+
+Checkbox Handling:
+=================
+
+A Checkbox is a control that supports:
+
+Checked
+Unchecked
+
+states.
+
+
+Example:
+
+<input type="checkbox" id="terms" />
+
+
+Playwright Method:
+
+	check()
+        uncheck()
+
+
+Example:
+
+await page.locator('#terms')
+	.check();
+
+Result
+	Checked
+
+
+Uncheck Checkbox:
+
+await page.locator('#terms')
+	.uncheck();
+
+Result:
+
+	Unchecked
+
+
+Verify Checkbox:
+================
+
+1. Checked Assertion
+
+await expect(page.locator('#terms'))
+	.toBeChecked();
+
+
+2. Unchecked Assertion
+
+await expect(page.locator('#terms'))
+	.not.toBeChecked();
+
+
+3. Is Checked?
+
+
+const status = await page.locator('#terms')
+			.isChecked();
+
+console.log(status);
+
+Output:
+
+true
+or
+false
+
+
+Multiple Checkboxes:
+--------------------
+
+Example
+
+☐ Java
+☐ Spring
+☐ Playwright
+
+
+Automation:
+
+await page.locator('#java')
+	.check();
+
+await page.locator('#spring')
+	.check();
+
+
+
+Select All Example:
+
+const checkboxes = await page.locator('input[type=checkbox]')
+			.all();
+
+Loop:
+
+for(const checkbox of checkboxes){
+
+   await checkbox.check();
+
+}
 
 
 
