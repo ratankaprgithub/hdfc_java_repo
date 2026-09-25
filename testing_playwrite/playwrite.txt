@@ -2494,6 +2494,11 @@ npx playwright show-report
 
 
 
+
+
+
+
+
 Locators - The Heart of Playwright:
 ===================================
 
@@ -2871,12 +2876,12 @@ Forms often use labels.
 
 or
 
-<label for="username">Username</label>
+<label for="username">Enter Username</label>
 <input id="username">
 
 Playwright Locator
 
-await page.getByLabel('Username').fill('Ratan');
+await page.getByLabel('Enter Username').fill('Ratan');
 
 
 
@@ -2900,6 +2905,7 @@ await page.locator("#username");
 await page.getByPlaceholder("Password");
 
 await page.getByText("Login");
+
 
 
 
@@ -3284,7 +3290,11 @@ page.locator("tr:nth-child(2)")
 
 <p>First</p>
 
+<div></div>
+
 <p>Second</p>
+
+<div></div>
 
 <p>Third</p>
 
@@ -3769,7 +3779,7 @@ elements.
 
 Example:
 
-<input value="Ratan">
+<input value="Ratan" id = "username">
 
 Assertion:
 
@@ -4058,9 +4068,8 @@ Receives Events
 Example:
 
 
-await page
-.getByRole('button',{name:'Login'})
-.click();
+await page.getByRole('button',{name:'Login'})
+			.click();
 
 --Playwright waits automatically.
 
@@ -4385,6 +4394,9 @@ Done
 
 
 
+
+
+
 File Upload:
 ============
 
@@ -4536,14 +4548,14 @@ const downloadPromise = page.waitForEvent('download');
 await page.locator('#downloadBtn')
           .click();
 
-const download = await downloadPromise;
+const d1 = await downloadPromise;
 
-await download.saveAs('downloads/report.pdf');
+await d1.saveAs('downloads/report.pdf');
 
 
 Verify Downloaded File Name:
 
-expect(await download.suggestedFilename()).
+expect(await d1.suggestedFilename()).
 toBe('report.pdf');
 
 
@@ -5153,6 +5165,9 @@ Produces XML report.
 
 
 
+
+
+
 Hooks in Playwright:
 ====================
 
@@ -5339,6 +5354,7 @@ test.beforeEach(async ({ page }) => {
 Now every test starts from:
 
 Logged In State
+
 Benefits
 Less Code
 
@@ -5644,7 +5660,7 @@ test('Login', async ({ page }) => {
 
 --Everything is already available.
 
-Note: Playwrite framework uses Dependency mechanism to inject the page object inside our test related callback function.
+Note: Playwrite framework uses Dependency injection mechanism to inject the page object inside our test related callback function.
 
 
 --Playwright provides several built-in fixtures.
@@ -6080,22 +6096,32 @@ Adding Locators:
 ----------------
 
 Example:
-
-import { Page } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 
 export class LoginPage {
 
-   constructor(private page: Page) 
-   {
+    username;
+    password;
+    loginButton;
+
+
+   constructor(private page: Page) {
+        this.username = this.page.locator('#username');
+        this.password = this.page.locator('#password');
+        this.loginButton = this.page.locator('#btn')
+
    }
 
-   username = this.page.locator('#username');
+   
+   async login(user:string,pass:string){
 
-   password = this.page.locator('#password');
+    await  this.username.fill(user);
+    await  this.password.fill(pass);
+    await  this.loginButton.click();
 
-  // loginButton = this.page.locator('#loginBtn');
+   }
 
-   loginButton = this.page.getByRole('button', { name:'Login' } );
+
 
 
 }
@@ -6143,32 +6169,35 @@ async login(username:string, password:string){
 Complete LoginPage:
 --------------------
 
-import { Page } from '@playwright/test';
+
+Example:
+import { expect, Page } from '@playwright/test';
 
 export class LoginPage {
 
+    username;
+    password;
+    loginButton;
+
+
    constructor(private page: Page) {
+        this.username = this.page.locator('#username');
+        this.password = this.page.locator('#password');
+        this.loginButton = this.page.locator('#btn')
+
    }
 
-   username = this.page.locator('#username');
-
-   password = this.page.locator('#password');
-
-   loginButton = this.page.locator('#loginBtn');
-
+   
    async login(user:string,pass:string){
 
-      await this.username.fill(user);
+    await  this.username.fill(user);
+    await  this.password.fill(pass);
+    await  this.loginButton.click();
 
-      await this.password.fill(pass);
-
-      await this.loginButton.click();
-
-      expect(...)
-
+    // expect(page)....
    }
 
-}
+
 
 
 
@@ -6289,6 +6318,13 @@ Actions
 Assertions
 
 --related only to that page.
+
+
+
+
+
+
+
 
 
 
@@ -6926,7 +6962,7 @@ Select By Value:
 Playwright:
 
 await page.locator('#accountType')
-		.selectOption('sav');
+		.selectOption('Saving');
 
 
 
