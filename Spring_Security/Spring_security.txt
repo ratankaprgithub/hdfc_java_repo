@@ -1,0 +1,3757 @@
+Spring Security:
+================
+
+
+What is Security?
+
+Imagine you have developed a banking application.
+
+The application contains:
+
+Customer account details
+Transaction history
+Credit card information
+Loan information
+Personal user details
+
+--If anyone can access this information without permission, the entire application becomes useless.
+
+Therefore:
+
+--Security is the process of protecting the data, resources, and business logic of an application from unauthorized access.
+
+
+
+Real-Life Example:
+-------------------
+
+Consider an ATM Machine.
+
+--The ATM does not allow everyone to withdraw money.
+
+Before performing any operation, it verifies:
+
+Who are you?
+Are you allowed to access this account?
+How much money can you withdraw?
+
+--Similarly, software applications also need security mechanisms.
+
+
+Functional vs Non-Functional Requirements:
+-------------------------------------------
+
+--Software requirements are generally divided into two categories.
+
+1. Functional Requirements:
+
+These describe:
+
+What the application should do.
+
+Examples:
+
+User Registration
+Login
+Money Transfer
+Product Purchase
+Employee Management
+
+
+2. Non-Functional Requirements:
+
+These describe:
+
+How the application should behave.
+
+Examples:
+
+Security
+Performance
+Scalability
+Availability
+Reliability
+
+--Spring Security addresses a non-functional requirement called Security.
+
+
+
+Security Fundamentals:
+----------------------
+
+--Every software system contains two important things:
+
+1. Resources
+
+--Resources are things that need protection.
+
+Examples:
+
+REST APIs
+Web Pages
+Databases
+Cloud Resources
+Files
+Microservices
+
+
+
+2. Identities
+
+--Identities are entities trying to access resources.
+
+Examples:
+
+Users
+Customers
+Employees
+Administrators
+External Systems
+
+--These identities perform actions such as:
+
+Reading data
+Creating data
+Updating data
+Deleting data
+
+
+
+
+Important Security Principles:
+------------------------------
+
+--A good security system follows some fundamental principles.
+
+Principle 1: Trust Nothing
+
+--Never assume a request is valid.
+
+--Every request should be verified.
+
+--Every input should be validated.
+
+Examples:
+
+Assume client data is correct.
+
+Validate:
+
+Email format
+Phone number
+Password strength
+JWT Token
+User Role
+
+
+Principle 2: Least Privilege
+
+--Give users only the permissions they need.
+
+Example:
+
+Admin
+
+Can:
+
+Create Users
+Delete Users
+Update Users
+
+Customer
+
+Can:
+
+View Profile
+Update Profile
+
+Cannot:
+
+Delete Users
+Access Admin Panel
+
+--This minimizes security risks.
+
+
+
+Principle 3: Complete Mediation
+
+--Every request must pass through a central security checkpoint.
+
+Think of an airport.
+
+Before boarding:
+
+ID Verification
+Luggage Check
+Security Scan
+
+--Similarly, every application request should pass through security filters.
+
+
+Principle 4: Defense in Depth
+
+--Never depend on a single security layer.
+
+Use multiple layers.
+
+Examples:
+
+Network Layer
+
+	Firewall
+
+Transport Layer
+
+	HTTPS
+	SSL/TLS
+
+Application Layer
+
+	Authentication
+	Authorization
+
+Database Layer
+
+	Access Controls
+
+
+Principle 5: Economy of Mechanism
+
+Keep security simple.
+
+--Complex security systems become difficult to maintain and may introduce vulnerabilities.
+
+
+Principle 6: Open Design
+
+--Security should not depend on hiding implementation details.
+
+--A secure design should remain secure even when people know how it works.
+
+
+Different Types of Application Security:
+========================================
+
+--Modern applications use multiple security mechanisms.
+
+1. Firewall Security
+
+--Blocks unauthorized access to servers.
+
+Example:
+
+--Only employees inside the company network can access an internal HR application.
+
+
+2. HTTPS Security
+
+--Encrypts communication between client and server.
+
+Without HTTPS:
+
+username=admin
+password=1234
+
+--can be intercepted.
+
+With HTTPS:
+
+--Data becomes encrypted during transmission.
+
+
+3. SSL/TLS Certificates
+
+--Used by HTTPS to establish secure communication.
+
+
+4. Authentication
+
+--Verifies identity.
+
+Example:
+
+Username + Password
+
+
+5. Authorization
+
+--Determines permissions.
+
+Example:
+
+--Admin can delete records.
+
+--Customer cannot delete records.
+
+
+
+Spring Security:
+----------------
+
+--Spring Security is a powerful and highly customizable security framework for Java applications.
+
+--It provides features such as:
+
+Authentication
+Authorization
+Password Encryption
+User Management
+Role Management
+Session Management
+Security Filters
+
+
+Where Can We Use Spring Security?
+---------------------------------
+
+Spring Security can secure:
+
+1. Spring MVC Applications
+
+--Traditional web applications.
+
+2. REST APIs
+
+--Backend services.
+
+3. Microservices
+
+--Distributed applications.
+
+4. Standalone Applications
+
+--Java applications requiring authentication.
+
+
+
+Two Main Responsibilities of Spring Security:
+---------------------------------------------
+
+Spring Security focuses on two major areas:
+
+1. Authentication:
+
+Question:
+
+"Who are you?"
+
+--Authentication verifies the identity of a user.
+
+Examples:
+
+Username + Password
+OTP
+Fingerprint
+Face Recognition
+JWT Token
+
+--If authentication fails:
+
+	HTTP Status = 401 Unauthorized
+
+
+
+2. Authorization:
+
+Question:
+
+"What are you allowed to do?"
+
+--Authorization happens after authentication.
+
+
+Examples:
+
+
+| User     | Permission          |
+| -------- | ------------------- |
+| Admin    | Read, Write, Delete |
+| Manager  | Read, Write         |
+| Employee | Read Only           |
+
+
+
+If authorization fails:
+
+	HTTP Status = 403 Forbidden
+
+
+
+Authentication vs Authorization:
+--------------------------------
+
+| Authentication        | Authorization                |
+| --------------------- | ---------------------------- |
+| Verifies Identity     | Verifies Permissions         |
+| Who are you?          | What can you do?             |
+| Happens First         | Happens After Authentication |
+| Returns 401 if failed | Returns 403 if failed        |
+| Example: Login        | Example: Access Admin Page   |
+
+
+
+
+Adding Spring Security to a Project:
+------------------------------------
+
+--Spring Security can be enabled simply by adding a dependency.
+
+
+
+Create a SpringBoot application: SpringBootSecurityDemo
+
+dependencies:
+
+Spring Web
+Devtools
+Spring Security
+
+
+EmployeeController.java:
+-----------------------
+
+package com.hdfc.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController {
+
+	@GetMapping("/hello")
+	public String sayHello() {
+		return "Welcome to Spring Security...";
+	}
+	
+	
+	@GetMapping("/hello2")
+	public String sayHello2() {
+		return "Welcome to Spring Security 2...";
+	}	
+	
+}
+
+
+
+Q/- What Happens After Adding Spring Security?
+
+
+Without Spring Security:
+
+Browser
+   |
+   v
+/employees/hello
+   |
+   v
+Controller
+   |
+   v
+Response
+
+--Anyone can access it.
+
+
+After adding dependency:
+
+	spring-boot-starter-security
+
+--Spring Security automatically secures the application.
+
+Browser
+   |
+   v
+Spring Security
+   |
+   v
+Controller
+   |
+   v
+Response
+
+--Now users must authenticate before accessing secured resources.
+
+
+
+Spring Security Auto Configuration:
+------------------------------------
+
+--Spring Boot automatically configures:
+
+Login Page
+Logout Endpoint
+Authentication Manager
+Security Filters
+Default User
+Session Management
+
+--No additional code is required initially.
+
+This is called:
+
+--Auto Configuration Mode
+
+
+
+Default Username and Password:
+------------------------------
+
+--When the application starts:
+
+--Spring Security automatically creates a default user.
+
+Username: user
+
+Password: Generated randomly and displayed in console.
+
+
+Example console output:
+
+--Using generated security password:
+
+	d6c8-xyza-1234-9876
+
+--Every application restart generates a new password.
+
+
+
+Default Login Page:
+-------------------
+
+--When a protected URL is accessed:
+
+	http://localhost:8080/employees/hello
+
+--Spring Security intercepts the request.
+
+--Instead of reaching the controller:
+
+Spring Security
+       |
+       v
+ Login Page
+
+--The user sees a login form automatically generated by Spring Security.
+
+
+Default Login and Logout URLs:
+-------------------------------
+
+--Spring Security automatically creates:
+
+
+| Endpoint | Purpose         |
+| -------- | --------------- |
+| /login   | Login Page      |
+| /logout  | Logout Endpoint |
+
+
+--No controller code is required.
+
+
+Custom Username and Password:
+------------------------------
+
+--Instead of using:
+
+	user
+	generated-password
+
+--We can configure our own credentials.
+
+application.properties:
+
+	spring.security.user.name=hdfc
+	spring.security.user.password=1234
+
+Now login becomes:
+
+	Username : hdfc
+	Password : 1234
+
+
+
+Understanding Authentication Session:
+-------------------------------------
+
+A common question:
+
+--Does Spring Security ask for login every time?
+
+Answer:
+
+No.
+
+--After successful authentication:
+
+--Spring Security creates a session.
+
+What Happens Internally?
+
+First Request:
+
+User
+  |
+  v
+Login
+  |
+  v
+Authentication Success
+
+--Spring Security generates:
+
+JSESSIONID
+
+--and stores it inside browser cookies.
+
+
+Second Request:
+
+Browser
+   |
+   | JSESSIONID
+   v
+Server
+
+--Spring Security reads the session.
+
+--Since the session is already authenticated:
+
+--No Login Required
+
+
+
+What is JSESSIONID?
+------------------
+
+--JSESSIONID is a session identifier generated by the server.
+
+Example:
+
+JSESSIONID=A45DF7A8B9C12345
+
+--It allows Spring Security to remember:
+
+Logged-in user
+Roles
+Authorities
+Authentication status
+
+
+Calling APIs Using Postman/Insomnia
+
+Let's suppose:
+
+	@GetMapping("/hello")
+	public String hello() {
+
+    		return "Welcome to Spring Security...";
+	}
+
+
+--Spring Security protects this endpoint.
+
+Request Without Credentials
+
+GET /employees/hello
+
+Response:
+
+	401 Unauthorized
+
+
+--Because Spring Security could not identify the user.
+
+	Authentication failed.
+
+Remember:
+
+Authentication Failure
+      =
+401 Unauthorized
+
+
+Basic Authentication:
+--------------------
+
+--To access the API:
+
+Open Postman/Insomnia:
+
+	Authorization Tab
+
+Choose:
+
+	Basic Auth
+
+Enter:
+
+Username
+Password
+
+
+What Happens Internally?
+------------------------
+
+Suppose a user provides the following credentials:
+
+Username : admin
+Password : 1234
+
+
+Step 1: Combine Username and Password
+
+--The client combines the username and password using a colon (:).
+
+	admin:1234
+
+
+Step 2: Encode Using Base64
+
+--The combined string is converted into Base64 format.
+
+admin:1234
+↓
+YWRtaW46MTIzNA==
+
+--Base64 is an encoding mechanism, not an encryption mechanism.
+
+Step 3: Add Credentials to HTTP Request Header
+
+--The encoded value is sent inside the Authorization header.
+
+	Authorization: Basic YWRtaW46MTIzNA==
+
+
+Step 4: Request Sent to Server
+
+--The complete HTTP request may look like:
+
+GET /employees/hello  HTTP/1.1
+Host: localhost:8080
+
+Authorization: Basic YWRtaW46MTIzNA==
+
+
+Step 5: Spring Security Validates Credentials
+
+--When the request reaches the server:
+
+1. Spring Security reads the Authorization header.
+
+2. It extracts the Base64 encoded value.
+
+3. It decodes it back to:
+
+	admin:1234
+
+4. It separates the username and password.
+
+5. It validates the credentials using the configured authentication mechanism (InMemoryUserDetailsManager, Database, LDAP, etc.).
+
+--If the credentials are valid:
+
+	Authentication Successful
+
+Otherwise:
+
+	401 Unauthorized
+
+
+Calling Secured APIs from React, Angular, Mobile Apps, or Other Clients:
+------------------------------------------------------------------------
+
+--When a frontend application (React, Angular, Vue.js), a mobile application, Postman, or any external client
+ wants to access a Spring Security protected API, it must send the credentials in the Authorization header.
+
+Example:
+
+	Authorization: Basic YWRtaW46MTIzNA==
+
+In general:
+
+	Authorization: Basic base64(username:password)
+
+
+Example in JavaScript:
+----------------------
+
+const username = "admin";
+const password = "1234";
+
+const credentials = btoa(username + ":" + password);
+
+fetch("http://localhost:8080/employees/hello", {
+    headers: {
+        Authorization: `Basic ${credentials}`
+    }
+}); 
+
+
+
+
+Important Note About Basic Authentication:
+-----------------------------------------
+
+Many beginners think:
+
+Base64 = Encryption
+
+This is wrong.
+
+--Base64 is only encoding.
+
+--Anyone can decode it.
+
+--Base64 is an encoding mechanism. It is completely reversible and does not provide security. 
+It is used only to represent data in a transport-friendly format.
+
+Example:
+
+YWRtaW46MTIzNA==
+
+can be decoded back to:
+
+admin:1234
+
+--Therefore Basic Authentication should generally be used with:
+
+	HTTPS
+
+--to protect credentials during transmission.
+
+
+
+Request Flow with Basic Authentication:
+----------------------------------------
+
+Client
+   |
+   | Authorization Header
+   |
+   v
+Spring Security
+   |
+   v
+Validate Credentials
+   |
+   |---- Invalid ---> 401
+   |
+   |---- Valid -----> Controller
+                          |
+                          v
+                     Response
+
+
+
+
+Important: If an attacker obtains a valid JSESSIONID and reuses it to access protected resources, 
+it is known as Session Hijacking (or Session Replay Attack).
+
+
+
+
+Configuring Multiple username and passwords:
+--------------------------------------------
+
+--Until now, we have used a single user configured inside:
+
+application.properties file:
+
+spring.security.user.name=admin
+spring.security.user.password=1234
+
+--However, real-world applications typically contain multiple users, where each user may have different roles and permissions.
+
+--Spring Security provides the InMemoryUserDetailsManager implementation which allows us to maintain multiple users directly in memory.
+
+
+InMemoryUserDetailsManager:
+---------------------------
+
+--It is an implementation of the UserDetailsService interface that stores user information in memory (RAM).
+
+It allows us to:
+
+Create multiple users.
+Assign different roles or authorities.
+Authenticate users without using a database.
+Quickly test and learn Spring Security concepts.
+
+This approach is commonly used for:
+
+Learning Spring Security
+Proof of Concept (POC)
+Testing APIs
+Internal applications
+
+--In production applications, user details are usually loaded from a database using a custom UserDetailsService.
+
+
+Example:
+
+--Create a class named AppConfig.java inside the com.hdfc.config package and annotate it with @Configuration.
+
+
+
+package com.hdfc.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+
+@Configuration
+public class AppConfig {
+
+	
+	
+	@Bean 
+	InMemoryUserDetailsManager userDetailsService(PasswordEncoder passwordEncoder) {
+		
+		UserDetails admin= User.builder()
+					.username("admin")
+					.password(passwordEncoder.encode("1234"))
+					.authorities("ROLE_ADMIN")
+					.build();
+		
+		UserDetails user= User.builder()
+				.username("user")
+				.password(passwordEncoder.encode("1234"))
+				 .authorities("ROLE_USER")
+				.build();
+
+		return new InMemoryUserDetailsManager(admin,user);
+		
+	}
+
+	
+	
+	@Bean
+	PasswordEncoder passwordEncoder() {
+		return new  BCryptPasswordEncoder();
+	}
+	
+	
+}
+
+
+
+Understanding the Above Configuration:
+--------------------------------------
+
+Step 1: Create a PasswordEncoder Bean
+
+
+@Bean
+PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+}
+
+--The BCryptPasswordEncoder is used to hash passwords before storing them.
+
+Instead of storing:
+
+1234
+
+--Spring Security stores a BCrypt hash similar to:
+
+$2a$10$Q9X0Q6....
+
+--This makes passwords much more secure.
+
+
+Step 2: Create UserDetails Objects:
+
+UserDetails admin = User.builder()
+        .username("admin")
+        .password(passwordEncoder.encode("1234"))
+        .authorities("ROLE_ADMIN")
+        .build();
+
+This creates a user with:
+
+Username : admin
+Password : 1234
+Authority : ROLE_ADMIN
+
+Similarly:
+
+UserDetails user = User.builder()
+        .username("user")
+        .password(passwordEncoder.encode("1234"))
+        .authorities("ROLE_USER")
+        .build();
+
+creates a normal user.
+
+
+Step 3: Register Users Inside InMemoryUserDetailsManager
+
+
+	return new InMemoryUserDetailsManager(admin, user);
+
+
+--Spring Security stores both users in memory and uses them during authentication.
+
+
+Note: Internally, the passwords are stored as BCrypt hashes, not as plain text.
+
+
+
+Advantages of InMemoryUserDetailsManager:
+-----------------------------------------
+
+Easy to configure
+No database required
+Suitable for demos and testing
+Supports multiple users
+Supports roles and authorities
+
+Limitations:
+------------
+
+User data is lost when the application stops.
+Not suitable for production systems.
+Users cannot be managed dynamically.
+Does not persist data in a database.
+
+
+
+
+***Note: Once a custom UserDetailsService implementation (such as InMemoryUserDetailsManager) is configured as a Spring Bean, 
+Spring Boot's default user configuration using 
+
+spring.security.user.name 
+and 
+spring.security.user.password 
+
+inside application.properties file will be disabled. 
+
+--Authentication will be performed only against the users configured inside the custom InMemoryUserDetailsManager.
+
+
+
+
+Filters in Spring Security:
+===========================
+
+--Before understanding Spring Security architecture, let's first understand a simple problem.
+
+Suppose a client sends a request:
+
+GET /employees
+
+Without security:
+
+Client
+   |
+   v
+Controller
+   |
+   v
+Response
+
+--Every request directly reaches the controller.
+
+There is no place to:
+
+Check authentication
+Check authorization
+Validate tokens
+Handle CORS
+Prevent CSRF attacks
+
+--Therefore Spring Security places a layer between the client and the application.
+
+Client
+   |
+   v
+Security Filters
+   |
+   v
+Controller
+   |
+   v
+Response
+
+
+
+What is a Filter?
+-----------------
+
+--A Filter is a component that can intercept an HTTP request before it reaches the controller.
+
+A Filter can:
+
+Read request headers
+Validate user credentials
+Modify requests
+Modify responses
+Block requests
+Forward requests
+
+--Think of a filter as a security guard standing at the entrance of a building.
+
+Visitor
+   |
+Security Guard
+   |
+Building
+
+
+Similarly:
+
+Request
+   |
+Security Filter
+   |
+Controller
+
+
+**Spring Security is Built on Servlet Filters
+
+--Spring Security works using a chain of servlet filters.
+
+Instead of using one giant security component:
+
+	One Big Security Class
+
+--Spring Security divides responsibilities into multiple specialized filters.
+
+
+
+| Filter                     | Responsibility     |
+| -------------------------- | ------------------ |
+| CorsFilter                 | CORS Handling      |
+| CsrfFilter                 | CSRF Protection    |
+| BasicAuthenticationFilter  | Authentication     |
+| AuthorizationFilter        | Authorization      |
+| ExceptionTranslationFilter | Exception Handling |
+
+
+What is a Filter Chain?
+-----------------------
+
+--A request does not pass through only one filter.
+
+--Instead it passes through multiple filters.
+
+Request
+   |
+   v
+Filter 1
+   |
+   v
+Filter 2
+   |
+   v
+Filter 3
+   |
+   v
+Filter 4
+   |
+   v
+Controller
+
+--This sequence is called:
+
+	Security Filter Chain
+
+
+
+Real-Life Example:
+-------------------
+
+--Imagine entering an airport.
+
+--You do not directly board the aircraft.
+
+You must pass through:
+
+Gate Entry
+      |
+Security Check
+      |
+Passport Verification
+      |
+Boarding Check
+      |
+  Flight
+
+
+Similarly:
+
+  Request
+      |
+ CORS Check
+      |
+CSRF Check
+      |
+Authentication
+      |
+Authorization
+      |
+Controller
+
+
+
+Authentication Filter:
+-----------------------
+
+--Authentication filters answer the question:
+
+Who are you?
+
+Examples:
+
+Username Password Authentication
+Basic Authentication
+JWT Authentication
+
+--Spring Security provides filters such as:
+
+	BasicAuthenticationFilter
+
+--These filters verify whether a user is genuine or not.
+
+
+Example
+
+Request:
+
+GET /employees
+Authorization: Basic YWRtaW46MTIzNA==
+
+Authentication Filter:
+
+1. Reads Authorization Header
+2. Extracts Credentials
+3. Validates User
+4. Creates Authentication Object
+
+If authentication fails:
+
+401 Unauthorized
+
+
+Authorization Filter:
+---------------------
+
+--Authentication proves identity.
+
+--Authorization verifies permissions.
+
+Question:
+
+	What are you allowed to do?
+
+Spring Security uses:
+
+	AuthorizationFilter
+
+--to verify access permissions.
+
+
+Example:
+
+Suppose:
+
+User = John
+Role = USER
+
+Request:
+
+	DELETE /employees/101
+
+Required Role:
+
+	ROLE_ADMIN
+
+Result:
+
+	403 Forbidden
+
+Because:
+
+Authenticated: Yes
+
+Authorized: No
+     
+
+CORS Filter:
+-------------
+
+CORS stands for:
+
+	Cross-Origin Resource Sharing
+
+Example
+
+Frontend:
+
+	http://localhost:3000
+
+Backend:
+
+	http://localhost:8080
+
+--Different ports mean different origins.
+
+--Browser blocks the request unless the server explicitly allows it.
+
+The CorsFilter decides:
+
+Allow
+or
+Reject
+
+--cross-origin requests.
+
+
+CSRF Filter:
+------------
+
+CSRF stands for:
+
+	Cross-Site Request Forgery
+
+What Problem Does It Solve?
+
+Suppose:
+
+User logged into bank.com
+
+Browser contains:
+
+	JSESSIONID
+
+--A malicious website tricks the browser into sending a request to:
+
+bank.com/transferMoney
+
+--The browser automatically sends the session cookie.
+
+The bank thinks:
+
+Valid Session
+Valid User
+
+--and may execute the operation.
+
+This attack is called:
+
+CSRF Attack
+
+
+Protection:
+
+--Spring Security automatically enables CSRF protection for state-changing requests such as:
+
+POST
+PUT
+PATCH
+DELETE
+
+--If the CSRF token is missing:
+
+	403 Forbidden
+
+
+Generally we Disable CSRF in REST APIs:
+
+You'll often see:
+
+	http.csrf(csrf -> csrf.disable());
+
+because:
+
+--REST APIs are usually stateless.
+--Authentication is often done using JWT tokens.
+--Session-based CSRF attacks are less relevant.
+
+We'll study CSRF in detail later.
+
+
+
+Default Login & Logout Filters
+--------------------------------
+
+--Spring Security automatically creates:
+
+/login
+/logout
+
+--These are handled internally by dedicated filters.
+
+Examples:
+
+DefaultLoginPageGeneratingFilter
+DefaultLogoutPageGeneratingFilter
+
+
+ExceptionTranslationFilter:
+---------------------------
+
+--Suppose an exception occurs:
+
+Authentication Failure 401
+or
+Authorization Failure 403
+
+--Spring Security converts these exceptions into proper HTTP responses.
+
+This is handled by:
+
+	ExceptionTranslationFilter
+
+
+
+Order of Filter Execution:
+---------------------------
+
+--Spring Security executes filters in a specific order.
+
+
+Step 1
+
+--Basic Security Checks
+
+CORS
+CSRF
+
+
+Step 2
+
+--Authentication Filters
+
+BasicAuthenticationFilter
+UsernamePasswordAuthenticationFilter
+
+
+Step 3
+
+--Authorization Filters
+
+AuthorizationFilter
+
+
+
+
+
+Complete Flow: (High level)
+--------------
+
+Request
+   |
+   v
+CorsFilter
+   |
+   v
+CsrfFilter
+   |
+   v
+Authentication Filters
+   |
+   v
+Authorization Filters
+   |
+   v
+Controller
+   |
+   v
+Response
+
+
+
+Important Point:
+-----------------
+
+--A request may be rejected at any stage.
+
+Example:
+
+Request
+   |
+   v
+CorsFilter
+   |
+Rejected
+
+--The controller will never execute.
+
+Similarly:
+
+Request
+   |
+Authentication Filter
+   |
+401 Unauthorized
+
+--Controller is never reached.
+
+
+
+Big Picture: Spring Security Authentication Flow:
+=================================================
+
+
+Client
+   |
+   v
+Security Filter Chain
+   |
+   v
+Authentication Filter
+   |
+   v
+AuthenticationManager
+   |
+   v
+AuthenticationProvider
+   |
+   v
+UserDetailsService
+   |
+   v
+Database / Memory / LDAP
+   |
+   v
+UserDetails
+   |
+   v
+Password Verification
+   |
+   v
+Authentication Success
+   |
+   v
+SecurityContextHolder
+   |
+   v
+Controller
+
+
+
+
+Why So Many Components?
+-----------------------
+
+Many beginners ask:
+
+Why doesn't Spring Security simply check username and password directly?
+
+--Because Spring Security supports multiple authentication mechanisms:
+
+Username & Password
+LDAP Authentication
+OAuth2
+JWT Authentication
+SSO Authentication
+Custom Authentication
+
+--To support all these mechanisms, Spring Security follows the:
+
+Separation of Responsibilities
+
+principle.
+
+--Each component has a specific job.
+
+
+1. User Sends Login Request
+
+--When a user tries to log in, they send their credentials (username and password) to the Spring Boot application.
+
+POST /login
+
+{
+   "username":"ratan",
+   "password":"1234"
+}
+
+The request first enters:
+
+Spring Security Filter Chain
+
+
+
+2. UsernamePasswordAuthenticationFilter
+
+--Inside the Security Filter Chain, there is a filter called:
+
+	UsernamePasswordAuthenticationFilter
+
+This filter is responsible for:
+
+--Extracting username and password from the incoming request
+--Creating an "Authentication" object
+--Passing that object to AuthenticationManager for authentication
+
+
+
+
+
+3. Creating Authentication(I) Object
+
+The UsernamePasswordAuthenticationFilter filter creates an object of:
+
+	UsernamePasswordAuthenticationToken
+
+which is an implementation class of the Authentication interface.
+
+Authentication authentication = new UsernamePasswordAuthenticationToken(username,password);
+
+
+State before authentication
+
+Principal  = Username
+Credentials = Password
+Authenticated = false
+Authorities = null
+
+At this point:
+
+The user is NOT authenticated yet.
+
+
+
+4. Calling AuthenticationManager
+
+After creating the Authentication object, the filter calls:
+
+Authentication authenticate(Authentication authentication);
+
+Example:
+
+authenticationManager.authenticate(authentication);
+
+
+
+5. AuthenticationManager
+
+AuthenticationManager is an interface.
+
+public interface AuthenticationManager {
+
+    Authentication authenticate(Authentication authentication);
+}
+
+Default implementation:
+
+ProviderManager class
+
+--This class will act like a dispatcher..
+
+Its responsibility is:
+
+Receive Authentication object
+Find suitable AuthenticationProvider
+Delegate authentication work
+
+
+
+--Spring Security supports different authentication mechanisms.
+
+Examples:
+
+DaoAuthenticationProvider
+LdapAuthenticationProvider
+JwtAuthenticationProvider
+CustomAuthenticationProvider
+
+--Each provider knows how to authenticate users using a specific mechanism.
+
+
+6. AuthenticationProvider
+
+--ProviderManager checks the available AuthenticationProviders.
+
+AuthenticationProvider
+
+Common providers are:
+
+DaoAuthenticationProvider
+LdapAuthenticationProvider
+JwtAuthenticationProvider
+CustomAuthenticationProvider
+
+--Default provider used for username/password authentication:
+
+DaoAuthenticationProvider
+
+--You can also create your own provider:
+
+Example:
+
+@Component
+public class CustomAuthenticationProvider implements AuthenticationProvider {
+
+}
+
+
+Useful when:
+
+Calling external APIs
+Legacy systems
+OTP Authentication
+Custom business rules
+
+
+
+7. DaoAuthenticationProvider Uses UserDetailsService
+
+DaoAuthenticationProvider does not directly access the database.
+
+Instead, it uses:
+
+UserDetailsService
+
+to load user information.
+
+
+
+
+8. UserDetailsService
+
+UserDetailsService is an interface.
+
+It contains only one abstract method:
+
+UserDetails loadUserByUsername(String username);
+
+
+Its Responsibility:
+
+Given Username
+        |
+        v
+Load User Information
+
+from:
+
+Database
+In-Memory Storage
+LDAP
+External APIs
+
+
+Example: Loading the user details from the Database
+
+@Service
+public class MyUserDetailsService implements UserDetailsService {
+
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+
+        // Fetch user from database
+	// Create UserDetails object
+
+        return userDetails;
+    }
+}
+
+
+
+9. Loading User Details
+
+The AuthenticationProvider calls:
+
+loadUserByUsername(username);
+
+Example Flow:
+
+AuthenticationProvider
+          |
+          v
+UserDetailsService
+          |
+          v
+        Database
+          |
+          v
+     UserDetails
+
+--The method returns a UserDetails object containing:
+
+Username
+Password
+Roles
+Permissions
+Account Status
+
+
+10. UserDetails Interface
+
+--Spring Security uses the UserDetails interface to represent a user.
+
+public interface UserDetails {
+
+}
+
+--Default implementation provided by Spring Security:
+
+org.springframework.security.core.userdetails.User
+
+Example:
+
+UserDetails user =
+    User.builder()
+        .username("ratan")
+        .password(encodedPassword)
+        .roles("ROLE_ADMIN")
+        .build();
+
+
+
+11. Password Verification
+
+After receiving UserDetails, DaoAuthenticationProvider compares:
+
+Password from Request
+          VS
+Password from Database
+
+using PasswordEncoder interface.
+
+Example:
+
+passwordEncoder.matches(rawPassword,encodedPassword);
+
+Common implementation:
+
+	BCryptPasswordEncoder
+
+
+
+
+12. Successful Authentication
+
+If credentials are valid:
+
+Username Correct 
+Password Correct 
+Account Enabled 
+Account Not Locked 
+
+--then AuthenticationProvider creates a new Authentication object.
+
+Authentication authenticatedUser = new UsernamePasswordAuthenticationToken(principal,null, authorities);
+
+Now:
+
+Authenticated = true
+
+
+
+State After Authentication:
+
+
+Principal      = UserDetails
+Credentials    = null
+Authorities    = ROLE_ADMIN
+Authenticated  = true
+
+Notice:
+
+Authenticated = true
+
+
+
+13. Authentication object Returned back to AuthenticationManager
+
+--The authenticated Authentication object is returned back to:
+
+AuthenticationProvider
+        ↓
+AuthenticationManager
+        ↓
+UsernamePasswordAuthenticationFilter
+
+
+--The authenticated Authentication object travels back through the chain.
+
+
+14. SecurityContextHolder Stores Authentication
+
+After successful authentication:
+
+--Spring Security stores the authenticated user information inside:
+
+	SecurityContextHolder
+
+Example:
+
+SecurityContextHolder
+      .getContext()
+      .setAuthentication(authentication);
+
+
+
+SecurityContextHolder vs SecurityContext:
+-----------------------------------------
+
+SecurityContextHolder:
+
+Acts like a container.
+
+SecurityContextHolder
+          |
+          v
+    SecurityContext
+
+
+SecurityContext:
+
+Stores:
+
+Authentication
+
+object.
+
+
+Structure:
+
+SecurityContextHolder
+          |
+          v
+    SecurityContext
+          |
+          v
+     Authentication
+
+
+
+Authentication vs Principal:
+----------------------------
+
+Authentication:
+
+--Represents complete authentication information.
+
+It contains:
+
+Principal
+Credentials
+Authorities
+Authenticated Flag
+
+
+Principal:
+
+--Represents the logged-in user.
+
+It contains:
+
+Username
+Roles
+Permissions
+User Information
+
+
+
+SecurityContext
+       |
+       v
+Authentication
+       |
+       +---- Principal
+       +---- Authorities
+       +---- Credentials
+       +---- Authenticated Flag
+
+
+
+
+
+
+Accessing Logged-in User:
+-------------------------
+
+Authentication auth =
+      SecurityContextHolder
+          .getContext()
+          .getAuthentication();
+
+Object principal = auth.getPrincipal();
+
+
+
+BasicAuthenticationFilter:
+--------------------------
+
+Another important filter is:
+
+BasicAuthenticationFilter
+
+This filter is used when the client sends credentials using HTTP Basic Authentication.
+
+Example Header:
+
+Authorization: Basic Ym9iOjEyMzQ=
+
+Here:
+
+bob:1234
+
+is Base64 encoded as:
+
+Ym9iOjEyMzQ=
+
+The filter:
+
+Reads Authorization header
+Decodes Base64 value
+Extracts username and password
+Creates Authentication object
+Delegates authentication to AuthenticationManager
+Stores Authentication in SecurityContext
+
+Flow:
+
+
+Client
+   |
+Authorization Header
+   |
+   v
+BasicAuthenticationFilter
+   |
+   v
+AuthenticationManager
+   |
+   v
+AuthenticationProvider
+   |
+   v
+UserDetailsService
+   |
+   v
+Database
+
+
+
+
+
+Security configuration:
+========================
+
+--Till now, Spring Security has been doing everything automatically.
+
+After adding dependency:
+
+	spring-boot-starter-security
+
+Spring Boot automatically configures:
+
+Security Filter Chain
+Authentication Mechanism
+Default Login Page
+Session Management
+Default Security Rules
+Password Protection
+
+
+--As a result, all application endpoints become secured by default.
+
+For example:
+
+GET /employees
+GET /products
+GET /admin
+
+--All require authentication.
+
+
+However, real applications require custom rules.
+
+For example:
+
+/login          -> Public
+
+/register       -> Public
+
+/products       -> Public
+
+/admin/**       -> Admin Only
+
+/employees/**   -> Authenticated Users
+
+/reports/**     -> Manager Only
+
+
+--To implement such requirements, we create a custom Security Configuration.
+
+
+
+Old vs New Spring Security Configuration:
+----------------------------------------
+
+
+Older Approach (Deprecated):
+
+--Earlier versions used:
+
+WebSecurityConfigurerAdapter
+
+Example:
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+}
+
+--This approach is deprecated and removed.
+
+
+
+Modern Approach:
+
+--Spring Security now recommends defining a bean of type:
+
+SecurityFilterChain
+
+--This is the standard approach used in Spring Boot 3.x and Spring Security 6.x.
+
+--The configuration is performed using the HttpSecurity object.
+
+
+
+
+Creating Security Configuration Class:
+-------------------------------------
+
+--Inside the AppConfig class, created inside com.hdfc.config package
+
+
+Creating SecurityFilterChain Bean:
+
+
+@Bean
+SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+	
+    return http.build();
+}
+
+
+At this point:
+
+--Default Security Rules Still Apply
+
+
+--Here HttpSecurity is the main configuration object used to customize Spring Security.
+
+--It allows us to configure:
+
+Authentication
+Authorization
+Session Management
+CSRF
+CORS
+Form Login
+Logout
+HTTP Basic Authentication
+JWT Authentication
+
+
+Configuring URL Authorization Rules:
+------------------------------------
+
+--One of the most important methods is:
+
+	authorizeHttpRequests()
+
+This method defines:
+
+	Who can access what?
+
+
+Example 1: Secure Everything
+
+
+	@Bean
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+		http.authorizeHttpRequests(auth -> {
+
+			auth.anyRequest().authenticated();
+
+		});
+
+		return http.build();
+	}
+
+
+
+Meaning:
+
+--Every request requires authentication.
+
+Examples:
+
+GET /employees
+GET /products
+GET /admin
+
+--All require login.
+
+
+Inside the following block, we define access rules.
+
+
+http.authorizeHttpRequests(auth -> {
+
+
+});
+
+
+1. requestMatchers()
+
+--Used to match URL patterns.
+
+Examples:
+
+.requestMatchers("/login")
+.requestMatchers("/employees/**")
+.requestMatchers("/admin/**")
+
+
+
+Example 2: Public Endpoints
+
+Suppose we want:
+
+/register
+/login
+/home
+
+to be accessible without authentication.
+
+
+
+
+	@Bean
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+		http.authorizeHttpRequests(auth -> {
+
+			auth.requestMatchers("/register", "/login", "/home")
+				.permitAll()
+				.requestMatchers(HttpMethod.POST, "/employees")
+				.permitAll()
+				.anyRequest()
+				.authenticated();
+
+		});
+
+		return http.build();
+	}
+
+
+Meaning:
+
+| URL       | Access         |
+| --------- | -------------- |
+| /register | Public         |
+| /login    | Public         |
+| /home     | Public         |
+| /employees| Public         | // For only POST method
+| Others    | Login Required |
+
+
+Here, 
+
+
+POST /employees will be accessable by any one.
+
+BUT 
+
+GET /employees will still requires authentication.
+
+
+
+permitAll()
+
+--Allows access without authentication.
+
+.permitAll()
+
+Meaning:
+
+Anyone can access the endpoint.
+
+No login is required.
+
+
+
+Authority and Role:
+===================
+
+--Spring Security supports two authorization concepts:
+
+1. Authority
+2. Role
+
+
+
+
+1. Authority
+-------------
+
+--An Authority represents a specific permission or privilege granted to a user.
+
+Examples:
+
+READ_EMPLOYEE
+WRITE_EMPLOYEE
+DELETE_EMPLOYEE
+CREATE_ORDER
+VIEW_REPORTS
+
+--In Spring Security, authorities are represented by the GrantedAuthority interface.
+
+
+Example:
+
+		UserDetails user= User.builder()
+				.username("user")
+				.password(passwordEncoder.encode("1234"))
+				.authorities("READ_EMPLOYEE", "WRITE_EMPLOYEE")
+				.build();
+
+
+Here the user has two authorities:
+
+READ_EMPLOYEE
+WRITE_EMPLOYEE
+
+
+
+2. Role:
+--------
+
+--A Role is a collection/group of authorities.
+
+Examples:
+
+ADMIN
+MANAGER
+USER
+
+Typically:
+
+ADMIN
+ ├── READ_EMPLOYEE
+ ├── WRITE_EMPLOYEE
+ └── DELETE_EMPLOYEE
+
+USER
+ └── READ_EMPLOYEE
+
+
+Role indicates:
+
+	Who the user is
+
+Authority indicates:
+
+	What the user can do
+
+
+
+Special Behavior of Roles in Spring Security:
+---------------------------------------------
+
+When you write:
+
+	.hasRole("ADMIN")
+
+Spring automatically converts it to:
+
+	.hasAuthority("ROLE_ADMIN")
+
+Notice the prefix:
+
+ROLE_
+
+--Spring treats roles as authorities with the prefix ROLE_
+
+
+Example:
+
+		UserDetails user= User.builder()
+				.username("admin")
+				.password(passwordEncoder.encode("1234"))
+				.roles("ADMIN")
+				.build();
+
+Internally Spring stores:
+
+ROLE_ADMIN
+
+as an authority.
+
+
+
+hasRole() vs hasAuthority():
+----------------------------
+
+Using Role:
+
+
+.requestMatchers("/employees")
+.hasRole("ADMIN")
+
+Spring checks:
+
+ROLE_ADMIN
+
+
+Using Authority:
+
+.requestMatchers("/employees")
+.hasAuthority("ROLE_ADMIN")
+
+--This performs the same authorization check.
+
+
+
+Fine-Grained Access with Authorities
+-------------------------------------
+
+--Roles are often too broad.
+
+Example:
+
+Instead of:
+
+ADMIN
+MANAGER
+HR
+
+we can define specific permissions.
+
+
+
+.requestMatchers(HttpMethod.GET, "/employees")
+.hasAuthority("READ_EMPLOYEE")
+
+.requestMatchers(HttpMethod.POST, "/employees")
+.hasAuthority("CREATE_EMPLOYEE")
+
+.requestMatchers(HttpMethod.DELETE, "/employees/**")
+.hasAuthority("DELETE_EMPLOYEE")
+
+--Now access depends on permissions rather than job titles.
+
+
+
+Creating Users with Roles:
+--------------------------
+
+@Bean
+UserDetailsService userDetailsService() {
+
+    UserDetails admin =
+            User.builder()
+                .username("admin")
+                .password(passwordEncoder.encode("1234"))
+                .roles("ADMIN")
+                .build();
+
+    return new InMemoryUserDetailsManager(admin);
+}
+
+
+Internally Spring stores:
+
+ROLE_ADMIN
+
+
+
+
+Creating Users with Authorities:
+-------------------------------
+
+
+@Bean
+UserDetailsService userDetailsService() {
+
+	UserDetails user= User.builder()
+				.username("admin")
+				.password(passwordEncoder.encode("1234"))
+				.authorities(
+                            		"READ_EMPLOYEE",
+                            		"WRITE_EMPLOYEE",
+                            		"DELETE_EMPLOYEE"
+				)
+				.build();
+
+    return new InMemoryUserDetailsManager(admin);
+}
+
+
+--No roles are stored.
+
+--Only authorities are assigned.
+
+
+
+
+Configuring Role-Based Authorization:
+-------------------------------------
+
+
+@Bean
+SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception {
+
+    http.authorizeHttpRequests(auth ->
+            auth
+
+            .requestMatchers("/login", "/register","/home")
+            .permitAll()
+
+            .requestMatchers("/admin/**")
+            .hasRole("ADMIN")
+
+            .requestMatchers("/user/**")
+            .hasAnyRole("USER","ADMIN")
+
+            .anyRequest()
+            .authenticated()
+    );
+
+    return http.build();
+}
+
+--All the configured endpoints require authentication because:
+
+hasRole("ADMIN") → user must be logged in and have ADMIN role.
+hasAnyRole("ADMIN","USER") → user must be logged in and have one of those roles.
+anyRequest().authenticated() → any other endpoint also requires login.
+
+
+HTTP Basic Authentication:
+---------------------------
+
+--To enable Basic Authentication:
+
+
+	http.httpBasic(Customizer.withDefaults());
+
+
+--Spring Security uses the browser's built-in username/password dialog.
+
+--Credentials are sent in the HTTP Authorization header.
+
+Suitable for:
+
+REST APIs
+Testing using Postman
+Internal applications
+
+
+
+
+Disabling CSRF:
+----------------
+
+--Spring Security enables CSRF protection by default.
+
+--For stateless REST APIs (especially JWT-based applications), CSRF is usually disabled.
+
+	http.csrf(csrf -> csrf.disable());
+
+--Without disabling CSRF, POST, PUT, PATCH and DELETE requests may be rejected if a valid CSRF token is not supplied.
+
+
+
+Form Login Authentication:
+--------------------------
+
+To enable form-based login:
+
+	http.formLogin(Customizer.withDefaults());
+
+Spring Security provides a default login page.
+
+--When an unauthenticated user tries to access a protected resource:
+
+GET /employees
+
+--Spring automatically redirects the user to:
+
+/login
+
+--After successful authentication:
+
+A session is created.
+User details are stored in the session.
+Future requests are authenticated using the session.
+
+Suitable for:
+
+Traditional Web Applications
+Admin Dashboards
+Banking Portals
+E-Commerce Websites
+
+
+
+
+
+A Typicall complete configuration:
+----------------------------------
+
+package com.hdfc.config;
+
+@Configuration
+public class SecurityConfig {
+
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        http
+
+            // Disable CSRF protection
+            // Common for REST APIs / Postman testing
+            .csrf(csrf -> csrf.disable())
+
+            // Authorization rules
+            .authorizeHttpRequests(auth -> auth
+
+                .requestMatchers(
+                        "/login",
+                        "/register",
+                        "/home"
+                )
+                .permitAll()
+
+                .requestMatchers("/admin/**")
+                .hasRole("ADMIN")
+
+                .requestMatchers("/user/**")
+                .hasAnyRole("USER", "ADMIN")
+
+                .anyRequest()
+                .authenticated()
+            )
+
+            // Enable Form Login
+            .formLogin(Customizer.withDefaults())
+
+            // Enable HTTP Basic Authentication
+            .httpBasic(Customizer.withDefaults());
+
+        return http.build();
+    }
+}
+
+
+
+Custom Login API using Request Body Authentication:
+===================================================
+
+
+--Until now, we have seen two authentication approaches:
+
+Approach 1: Default Login Form
+
+/login
+
+--provided automatically by Spring Security.
+
+Approach 2: HTTP Basic Authentication
+
+Authorization: Basic YWRtaW46MTIzNA==
+
+--where username and password are sent through the request header.
+
+
+However, modern applications such as:
+
+React Applications
+Angular Applications
+Mobile Applications
+Single Page Applications (SPA)
+
+--typically send credentials in the request body as JSON.
+
+Example:
+
+POST /signIn
+
+{
+   "username":"admin",
+   "password":"1234"
+}
+
+--To support this approach, we can create our own custom login endpoint.
+
+
+Authentication Flow:
+--------------------
+
+Client
+   |
+POST /signIn
+   |
+   v
+Controller
+   |
+   v
+AuthenticationManager
+   |
+   v
+AuthenticationProvider
+   |
+   v
+UserDetailsService
+   |
+   v
+UserDetails
+   |
+   v
+Password Verification
+   |
+   v
+Authentication Success
+   |
+   v
+SecurityContextHolder
+   |
+   v
+HttpSession
+   |
+   v
+JSESSIONID
+
+
+Step 1: Create LoginDTOBean
+
+The client will send username and password inside the request body.
+
+package com.hdfc.dto;
+
+import lombok.Data;
+
+@Data
+public class LoginDTOBean {
+
+    private String username;
+    private String password;
+
+}
+
+
+
+Example Request:
+
+POST /signIn
+
+{
+   "username":"admin",
+   "password":"1234"
+}
+
+--Spring automatically converts the JSON request body into a LoginDTOBean object.
+
+
+
+Step2: Create a EmployeeController class having 2 basic endpoints:
+
+
+EmployeeController.java:
+------------------------
+
+
+package com.hdfc.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController {
+
+	@GetMapping("/hello1")
+	public String sayHello() {
+		return "Welcome to Spring Security...";
+	}
+	
+	
+	@GetMapping("/hello2")
+	public String sayHello2() {
+		return "Welcome to Spring Security 2...";
+	}	
+	
+	
+	
+}
+
+
+
+Step 3: Configure Security
+
+--Create the security configuration class.
+
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public SecurityFilterChain securityConfig(HttpSecurity http) throws Exception {
+
+        http.authorizeHttpRequests(auth -> 
+
+		auth
+
+                .requestMatchers(
+                        "/employees/hello1",
+                        "/signIn")
+                .permitAll()
+
+                .anyRequest()
+                .authenticated()
+
+        )
+
+        .csrf(csrf -> csrf.disable())
+
+        .formLogin(Customizer.withDefaults())
+
+        .httpBasic(Customizer.withDefaults());
+
+        return http.build();
+    }
+
+}
+
+
+
+Here,  
+
+.requestMatchers(
+                "/employees/hello1",
+                 "/signIn")
+                .permitAll()
+
+--These endpoints can be accessed without authentication.
+
+--All remaining endpoints require authentication.
+
+
+Step 3: configure users
+
+For demonstration purposes, we will use InMemoryUserDetailsManager.
+
+
+	@Bean
+	InMemoryUserDetailsManager userDetailsService(PasswordEncoder passwordEncoder) {
+
+		UserDetails admin = User
+					.builder()
+					.username("admin")
+					.password(passwordEncoder.encode("1234"))
+					.roles("ADMIN")
+					.build();
+
+		UserDetails user = User
+					.builder()
+					.username("user")
+					.password(passwordEncoder.encode("1234"))
+					.roles("USER")
+					.build();
+
+		return new InMemoryUserDetailsManager(admin, user);
+
+	}
+
+	@Bean
+	PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+
+
+Step 4: Expose AuthenticationManager Bean
+
+--To perform authentication manually inside the controller, we need access to AuthenticationManager.
+
+
+@Bean
+AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)throws Exception {
+
+    return authenticationConfiguration.getAuthenticationManager();
+}
+
+
+
+Normally Spring Security internally uses:
+
+UsernamePasswordAuthenticationFilter
+
+to call AuthenticationManager.
+
+--Since we are performing authentication manually, we need to inject AuthenticationManager into our controller.
+
+
+
+
+Complete AppConfig.java:
+-----------------------
+
+package com.hdfc.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+public class AppConfig {
+
+	 @Bean
+	  SecurityFilterChain securityConfig(HttpSecurity http) throws Exception {
+
+	        http.authorizeHttpRequests(auth -> 
+
+			auth
+
+	                .requestMatchers(
+	                        "/hello1",
+	                        "/signIn")
+	                .permitAll()
+
+	                .anyRequest()
+	                .authenticated()
+
+	        )
+
+	        .csrf(csrf -> csrf.disable())
+
+	        .formLogin(Customizer.withDefaults())
+
+	        .httpBasic(Customizer.withDefaults());
+
+	        return http.build();
+	    }
+
+	
+
+
+	@Bean
+	InMemoryUserDetailsManager userDetailsService(PasswordEncoder passwordEncoder) {
+
+		UserDetails admin = User
+					.builder()
+					.username("admin")
+					.password(passwordEncoder.encode("1234"))
+					.roles("ADMIN")
+					.build();
+
+		UserDetails user = User
+					.builder()
+					.username("user")
+					.password(passwordEncoder.encode("1234"))
+					.roles("USER")
+					.build();
+
+		return new InMemoryUserDetailsManager(admin, user);
+
+	}
+
+	@Bean
+	PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+
+	@Bean
+	AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)throws Exception {
+
+    		return authenticationConfiguration.getAuthenticationManager();
+	}
+
+}
+
+
+
+
+Step 5: Create Custom Login Endpoint
+
+LoginController.java:
+--------------------
+
+
+package com.hdfc.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.hdfc.dto.LoginDTOBean;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
+@RestController
+public class LoginController {
+
+    private  AuthenticationManager authenticationManager;
+
+    LoginController(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
+
+    @PostMapping("/signIn")
+    public String loginHandler(@RequestBody LoginDTOBean loginBean, HttpServletRequest req) {
+
+    	Authentication unAuth = new UsernamePasswordAuthenticationToken(loginBean.getUsername(), loginBean.getPassword());
+    	
+        Authentication auth = authenticationManager
+					.authenticate(unAuth);
+
+        if(auth.isAuthenticated()) {
+
+            SecurityContext sc = SecurityContextHolder.getContext();
+
+            sc.setAuthentication(auth);
+
+            HttpSession session = req.getSession(true);
+
+            session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, sc);
+
+            return "Authentication Successful";
+        }
+
+        return "Authentication Failed";
+    }
+
+}
+
+
+
+Understanding What Happens Internally:
+--------------------------------------
+
+Step 1
+
+Client sends:
+
+POST /signIn
+
+{
+   "username":"admin",
+   "password":"1234"
+}
+
+Step 2
+
+Controller creates:
+
+new UsernamePasswordAuthenticationToken(username,password)
+
+At this stage:
+
+Principal      = admin
+Credentials    = 1234
+Authorities    = null
+Authenticated  = false
+
+--User is not authenticated yet.
+
+Step 3
+
+Controller calls:
+
+	authenticationManager.authenticate(...)
+
+Flow:
+
+AuthenticationManager
+          |
+          v
+ProviderManager
+          |
+          v
+DaoAuthenticationProvider
+          |
+          v
+UserDetailsService
+
+
+Step 4
+
+UserDetailsService loads:
+
+Username
+Password
+Authorities
+
+for the requested user.
+
+Step 5
+
+Password verification happens.
+
+passwordEncoder.matches(
+        rawPassword,
+        encodedPassword
+);
+
+Step 6
+
+If credentials are valid:
+
+Username Correct
+Password Correct
+
+Spring Security creates a new authenticated Authentication object.
+
+Authenticated = true
+
+Step 7: Store Authentication in SecurityContext
+
+SecurityContext sc =
+        SecurityContextHolder.getContext();
+
+sc.setAuthentication(auth);
+
+
+
+
+
+PasswordEncoder & BCrypt Deep Dive:
+===================================
+
+Why Do We Need Password Encoding?
+
+--Suppose we store user information in a database.
+
+
+
+User Table:
+
+| Username | Password   |
+| -------- | ---------- |
+| admin    | 1234       |
+| ratan    | welcome123 |
+| john     | password   |
+
+
+
+
+Problem
+
+If a hacker gains access to the database:
+
+Username   Password
+------------------
+admin      1234
+ratan      welcome123
+john       password
+
+all passwords become immediately visible.
+
+This is a major security risk.
+
+Real World Rule:
+
+--Never Store Passwords in Plain Text
+
+Instead store: Hashed password.
+
+
+What is Hashing?
+-----------------
+
+--Hashing converts data into a fixed-length string.
+
+Example:
+
+1234
+↓
+A1B2C3D4E5F6...
+
+--The important property:
+
+Input
+  |
+  v
+Hash Function
+  |
+  v
+Hash Value
+
+
+
+One-Way Process:
+----------------
+
+--Hashing is designed to be:
+
+One Way
+
+Meaning:
+
+Password
+   |
+   v
+ Hash
+
+--is possible.
+
+But:
+
+ Hash
+   |
+   v
+Original Password
+
+
+--is practically impossible.
+
+
+Hashing vs Encryption:
+-----------------------
+
+Students often confuse these concepts.
+
+Encryption:
+
+
+Original Data
+      |
+      v
+Encryption Key
+      |
+      v
+Encrypted Data
+
+--Can be reversed.
+
+Encrypted Data
+       |
+       v
+Decryption Key
+       |
+       v
+Original Data
+
+
+Example:
+
+Hello
+↓
+X7P2K8L9
+↓
+Hello
+
+--using the decryption key.
+
+
+Hashing:
+
+Password
+     |
+     v
+Hash Function
+     |
+     v
+Hash Value
+
+--Cannot be reversed.
+
+--No decryption key exists.
+
+
+
+
+Q/- Why are passwords hashed instead of encrypted?
+
+--Because applications never need to recover the original password.
+
+--They only need to verify whether the entered password is correct.
+
+
+PasswordEncoder Interface:
+--------------------------
+
+--Spring Security provides:
+
+	PasswordEncoder interface.
+
+Methods:
+
+public interface PasswordEncoder {
+
+    String encode(CharSequence rawPassword);
+
+    boolean matches(
+            CharSequence rawPassword,
+            String encodedPassword
+    );
+
+}
+
+
+Responsibilities
+
+1. encode()
+
+Used during:
+
+	User Registration
+
+2. matches()
+
+Used during:
+
+	User Login
+
+
+BCryptPasswordEncoder:
+----------------------
+
+--Most commonly used PasswordEncoder implementation.
+
+	BCryptPasswordEncoder
+
+
+Creating Bean:
+--------------
+
+@Bean
+PasswordEncoder passwordEncoder() {
+
+    return new BCryptPasswordEncoder();
+
+}
+
+
+BCrypt provides:
+
+Strong Hashing
+Automatic Salt Generation
+Protection against Rainbow Table Attacks
+Industry Standard
+
+
+
+Encoding Passwords:
+--------------------
+
+Example:
+
+String encodedPassword = passwordEncoder.encode("1234");
+
+Output:
+
+$2a$10$O4s9hF8YjT....
+
+
+Important Observation
+
+Run again:
+
+passwordEncoder.encode("1234");
+
+Output:
+
+$2a$10$L8xT7Ks9Ab....
+
+
+Same Password, Different Hash
+
+Input: 1234
+
+Output 1:
+
+$2a$10$AAA....
+
+Output 2:
+
+$2a$10$BBB....
+
+Output 3:
+
+$2a$10$CCC....
+
+
+--Because BCrypt automatically generates a:
+
+Salt
+
+for every password.
+
+
+--Salt is a random value added to the password before hashing.
+
+
+Without Salt:
+
+1234
+↓
+HASH_ABC
+
+Another user:
+
+1234
+↓
+HASH_ABC
+
+--Same password → Same hash.
+
+
+With Salt:
+
+1234 + RandomSalt1
+↓
+HASH_XYZ
+
+1234 + RandomSalt2
+↓
+HASH_PQR
+
+--Different hashes are generated.
+
+
+Why Salt Is Important?
+
+Suppose:
+
+100 users
+
+have:
+
+1234
+
+as their password.
+
+Without salt:
+
+All 100 users
+        |
+        v
+  Same Hash
+
+--A hacker immediately knows many users share the same password.
+
+
+With salt:
+
+User1 -> Hash A
+User2 -> Hash B
+User3 -> Hash C
+
+--Even though the password is identical.
+
+
+
+
+Spring Security Database Registration example:
+==============================================
+
+Create a Spring Boot Application:
+
+	SpringSecurityDBWithoutJWT
+
+Dependecies:
+-----------
+
+SpringWeb
+Devtools
+lombok
+Spring Security
+Spring Data JPA
+PostgreSQL Driver
+
+
+application.properties:
+-----------------------
+
+spring.application.name=SpringSecurityDBWithoutJWT
+
+
+#db specific properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/testdb
+spring.datasource.username=postgres
+spring.datasource.password=root
+
+#ORM s/w specific properties
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+
+
+AppConfig.java:
+---------------
+
+package com.hdfc.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+public class AppConfig {
+
+	@Bean
+	SecurityFilterChain securityConfig(HttpSecurity http) throws Exception {
+
+		http.authorizeHttpRequests(auth -> {
+
+			auth.requestMatchers(HttpMethod.POST, "/customers")
+					.permitAll()
+					.anyRequest()
+					.authenticated();
+
+		}).csrf(csrf -> csrf.disable())
+		  .formLogin(Customizer.withDefaults())
+		  .httpBasic(Customizer.withDefaults());
+
+
+		return http.build();
+
+	}
+
+	@Bean
+	PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+}
+
+
+Refer the entire application in GitHubRepo
+
+
+
+To Register the user:
+
+POST http://localhost:8080/customers
+
+payload:
+{
+  "name": "Raj",
+	"email": "raj@gmail.com",
+	"password": "1234",
+	"address": "delhi"
+}
+
+
+
+To perform Login:
+
+GET /signIn
+
+Auht Header --> Basic
+
+username: raj@gmail.com
+password: 1234
+
+Once Logged In we can call any protected API.
+
+
+Note: Inside the above application 
+
+In CustomerUserDetailsService class :
+
+package com.hdfc.service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import com.hdfc.entity.Customer;
+import com.hdfc.repository.CustomerRepository;
+
+@Service
+public class CustomerUserDetailsService implements UserDetailsService{
+
+	
+	private CustomerRepository customerRepository;
+	
+	public CustomerUserDetailsService(CustomerRepository customerRepository) {
+		this.customerRepository = customerRepository;
+	}
+
+
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+		Optional<Customer> opt= customerRepository.findByEmail(username);
+		
+		
+		if(opt.isPresent()) {
+			Customer customer= opt.get();
+			
+			
+			//Empty Authorities
+			List<GrantedAuthority> authorities = new ArrayList<>();
+			//authorities.add(new SimpleGrantedAuthority(customer.getRole()));
+			
+			
+			return new User(customer.getEmail(), customer.getPassword(), authorities);
+			
+			
+		}
+		else {
+			throw new BadCredentialsException("User Details not found with username: "+username);
+		}	
+	}
+	
+}
+
+
+
+Here, instead of making use of predefined "User" class which is the implementation of UserDetails interface, we can make our own UserDetails implementation
+
+Example
+
+
+CustomerUserDetails.java:
+-------------------------
+
+package com.hdfc.service;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import com.hdfc.entity.Customer;
+
+public class CustomerUserDetails implements UserDetails{
+
+	private Customer customer;
+	
+	
+	
+	
+	public CustomerUserDetails(Customer customer) {
+		this.customer = customer;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+	
+		List<GrantedAuthority> authorities = new ArrayList<>();
+		
+		//authorities.add(customer.getRoles());
+	
+		return authorities;
+	}
+
+	@Override
+	public @Nullable String getPassword() {
+	
+		return customer.getPassword();
+	}
+
+	@Override
+	public String getUsername() {
+		return customer.getEmail();
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+	
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+	
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+}
+
+
+
+now inside the CustomerUserDetailsService class:
+
+instead of :
+
+return new User(customer.getEmail(), customer.getPassword(), authorities);
+
+
+use:
+
+return new CustomerUserDetails(customer);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

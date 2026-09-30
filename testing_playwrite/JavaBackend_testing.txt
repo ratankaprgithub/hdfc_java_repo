@@ -463,7 +463,7 @@ public class Calculator {
 5. Generate reports..
 
 
---That That software/framework is:
+--That software/framework is:
 
 JUnit
 
@@ -637,6 +637,12 @@ public class Calculator {
     public int subtract(int a, int b) {
         return a - b;
     }
+
+    public int divide(int a, int b) {
+		return a/b;
+    }
+	
+
 }
 
 
@@ -1021,7 +1027,7 @@ Think of it as the manager of the entire testing system.
 
 Responsibilities:
 
-1. Test Discovery
+1. Test Discovery (appropriate test engine..)
 
 Finds:
 
@@ -2442,6 +2448,8 @@ UserServiceTest
 
 
 --Now even a non-technical manager can understand the report.
+
+
 
 
 
@@ -4151,6 +4159,17 @@ Here:
 
 anyString()   --> Matcher
 eq("ADMIN")   --> Matcher
+
+
+Student task:
+
+verify() method in mockito
+argument captor
+
+do some r&d on the above topics..
+
+
+
 
 
 
