@@ -1,0 +1,5820 @@
+Unit Testing:
+==============
+
+Recap: What is Testing?
+
+In previous sessions we learned:
+
+--Testing is the process of verifying that a software application behaves as expected
+ and produces correct results for different inputs and scenarios.
+
+--Testing means comparing Actual Result with Expected Result.
+
+Example:
+
+2 + 3 = 5
+
+Expected: 5
+Actual: 5
+
+Result:
+	PASS
+
+
+Imagine developing a calculator application. If you create an addition method:
+
+public int add(int a, int b) {
+    return a + b;
+}
+
+How do you know it always works correctly?
+
+What if the inputs are negative?
+What if one value is zero?
+What if large numbers are passed?
+
+--Instead of manually checking every scenario, 
+developers write automated tests to verify the behavior of their code.
+
+--This is where Unit Testing comes into the picture.
+
+
+
+Where Does Unit Testing Fit?
+-----------------------------
+
+Recall Testing Pyramid:
+
+            UI Tests
+            --------
+               │
+       Integration Tests
+       ------------------
+               │
+          Unit Tests
+   ---------------------------
+
+
+Unit Tests:
+-----------
+
+--Unit Testing is a software testing technique in which individual units or components of an application are tested independently.
+
+--A unit is the smallest testable piece of code, such as:
+
+A method
+A function
+A class
+A component
+
+***The goal is to verify that each unit works correctly in isolation.
+
+For example:
+
+public class Calculator {
+
+    public int add(int a, int b) {
+        return a + b;
+    }
+}
+
+Unit Test:
+
+@Test
+void testAddition() {
+ 
+   Calculator calculator = new Calculator();
+
+    assertEquals(5, calculator.add(2, 3));
+}
+
+The test automatically verifies that 2 + 3 produces 5.
+
+Fast.
+Cheap.
+Easy to write.
+Most common.
+
+
+
+Integration Tests:
+-------------------
+
+--Test multiple modules together.
+
+Example:
+
+Service
+   ↓
+Repository
+   ↓
+Database
+
+--Testing all together.
+
+Slower.
+More setup required.
+
+
+
+Real Project Example:
+---------------------
+
+--Suppose HDFC has a feature:
+
+transferMoney()
+
+inside:
+
+AccountService
+
+Unit Testing:
+
+Only test AccountService logic.
+
+Database NOT involved.
+API NOT involved.
+Server NOT involved.
+
+
+
+Integration Testing:
+
+AccountService
+      ↓
+  Repository
+      ↓
+  Database
+
+--Everything tested together.
+
+
+Why Unit Testing Matters?
+-------------------------
+
+Imagine:
+
+You write:
+
+	calculateInterest()
+
+Today it works.
+
+After 3 months another developer changes code.
+
+Suddenly:
+
+Interest Calculation Wrong
+
+Production bug.
+Customer unhappy.
+
+
+Unit Tests act like:
+
+	Security Guards
+
+Whenever code changes:
+
+	Run Tests
+
+If something breaks:
+
+	Tests Fail
+
+Developer immediately knows.
+
+
+Real Life Analogy:
+------------------
+
+Consider a car manufacturing company.
+
+--Before assembling the entire car, individual parts are tested:
+
+Engine testing
+Brake testing
+Headlight testing
+Battery testing
+
+--If every component works correctly, the chances of the complete car failing are significantly reduced.
+
+Similarly, in software development, we test individual units before integrating them into the complete application.
+
+
+Then test entire car together.
+
+This is like:
+
+	Integration/System Testing
+
+
+Characteristics of Good Unit Tests:
+-----------------------------------
+
+A good Unit Test should be:
+
+1. Fast
+
+--Tests should execute quickly.
+
+Bad:
+
+Call Database
+Call Remote API
+Wait 20 Seconds
+
+Good:
+
+	Run in milliseconds
+
+
+2. Isolated:
+
+--Test only ONE class.
+
+Example:
+
+Testing:
+
+	UserService
+
+Don't test:
+
+Database
+Email Service
+Kafka
+
+together.
+
+--We'll mock them later using Mockito.
+
+
+
+3. Repeatable
+
+Running the same test multiple times should produce the same result.
+
+Bad:
+
+	Depends on internet
+
+Good:
+
+	Runs anywhere
+
+Same Result
+
+
+4. Independent:
+
+--Test should not depend on another test.
+
+Bad:
+
+	Test B requires Test A
+
+Good:
+
+	Every test runs separately
+
+5. Easy To Read:
+
+--Anyone should understand what the test is verifying.
+
+Bad:
+
+	test1()
+
+Good:
+
+	shouldCalculateInterestForValidInput()
+	
+
+
+Benefits of Unit Testing:
+-------------------------
+
+1. Early Bug Detection
+
+--Defects are found during development rather than in production.
+
+2. Better Code Quality
+
+--Developers write cleaner and more maintainable code.
+
+3. Easier Refactoring
+
+--Code can be modified confidently because tests verify correctness.
+
+4. Documentation
+
+--Tests act as executable documentation showing how code should behave.
+
+5. Faster Development Cycle
+
+--Automated tests reduce manual verification efforts.
+
+
+
+Unit Testing in Modern Java Development:
+-----------------------------------------
+
+--In modern Java projects, unit testing is considered a standard development practice.
+
+It is commonly used with:
+
+Core Java Applications
+Spring Boot Applications
+Microservices
+REST APIs
+Enterprise Applications
+
+--Most organizations integrate unit tests into CI/CD pipelines so that tests run automatically whenever code is pushed to a repository.
+
+
+
+Popular Java Testing Frameworks:
+-------------------------------
+
+Some commonly used testing frameworks are:
+
+1. JUnit
+
+--The most widely used unit testing framework for Java.
+
+2. Mockito
+
+--Used for creating mock objects and testing components in isolation.
+
+3. AssertJ
+
+--Provides fluent and readable assertions.
+
+4. Spring Boot Test
+
+--Provides testing support for Spring applications.
+
+
+Unit Testing Workflow:
+----------------------
+
+A typical workflow is:
+
+Write application code.
+        |
+Create test cases.
+        |
+Execute tests.
+        |
+Verify results.
+        |
+Fix failures if any.
+        |
+Run tests again.
+        |
+Commit code.
+
+--This cycle continues throughout the software development process.
+
+
+
+Note: "The purpose of testing is not to prove that the code works, but to discover situations where it does not work."
+
+
+Unit Test Structure:
+--------------------
+
+Industry follows:
+
+AAA Pattern
+
+	A = Arrange
+
+Prepare data.
+
+	B = Act
+
+Call method.
+
+	C = Assert
+
+--Verify result.
+
+
+Example:
+
+@Test
+void testAdd() {
+
+    // Arrange
+    Calculator calculator = new Calculator();
+
+    // Act
+    int result = calculator.add(10, 20);
+
+    // Assert
+    assertEquals(30, result);
+}
+
+
+--Almost every Unit Test follows this pattern.
+
+
+JUnit 5 (JUnit Jupiter)
+=======================
+
+--JUnit is the most popular testing framework for Java applications. 
+It provides a set of annotations, assertions, and utilities that help developers write and execute automated tests.
+
+Before JUnit, developers often tested code manually:
+
+public class Calculator {
+
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    public static void main(String[] args) {
+
+        Calculator c = new Calculator();
+
+        if(c.add(2, 3) == 5) {
+            System.out.println("Test Passed");
+        } else {
+            System.out.println("Test Failed");
+        }
+    }
+}
+
+
+--This approach becomes difficult when hundreds of methods need testing.
+
+--We need a software/framework which can: 
+
+1. Help to create test cases, where we can test the add() method.
+
+2. Run our test cases automatically.
+
+3. Compare actual vs expected value
+
+4. Show the result as PASS / FAIL
+
+5. Generate reports..
+
+
+--That That software/framework is:
+
+JUnit
+
+--JUnit automates this process.
+
+--JUnit is a Java Testing Framework used to perform Unit Testing of Java applications.
+
+It helps developers:
+
+Write tests
+Execute tests
+Verify results
+Generate reports
+
+
+Real Life Analogy:
+------------------
+
+--Suppose students write exams.
+
+Who evaluates answer sheets?
+
+	Examiner
+
+Similarly:
+
+--Developers write test cases.
+
+Who executes them?
+
+	JUnit
+
+
+
+Evolution of JUnit:
+--------------------
+
+JUnit 3:
+
+--Based on inheritance
+
+--Test classes extended TestCase
+
+Example:
+
+
+public class CalculatorTest extends TestCase {
+
+}
+
+
+
+JUnit 4:
+
+--It introduced annotations:
+
+--Easier to write tests
+
+@Test
+public void testAdd() {
+
+}
+
+
+
+JUnit 5:
+
+--Current and most modern version.
+
+Major improvements:
+
+Better architecture
+More annotations
+Nested tests
+Parameterized tests
+Dynamic tests
+Better IDE integration
+Better extension model
+
+
+
+
+First JUnit 5 Program:
+----------------------
+
+
+Step 1
+
+--Create Maven Project
+
+Calculator-app
+
+
+
+Be sure the proper JRE: for Java 21 paste the following property inside the pom.xml file
+
+<properties>
+    <maven.compiler.release>21</maven.compiler.release>
+</properties>
+  
+
+--Update the maven project..
+
+
+
+
+
+Step 2
+
+Add the following dependency inside the pom.xml file under the <dependencies> tag.
+
+<dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter</artifactId>
+    <version>6.1.3</version>
+    <scope>test</scope>
+</dependency>
+
+
+
+--Why Scope = test ?
+
+<scope>test</scope>
+
+Means:
+
+--Available during testing
+--Not included in production deployment
+
+This reduces application size.
+
+
+Project Structure:
+-------------------
+
+Typical Maven Structure:
+
+project
+│
+├── src
+│   ├── main
+│   │   └── java
+│   │       └── application code
+│   │
+│   └── test
+│       └── java
+│           └── test classes
+│
+└── pom.xml
+
+
+
+
+Step 3:
+
+Business Class
+
+--inside the src/main/java
+
+Calculator.java
+----------------
+
+package com.hdfc.service;
+
+public class Calculator {
+
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    public int subtract(int a, int b) {
+        return a - b;
+    }
+}
+
+
+Step 4:
+
+Create Test Class
+
+Inside src/test/java
+
+CalculatorTest.java
+-------------------
+
+package com.hdfc.service;
+
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+public class CalculatorTest {
+
+    @Test
+    void testAdd() {
+
+        // Arrange
+        Calculator calculator = new Calculator();
+
+        // Act
+        int result = calculator.add(10, 20);
+
+        // Assert
+        assertEquals(30, result);
+    }
+}
+
+
+
+
+
+
+@Test annotation:
+-----------------
+
+
+--It is a method level annotation.
+
+--This annotation tells JUnit:
+
+"This method is a test case."
+
+--When JUnit runs, it discovers all methods marked with @Test and JUnit Runner executes it automatically.
+
+Without @Test:
+
+void testAddition() {
+
+}
+
+--JUnit ignores the method.
+
+
+
+Test Execution Flow:
+-------------------
+
+JUnit Starts
+      ↓
+Find Test Classes
+      ↓
+Find @Test Methods
+      ↓
+Execute Tests
+      ↓
+Generate Results
+      ↓
+Pass / Fail Report
+
+
+
+Adding Another Test:
+---------------------
+
+@Test
+void testSubtract() {
+
+    Calculator calculator = new Calculator();
+
+    int result = calculator.subtract(20, 5);
+
+    assertEquals(15, result);
+}
+
+
+--JUnit executes each test independently.
+
+
+Running Tests:
+--------------
+
+In Eclipse / IntelliJ:
+
+Right Click on the project..
+    ↓
+  Run As
+    ↓
+JUnit Test
+
+Output:
+
+testAdd: PASSED
+testSubtract: PASSED
+
+Green Bar:
+
+--All Tests Passed
+
+
+Common Naming Convention:
+
+Calculator.java: CalculatorTest.java
+
+UserService.java: UserServiceTest.java
+
+OrderService.java: OrderServiceTest.java
+
+Benefits:
+
+Easy maintenance
+Easy navigation
+Industry standard
+
+
+
+Best Practices:
+---------------
+
+--One Behavior Per Test
+
+Good:
+
+@Test
+void shouldAddTwoNumbers() {
+}
+
+Bad:
+
+@Test
+void testEverything() {
+}
+
+
+
+Meaningful Names:
+-----------------
+
+Good:
+
+	shouldReturnSumOfTwoPositiveNumbers()
+
+Bad:
+
+	test1()
+
+--Keep Tests Small
+
+--A test should verify one specific behavior.
+
+
+
+Important Industry Rule:
+-------------------------
+
+--A Unit Test should test business logic only and should not depend on databases, APIs, servers, or external systems.
+
+
+
+
+JUnit 5 Architecture:
+------------------------
+
+
+--refer JUnit5_architecture.png
+
+
+High Level Architecture:
+-----------------------
+
+
+Our Tests
+    |
+JUnit API
+    |
+JUnit Engine
+    |
+JUnit Platform
+    |
+IDE / Maven / Gradle
+
+
+
+
+1. Test Code Layer
+
+--This is the code written by developers.
+
+Example:
+
+@Test
+void shouldAddTwoNumbers() {
+
+}
+
+Here we write:
+
+Test methods
+Assertions
+Setup code
+Cleanup code
+
+--This layer contains only our test logic.
+
+
+
+Real Life Analogy:
+
+--Imagine a student writing an exam.
+
+Student = Developer
+Answer Sheet = Test Code
+
+
+
+2. API Layer:
+
+--This layer provides annotations and utility methods used while writing tests.
+
+Example:
+
+@Test
+@BeforeEach
+@AfterEach
+assertEquals()
+assertTrue()
+
+--All these come from:
+
+junit-jupiter-api
+
+
+Real Life Analogy:
+
+Think of it as:
+
+--Language used to write the exam
+
+--Without language, students cannot write answers.
+
+--Similarly, without API, developers cannot write tests.
+
+
+
+3. Test Engine Layer
+
+--The Engine actually executes the tests.
+
+Example:
+
+junit-jupiter-engine
+
+Responsibilities:
+
+Discover test methods
+Execute tests
+Evaluate assertions
+Generate results
+
+
+
+Example:
+
+Suppose we write:
+
+@Test
+void testAdd() {
+    assertEquals(5, 2 + 3);
+}
+
+The Engine:
+
+Finds the method
+Executes the method
+Evaluates assertion
+Reports Pass/Fail
+
+
+
+Real Life Analogy:
+
+--Teacher checking answer sheets
+
+Students write answers.
+
+Teacher evaluates them.
+
+Similarly:
+
+Developer writes tests
+Engine executes tests
+
+
+
+Moderrn JUnit 5 is no longer just a testing framework.
+
+It is a:
+
+Testing Platform
+
+--The Platform allows multiple engines to coexist.
+
+Example:
+
+                 JUnit Platform
+                       |
+        --------------------------------
+        |              |              |
+ Jupiter Engine   Vintage Engine  Custom Engine
+
+--So one project can run:
+
+JUnit 5 tests
+JUnit 4 tests
+Cucumber tests
+
+
+Modern JUnit 5 tests use:
+
+junit-jupiter-engine
+
+Example:
+
+@Test
+void testLogin() {
+}
+
+--This engine executes JUnit 5 tests.
+
+
+Vintage Engine:
+--------------
+
+--Used only for old projects.
+
+junit-vintage-engine
+
+Supports:
+
+JUnit 3
+JUnit 4
+
+
+--Most modern projects do not need Vintage Engine.
+
+
+Custom Engine:
+--------------
+
+JUnit Platform also supports other testing frameworks.
+
+Examples:
+
+Cucumber
+Spock
+Kotest
+
+Each framework can provide its own engine.
+
+
+
+4. JUnit Platform Layer
+
+--This is the most important layer.
+
+Think of it as the manager of the entire testing system.
+
+Responsibilities:
+
+1. Test Discovery
+
+Finds:
+
+@Test
+void testAdd() {
+}
+
+inside all classes.
+
+
+2. Test Execution:
+
+--Delegates execution to the correct engine.
+
+Example:
+
+JUnit 5 Test
+     |
+Jupiter Engine
+
+JUnit 4 Test
+     |
+Vintage Engine
+
+
+Result Collection
+
+Collects:
+
+Passed = 20
+Failed = 2
+Skipped = 1
+
+and returns them to IDE or Maven.
+
+
+
+Real Life Analogy
+
+Imagine a school principal.
+
+Principal
+     |
+     |-- Teacher A
+     |-- Teacher B
+     |-- Teacher C
+
+--The principal decides which teacher should evaluate which paper.
+
+Similarly:
+
+JUnit Platform
+     |
+     |-- Jupiter Engine
+     |-- Vintage Engine
+     |-- Custom Engine
+
+
+
+5. Tooling Layer
+
+--These are tools used by developers.
+
+Examples:
+
+IntelliJ IDEA
+Eclipse
+Maven
+Gradle
+Jenkins
+GitHub Actions
+
+When you click:
+
+Run Test
+
+--IntelliJ does not execute tests directly.
+
+Instead:
+
+Eclipse/IntelliJ
+    |
+JUnit Platform Launcher
+    |
+JUnit Platform
+
+--The platform then finds and executes the tests.
+
+
+Complete Execution Flow:
+------------------------
+
+Suppose we have:
+
+@Test
+void testAddition() {
+    assertEquals(5, 2 + 3);
+}
+
+
+
+Execution Flow:
+----------------
+
+IntelliJ / Maven
+        |
+JUnit Platform Launcher
+        |
+JUnit Platform
+        |
+Jupiter Engine
+        |
+testAddition()
+        |
+assertEquals(5, 2 + 3)
+        |
+       PASS
+
+
+
+
+
+Assertions in JUnit-5:
+======================
+
+--Assertions are methods used to verify whether the actual result matches the expected result.
+
+--An assertion acts like a checkpoint in a test case.
+
+If the condition is true, the test passes.
+
+If the condition is false, the test fails.
+
+
+--To validate the result, we use assertions:
+
+Example:
+
+@Test
+void testAddition() {
+    int result = 2 + 3;
+    assertEquals(5, result);
+}
+
+--Now JUnit can determine whether the test passed or failed.
+
+
+Common Assertions in JUnit 5:
+-----------------------------
+
+Import:
+
+import static org.junit.jupiter.api.Assertions.*;
+
+--This gives access to all assertion methods.
+
+
+Business Class:
+---------------
+
+public class Calculator {
+
+    public int add(int a,int b){
+        return a+b;
+    }
+}
+
+
+
+
+
+
+
+
+1. assertEquals()
+
+--Most commonly used assertion.
+--Checks whether two values are equal.
+
+Example:
+
+@Test
+void testAdd(){
+
+    Calculator c = new Calculator();
+
+    int actual = c.add(10,20);
+
+    assertEquals(30,actual);
+}
+
+
+
+
+
+2. assertNotEquals()
+
+--Checks whether two values are different.
+
+
+
+@Test
+void testAdd(){
+
+    Calculator c = new Calculator();
+
+    int actual = c.add(10,20);
+
+    assertNotEquals(100,actual);
+}
+
+
+Meaning:
+
+100 != 30
+
+PASS
+
+
+
+
+3. assertTrue()
+
+--Checks whether a condition is true.
+
+	
+@Test
+void testAdult(){
+
+    int age=25;
+
+    assertTrue(age>=18);
+}
+
+Evaluation:
+
+25 >= 18
+
+TRUE
+
+PASS
+
+
+Real Project Example:
+
+boolean active=true;
+
+assertTrue(active);
+
+
+
+
+
+4. assertFalse()
+
+--Checks whether a condition is false.
+
+	
+Example:
+
+@Test
+void testInactive(){
+
+    boolean deleted=false;
+
+    assertFalse(deleted);
+}
+
+PASS
+
+
+
+
+5. assertNull()
+
+--Checks whether an object is null.
+
+Example:
+
+@Test
+void testNull(){
+
+    String name=null;
+
+    assertNull(name);
+}
+
+PASS
+
+
+Real World Example:
+
+User user = repository.findById(100);
+
+assertNull(user);
+
+User not found.
+
+
+
+6. assertNotNull()
+
+--Checks object exists.
+
+@Test
+void testUser(){
+
+    String name="Ratan";
+
+    assertNotNull(name);
+}
+
+PASS
+
+
+
+7. assertThrows()
+
+--Verifies that an exception is thrown.
+
+Example:
+
+	@Test
+	void testDivide() {
+		
+		Calculator calculator = new Calculator();
+
+		assertThrows(ArithmeticException.class, ()->{
+			
+			calculator.divide(10, 0);		
+			
+		});
+		
+
+If wrong exception (Other than ArithmeticException occurs):
+
+FAIL
+
+If does not throw ArithmeticException:
+
+FAIL
+
+Real Service Layer Example:
+---------------------------
+
+--This is closer to Spring Boot projects.
+
+AgeValidator.java:
+
+
+public class AgeValidator {
+
+    public void validate(int age){
+
+        if(age < 18){
+
+            throw new IllegalArgumentException("Age must be at least 18");
+        }
+    }
+}
+
+Business Rule:
+
+Age >= 18
+
+Otherwise: IllegalArgumentException
+
+AgeValidatorTest.java
+----------------------
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
+public class AgeValidatorTest {
+
+    @Test
+    void testUnderAgeUser(){
+
+        AgeValidator validator = new AgeValidator();
+
+        assertThrows(IllegalArgumentException.class,
+                	() -> {
+                    		validator.validate(15);
+               		 });
+    }
+}
+
+
+Result:
+
+	PASS
+
+because:
+
+	validator.validate(15);
+
+throws:
+
+	IllegalArgumentException
+
+
+Verify Message:
+---------------
+
+@Test
+void testUnderAgeUser(){
+
+    AgeValidator validator = new AgeValidator();
+
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                    							() -> {
+                        							validator.validate(15);
+                    							});
+
+
+    assertEquals("Age must be at least 18",exception.getMessage());
+}
+
+
+
+8. assertDoesNotThrow()
+
+Opposite of:
+
+assertThrows()
+
+Used when:
+
+Code should execute successfully
+
+without exception.
+
+Syntax
+
+assertDoesNotThrow(
+        () -> {
+            // code
+        });
+
+
+
+
+
+9. assertSame()
+
+Checks both references point to same object.
+
+@Test
+void testSame(){
+
+    String s1="Hello";
+    String s2=s1;
+
+    assertSame(s1,s2);
+}
+
+PASS
+
+
+9. assertNotSame()
+
+
+@Test
+void testNotSame(){
+
+    String s1 = new String("Hello");
+
+    String s2 = new String("Hello");
+
+    assertNotSame(s1,s2);
+}
+
+PASS
+
+
+Best Practices:
+---------------
+
+1. Test both:
+
+	Success Path
+and
+
+	Failure Path
+
+
+Example
+
+For:
+
+registerUser()
+
+write:
+
+	Valid Registration Test
+
+and
+
+	Invalid Registration Test
+
+
+
+
+
+
+Practical Example1:
+--------------------
+
+LoanService.java
+
+public class LoanService {
+
+    public void applyLoan(int salary){
+
+        if(salary < 25000){
+
+            throw new IllegalArgumentException("Salary too low");
+        }
+    }
+}
+
+
+
+LoanServiceTest.java:
+
+
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+public class LoanServiceTest {
+
+    @Test
+    void testLowSalary(){
+
+        LoanService service =new LoanService();
+
+        IllegalArgumentException ex =
+                assertThrows(IllegalArgumentException.class,
+                        				() -> {
+                            					service.applyLoan(10000);
+                        				});
+
+        assertEquals("Salary too low", ex.getMessage());
+    }
+
+
+    @Test
+    void testValidSalary(){
+
+        LoanService service = new LoanService();
+
+        assertDoesNotThrow(
+                () -> {
+                    service.applyLoan(50000);
+                });
+    }
+}
+
+
+
+
+
+
+Practical Example2 :
+------------------
+
+UserService.java:
+-----------------
+
+package com.hdfc.service;
+
+public class UserService {
+
+    public boolean isEligible(int age){
+        return age>=18;
+    }
+
+}
+
+
+
+
+UserServiceTest.java:
+---------------------
+
+package com.hdfc.service;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
+public class UserServiceTest {
+
+    @Test
+    void testEligibleUser(){
+
+        // Arrange
+        UserService service = new UserService();
+
+        // Act
+        boolean result = service.isEligible(25);
+
+        // Assert
+        assertTrue(result);
+    }
+
+    @Test
+    void testUnderAgeUser(){
+
+        UserService service = new UserService();
+
+        boolean result = service.isEligible(15);
+
+        assertFalse(result);
+    }
+}
+
+
+
+
+Student task:
+==============
+
+Create:
+
+public class EmployeeService {
+
+    public boolean isPermanent(int years){
+        return years>=2;
+    }
+
+    public int calculateBonus(int salary){
+        return salary/10;
+    }
+}
+
+
+
+Write tests using:
+
+@Test
+assertTrue()
+assertFalse()
+assertEquals()
+assertNotEquals()
+
+--for both methods.
+
+
+
+JUnit 5 Lifecycle Methods:
+==========================
+
+Suppose we have:
+
+Calculator.java:
+----------------
+
+
+public class Calculator {
+
+    public int add(int a,int b){
+        return a+b;
+    }
+
+    public int subtract(int a,int b){
+        return a-b;
+    }
+}
+
+
+CalculatorTest.java:
+---------------------
+
+@Test
+void testAdd(){
+
+    Calculator calculator = new Calculator();
+
+    int result = calculator.add(10,20);
+
+    assertEquals(30,result);
+}
+
+@Test
+void testSubtract(){
+
+    Calculator calculator = new Calculator();
+
+    int result = calculator.subtract(20,5);
+
+    assertEquals(15,result);
+}
+
+
+Here, 
+
+Calculator calculator = new Calculator();
+
+is repeated in every test.
+
+Imagine:
+
+20 test methods
+50 test methods
+100 test methods
+
+Same code repeated everywhere.
+
+Not good.
+
+
+--JUnit provides lifecycle methods for this.
+
+
+Lifecycle methods are special methods executed automatically by JUnit.
+
+They run:
+
+Before Test
+After Test
+Before All Tests
+After All Tests
+
+
+Note: They are same as hooks in Playwright.
+
+
+
+@BeforeEach
+@AfterEach
+@BeforeAll
+@AfterAll
+
+
+Visual Overview:
+---------------
+
+@BeforeAll
+      ↓
+@BeforeEach
+      ↓
+    @Test
+      ↓
+@AfterEach
+
+------------------
+
+@BeforeEach
+      ↓
+    @Test
+      ↓
+@AfterEach
+
+------------------
+
+@BeforeEach
+      ↓
+    @Test
+      ↓
+@AfterEach
+
+------------------
+
+@AfterAll
+
+
+
+Real Life Analogy:
+-------------------
+
+Suppose you are conducting exams.
+
+Before every student:
+
+	Distribute Answer Sheet
+
+After every student:
+
+	Collect Answer Sheet
+
+Before all students:
+
+	Open Exam Hall
+
+After all students:
+
+	Close Exam Hall
+
+Exactly same idea.
+
+
+@BeforeEach:
+-------------
+
+--Runs before every test method.
+
+Example:
+
+@BeforeEach
+void init(){
+
+    System.out.println("Before Each Test");
+}
+
+--JUnit automatically executes it before every test.
+
+
+Example Program:
+----------------
+
+DemoTest.java:
+--------------
+
+
+import org.junit.jupiter.api.*;
+
+public class DemoTest {
+
+    @BeforeEach
+    void init(){
+
+        System.out.println("Before Test");
+    }
+
+    @Test
+    void test1(){
+
+        System.out.println("Inside Test1");
+    }
+
+    @Test
+    void test2(){
+
+        System.out.println("Inside Test2");
+    }
+}
+
+
+Output:
+
+Before Test
+Inside Test1
+
+Before Test
+Inside Test2
+
+
+Practical Use:
+---------------
+
+Usually used for:
+
+Object Creation
+Test Data Setup
+Resource Initialization
+
+Example:
+
+EmployeeService service;
+
+@BeforeEach
+void init(){
+
+    service = new EmployeeService();
+}
+
+
+@AfterEach:
+-------------
+
+Runs after every test.
+
+Example
+
+@AfterEach
+void cleanup(){
+
+    System.out.println("After Test");
+}
+
+
+
+Practical Use:
+---------------
+
+Usually used for:
+
+Closing Resources
+Cleaning Objects
+Resetting Data
+
+Example:
+
+@AfterEach
+void cleanup(){
+
+    service=null;
+}
+
+
+
+Real Service Example:
+---------------------
+
+EmployeeService.java:
+
+
+public class EmployeeService {
+
+    public boolean isPermanent(int years){
+
+        return years >= 2;
+    }
+}
+
+
+
+EmployeeServiceTest.java:
+
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.*;
+
+public class EmployeeServiceTest {
+
+    EmployeeService service;
+
+    @BeforeEach
+    void init(){
+
+        service = new EmployeeService();
+
+        System.out.println("Object Created");
+    }
+
+    @AfterEach
+    void cleanup(){
+
+        service=null;
+
+        System.out.println("Object Destroyed");
+    }
+
+    @Test
+    void testPermanentEmployee(){
+
+        assertTrue(service.isPermanent(3));
+    }
+
+    @Test
+    void testTemporaryEmployee(){
+
+        assertFalse(service.isPermanent(1));
+    }
+}
+
+
+
+Output:
+
+Object Created
+PASS
+Object Destroyed
+
+Object Created
+PASS
+Object Destroyed
+
+
+
+
+@BeforeAll:
+------------
+
+--Runs only once before all tests.
+
+Example
+
+@BeforeAll
+static void start(){
+
+    System.out.println("Application Started");
+}
+
+
+Important:
+
+@BeforeAll
+
+must be: static
+
+
+Example
+
+@BeforeAll
+static void init(){
+}
+
+Correct.
+
+@BeforeAll
+void init(){
+}
+
+Wrong.
+
+
+
+Practical Usage:
+----------------
+
+--Usually used for expensive resources.
+
+Example:
+
+Database Connection
+Kafka Setup
+Large File Loading
+
+--Because creating them repeatedly is expensive.
+
+
+
+@AfterAll:
+----------
+
+--Runs once after all tests finish.
+
+
+Example
+
+@AfterAll
+static void stop(){
+
+    System.out.println("Application Closed");
+}
+
+
+
+
+Complete Example:
+-----------------
+
+DemoTest.java:
+
+public class DemoTest {
+
+    @BeforeAll
+    static void start(){
+
+        System.out.println("Application Started");
+    }
+
+    @AfterAll
+    static void stop(){
+
+        System.out.println("Application Closed");
+    }
+
+    @Test
+    void test1(){
+
+        System.out.println("Test1");
+    }
+
+    @Test
+    void test2(){
+
+        System.out.println("Test2");
+    }
+}
+
+
+Output:
+
+Application Started
+Test1
+Test2
+Application Closed
+
+
+
+Complete Lifecycle Flow:
+------------------------
+
+Example
+
+@BeforeAll
+static void start(){}
+
+@BeforeEach
+void init(){}
+
+@Test
+void test1(){}
+
+@AfterEach
+void cleanup(){}
+
+@AfterAll
+static void stop(){}
+
+
+
+
+Why Do We Need Better Test Names?
+---------------------------------
+
+Suppose we write:
+
+@Test
+void test1() {
+}
+
+@Test
+void test2() {
+}
+
+@Test
+void test3() {
+}
+
+--When the test report runs:
+
+test1 PASSED
+test2 PASSED
+test3 FAILED
+
+
+
+Question:
+
+Can we understand what failed?
+
+NO
+
+
+Real Project Problem:
+
+Imagine a project with:
+
+500 Test Cases
+
+and report shows:
+
+test14 FAILED
+
+--Nobody knows what test14 means.
+
+
+Better Approach:
+
+Instead of:
+
+@Test
+void test1() {
+}
+
+Write:
+
+@Test
+void shouldCalculateDiscountForPremiumCustomer() {
+}
+
+Immediately understandable.
+
+
+@DisplayName:
+--------------
+
+JUnit 5 provides:
+
+@DisplayName
+
+--to show meaningful names in reports.
+
+Example:
+
+@Test
+@DisplayName("Calculate discount for premium customer")
+void testDiscount() {
+
+}
+
+
+Report:
+
+	Calculate discount for premium customer
+
+instead of:
+
+	testDiscount
+
+Much better.
+
+
+
+Example:
+
+@DisplayName("Loan should be approved when salary exceeds minimum criteria")
+@DisplayName("Registration should fail when email is blank")
+@DisplayName("Withdrawal should fail when balance is insufficient")
+
+
+Real Banking Example:
+--------------------
+
+BankService.java
+
+public class BankService {
+
+    public void withdraw(double balance, double amount) {
+
+        if(amount > balance) {
+            throw new IllegalArgumentException("Insufficient balance");
+        }
+    }
+}
+
+
+BankServiceTest.java
+
+
+@Test
+@DisplayName("Withdrawal should fail when amount exceeds balance")
+void testInsufficientBalance() {
+
+    BankService service = new BankService();
+
+    assertThrows(IllegalArgumentException.class,
+        		() -> service.withdraw(5000, 10000));
+}
+
+
+Test Report:
+
+	Withdrawal should fail when amount exceeds balance
+
+Very readable.
+
+
+
+
+
+@Nested annotation:
+--------------------
+
+Suppose we have:
+
+@Test
+void testValidLogin() {
+}
+
+@Test
+void testInvalidPassword() {
+}
+
+@Test
+void testLockedAccount() {
+}
+
+@Test
+void testValidRegistration() {
+}
+
+@Test
+void testDuplicateEmail() {
+}
+
+@Test
+void testInvalidEmail() {
+}
+
+--Everything mixed together.
+
+Hard to navigate.
+
+
+@Nested annotation allows grouping related test cases.
+
+--It is a class level annotation.
+
+--The @Nested annotation is used to create inner test classes inside a test class.
+
+It helps organize related test cases into logical groups, making test code more readable and maintainable.
+
+
+
+Example:
+
+UserService.java:
+------------------
+
+
+package com.hdfc.service;
+
+public class UserService {
+
+    public String register(String email, String password) {
+
+        if(email == null || email.isBlank()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+
+        if(password == null || password.length() < 6) {
+            throw new IllegalArgumentException("Password must contain at least 6 characters");
+        }
+
+        return "User Registered Successfully";
+    }
+
+    public boolean login(String username, String password) {
+
+        return username.equals("admin")
+                && password.equals("admin123");
+    }
+}
+
+
+UserServiceTest.java:
+----------------------
+
+package com.hdfc.service;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+public class UserServiceTest {
+
+	UserService service = new UserService();
+
+	@Nested
+	@DisplayName("Registration Feature Tests")
+	class RegistrationTests {
+
+		@Test
+		@DisplayName("Registration should succeed for valid email and password")
+		void validRegistration() {
+
+			String result = service.register("ratan@gmail.com", "password123");
+
+			assertEquals("User Registered Successfully", result);
+		}
+
+		@Test
+		@DisplayName("Registration should fail when email is blank")
+		void blankEmail() {
+
+			IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+					() -> service.register("", "password123"));
+
+			assertEquals("Email is required", ex.getMessage());
+		}
+
+		@Test
+		@DisplayName("Registration should fail when password length is less than 6")
+		void shortPassword() {
+
+			IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+					() -> service.register("ratan@gmail.com", "123"));
+
+			assertEquals("Password must contain at least 6 characters", ex.getMessage());
+		}
+	}
+
+	@Nested
+	@DisplayName("Login Feature Tests")
+	class LoginTests {
+
+		@Test
+		@DisplayName("Login should succeed for valid credentials")
+		void validLogin() {
+
+			assertTrue(service.login("admin", "admin123"));
+		}
+
+		@Test
+		@DisplayName("Login should fail for invalid password")
+		void invalidPassword() {
+
+			assertFalse(service.login("admin", "wrong123"));
+		}
+	}
+}
+
+
+
+
+
+Output:
+-------
+
+Report With @DisplayName and @Nested
+
+Report becomes:
+
+UserServiceTest
+
+├── Registration Feature Tests
+│
+│   Registration should succeed for valid email and password
+│
+│   Registration should fail when email is blank
+│
+│   Registration should fail when password length is less than 6
+│
+└── Login Feature Tests
+    │
+    | Login should succeed for valid credentials
+    │
+    | Login should fail for invalid password
+
+
+--Now even a non-technical manager can understand the report.
+
+
+
+
+
+
+Parameterized Test:
+====================
+
+--A Parameterized Test executes the same test multiple times with different inputs.
+
+
+The Problem with Traditional Tests
+
+Suppose we have:
+
+NumberService.java:
+
+
+public class NumberService {
+
+    public boolean isEven(int number) {
+        return number % 2 == 0;
+    }
+}
+
+
+
+To test multiple values, beginners usually write:
+
+@Test
+void test2() {
+    NumberService service = new NumberService();
+    assertTrue(service.isEven(2));
+}
+
+@Test
+void test4() {
+    NumberService service = new NumberService();
+    assertTrue(service.isEven(4));
+}
+
+@Test
+void test6() {
+    NumberService service = new NumberService();
+    assertTrue(service.isEven(6));
+}
+
+@Test
+void test8() {
+    NumberService service = new NumberService();
+    assertTrue(service.isEven(8));
+}
+
+
+
+Problem:
+
+--Lots of duplicate code.
+
+Only input changes.
+
+Real World Analogy:
+-------------------
+
+Suppose a teacher checks:
+
+2 is even
+4 is even
+6 is even
+8 is even
+10 is even
+12 is even
+
+--Would the teacher write six different programs?
+
+No
+
+Teacher would use:
+
+Loop
+
+JUnit provides the same concept through:
+
+@ParameterizedTest
+
+
+
+Instead of:
+
+test2()
+test4()
+test6()
+test8()
+
+we write:
+
+one test
+multiple inputs
+
+
+
+Visual Understanding:
+----------------------
+
+Traditional:
+
+Test 1 → Input 2
+Test 2 → Input 4
+Test 3 → Input 6
+Test 4 → Input 8
+
+Parameterized:
+
+One Test
+    ↓
+2
+4
+6
+8
+
+
+
+
+Import:
+
+import org.junit.jupiter.params.ParameterizedTest;
+
+This annotation replaces:
+
+@Test
+
+
+
+Example:
+
+
+@ParameterizedTest
+void testMethod(int value) {
+
+}
+
+--JUnit automatically runs the method multiple times.
+
+
+@ValueSource annotation:
+--------------------------
+
+--The simplest parameter source.
+
+--Used when only one input parameter is needed.
+
+Example:
+
+
+NumberService.java
+
+
+public class NumberService {
+
+    public boolean isEven(int number) {
+        return number % 2 == 0;
+    }
+}
+
+
+
+NumberServiceTest.java:
+
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+public class NumberServiceTest {
+
+    NumberService service = new NumberService();
+
+    @ParameterizedTest
+    @ValueSource(ints = {2,4,6,8,10})
+    void shouldReturnTrueForEvenNumbers(int number) {
+
+        assertTrue(service.isEven(number));
+    }
+}
+
+
+What Happens Internally?
+
+JUnit runs:
+
+service.isEven(2); PASS
+service.isEven(4); PASS
+service.isEven(6); PASS
+service.isEven(8); PASS
+service.isEven(10); PASS
+
+--All from one test method.
+
+Report:
+
+shouldReturnTrueForEvenNumbers(2)
+shouldReturnTrueForEvenNumbers(4)
+shouldReturnTrueForEvenNumbers(6)
+shouldReturnTrueForEvenNumbers(8)
+shouldReturnTrueForEvenNumbers(10)
+
+
+
+Example Using Strings:
+-----------------------
+
+@ParameterizedTest
+@ValueSource(strings = {"Java", "Spring", "JUnit", "Mockito"})
+void shouldNotBeBlank(String text) {
+
+    assertFalse(text.isBlank());
+}
+
+
+
+Supported Types:
+-----------------
+
+
+@ValueSource(ints = {1,2,3})
+
+@ValueSource(strings = {"A","B","C"})
+
+@ValueSource(doubles = {1.5,2.5})
+
+@ValueSource(longs = {100L,200L})
+
+@ValueSource(booleans = {true,false})
+
+
+Real Business Example:
+-----------------------
+
+--Suppose HDFC allows loan only when age is 18 or above.
+
+LoanService.java
+
+public class LoanService {
+
+    public boolean isEligible(int age) {
+        return age >= 18;
+    }
+}
+
+
+LoanServiceTest.java:
+
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+public class LoanServiceTest {
+
+    LoanService service = new LoanService();
+
+    @ParameterizedTest
+    @ValueSource(ints = {18,21,25,30,40})
+    void shouldApproveEligibleApplicants(int age) {
+
+        assertTrue(service.isEligible(age));
+    }
+}
+
+
+
+Limitation of @ValueSource:
+--------------------------
+
+Suppose we need:
+
+Input -> Output
+
+Example:
+
+Marks -> Grade
+
+95 -> A
+85 -> B
+75 -> C
+
+Now we need:
+
+2 values
+
+for each test.
+
+@ValueSource cannot do that.
+
+We use:
+
+@CsvSource annotation:
+-----------------------
+
+--It allows multiple parameters.
+
+Example:
+
+
+GradeService.java
+
+
+public class GradeService {
+
+    public String calculateGrade(int marks) {
+
+        if(marks >= 90) 
+		return "A";
+
+        if(marks >= 80) 
+		return "B";
+        
+	return "C";
+    }
+}
+
+
+GradeServiceTest.java
+
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+public class GradeServiceTest {
+
+    GradeService service = new GradeService();
+
+    @ParameterizedTest
+    @CsvSource({
+        "95,A",
+        "90,A",
+        "85,B",
+        "80,B",
+        "70,C"
+    })
+    void shouldCalculateGradeCorrectly(int marks, String expectedGrade) {
+
+        String actualGrade = service.calculateGrade(marks);
+
+        assertEquals(expectedGrade, actualGrade);
+    }
+}
+
+
+How It Runs
+
+Iteration 1: 95,A
+
+Iteration 2: 90,A
+
+Iteration 3: 85,B
+
+Iteration 4: 80,B
+
+Iteration 5: 70,C
+
+
+One test.
+
+--Five executions.
+
+
+Real Spring Boot Style Example
+-------------------------------
+
+
+UserValidator.java
+
+
+public class UserValidator {
+
+    public boolean isValidUsername(String username) {
+        return username.length() >= 5;
+    }
+}
+
+
+UserValidatorTest.java
+
+
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+public class UserValidatorTest {
+
+    UserValidator validator = new UserValidator();
+
+    @ParameterizedTest
+    @CsvSource({
+        "admin,true",
+        "ratan,true",
+        "john,true",
+        "abc,false",
+        "xy,false"
+    })
+    void shouldValidateUsername(String username,boolean expected) {
+
+        boolean actual = validator.isValidUsername(username);
+
+        assertEquals(expected, actual);
+    }
+}
+
+
+
+Best Practices:
+----------------
+
+--Use parameterized tests when logic is same and only data changes.
+
+Example:
+
+Age Validation
+Grade Calculation
+Discount Calculation
+Interest Calculation
+Username Validation
+
+
+Use: @ValueSource for one parameter.
+
+Use: @CsvSource for multiple parameters.
+
+Another Example:
+-----------------
+
+public class DiscountService {
+
+    public int calculateDiscount(int amount) {
+
+        if(amount >= 10000) return 1000;
+
+        if(amount >= 5000) return 500;
+
+        return 100;
+    }
+}
+
+
+
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+public class DiscountServiceTest {
+
+    DiscountService service = new DiscountService();
+
+    @ParameterizedTest
+    @CsvSource({
+        "12000,1000",
+        "10000,1000",
+        "7000,500",
+        "5000,500",
+        "3000,100"
+    })
+    void shouldCalculateDiscount(int amount, int expectedDiscount) {
+
+        int actualDiscount = service.calculateDiscount(amount);
+
+        assertEquals(expectedDiscount, actualDiscount);
+    }
+}
+
+
+
+
+Mockito:
+=======
+
+--Understanding Real Dependencies, Fake Dependencies and the Need for Mocking
+
+
+--Until now all our examples were simple:
+
+public class Calculator {
+
+    public int add(int a, int b) {
+        return a + b;
+    }
+}
+
+Testing was easy:
+
+@Test
+void testAdd() {
+
+    Calculator calculator = new Calculator();
+
+    int result = calculator.add(10, 20);
+
+    assertEquals(30, result);
+}
+
+No dependency.
+No database.
+No API.
+No external system.
+
+
+
+But real Projects Are Different:
+
+In Spring Boot applications:
+
+
+Controller
+    ↓
+Service
+    ↓
+Repository
+    ↓
+Database
+
+
+Example:
+
+UserService
+    ↓
+UserRepository
+    ↓
+MySQL Database
+
+
+
+
+Suppose we have:
+
+UserRepository.java
+
+
+public class UserRepository {
+
+    public String findUserById(Integer id) {
+
+        // Database Query
+
+        return "Ratan";
+    }
+}
+
+
+UserService.java
+
+public class UserService {
+
+    //Dependency
+    private UserRepository repository = new UserRepository();
+
+    public String getUserName(Integer id) {
+
+        String user= repository.findUserById(id);
+
+	return user.toUpperCase();
+    }
+}
+
+Question:
+
+When testing:
+
+getUserName()
+
+do we really want:
+
+Database
+Connection
+Network
+SQL Query
+
+to execute?
+
+Answer:
+
+NO
+
+Why Not?
+
+--Because Unit Testing should be:
+
+Fast
+Isolated
+Repeatable
+Independent
+
+We already discussed...
+
+--If database is involved:
+
+Slow
+Complex
+Unstable
+
+
+
+Real Life Analogy:
+------------------
+
+--Suppose you want to test:
+
+Car Engine
+
+Do you need:
+
+Entire Highway
+Traffic
+Petrol Pump
+Passengers
+
+?
+
+No.
+
+You only test:
+
+Engine
+
+in isolation.
+
+Same idea.
+
+
+
+Here, UserRepository
+
+is a dependency of UserService class.
+
+
+Another Example
+
+public class OrderService {
+
+    private PaymentService paymentService;
+
+}
+
+Dependency:
+
+	PaymentService
+
+Another Example
+
+public class EmailService {
+
+    private SMTPServer smtpServer;
+
+}
+
+Dependency:
+
+	SMTPServer
+
+
+The Main Goal of Unit Testing:
+------------------------------
+
+When testing:
+
+	UserService
+
+we want to test only:
+
+UserService
+
+Not:
+	UserRepository
+Not:
+	Database
+Not:
+	MySQL
+Not:
+	MongoDB
+
+
+Why Real Dependencies Are Dangerous ?
+--------------------------------------
+
+Suppose:
+
+UserRepository.java
+
+public class UserRepository {
+
+    public String findUserById(Integer id) {
+
+        throw new RuntimeException("Database Down");
+    }
+}
+
+
+Now:
+
+UserServiceTest.java
+
+@Test
+void testGetUser() {
+
+    UserService service = new UserService();
+
+    String result = service.getUser(100);
+
+    assertEquals("Ratan", result);
+}
+
+Result: FAIL
+
+Question:
+
+Did UserService fail?
+
+NO
+
+Database failed.
+
+This is unfair.
+
+We wanted to test:
+
+UserService
+
+But:
+
+Database Failure
+
+broke our test.
+
+
+Real World Example
+------------------
+
+Imagine:
+
+Internet Down
+Database unavailable.
+VPN disconnected.
+Cloud issue.
+
+--Should Unit Tests fail because of that?
+
+NO
+
+
+
+Solution: Fake Dependency
+-------------------------
+
+--Instead of real repository:
+
+	Real Repository
+
+we create:
+
+	Fake Repository
+
+
+
+Real World Analogy:
+--------------------
+
+--Suppose a pilot is learning.
+
+Do we give:
+
+Actual Boeing 747
+on Day 1?
+
+No.
+
+We provide:
+
+	Flight Simulator
+
+--Simulator behaves like airplane.
+
+But:
+
+Safe
+Fast
+Cheap
+
+--Mockito works exactly like that.
+
+
+What is Mockito?
+-----------------
+
+--Mockito is a Java Mocking Framework.
+
+It helps create:
+
+	Fake Objects
+
+for Unit Testing.
+
+Instead of:
+
+	UserRepository
+
+Mockito creates:
+
+	Fake UserRepository
+
+
+
+Without Mockito:
+
+UserService
+      ↓
+Real Repository
+      ↓
+Database
+
+
+
+With Mockito:
+
+UserService
+      ↓
+Fake Repository
+
+No Database.
+No Network.
+No SQL.
+
+
+
+Mocking means:
+
+Replacing Real Dependency
+With Fake Dependency
+
+during testing.
+
+
+
+Example
+
+Real Repository:
+
+	repository.findById(100)
+
+may hit database.
+
+
+Mock Repository:
+
+	repository.findById(100)
+
+immediately returns:
+
+	"Ratan"
+
+without database.
+
+
+
+First Mockito Example (Conceptual):
+-----------------------------------
+
+Suppose:
+
+public class UserService {
+
+    private UserRepository repository;
+
+    //Dependency Injection
+    public UserService(UserRepository repository) {
+        this.repository = repository;
+    }
+
+    public String getUser(Integer id) {
+        return repository.findUserById(id);
+    }
+}
+
+In Unit Test we want:
+
+repository.findUserById(100)
+
+to return:
+
+"Ratan"
+
+without database.
+
+Mockito allows us to say:
+
+when(repository.findUserById(100))
+        .thenReturn("Ratan");
+
+Meaning:
+
+Whenever this method is called,
+return "Ratan"
+
+No database.
+No SQL.
+No setup.
+
+
+Unit Test vs Integration Test:
+------------------------------
+
+Unit Test:
+
+UserService
+      ↓
+Fake Repository
+
+
+Repository mocked.
+Database absent.
+
+Characteristics:
+
+Fast
+Cheap
+Easy
+
+
+Integration Test:
+
+UserService
+      ↓
+Repository
+      ↓
+Database
+
+Everything real.
+
+Characteristics:
+
+Slower
+More Setup
+More Realistic
+
+
+What is a Mock?
+----------------
+
+--A Mock is a fake object created by Mockito.
+
+
+Add Mockito dependency.
+
+pom.xml:
+
+<dependency>
+    <groupId>org.mockito</groupId>
+    <artifactId>mockito-junit-jupiter</artifactId>
+    <version>5.24.0</version>
+    <scope>test</scope>
+</dependency>
+  
+
+
+Example Without Mockito:
+------------------------
+
+UserRepository.java
+
+public class UserRepository {
+
+    public String findUserById(Integer id) {
+        return "Ratan";
+    }
+}
+
+UserService.java
+
+public class UserService {
+
+    private UserRepository repository;
+
+    //Constructor Injection
+    public UserService(UserRepository repository) {
+        this.repository = repository;
+    }
+
+    public String getUser(Integer id) {
+        return repository.findUserById(id);
+    }
+}
+
+Notice:
+
+UserService
+      ↓
+UserRepository
+
+--Dependency exists.
+
+
+Creating Mock Object Manually:
+------------------------------
+
+--Mockito can create a fake repository.
+
+Example:
+
+
+UserRepository repository = mock(UserRepository.class);
+
+Meaning:
+
+--Create Fake UserRepository
+
+
+
+
+Stubbing:
+---------
+
+Suppose someone asks:
+
+repository.findUserById(100);
+
+What should our fake repository return?
+
+Mockito doesn't know.
+
+We must tell it.
+
+--This process is called: Stubbing
+
+
+Stubbing means, Defining the behavior
+of a Mock Object
+
+
+Example:
+
+when(repository.findUserById(100))
+        .thenReturn("Ratan");
+
+
+
+when() and thenReturn():
+------------------------
+
+When method is called
+Return this value
+
+Example: 
+
+when(repository.findUserById(100))
+        .thenReturn("Ratan");
+
+
+
+UserServiceTest.java:
+----------------------
+
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import org.junit.jupiter.api.Test;
+
+public class UserServiceTest {
+
+    @Test
+    void shouldReturnUserName() {
+
+        UserRepository repository = mock(UserRepository.class);
+
+        when(repository.findUserById(100))
+                .thenReturn("Ratan");
+
+	//Injecting the dependency
+        UserService service = new UserService(repository);
+
+        String result = service.getUser(100);
+
+        assertEquals("Ratan", result);
+    }
+}
+
+
+
+
+Another example:
+-----------------
+
+
+ProductRepository.java
+
+public class ProductRepository {
+
+    public String findProductById(Integer id) {
+        return "Laptop";
+    }
+}
+
+
+
+ProductService.java
+
+public class ProductService {
+
+    private ProductRepository repository;
+
+    public ProductService(ProductRepository repository) {
+        this.repository = repository;
+    }
+
+    public String getProduct(Integer id) {
+        String product= repository.findProductById(id);
+
+	return product.toUpperCase();
+
+    }
+}
+
+
+ProductServiceTest.java
+
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.Test;
+
+public class ProductServiceTest {
+
+    @Test
+    void shouldReturnProductName() {
+
+        ProductRepository repository = mock(ProductRepository.class);
+
+	//Don't create the ProductRepository object directly..
+	//ProductRepository repository = new ProductRepository();
+
+
+        when(repository.findProductById(100))
+                .thenReturn("MacBook Pro");
+
+        ProductService service = new ProductService(repository);
+
+        String result = service.getProduct(100);
+
+        assertEquals("MACBOOK PRO", result);
+    }
+}
+
+
+
+
+@Mock annotation:
+-----------------
+
+Instead of:
+
+ProductRepository repository = mock(ProductRepository.class);
+
+Mockito can create the mock automatically.
+
+@Mock
+ProductRepository repository;
+
+
+Meaning:
+
+--Create Mock Automatically
+
+
+imagine:
+
+EmployeeService
+
+has 5 dependencies.
+
+private EmployeeRepository repository;
+
+private EmailService emailService;
+
+private AuditService auditService;
+
+private NotificationService notificationService;
+
+private PaymentService paymentService;
+
+
+
+Then test becomes:
+
+EmployeeRepository repository =
+        mock(EmployeeRepository.class);
+
+EmailService emailService =
+        mock(EmailService.class);
+
+AuditService auditService =
+        mock(AuditService.class);
+
+NotificationService notificationService =
+        mock(NotificationService.class);
+
+PaymentService paymentService =
+        mock(PaymentService.class);
+
+Very repetitive.
+
+
+Mockito provides:
+
+@Mock
+@InjectMocks
+
+to solve this problem.
+
+
+
+***Note: @Mock annotation does not Work alone:
+
+
+Many beginners write:
+
+@Mock
+ProductRepository repository;
+
+and run test.
+
+Result:
+
+	NullPointerException
+
+or
+
+	repository is null
+
+
+--Because Mockito must be activated.
+
+JUnit must know:
+
+Please initialize Mockito
+
+That's the job of:
+
+	@ExtendWith(MockitoExtension.class)
+
+
+Add:
+
+@ExtendWith(MockitoExtension.class)
+
+above test class.
+
+
+
+Example:
+
+@ExtendWith(MockitoExtension.class)
+class ProductServiceTest {
+
+}
+
+
+
+Example: Modify the above example as:
+
+
+package com.hdfc.service;
+
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
+public class ProductServiceTest {
+
+    @Mock
+    private ProductRepository repository;
+	
+    @Test
+    void shouldReturnProductName() {
+
+        
+
+        when(repository.findProductById(100))
+                .thenReturn("MacBook Pro");
+
+	System.out.println(repository.getClass().getName());
+        
+	ProductService service = new ProductService(repository);
+
+        String result = service.getProduct(100);
+
+        assertEquals("MACBOOK PRO", result);
+    }
+}
+
+
+
+--Instead of using the ProductRepository concrete classs,
+we can change the ProductRepository class to ProductRepository interface..
+
+
+public interface ProductRepository {
+
+    String findProductById(Integer id);
+
+}
+
+
+--@Mock annotation will provide a mock implemntation object at runtime.
+
+
+
+@InjectMocks annotation:
+------------------------
+
+Mockito create a mock object:
+
+@Mock
+ProductRepository repository;
+
+--Now Mockito can automatically inject this mock into:
+
+ProductService class
+
+using:
+
+@InjectMocks annotation..
+
+Example:
+
+@InjectMocks
+ProductService service;
+
+Meaning:
+
+Create ProductService class object
+
+and inject all mocks
+automatically
+
+
+
+Example:
+
+
+ProductServiceTest.java:
+-------------------------
+
+package com.hdfc.service;
+
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
+public class ProductServiceTest {
+
+	@Mock
+	private ProductRepository repository;
+	
+	
+	@InjectMocks
+	private ProductService service;
+	
+	
+    @Test
+    void shouldReturnProductName() {
+
+        
+
+        when(repository.findProductById(100))
+                .thenReturn("MacBook Pro");
+
+        System.out.println(repository.getClass().getName());
+      
+
+        String result = service.getProduct(100);
+
+        assertEquals("MACBOOK PRO", result);
+    }
+}
+
+
+
+
+Notice:
+
+Removed:
+
+ProductService service =
+        new ProductService(repository);
+
+Mockito does it automatically.
+
+
+
+Real Spring Boot Example:
+--------------------------
+
+EmployeeRepository.java
+
+
+public interface EmployeeRepository {
+
+    String findEmployeeById(Integer id);
+}
+
+
+
+EmployeeService.java
+
+
+public class EmployeeService {
+
+    private EmployeeRepository repository;
+
+    public EmployeeService(EmployeeRepository repository) {
+        this.repository = repository;
+    }
+
+    public String getEmployee(Integer id) {
+        return repository.findEmployeeById(id);
+    }
+}
+
+
+
+EmployeeServiceTest.java:
+
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
+class EmployeeServiceTest {
+
+    @Mock
+    EmployeeRepository repository;
+
+    @InjectMocks
+    EmployeeService service;
+
+    @Test
+    void shouldReturnEmployeeName() {
+
+        when(repository.findEmployeeById(100))
+                .thenReturn("Ratan");
+
+        String result =
+                service.getEmployee(100);
+
+        assertEquals("Ratan", result);
+    }
+}
+
+
+
+
+thenThrow() method:
+------------------
+
+Exception Testing with Mockito and Testing Failure Scenarios
+
+
+--Until now all examples were:
+
+when(repository.findUserById(100))
+        .thenReturn("Ratan");
+
+Everything works.
+
+Everything is happy.
+
+--Real applications are different.
+
+Sometimes:
+
+Database Down
+Network Failure
+Invalid Data
+User Not Found
+Email Server Down
+Payment Failure
+
+
+--We should test these situations also.
+
+--Professional developers spend a lot of time testing:
+
+	Failure Scenarios
+
+not just:
+
+	Success Scenarios
+
+What is thenThrow()?
+---------------------
+
+Earlier:
+
+when(repository.findUserById(100))
+        .thenReturn("Ratan");
+
+Mockito returned: "Ratan"
+
+Now we want:
+
+repository.findUserById(100);
+
+to throw:
+
+RuntimeException
+
+Mockito provides:
+
+thenThrow()
+
+Syntax:
+-------
+
+when(mock.method())
+        .thenThrow(new RuntimeException());
+
+Meaning:
+
+When method is called
+
+Throw Exception
+
+instead of: Return Value
+
+
+Simple example:
+---------------
+
+UserRepository.java
+
+public interface UserRepository {
+
+    String findUserById(Integer id);
+}
+
+
+
+UserService.java:
+
+public class UserService {
+
+    private UserRepository repository;
+
+    public UserService(UserRepository repository) {
+        this.repository = repository;
+    }
+
+    public String getUser(Integer id) {
+
+        return repository.findUserById(id);
+    }
+}
+
+
+
+Test:
+
+
+@ExtendWith(MockitoExtension.class)
+class UserServiceTest {
+
+    @Mock
+    UserRepository repository;
+
+    @InjectMocks
+    UserService service;
+
+    @Test
+    void shouldThrowWhenRepositoryFails() {
+
+        when(repository.findUserById(100))
+                .thenThrow(new RuntimeException("Database Error"));
+
+        assertThrows(RuntimeException.class,
+                		() -> service.getUser(100));
+    }
+}
+
+
+
+
+Argument Matchers:
+------------------
+
+Consider:
+
+when(repository.findEmployeeById(100))
+        .thenReturn("Ratan");
+
+Only works for:
+
+100
+
+What if method receives:
+
+200
+300
+400
+500
+
+?
+
+
+Do we need separate stubbing every time?
+
+when(repository.findEmployeeById(200))
+...
+when(repository.findEmployeeById(300))
+...
+
+No.
+
+Mockito provides:
+
+any() method inside org.mockito.ArgumentMatchers class
+
+
+means:
+
+Any Value
+
+Example
+
+when(repository.findEmployeeById(anyInt()))
+        .thenReturn("Ratan");
+
+
+
+Common Matchers:
+-----------------
+
+anyString()
+anyInt()
+anyLong()
+anyDouble()
+any() : Any Object..
+
+
+
+
+eq() method:
+-------------
+
+Sometimes we want:
+
+Specific Value
+
+--while using matchers.
+
+Mockito rule:
+
+--If you use a matcher for one argument, then all arguments must be provided using matchers.
+
+
+Consider:
+
+public interface UserService{
+
+	public boolean login(String username, String role);
+
+}
+
+
+Here, 
+
+when(userService.login(anyString(), "ADMIN"))
+        .thenReturn(true);
+
+
+This will throw an exception:
+
+Correct Way:
+
+when(userService.login(anyString(), eq("ADMIN")))
+        .thenReturn(true);
+
+Here:
+
+anyString()   --> Matcher
+eq("ADMIN")   --> Matcher
+
+
+
+Code Coverage:
+==============
+
+--When we write tests, an important question arises:
+
+How much of our application
+is actually being tested?
+
+
+
+Suppose we have:
+
+public class Calculator {
+
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    public int multiply(int a, int b) {
+        return a * b;
+    }
+}
+
+
+And test:
+
+@Test
+void testAdd() {
+
+    Calculator calculator = new Calculator();
+
+    assertEquals(30, calculator.add(10, 20));
+}
+
+Question:
+
+Did our tests execute
+the multiply() method?
+
+How do the team lead or manager know?
+
+A coverage tool tells us.
+
+
+Code Coverage measures:
+
+How much application code
+was executed during testing.
+
+
+
+Real Life Analogy:
+-------------------
+
+--Suppose a teacher prepares:
+
+	100 Questions
+
+for final exam.
+
+Student studies only:
+
+	20 Questions
+
+Coverage:
+
+	20%
+
+Similarly:
+
+	100 Lines of Code
+
+Tests execute:
+
+	80 Lines
+
+Coverage:
+
+	80%
+
+
+Without coverage tools:
+
+Tests may pass
+
+but
+
+Large portions of code
+may never execute.
+
+
+Example
+
+public int calculateBonus(int salary) {
+
+    if(salary > 100000) {
+        return 10000;
+    }
+
+    return 5000;
+}
+
+
+Test:
+
+@Test
+void testBonus() {
+
+    assertEquals(10000, service.calculateBonus(120000));
+}
+
+
+
+Question:
+
+Did we test
+salary <= 100000 ?
+
+Answer:
+
+NO
+
+--Coverage tools help identify such gaps.
+
+
+JaCoCo:
+=======
+
+JaCoCo stands for:
+
+Java Code Coverage
+
+--It is the most popular Java coverage tool.
+
+Widely used in:
+
+Spring Boot
+Microservices
+Banking Projects
+Insurance Projects
+Enterprise Applications
+
+
+JaCoCo works with:
+
+JUnit 5
+Mockito
+Maven
+Gradle
+
+
+Visual Flow:
+------------
+
+  Run Tests
+      ↓
+ JaCoCo Tracks Execution
+      ↓
+ Generate Report
+      ↓
+ Coverage Analysis
+
+
+
+Adding JaCoCo To Maven:
+-----------------------
+
+pom.xml:
+
+
+
+<build>
+    <plugins>
+
+        <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.13</version>
+
+            <executions>
+
+                <execution>
+                    <goals>
+                        <goal>prepare-agent</goal>
+                    </goals>
+                </execution>
+
+                <execution>
+                    <id>report</id>
+                    <phase>test</phase>
+
+                    <goals>
+                        <goal>report</goal>
+                    </goals>
+                </execution>
+
+            </executions>
+
+        </plugin>
+
+    </plugins>
+</build>
+
+
+
+Generating Coverage Report
+
+Run:
+
+mvn clean test
+
+
+JaCoCo automatically generates report.
+
+Report location:
+
+target/site/jacoco/index.html
+
+Open:
+
+index.html
+
+in browser.
+
+
+100% Coverage Is Not The Goal:
+-------------------------------
+
+Many beginners think:
+
+100% Coverage
+=
+Perfect Testing
+
+Wrong.
+
+
+Example
+
+@Test
+void uselessTest() {
+
+    service.getUser();
+
+}
+
+Method executes.
+
+Coverage increases.
+
+But:
+
+No Assertions
+No Validation
+No Verification
+
+Coverage high.
+
+Quality low.
+
+
+Coverage is:
+
+Guide
+
+not
+
+Goal
+
+
+Real World Example
+
+Suppose:
+
+Coverage = 70%
+
+but
+
+All Critical Business Rules Tested
+
+Excellent.
+
+
+
+Another project:
+
+Coverage = 100%
+
+but
+
+No meaningful assertions
+
+Poor quality.
+
+
+Industry Expectations
+
+Typical coverage targets:
+
+60% - 70%: Good
+
+70% - 80%: Very Good
+
+80%+: Excellent
+
+--But quality matters more than percentage.
+
+
+
+
+Testing in Spring Boot:
+========================
+
+--Imagine you are developing an E-Commerce Application with the following features:
+
+User Registration
+User Login
+Product Management
+Order Placement
+Payment Processing
+
+--As the application grows, developers continuously add new features and modify existing code. A small change in one module can unintentionally break another module.
+
+--Without testing, these issues may only be discovered after deployment, affecting end users and business operations.
+
+Benefits of Testing
+
+Testing helps us:
+
+Verify that the application works as expected
+Detect bugs at an early stage
+Prevent future regressions
+Improve code quality and maintainability
+Increase confidence before deployment
+
+
+
+Types of Testing in Spring Boot:
+--------------------------------
+
+
+1. Unit Testing
+
+--Unit Testing focuses on testing a single class or method in isolation.
+
+Example:
+
+public int add(int a, int b) {
+    return a + b;
+}
+
+
+Test Case:
+
+
+@Test
+void testAdd() {
+    assertEquals(10, calculator.add(4, 6));
+}
+
+
+
+Characteristics of Unit Testing:
+--------------------------------
+
+Tests only one method or class
+No database interaction
+No Spring Container
+No REST API calls
+Fastest form of testing
+
+
+Real-World Analogy:
+
+--Suppose a car consists of thousands of components.
+
+--In Unit Testing, we test a single component (for example, the brake pedal) independently to verify that it works correctly.
+
+
+2. Integration Testing
+
+--Integration Testing verifies whether multiple components work together correctly.
+
+Example Flow:
+
+Controller
+    ↓
+Service
+    ↓
+Repository
+    ↓
+Database
+
+--Instead of testing each layer separately, Integration Testing verifies that all layers communicate properly with each other.
+
+What Does It Validate?
+
+Controller calls Service correctly
+Service communicates with Repository correctly
+Repository interacts with Database correctly
+Data flows properly through all layers
+
+
+Real-World Analogy:
+
+Testing an entire car system:
+
+Press Brake Pedal
+Brake Fluid Travels
+Brake Pads Engage
+Vehicle Stops
+
+All components work together successfully.
+
+
+
+3. End-to-End (E2E) Testing
+
+--End-to-End Testing validates the complete business workflow from a user's perspective.
+
+Example:
+
+User Login
+    ↓
+Browse Products
+    ↓
+Add Product to Cart
+    ↓
+Place Order
+    ↓
+Payment Success
+
+--The entire application is tested as a real user would use it.
+
+
+Characteristics:
+
+Covers complete business scenarios
+Simulates real user behavior
+Tests UI, APIs, Database, and Integrations
+Slowest but most comprehensive testing approach
+
+
+Real-World Analogy:
+
+--A customer enters a shopping mall, selects products, pays at the counter, and leaves with the purchased items.
+
+--The entire journey is validated from start to finish.
+
+
+Spring Boot Testing Dependency:
+------------------------------
+
+--Spring Boot provides a dedicated starter dependency for testing:
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-test</artifactId>
+    <scope>test</scope>
+</dependency>
+
+--Instead of adding multiple testing libraries separately, Spring Boot bundles them into a single starter.
+
+
+It bundles commonly used testing libraries:
+
+| Library     | Purpose                |
+| ----------- | ---------------------- |
+| JUnit 5     | Test Framework         |
+| Mockito     | Mocking                |
+| AssertJ     | Fluent Assertions      |
+| Hamcrest    | Matchers               |
+| Spring Test | Spring Testing Support |
+| MockMvc     | Testing REST APIs      |
+
+
+
+--So instead of adding many dependencies separately:
+
+JUnit
+Mockito
+AssertJ
+Spring Test
+MockMvc
+
+--Spring Boot gives everything in one starter.
+
+
+@SpringBootTest Annotation
+--------------------------
+
+@SpringBootTest is one of the most comprehensive testing annotations 
+in Spring Boot because it loads the complete Application Context.
+
+
+--It loads the entire Spring Application Context, just like when we start the application.
+
+@SpringBootTest
+class ProductServiceTest {
+
+}
+
+--When Spring Boot sees @SpringBootTest, it starts the Spring Container and creates all required beans.
+
+What Gets Loaded?
+
+When the test starts, Spring Boot creates:
+
+Controllers
+Services
+Repositories
+Configuration Classes
+Properties
+Security Configuration
+DataSource
+Application Context
+
+--In short, the test environment becomes very similar to the actual running application.
+
+
+Spring boot by default create the following test case method:
+
+@Test
+void contextLoads() {
+}
+
+
+Purpose:
+
+Verify Application context (Spring container) Starts.
+
+If the Spring Container starts successfully,
+the test passes automatically.
+
+If any bean creation, configuration,
+or dependency injection fails,
+the test fails.
+
+
+
+
+Real-Time Example:
+------------------
+
+--Suppose we have a service:
+
+@Service
+public class ProductService {
+
+    public String getProduct() {
+        return "Laptop";
+    }
+}
+
+
+Test Class:
+
+
+@SpringBootTest
+class ProductServiceTest {
+
+    @Autowired
+    private ProductService productService;
+
+    @Test
+    void testGetProduct() {
+
+        String result = productService.getProduct();
+
+        assertEquals("Laptop", result);
+    }
+}
+
+
+Let us understand the complete execution flow:
+
+
+Step 1: JUnit Starts the Test
+
+JUnit detects and executes:
+
+@Test
+void testGetProduct() {
+    ...
+}
+
+--At this stage, JUnit notices that the class is annotated with:
+
+@SpringBootTest
+
+
+Step 2: Spring Boot Starts the Container
+
+--Spring Boot creates the Application Context.
+
+--Application Context Started
+
+--The Application Context is the container responsible for managing Spring Beans.
+
+
+Step 3: Bean Creation
+
+Spring scans the project and creates beans.
+
+For example:
+
+@Service
+public class ProductService {
+
+}
+
+Spring creates:
+
+ProductService Bean
+
+--and stores it inside the Spring Container.
+
+
+Step 4: Dependency Injection
+
+Spring sees:
+
+@Autowired
+private ProductService productService;
+
+--It finds the ProductService bean and injects it automatically.
+
+
+Step 5: Test Method Execution
+
+--Now the test method executes.
+
+String result = productService.getProduct();
+
+--The actual Spring-managed bean is used.
+
+
+
+Step 6: Assertion
+
+Finally, JUnit verifies the result.
+
+assertEquals("Laptop", result);
+
+If both values match:
+
+	Test Passed
+
+Otherwise:
+
+	Test Failed
+
+
+Advantages of @SpringBootTest
+-----------------------------
+
+1. Tests Real Spring Beans
+
+--The actual application beans are used.
+
+2. Tests Real Configuration
+
+--Properties, configurations, and dependencies are loaded exactly as they are in production.
+
+3. Useful for Integration Testing
+
+--Ideal for testing interactions between:
+
+Controller
+   ↓
+Service
+   ↓
+Repository
+   ↓
+Database
+
+
+4. Detects Configuration Problems
+
+It can identify:
+
+Missing Beans
+Circular Dependencies
+Invalid Configurations
+Database Connection Issues
+
+before deployment.
+
+
+
+Disadvantages of @SpringBootTest
+--------------------------------
+
+1. Slower Execution
+
+--The entire Spring Container must start.
+
+--Application Context Loading takes time.
+
+
+2. Higher Memory Usage
+
+--Many beans are created even when they are not required for a particular test.
+
+3. Not Suitable for Small Utility Methods
+
+For simple methods:
+
+public int add(int a, int b) {
+    return a + b;
+}
+
+--using @SpringBootTest is unnecessary.
+
+--A simple JUnit test is sufficient.
+
+
+When Should We Use @SpringBootTest?
+-----------------------------------
+
+Use it when you want to test:
+
+Service + Repository Integration
+Database Interaction
+Complete Application Flow
+Spring Configuration
+Dependency Injection
+
+Avoid it for:
+
+Utility Methods
+Simple Business Logic
+Fast Unit Tests
+
+--For such cases, use JUnit + Mockito instead.
+
+
+Mocking the repository:
+-----------------------
+
+Consider the following method:
+
+public Employee saveEmployee(Employee emp) {
+
+    return empRepository.save(emp);
+}
+
+--When we test this method, the Repository will try to connect to the actual database.
+
+This creates several problems:
+
+Database must be running
+Test execution becomes slower
+Test may fail because of database issues
+We are testing the database as well, not only the service logic
+
+--For Unit Testing, we want to test only the Service class.
+
+--Therefore, instead of using a real Repository, we create a fake Repository called a Mock Object.
+
+--Using Mockito, we can define the behavior of dependencies without calling the actual implementation.
+
+Example:
+
+when(repository.findById(100))
+.thenReturn(employee);
+
+Meaning:
+
+--"When someone calls findById(100), return this employee object instead of accessing the database."
+
+
+Example:
+
+
+1. Create a Spring Boot project: SpringBootTestDemo:
+
+
+dependencies:
+--------------
+
+Spring Web
+Spring Data JPA
+PostgreSQL Driver
+Spring Boot devtools
+Lombok
+
+2. Create a database inside the Postgresql:
+
+create database testdb;
+
+\c testdb;
+
+
+3. application.yml file:
+
+
+spring:
+ application:
+  name: SpringBootDatabaseDemo
+
+ datasource:
+  url: jdbc:postgresql://localhost:5432/testdb
+  username: postgres
+  password: root
+
+ jpa:
+  hibernate: 
+   ddl-auto: update
+  show-sql: true
+
+
+
+
+4. Create the following classes and interfaces
+
+Employee.java:
+
+
+package com.hdfc.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Entity
+@Getter
+@Setter
+@ToString
+public class Employee {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer empId;
+	private String empName;
+	private String email;
+	private Double salary;
+	
+}
+
+
+EmployeeRepository.java:
+-------------------------
+
+package com.hdfc.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.hdfc.entity.Employee;
+
+@Repository
+public interface EmployeeRepository extends JpaRepository<Employee, Integer>{
+
+}
+
+
+
+EmployeeService.java:
+----------------------
+
+package com.hdfc.service;
+
+import java.util.List;
+
+import com.hdfc.entity.Employee;
+
+public interface EmployeeService {
+
+	
+	public Employee saveEmployee(Employee emp);
+	
+	public List<Employee> getAllEmployees();
+	
+	public Employee getEmployeeByID(Integer empId);
+	
+	
+	
+	
+}
+
+
+
+EmployeeServiceImpl.java:
+-------------------------
+
+package com.hdfc.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.hdfc.entity.Employee;
+import com.hdfc.repository.EmployeeRepository;
+
+@Service
+public class EmployeeServiceImpl implements EmployeeService{
+
+	
+	private EmployeeRepository empRepository;
+	
+
+	public EmployeeServiceImpl(EmployeeRepository empRepository) {
+		this.empRepository = empRepository;
+	}
+
+	@Override
+	public Employee saveEmployee(Employee emp) {
+		
+		return empRepository.save(emp);
+	}
+
+	@Override
+	public List<Employee> getAllEmployees() {
+		
+		return  empRepository.findAll();
+	}
+
+	@Override
+	public Employee getEmployeeByID(Integer empId) {
+	
+		return empRepository.findById(empId).get();
+	}
+
+}
+
+
+
+EmployeeController.java:
+------------------------
+
+package com.hdfc.controller;
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.hdfc.entity.Employee;
+import com.hdfc.service.EmployeeService;
+
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController {
+
+	
+	private EmployeeService empService;
+	
+
+	public EmployeeController(EmployeeService empService) {
+		this.empService = empService;
+	}
+
+	@PostMapping
+	public ResponseEntity<Employee> registerEmployee(@RequestBody Employee employee){
+		
+		Employee registeredEmployee= empService.saveEmployee(employee);
+		
+		return ResponseEntity.status(HttpStatus.CREATED).body(registeredEmployee);
+		
+		
+		
+	}
+	
+	
+	@GetMapping("/{empId}")
+	public ResponseEntity<Employee> getEmployeeById(@PathVariable Integer empId){
+		
+		Employee emp= empService.getEmployeeByID(empId);
+		
+		return ResponseEntity.ok(emp);
+		
+		
+	}
+	
+	
+	@GetMapping
+	public ResponseEntity<List<Employee>> getAllEmployees(){
+		
+		List<Employee> emps= empService.getAllEmployees();
+		
+		return ResponseEntity.ok(emps);
+		
+	}
+	
+}
+
+
+
+Without Mock:
+-------------
+
+EmployeeServiceTest.java: under stc/test/java
+------------------------
+
+package com.hdfc.service;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.hdfc.entity.Employee;
+
+@SpringBootTest
+public class EmployeeServiceTest {
+
+
+	@Autowired
+	private EmployeeService empService;
+
+	
+	@Test
+	void testRegisterEmployee() {
+		
+		Employee emp = new Employee();
+		emp.setEmpName("Simran");
+		emp.setEmail("simran@gmail.com");
+		emp.setSalary(85000.00);
+		
+				
+		
+		Employee savedEmp= empService.saveEmployee(emp);
+		
+		assertEquals("simran@gmail.com", savedEmp.getEmail());
+			
+	}
+
+}
+
+
+--Here since we are using @SpringBootTest annotation at class level, then entire real beans will be activated and 
+EmployeeService will directly talk with real EmployeeRepository.
+
+--And the database will have the real record insertion.
+ 
+
+
+With Mock:
+
+EmployeeServiceTest.java: under stc/test/java
+------------------------
+
+package com.hdfc.service;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.hdfc.entity.Employee;
+import com.hdfc.repository.EmployeeRepository;
+
+@ExtendWith(MockitoExtension.class)
+public class EmployeeServiceTest {
+
+	@Mock
+	private EmployeeRepository empRepository;
+	
+	@InjectMocks
+	private EmployeeServiceImpl empService;
+	
+	
+	@Test
+	void testRegisterEmployee() {
+		
+		Employee emp = new Employee();
+		emp.setEmpName("Simran");
+		emp.setEmail("simran@gmail.com");
+		emp.setSalary(85000.00);
+		
+		
+		 when(empRepository.save(emp))
+         .thenReturn(emp);
+		
+		
+		Employee savedEmp= empService.saveEmployee(emp);
+		
+		assertEquals("simran@gmail.com", savedEmp.getEmail());
+		
+		
+		
+	}	
+}
+
+
+
+Note: @InjectMocks annotation will not work with interface, we need to make use of implemented class.
+
+Here, since we are specifying the mock object, the real database interaction will not happen.
+
+
+
+
+MockMvc:
+========
+
+What Problem Does MockMvc Solve?
+
+--In our Employee Application, we have the following REST API:
+
+@PostMapping
+public ResponseEntity<Employee> registerEmployee(@RequestBody Employee employee){
+
+    Employee registeredEmployee = empService.saveEmployee(employee);
+
+    return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(registeredEmployee);
+}
+
+
+Suppose we want to verify:
+
+Is the API returning 201 CREATED?
+Is JSON request accepted properly?
+Is Controller calling Service correctly?
+Is JSON response generated correctly?
+
+How do we test this API?
+
+
+Option 1: Run Application Manually
+
+Start application:
+
+http://localhost:8080/employees
+
+Open Postman/Insomnia
+Send Request
+Check Response
+
+--Every time manually.
+
+Problems:
+
+Slow
+Repetitive
+Human mistakes possible
+Not suitable for CI/CD pipelines
+
+
+Option 2: Automated API Testing
+
+--Instead of manually calling APIs from any client, we can ask Spring to simulate HTTP requests.
+
+--This is where MockMvc comes into the picture.
+
+MockMvc is a testing framework provided by Spring.
+
+It allows us to:
+
+Simulate HTTP Requests
+Test REST APIs
+Verify Status Codes
+Verify JSON Responses
+Verify Controller Behavior
+
+without starting a real web server.
+
+
+Where Does MockMvc Work?
+
+Consider our application flow:
+
+Client
+   |
+HTTP Request
+   |
+EmployeeController
+   |
+EmployeeService
+   |
+EmployeeRepository
+   |
+Database
+
+
+
+
+--MockMvc simulates the Client.
+
+MockMvc
+   |
+HTTP Request
+   |
+EmployeeController
+   |
+EmployeeService
+   |
+EmployeeRepository
+   |
+Database
+
+
+No browser.
+No Postman.
+No real server.
+
+--Everything happens inside the test environment.
+
+
+First MockMvc Test:
+---------------------
+
+EmployeeControllerTest.java:
+
+
+Create:
+
+package com.hdfc.controller;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+public class EmployeeControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+}
+
+
+@AutoConfigureMockMvc annotation tells Spring Boot:
+
+Please create and configure
+a MockMvc object for testing.
+
+Without it:
+
+@Autowired
+private MockMvc mockMvc;
+
+--will fail because Spring has no MockMvc Bean.
+
+
+When test starts:
+
+@SpringBootTest
+@AutoConfigureMockMvc
+
+Spring Boot:
+
+Step 1
+
+	Starts Application Context
+
+Step 2
+
+	Creates Controller Beans
+
+Step 3
+
+	Creates Service Beans
+
+Step 4
+
+	Creates Repository Beans
+
+Step 5
+
+	Creates MockMvc Bean
+
+Step 6
+
+	Injects MockMvc
+
+@Autowired
+private MockMvc mockMvc;
+
+
+
+
+Verifying GET API
+
+Suppose we have:
+
+@GetMapping("/{empId}")
+public ResponseEntity<Employee>
+getEmployeeById(@PathVariable Integer empId){
+
+    Employee emp = empService.getEmployeeByID(empId);
+
+    return ResponseEntity.ok(emp);
+}
+
+Now we want to test:
+
+GET /employees/1
+
+
+MockMvc Request Syntax:
+-----------------------
+
+	mockMvc.perform(get("/employees/1"));
+
+Meaning:
+
+Simulate a GET request
+to /employees/1
+
+Just like Postman.
+
+
+mockMvc.perform(...)
+
+Think of it as:
+
+"Please send this request
+to the Controller."
+
+
+Examples:
+
+mockMvc.perform(get("/employees"));
+mockMvc.perform(post("/employees"));
+mockMvc.perform(put("/employees/1"));
+mockMvc.perform(delete("/employees/1"));
+
+
+
+Example:
+
+
+package com.hdfc.controller;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.test.web.servlet.MockMvc;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+public class EmployeeControllerTest {
+
+	 @Autowired
+	 private MockMvc mockMvc;
+
+	    @Test
+	    void testGetEmployee() throws Exception {
+
+	        mockMvc.perform(get("/employees/1"));
+
+	    }
+	
+	
+	
+}
+
+
+MockMvc Assertions with andExpect():
+-------------------------------------
+
+andExpect() is used to verify the response returned by the Controller.
+
+Think of it as:
+
+"After sending the request,
+verify whether the response is correct."
+
+General Syntax:
+
+mockMvc.perform(...)
+       .andExpect(...);
+
+
+
+Status Code Verification:
+-------------------------
+
+mockMvc.perform(get("/employees/1"))
+       .andExpect(status().isOk());
+
+
+Common Status Assertions:
+-------------------------
+
+200 OK:
+
+	.andExpect(status().isOk())
+
+201 CREATED:
+
+	.andExpect(status().isCreated())
+
+400 BAD REQUEST
+	
+	.andExpect(status().isBadRequest())
+
+404 NOT FOUND
+
+	.andExpect(status().isNotFound())
+
+500 INTERNAL SERVER ERROR
+	
+	.andExpect(status().isInternalServerError())
+
+
+
+Verifying Response Body:
+
+--Status code alone is not enough.
+
+Example:
+
+200 OK
+
+--but response body may be incorrect.
+
+--We should verify returned data as well.
+
+For this we use:
+
+jsonPath()
+
+
+Suppose API returns:
+
+{
+  "empId":1,
+  "empName":"Simran",
+  "email":"simran@gmail.com",
+  "salary":85000
+}
+
+
+
+We can access fields using:
+
+$.empId
+$.empName
+$.email
+$.salary
+
+
+Example:
+
+mockMvc.perform(get("/employees/1"))
+       .andExpect(
+           jsonPath("$.empName")
+           .value("Simran")
+       );
+
+
+Verifying Multiple Fields:
+
+
+mockMvc.perform(get("/employees/1"))
+       .andExpect(status().isOk())
+       .andExpect(
+           jsonPath("$.empId")
+           .value(1)
+       )
+       .andExpect(
+           jsonPath("$.empName")
+           .value("Simran")
+       )
+       .andExpect(
+           jsonPath("$.email")
+           .value("simran@gmail.com")
+       );
+
+
+
+Limitation of the above approach:
+----------------------------------
+
+With,
+
+@SpringBootTest
+@AutoConfigureMockMvc
+
+--The tests worked successfully.
+
+However, there is one problem.
+
+Problem with @SpringBootTest
+
+When Spring Boot sees:
+
+@SpringBootTest
+
+--it loads the entire application.
+
+Controller Beans
+       ↓
+Service Beans
+       ↓
+Repository Beans
+       ↓
+Database Connection
+       ↓
+Security Configuration
+       ↓
+Application Context
+
+Everything gets loaded.
+
+As a result:
+
+More memory consumption
+Slower execution
+Database dependency
+Not suitable when testing only Controller layer
+
+
+Better Solution:
+----------------
+
+Spring Boot provides:
+
+@WebMvcTest
+
+--for Controller Testing.
+
+
+@WebMvcTest loads only the Web Layer.
+
+Example:
+
+@WebMvcTest(EmployeeController.class)
+public class EmployeeControllerTest {
+
+}
+
+Meaning:
+
+Load only EmployeeController
+for testing.
+
+What Gets Loaded?
+------------------
+
+When Spring sees:
+
+	@WebMvcTest(EmployeeController.class)
+
+it loads:
+
+Controller
+MockMvc
+Jackson JSON Converter
+Validation Components
+Spring MVC Infrastructure
+
+
+What Does NOT Get Loaded?
+
+Service Beans
+Repository Beans
+Database
+JPA
+Datasource
+
+
+
+After that, We provide a fake service.
+
+//@MockBean
+@MockitoBean
+private EmployeeService empService;
+
+Meaning:
+
+Spring,
+don't use the real service.
+
+Create a fake service object
+for testing.
+
+
+
+Complete Example:
+-----------------
+
+package com.hdfc.controller;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import com.hdfc.entity.Employee;
+import com.hdfc.service.EmployeeService;
+
+@WebMvcTest(EmployeeController.class)
+public class EmployeeControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockitoBean
+    private EmployeeService empService;
+
+    @Test
+    void testGetEmployee() throws Exception {
+
+        Employee emp = new Employee();
+
+        emp.setEmpId(1);
+        emp.setEmpName("Simran");
+        emp.setEmail("simran@gmail.com");
+        emp.setSalary(85000.00);
+
+        when(
+          empService.getEmployeeByID(1)
+        ).thenReturn(emp);
+
+        mockMvc.perform(
+                get("/employees/1")
+        )
+        .andExpect(status().isOk())
+        .andExpect(
+            jsonPath("$.empId")
+            .value(1)
+        )
+        .andExpect(
+            jsonPath("$.empName")
+            .value("Simran")
+        )
+        .andExpect(
+            jsonPath("$.email")
+            .value("simran@gmail.com")
+        );
+    }
+}
+
+
+
+Note: Spring Boot 4.0+, @MockBean has been deprecated and replaced by:
+
+@MockitoBean
+
+Import:
+
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+
+If:
+
+3.x → use @MockBean
+4.x → use @MockitoBean
