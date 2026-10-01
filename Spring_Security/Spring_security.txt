@@ -726,6 +726,7 @@ Step 3: Add Credentials to HTTP Request Header
 	Authorization: Basic YWRtaW46MTIzNA==
 
 
+
 Step 4: Request Sent to Server
 
 --The complete HTTP request may look like:
@@ -850,6 +851,9 @@ Validate Credentials
 
 Important: If an attacker obtains a valid JSESSIONID and reuses it to access protected resources, 
 it is known as Session Hijacking (or Session Replay Attack).
+
+
+
 
 
 
@@ -1508,13 +1512,13 @@ Client
 Security Filter Chain
    |
    v
-Authentication Filter
+Authentication Filter  (Authentication ) isAutheticated = false ,Principle = null
    |
    v
 AuthenticationManager
    |
    v
-AuthenticationProvider
+AuthenticationProvider (Default : DAO Authentication Provider)
    |
    v
 UserDetailsService
@@ -1523,13 +1527,13 @@ UserDetailsService
 Database / Memory / LDAP
    |
    v
-UserDetails
+UserDetails (User)
    |
    v
 Password Verification
    |
    v
-Authentication Success
+Authentication Success (Authentication) isAuthenticated = true, Principle = username
    |
    v
 SecurityContextHolder
@@ -2935,7 +2939,7 @@ public class AppConfig {
 			auth
 
 	                .requestMatchers(
-	                        "/hello1",
+	                        "/employees/hello1",
 	                        "/signIn")
 	                .permitAll()
 
@@ -2952,8 +2956,6 @@ public class AppConfig {
 
 	        return http.build();
 	    }
-
-	
 
 
 	@Bean
@@ -3562,7 +3564,7 @@ POST http://localhost:8080/customers
 
 payload:
 {
-  "name": "Raj",
+  	"name": "Raj",
 	"email": "raj@gmail.com",
 	"password": "1234",
 	"address": "delhi"
@@ -3730,9 +3732,10 @@ use:
 
 return new CustomerUserDetails(customer);
 
+JWT 
+Role based 
 
-
-
+Token based vs Session based
 
 
 
