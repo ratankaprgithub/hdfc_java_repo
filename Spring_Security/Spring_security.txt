@@ -3732,14 +3732,2092 @@ use:
 
 return new CustomerUserDetails(customer);
 
-JWT 
-Role based 
-
-Token based vs Session based
 
 
+Token based vs Session based authentication
+===========================================
+
+--Whenever a user logs in, the server must answer one important question on every subsequent request:
+
+"Has this user already authenticated successfully, and who is this user?"
+
+--There are two common ways to maintain this information:
+
+Session-Based Authentication
+Token-Based Authentication
+
+--JWT is commonly used for the second approach.
 
 
+Session-Based Authentication:
+------------------------------
+
+--Traditionally, web applications commonly use sessions to remember authenticated users.
+
+--Suppose Raj logs into our application.
+
+POST /login
+
+email = raj@gmail.com
+password = 1234
+
+--The server authenticates the user.
+
+After successful authentication, the server creates something like:
+
+Session ID = ABC123XYZ
+
+--The server stores authentication information associated with this ID.
+
+Conceptually:
+
+Server Memory / Session Store
+-----------------------------
+
+
+Session ID       Logged-in User
+--------------------------------------
+ABC123XYZ        raj@gmail.com
+PQR456LMN        amit@gmail.com
+XYZ789ABC        admin@gmail.com
+
+
+--The server sends the session identifier back to the browser.
+
+--Usually it is stored in a cookie such as:
+
+JSESSIONID=ABC123XYZ
+
+On later requests:
+
+GET /customers
+
+Cookie: JSESSIONID=ABC123XYZ
+
+--The server retrieves the session.
+
+ABC123XYZ
+     |
+     v
+raj@gmail.com
+
+--Therefore the server knows that the request came from Raj.
+
+Session-Based Authentication Flow:
+----------------------------------
+
+--A simplified flow is:
+
+
+Client
+  |
+  | 1. username + password
+  v
+Server
+  |
+  | 2. Verify credentials
+  v
+Database
+  |
+  | 3. Valid user
+  v
+Server
+  |
+  | 4. Create Session
+  |    JSESSIONID = ABC123
+  v
+Client
+
+Then later:
+
+Client
+  |
+  | GET /customers
+  | Cookie: JSESSIONID=ABC123
+  v
+Server
+  |
+  | Find session ABC123
+  |
+  | Session belongs to raj@gmail.com
+  |
+  v
+Request Allowed
+
+The important point is:
+
+--The server stores information about the logged-in user.
+
+--For that reason, session-based authentication is normally considered stateful authentication.
+
+
+What does "Stateful" mean?
+--------------------------
+
+Stateful means:
+
+--The server remembers some state about the client between requests.
+
+For example:
+
+Request 1:
+Raj logs in
+
+Server stores:
+Session ABC123 -> Raj
+
+Then:
+
+Request 2:
+Raj sends session ABC123
+
+Server remembers:
+ABC123 belongs to Raj
+
+--So the server has to maintain authentication state.
+
+
+
+Advantages of Session-Based Authentication:
+-------------------------------------------
+
+--Session authentication is not bad. It is still widely used.
+
+Some advantages are:
+
+easy to understand
+well supported by browsers
+straightforward logout
+session can be invalidated immediately
+mature security model
+excellent for traditional server-rendered applications
+
+For example, logging out can simply remove the session:
+
+ABC123 -> deleted
+
+--Now the user is no longer authenticated.
+
+
+
+Challenges with Session-Based Authentication:
+---------------------------------------------
+
+--Imagine that we have only one server.
+
+Client
+   |
+   v
+Server
+
+Session management is simple.
+
+--But suppose our application grows:
+
+--and for scaling our application we starts multiple instance of the same application to distribute the load.
+
+
+
+                 Load Balancer
+                /      |      \
+               /       |       \
+          Server 1  Server 2  Server 3
+
+--Raj logs in through:
+
+Server 1
+
+Server 1 creates:
+
+Session ABC123 -> Raj
+
+The next request may reach:
+
+Server 2
+
+Server 2 may not know about session ABC123.
+
+--Solutions exist, such as:
+
+sticky sessions
+Redis-backed sessions
+distributed session stores
+
+--But they add infrastructure and coordination.
+
+--This is one reason token-based authentication became very popular for REST APIs and distributed systems.
+
+
+
+Token-Based Authentication:
+---------------------------
+
+--Instead of storing the authenticated user's state on the server, the server gives the client a token after successful authentication.
+
+For example:
+
+Raj sends:
+
+email    = raj@gmail.com
+password = 1234
+
+--The server verifies the credentials.
+
+Instead of creating:
+
+	JSESSIONID=ABC123
+
+--the server generates a token:
+
+	eyJhbGciOiJIUzI1NiJ9...
+
+--The server sends this token to the client.
+
+--The client stores the token and sends it with subsequent requests.
+
+Usually: through HTTP request header
+
+Authorization: Bearer <token>
+
+Example:
+
+	GET /customers
+
+	Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
+
+--The server validates the token.
+
+If the token is valid:
+
+	Allow request
+
+Otherwise:
+
+	401 Unauthorized
+
+
+Token-Based Authentication Flow:
+--------------------------------
+
+--The complete idea looks like this:
+
+Client
+   |
+   | POST /login
+   |
+   | email + password
+   v
+Server
+   |
+   | authenticate
+   v
+Database
+   |
+   | valid user
+   v
+Server
+   |
+   | Generate Token
+   v
+Client
+
+--The client receives:
+
+JWT Token
+
+--On sucessfull authentication..
+
+Then:
+
+Client
+   |
+   | GET /customers
+   |
+   | Authorization:
+   | Bearer JWT_TOKEN
+   v
+Server
+   |
+   | Validate JWT
+   |
+   | Valid? If yes
+   v
+Protected Resource
+
+
+Stateless Authentication:
+--------------------------
+
+--Token-based REST API authentication is commonly configured as stateless.
+
+Stateless means:
+
+--The server does not maintain a login session for each client.
+
+--Instead, every request carries the authentication information required by the server.
+
+For example:
+
+GET /customers
+Authorization: Bearer JWT_TOKEN
+
+--The server validates the token independently.
+
+--Spring Security can be configured with:
+
+.sessionManagement(session ->
+    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+)
+
+
+
+Session vs Token Authentication:
+-------------------------------
+
+--A simple comparison:
+
+
+| Session Authentication                          | Token Authentication                              |
+| ----------------------------------------------- | ------------------------------------------------- |
+| Server maintains session                        | Server does not normally maintain login session   |
+| Often uses `JSESSIONID`                         | Often uses bearer token                           |
+| Common in traditional web apps                  | Common in REST APIs                               |
+| Usually stateful                                | Usually stateless                                 |
+| Session ID often sent through cookie            | Token commonly sent through Authorization header  |
+| Logout can invalidate server session            | Token handling needs a revocation/expiry strategy |
+| Distributed sessions may require shared storage | Convenient for distributed APIs                   |
+
+
+
+What is JWT?
+=============
+
+JWT stands for:
+
+	JSON Web Token
+
+--JWT is a standardized token format commonly used to securely carry claims between parties.
+
+A JWT looks something like:
+
+	eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyYWpAZ21haWwuY29tIn0.XYZ123...
+
+At first it looks like random text.
+
+--But a JWT normally consists of three parts:
+
+HEADER.PAYLOAD.SIGNATURE
+
+Example:
+
+xxxxx.yyyyy.zzzzz
+
+So:
+
+Part 1 -> Header
+Part 2 -> Payload
+Part 3 -> Signature
+
+
+For example:
+
+eyJhbGciOiJIUzI1NiJ9
+.
+eyJzdWIiOiJyYWpAZ21haWwuY29tIn0
+.
+abc123signature
+
+Let's understand each part.
+
+
+
+1. JWT Header
+--------------
+
+--The header contains metadata describing the token.
+
+For example:
+
+{
+  "alg": "HS256",
+  "typ": "JWT"
+}
+
+--alg tells us the signing algorithm.
+
+Example:
+
+	HS256
+
+means:
+
+	HMAC using SHA-256
+
+typ means token type:
+
+	JWT
+
+--After encoding, this becomes the first part of the token.
+
+
+2. JWT Payload:
+---------------
+
+--The payload contains claims.
+
+--Claims are pieces of information stored inside the token.
+
+For example:
+
+{
+  "sub": "raj@gmail.com",
+  "role": "USER",
+  "iat": 1791020000,
+  "exp": 1791023600
+}
+
+Here:
+
+sub -> Subject
+iat -> Issued At
+exp -> Expiration Time
+
+--The sub claim often represents the authenticated username/email.
+
+For our application:
+
+	sub = raj@gmail.com
+
+--Therefore when a request arrives with the token, we can extract:
+
+	raj@gmail.com
+
+from it.
+
+
+What are JWT Claims?
+---------------------
+
+--Claims are information carried by the JWT.
+
+--There are standardized claims such as:
+
+sub -> subject
+iss -> issuer
+aud -> audience
+exp -> expiration
+iat -> issued at
+role -> Roles of a user
+
+--And we can also add custom claims.
+
+For example:
+
+{
+  "sub": "raj@gmail.com",
+  "role": "ADMIN"
+}
+
+Here:
+
+	role
+
+--is a custom claim.
+
+--Later this can help with authorization.
+
+
+
+3. JWT Signature
+------------------
+
+--The signature is extremely important.
+
+Suppose we have:
+
+Header
++
+Payload
+
+--The server signs these values using a cryptographic key.
+
+Conceptually:
+
+Header + Payload + Secret Key
+              |
+              v
+         Signature
+
+--Therefore JWT becomes:
+
+	Header.Payload.Signature
+
+--When the token comes back, the server verifies the signature.
+
+If someone modifies the payload:
+
+{
+  "role": "USER"
+}
+
+to:
+
+{
+  "role": "ADMIN"
+}
+
+--the previously generated signature no longer matches.
+
+--Therefore the token fails validation.
+
+
+
+JWT is Usually Signed, Not Encrypted
+=====================================
+
+
+--JWT payloads are generally Base64URL encoded, not encrypted.
+
+--That means a user may be able to decode the payload and see:
+
+{
+  "sub": "raj@gmail.com",
+  "role": "USER"
+}
+
+--Therefore we should never put sensitive information such as:
+
+password
+credit card number
+OTP
+database password
+private secret
+
+--inside a normal JWT payload.
+
+JWT signing primarily provides:
+
+	Integrity
+
+--and authenticity of the token, rather than secrecy of the payload.
+
+
+Why Does the Server Trust JWT?
+------------------------------
+
+--Suppose the server generates:
+
+JWT = Header.Payload.Signature
+
+--The signature was generated using a signing key.
+
+When the token returns:
+
+Client
+   |
+   | JWT
+   v
+Server
+
+--the server verifies:
+
+	Is the signature valid?
+
+--It also checks things such as:
+
+	Has the token expired?
+
+If everything is valid:
+
+	Token accepted
+
+Otherwise:
+
+	Token rejected
+
+
+JWT Authentication in Our Application:
+======================================
+
+--We will modify our current database-authentication flow.
+
+Currently we have:
+
+POST /customers
+
+	for registration.
+
+--That can remain essentially the same.
+
+Our current login concept is:
+
+	GET /signIn
+
+	Authorization:
+	Basic raj@gmail.com : 1234
+
+--With JWT, we will instead create something like:
+
+
+	POST /signIn
+
+--and send credentials in the request body:
+
+{
+  "email": "raj@gmail.com",
+  "password": "1234"
+}
+
+--The server will authenticate those credentials.
+
+--If authentication succeeds, instead of returning only customer details, it will generate a JWT.
+
+For example:
+
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9..."
+}
+
+
+Subsequent Request with JWT
+
+After login:
+
+	Client receives JWT
+
+The client calls:
+
+	GET /customers
+
+with:
+
+	Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
+
+Notice:
+
+	Bearer
+
+comes before the token.
+
+So the structure is:
+
+	Authorization: Bearer <JWT>
+
+
+What Does "Bearer" Mean?
+-------------------------
+
+Bearer essentially means:
+
+--Whoever possesses this token can present it as the credential.
+
+For example:
+
+	Authorization: Bearer ABCXYZ
+
+--Therefore protecting the token is very important.
+
+--If an attacker obtains a valid bearer token, they may be able to use it until it expires or is otherwise invalidated.
+
+This is why APIs should use:
+
+	HTTPS
+
+--in production.
+
+
+JWT Login Flow in Spring Security:
+----------------------------------
+
+--Our application will eventually follow this flow:
+
+
+POST /signIn
+      |
+      v
+LoginController
+      |
+      v
+AuthenticationManager
+      |
+      v
+UsernamePasswordAuthenticationToken
+      |
+      v
+AuthenticationProvider
+      |
+      v
+CustomerUserDetailsService
+      |
+      v
+CustomerRepository
+      |
+      v
+PostgreSQL
+
+--If the credentials are valid:
+
+Authentication Successful
+        |
+        v
+  Generate JWT
+        |
+        v
+Return JWT to Client
+
+--So the database authentication will still be same.
+
+JWT does not replace:
+
+UserDetailsService
+PasswordEncoder
+AuthenticationManager
+AuthenticationProvider
+
+--JWT changes how we maintain authentication after login.
+
+
+Request Flow After Login
+------------------------
+
+After receiving the JWT:
+
+GET /customers
+Authorization: Bearer <JWT>
+
+--Spring Security will need something to inspect the token before the request reaches the controller.
+
+Conceptually:
+
+HTTP Request
+     |
+     v
+JWT Filter
+     |
+     | Extract Token
+     v
+Validate Token
+     |
+     | Extract Username
+     v
+UserDetailsService
+     |
+     v
+Create Authentication Object
+     |
+     v
+SecurityContext
+     |
+     v
+Controller
+
+--This JWT filter will be a major part in token based authentication.
+
+
+SecurityContext Still Matters
+-------------------------------
+
+--Even with JWT, Spring Security continues to use:
+
+	SecurityContext
+
+--Once we validate the JWT, we create an authenticated Authentication object and store it inside:
+
+	SecurityContextHolder
+
+Conceptually:
+
+JWT
+ |
+ | username = raj@gmail.com
+ v
+Load UserDetails
+ |
+ v
+Create Authentication
+ |
+ v
+SecurityContextHolder
+ |
+ v
+Spring considers Raj authenticated
+
+
+
+
+How Basic Authentication Differs from JWT:
+-----------------------------------------
+
+--In our previous sessions, we explored Session-Based Authentication 
+using two common ways to send credentials:
+
+1. Request Header Approach: 
+	
+--Sending credentials via 
+
+	Authorization: Basic <Base64-Encoded-Username-And-Password>
+
+2. Request Body Approach: 
+
+--Sending credentials inside a LoginRequestDTO via a POST request payload
+
+POST /signIn
+
+Request payload:
+
+{
+  "username": "raj@gmail.com",
+  "password": "1234"
+}
+
+
+
+--When moving to JWT (JSON Web Token) Authentication, we can technically implement both approaches to submit credentials. However, in modern applications, the preferred approach is to send credentials in the request body and, upon successful authentication, return a JWT token to the client.
+
+
+
+Create another Spring Boot application with name: SpringSecurityDBWithJWT
+
+
+refer: the SpringSecurityDBWithJWT shared application
+
+
+--as same as previous application: 
+
+Login using LoginDTO class:
+
+
+Existing Authentication Flow:
+------------------------------
+
+--Our previous application "SpringSecurityDBWithoutJWT" works like this:
+
+
+Client
+   |
+   | Basic Auth
+   |
+   v
+Spring Security
+   |
+   v
+CustomerUserDetailsService
+   |
+   v
+PostgreSQL
+
+User sends:
+
+	Authorization: Basic xxxxxx
+
+
+Spring Security:
+
+	1. Extract username/password
+	2. Authenticate user
+	3. Allow request
+
+
+Every request contains credentials.
+
+Example:
+
+	GET /customers
+
+	Authorization: Basic xxxxx
+
+Again:
+
+
+	GET /customers/raj@gmail.com
+
+	Authorization: Basic xxxxx
+
+--Credentials are repeatedly sent.
+
+
+2. JWT Flow We Want
+
+--Instead of sending credentials repeatedly:
+
+Login Once
+      |
+      v
+Generate JWT
+      |
+      v
+Send JWT to Client
+      |
+      v
+Client Stores JWT
+      |
+      v
+Subsequent Requests
+      |
+      v
+Authorization: Bearer JWT
+
+Example:
+
+	Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
+
+
+
+
+Adding extra dependencies to support JWT authentiation:
+-------------------------------------------------------
+
+--Spring Security does not generate JWT automatically.
+
+We need a JWT library.
+
+One popular library is:
+
+JJWT
+(Java JWT Library)
+
+Add the following dependencies.
+
+Maven
+
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-api</artifactId>
+    <version>0.13.0</version>
+</dependency>
+
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-impl</artifactId>
+    <version>0.13.0</version>
+    <scope>runtime</scope>
+</dependency>
+
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-jackson</artifactId>
+    <version>0.13.0</version>
+    <scope>runtime</scope>
+</dependency>
+
+
+
+
+
+Modify/create the following classes:
+-------------------------------------
+
+
+Create LoginRequestDTO.java:
+
+
+package com.hdfc.dto;
+
+import lombok.Data;
+
+@Data
+public class LoginRequestDTO {
+
+    private String username;
+    private String password;
+
+}
+
+
+
+
+Create LoginResponseDTO.java:
+
+package com.hdfc.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
+public class LoginResponseDTO {
+
+	private String token;
+}
+
+
+
+
+--Create JwtUtil.java class: inside com.hdfc.security package
+
+
+--A JWT utility class generally performs various utility related operations for JWT.
+
+like,
+
+--Generate Token
+--Extract Username from the given token
+--Extract Claims from the given token
+--Validate Token
+--Check Expiry for a token
+etc..
+
+
+Example:
+
+
+
+package com.hdfc.security;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+
+import javax.crypto.SecretKey;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+
+@Component
+public class JwtUtil {
+
+	private static final String SECRET_KEY = "myVeryLongSecretKeyForJwtAuthenticationExample123456789";
+
+	private SecretKey getSigningKey() {
+
+		SecretKey skey = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+		return skey;
+	}
+
+	public String generateToken(Authentication authentication) {
+
+		return Jwts.builder()
+
+				.issuer("HDFC")
+
+				.subject(authentication.getName()) // username i.e email
+
+				.issuedAt(new Date())
+
+				.expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30)) // 30 min
+
+				.signWith(getSigningKey())
+
+				.compact();
+	}
+
+	// To verify the valid token and if token in valid extract the claims
+	public Claims extractClaims(String token) {
+
+		return Jwts.parser()
+
+				.verifyWith(getSigningKey())
+
+				.build()
+
+				.parseSignedClaims(token)
+
+				.getPayload();
+	}
+
+	// Extract Username
+	public String extractUsername(String token) {
+
+		return extractClaims(token).getSubject();
+	}
+
+	// Check whether token is expired
+	public boolean isTokenExpired(String token) {
+
+		Date expDate = extractClaims(token).getExpiration();
+
+		return expDate.before(new Date());
+	}
+
+	// Validate Token
+	public boolean validateToken(String token) {
+
+		try {
+			return !isTokenExpired(token);
+		} catch (Exception e) {
+			return false;
+		}
+	}
+}
+
+
+
+
+
+Note: annotate this class with @Component annotation so that it will be registered with Spring container as a Spring Bean
+So that we can inject it inside any other components easily.
+
+
+
+Modify the LoginController.java to generate a valid JWT token upon the user validation:
+
+package com.hdfc.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.hdfc.dto.LoginRequestDTO;
+import com.hdfc.dto.LoginResponseDTO;
+import com.hdfc.security.JwtUtil;
+
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequiredArgsConstructor
+public class LoginController {
+
+	private final AuthenticationManager authenticationManager;
+	private final JwtUtil jwtUtil;
+
+	@PostMapping("/signIn")
+	public ResponseEntity<LoginResponseDTO> loginHandler(@RequestBody LoginRequestDTO loginBean) {
+
+		Authentication unAuth = new UsernamePasswordAuthenticationToken(loginBean.getUsername(),
+				loginBean.getPassword());
+
+		Authentication auth = authenticationManager.authenticate(unAuth);
+
+		System.out.println(auth);
+
+		if (auth.isAuthenticated()) {
+
+			String token = jwtUtil.generateToken(auth);
+
+			return ResponseEntity.ok(new LoginResponseDTO(token));
+
+		}
+
+		throw new BadCredentialsException("Invalid username or password..");
+
+	}
+
+}
+
+
+
+
+
+
+
+
+Now, once the user logged in, and he recieved the valid JWT token,
+then for any subsequest request he need to pass that token using header:
+
+Suppose request:
+
+GET /customers
+
+Authorization: Bearer eyJhbGc...
+
+We must validate JWT:
+
+--Before Controller Executes
+
+Otherwise:
+
+	Anyone can access APIs
+
+--Therefore JWT validation belongs inside a filter.
+
+
+Desired Flow:
+
+We want:
+
+
+Incoming Request
+       |
+       v
+JwtAuthenticationFilter (Our Custom filter to validate the token)
+       |
+       v
+ Validate JWT
+       |
+       v
+  Load User
+       |
+       v
+Create Authentication
+       |
+       v
+SecurityContextHolder
+       |
+       v
+Controller
+
+
+--Spring Security stores authenticated user information inside: SecurityContextHolder
+
+Whenever Spring wants to know:
+
+	Who is the logged-in user?
+
+it checks:
+	
+	SecurityContextHolder
+
+Example:
+
+Suppose JWT belongs to:
+
+	raj@gmail.com
+
+After validation:
+
+SecurityContextHolder
+contains: authenticated Authentication object which holds the informations:
+
+
+Username : raj@gmail.com
+Role     : USER
+Authenticated : true
+
+
+--Now Spring considers:
+
+	Raj is logged in
+
+
+
+
+
+Create JwtAuthenticationFilter class inside the com.hdfc.security package: to validate a jwt token
+
+
+package com.hdfc.security;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@Component
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+	private final JwtUtil jwtUtil;
+
+	public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+		this.jwtUtil = jwtUtil;
+
+	}
+
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
+
+		String authHeader = request.getHeader("Authorization");
+
+		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+
+			filterChain.doFilter(request, response);
+
+			return;
+		}
+
+		String token = authHeader.substring(7); // to remove the Bearer and space part
+
+		if (jwtUtil.validateToken(token)) {
+
+			// Empty authorities list
+			List<GrantedAuthority> authorities = new ArrayList<>();
+
+			String username = jwtUtil.extractUsername(token);
+
+			Authentication auth =
+
+					new UsernamePasswordAuthenticationToken(username, null, authorities);
+
+			SecurityContextHolder.getContext().setAuthentication(auth);
+		}
+
+		filterChain.doFilter(request, response);
+	}
+
+}
+
+
+
+
+Note: Annotate this filter with @Component annotation, so that it will registed as a bean with Spring container, and we can inject it inside another components.
+
+
+Here, Filter exists.
+
+But Spring Security still doesn't know:
+--When to execute it
+
+because we haven't added yet it to:
+
+	SecurityFilterChain
+
+
+
+
+Modify the AppConfig.java file:
+---------------------------------
+
+
+AppConfig.java:
+----------------
+
+
+package com.hdfc.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.hdfc.security.JwtAuthenticationFilter;
+
+@Configuration
+public class AppConfig {
+	
+	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	
+	
+	public AppConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+		this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+	}
+
+	
+	@Bean
+	SecurityFilterChain securityConfig(HttpSecurity http) throws Exception {
+
+		
+		
+		http.
+		sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+		.authorizeHttpRequests(auth -> {
+
+			auth
+			.requestMatchers(HttpMethod.POST, "/customers").permitAll()
+			.requestMatchers(HttpMethod.POST, "/signIn")
+			.permitAll()
+			.anyRequest().authenticated();
+
+		})
+		.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+		.csrf(csrf -> csrf.disable());
+		//.formLogin(Customizer.withDefaults())
+		//.httpBasic(Customizer.withDefaults());
+
+		return http.build();
+
+	}
+
+	@Bean
+	PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+	
+
+@Bean
+AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)throws Exception {
+
+    return authenticationConfiguration.getAuthenticationManager();
+}
+
+
+	
+}
+
+
+
+
+
+Run the application:
+
+
+Register a customer:
+-------------------
+
+POST /customers
+
+Body Payload
+
+{
+	"name": "Raj",
+	"email": "raj@gmail.com",
+	"password": "1234",
+	"address": "Delhi"
+}
+
+
+to login send the request as:
+
+POST /signIn
+
+Request body
+
+{
+
+"username": "raj@gmail.com",
+"password": "1234"
+
+}
+
+
+The response should be the jwt token:
+
+{
+	"token": "eyJhbG.."
+}
+
+
+
+the get all the customers list: (to access the protected API)
+
+
+GET /employees
+
+Request header:
+
+Authorization: Bearer <token>
+
+
+
+
+Role based authentication:
+==========================
+
+refer: SpringSecurityDBWithJWTWithRole application
+
+
+
+
+
+ Modify this Customer.java class: add one extra field
+
+
+package com.hdfc.entity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.Setter;
+
+@Entity
+@Setter
+@Getter
+public class Customer {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer custId;
+	private String name;
+	
+	@Column(unique = true)
+	private String email;
+	
+	private String password;
+	private String address;
+	private String role;
+	
+	
+	
+}
+
+
+
+Modify the DTO classes:
+------------------------
+
+
+package com.hdfc.dto;
+
+import lombok.Data;
+
+@Data
+public class CustomerRequestDTO {
+
+	private String name;
+	private String email;
+	private String password;
+	private String address;
+	private String role;
+	
+	
+	
+}
+
+
+
+package com.hdfc.dto;
+
+import lombok.Data;
+
+@Data
+public class CustomerResponseDTO {
+
+	private Integer custId;
+	private String name;
+	private String email;
+	private String address;
+	private String role;
+	
+	
+	
+	
+}
+
+
+
+
+Modify the CustomerController class:
+-------------------------------------
+
+
+--Prefix the user supplied role with: ROLE_
+
+
+admin
+should be changed as: 
+
+ROLE_ADMIN
+
+	@PostMapping
+	public ResponseEntity<CustomerResponseDTO> saveCustomer(@RequestBody CustomerRequestDTO customerReq){
+		
+		customerReq.setPassword(passEncoder.encode(customerReq.getPassword()));
+		customerReq.setRole("ROLE_"+customerReq.getRole().toUpperCase());
+		
+		
+		CustomerResponseDTO customerResponse= customerService.registerCustomer(customerReq);
+		
+		return ResponseEntity.status(HttpStatus.CREATED).body(customerResponse);
+	
+
+
+Modify the CustomerServiceImpl class:
+-------------------------------------
+
+--To add the user supplied role to entity and dto classes
+
+Example:
+
+
+package com.hdfc.service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import com.hdfc.dto.CustomerRequestDTO;
+import com.hdfc.dto.CustomerResponseDTO;
+import com.hdfc.entity.Customer;
+import com.hdfc.repository.CustomerRepository;
+
+@Service
+public class CustomerServiceImpl implements CustomerService {
+
+	private CustomerRepository custRepository;
+
+	public CustomerServiceImpl(CustomerRepository custRepository) {
+		this.custRepository = custRepository;
+	}
+
+	@Override
+	public CustomerResponseDTO registerCustomer(CustomerRequestDTO customer) {
+
+		Customer c1 = new Customer();
+		c1.setName(customer.getName());
+		c1.setAddress(customer.getAddress());
+		c1.setEmail(customer.getEmail());
+		c1.setPassword(customer.getPassword());
+		c1.setRole(customer.getRole());
+
+		Customer savedCustomer = custRepository.save(c1);
+
+		CustomerResponseDTO responseDto = new CustomerResponseDTO();
+		responseDto.setCustId(savedCustomer.getCustId());
+		responseDto.setName(savedCustomer.getName());
+		responseDto.setEmail(savedCustomer.getEmail());
+		responseDto.setAddress(savedCustomer.getAddress());
+		responseDto.setRole(savedCustomer.getRole());
+		return responseDto;
+
+	}
+
+	@Override
+	public CustomerResponseDTO getCustomerDetailsByEmail(String email) {
+
+		Customer customer = custRepository.findByEmail(email)
+				.orElseThrow(() -> new RuntimeException("Customer does not exist with email: " + email));
+
+		CustomerResponseDTO responseDto = new CustomerResponseDTO();
+		responseDto.setCustId(customer.getCustId());
+		responseDto.setName(customer.getName());
+		responseDto.setEmail(customer.getEmail());
+		responseDto.setAddress(customer.getAddress());
+		responseDto.setRole(customer.getRole());
+
+		return responseDto;
+
+	}
+
+	@Override
+	public List<CustomerResponseDTO> getAllCustomerDetails() {
+
+		List<Customer> customers = custRepository.findAll();
+
+		return customers.stream().map(c -> {
+
+			CustomerResponseDTO responseDto = new CustomerResponseDTO();
+			responseDto.setCustId(c.getCustId());
+			responseDto.setName(c.getName());
+			responseDto.setEmail(c.getEmail());
+			responseDto.setAddress(c.getAddress());
+			responseDto.setRole(c.getRole());
+
+			return responseDto;
+
+		}).collect(Collectors.toList());
+
+	}
+
+}
+
+	
+
+Modify the CustomerUserDetailsService.java class:
+-------------------------------------------------
+
+--Load the customer role from the database in the form of GrantedAuthorities
+
+
+package com.hdfc.service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import com.hdfc.entity.Customer;
+import com.hdfc.repository.CustomerRepository;
+
+@Service
+public class CustomerUserDetailsService implements UserDetailsService{
+
+	
+	private CustomerRepository customerRepository;
+	
+	public CustomerUserDetailsService(CustomerRepository customerRepository) {
+		this.customerRepository = customerRepository;
+	}
+
+
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+		Optional<Customer> opt= customerRepository.findByEmail(username);
+		
+		
+		if(opt.isPresent()) {
+			Customer customer= opt.get();
+			
+			
+			//Empty Authorities
+			List<GrantedAuthority> authorities = new ArrayList<>();
+			//authorities.add(new SimpleGrantedAuthority(customer.getRole()));
+			
+			SimpleGrantedAuthority sgs = new SimpleGrantedAuthority(customer.getRole());
+			authorities.add(sgs);
+			
+			
+			
+			// User class is predefined implementation of UserDetails interface
+			return new User(customer.getEmail(), customer.getPassword(), authorities);
+			
+			//Using custom UserDetails implementation
+			//return new CustomerUserDetails(customer);
+			
+		}
+		else {
+			throw new BadCredentialsException("User Details not found with username: "+username);
+		}
+			
+	}	
+}
+
+
+Modify the JwtUtil.java class: to store authorities as a claim inside the token:
+
+
+
+Example:
+
+
+
+package com.hdfc.security;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+import java.util.stream.Collectors;
+
+import javax.crypto.SecretKey;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Component;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+
+@Component
+public class JwtUtil {
+
+	private static final String SECRET_KEY = "myVeryLongSecretKeyForJwtAuthenticationExample123456789";
+
+	
+
+	private SecretKey getSigningKey() {
+
+		SecretKey skey = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+		return skey;
+	}
+
+	public String generateToken(Authentication authentication) {
+
+		String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+				.collect(Collectors.joining(","));
+
+		return Jwts.builder()
+
+				.issuer("HDFC")
+
+				.subject(authentication.getName())
+
+				.claim("authorities", authorities)
+
+				.issuedAt(new Date())
+
+				.expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30)) // 30 min
+
+				.signWith(getSigningKey())
+
+				.compact();
+	}
+
+	// To verify the valid token and if token in valid extract the claims
+	public Claims extractClaims(String token) {
+
+		return Jwts.parser()
+
+				.verifyWith(getSigningKey())
+
+				.build()
+
+				.parseSignedClaims(token)
+
+				.getPayload();
+	}
+
+	// Extract Username
+	public String extractUsername(String token) {
+
+		return extractClaims(token).getSubject();
+	}
+
+	// Check whether token is expired
+	public boolean isTokenExpired(String token) {
+
+		Date expDate = extractClaims(token).getExpiration();
+
+		return expDate.before(new Date());
+	}
+
+	// Validate Token
+	public boolean validateToken(String token, String username) {
+
+		String extractedUsername = extractUsername(token);
+
+		return extractedUsername.equals(username) && !isTokenExpired(token);
+	}
+}
+
+
+
+
+Modify the JwtAuthenticationFilter.java class:
+----------------------------------------------
+
+--Verify the token by extracting the username and claims, 
+
+and create the Authentication object and keep that Authentication object inside the SecurityContextHolder object.
+
+
+
+Example:
+--------
+
+package com.hdfc.security;
+
+import java.io.IOException;
+import java.util.List;
+
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@Component
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+	private final JwtUtil jwtUtil;
+
+	public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+		this.jwtUtil = jwtUtil;
+
+	}
+
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
+
+		String authHeader = request.getHeader("Authorization");
+
+		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+
+			filterChain.doFilter(request, response);
+
+			return;
+		}
+
+		try {
+			String token = authHeader.substring(7); // to remove the Bearer and space part
+
+			Claims claims = jwtUtil.extractClaims(token);
+
+			String username = claims.getSubject();
+
+			String authorities = (String) claims.get("authorities");
+
+			//converting the comma separated authorities to the List of GrantedAuthority
+			List<GrantedAuthority> auths = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
+
+			Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, auths);
+
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+
+		} catch (Exception e) {
+			SecurityContextHolder.clearContext();
+		}
+
+		filterChain.doFilter(request, response);
+	}
+
+}
+
+
+
+
+
+
+My requirement is:
+
+POST /customers : permit all for registrations
+GET /customers : to get all customers info : ROLE: ADMIN
+
+GET /customers/** : get the specific customer info: ROLE ADMIN or USER
+
+
+
+
+Modify the AppConfig.java class:
+
+--Configure the SecurityFilterChain to apply the roles:
+
+
+package com.hdfc.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.hdfc.security.JwtAuthenticationFilter;
+
+@Configuration
+public class AppConfig {
+	
+	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	
+	
+	public AppConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+		this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+	}
+
+	
+	@Bean
+	SecurityFilterChain securityConfig(HttpSecurity http) throws Exception {
+
+		
+		
+		http.
+		sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+		.authorizeHttpRequests(auth -> {
+
+			auth
+			.requestMatchers(HttpMethod.POST, "/customers").permitAll()
+			.requestMatchers(HttpMethod.POST, "/signIn").permitAll()
+			.requestMatchers(HttpMethod.GET, "/customers").hasRole("ADMIN")
+			.requestMatchers(HttpMethod.GET,"/customers/**").hasAnyRole("ADMIN","USER")
+			.anyRequest().authenticated();
+
+		})
+		.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+		.csrf(csrf -> csrf.disable());
+		//.formLogin(Customizer.withDefaults())
+		//.httpBasic(Customizer.withDefaults());
+
+		return http.build();
+
+	}
+
+	@Bean
+	PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+	
+
+@Bean
+AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)throws Exception {
+
+    return authenticationConfiguration.getAuthenticationManager();
+}
+	
+}
+
+
+
+
+Test the API:
+-------------
+
+Register 2 Users:
+
+
+
+1. Raj: as admin
+
+
+POST /customers
+
+{
+	"name": "Raj",
+	"email": "raj@gmail.com",	
+	"password": "1234",	
+	"address": "Delhi",
+	"role": "admin"
+				
+}
+
+
+2. Simran: as user
+
+
+{
+	"name": "Simran",
+	"email": "simran@gmail.com",	
+	"password": "1234",	
+	"address": "Mumbai",
+	"role": "user"
+				
+}
+
+
+
+
+1. Raj should be able to access all the endpoints
+
+GET /customers 		:get all the customers list
+GET /customers/email	:get a specific customer details based on email
+GET /customers/hello	:normal test endpoint
+
+
+Login as Raj:
+
+POST /signIn
+
+{
+
+"username": "raj@gmail.com",
+"password": "1234"
+
+}
+
+
+--Copy the token and call the above endpoints by using that token:
+
+
+Authorization: Bearer eyJhbGciO...
+
+
+
+2. Simran should be able to access only the following endpoints
+
+/customers/email	:get a specific customer details based on email
+customers/hello		:normal test endpoint
 
 
 
