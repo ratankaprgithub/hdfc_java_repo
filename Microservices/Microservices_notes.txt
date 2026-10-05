@@ -1,0 +1,3244 @@
+Microservices:
+==============
+
+Introduction to Software Architecture and Monolithic Applications:
+-------------------------------------------------------------------
+
+
+Software Architecture:
+----------------------
+
+--Before writing a single line of code, every successful software system begins with a design.
+
+--Just as a civil engineer creates a blueprint before constructing a building, 
+software engineers create an architectural design before building an application.
+
+
+Real Life Analogy: Building a House:
+------------------------------------
+
+Imagine a person wants to build a house.
+
+Before construction starts, several questions need answers:
+
+- How many rooms are required?
+- Where should the kitchen be located?
+- Where should electrical wiring be placed?
+- How should water pipelines be connected?
+- How many floors will the building have?
+
+--A blueprint is created before any construction work begins.
+
+Without a blueprint:
+
+Construction becomes confusing.
+Resources get wasted.
+Future modifications become difficult.
+
+--Software development follows exactly the same principle.
+Before building an application, we need a plan that defines:
+
+Components
+Responsibilities
+Communication
+Data Flow
+Deployment Strategy
+
+This plan is called:
+Software Architecture
+
+
+
+
+Software Architecture is the high-level structure of a software system that defines:
+
+- The major components of the system.
+- The responsibilities of each component.
+- How components communicate.
+- How data flows through the system.
+- How the application is deployed and scaled.
+
+
+Example:
+
+--Consider an Online Shopping Application.
+
+Features:
+
+User Registration
+Product Management
+Order Management
+Payment Processing
+Inventory Tracking
+
+--If we immediately start coding without planning:
+
+Different developers may build similar functionality.
+Responsibilities may overlap.
+The application may become difficult to maintain.
+
+--Architecture helps avoid these problems.
+
+
+
+Good architecture helps achieve:
+
+1. Maintainability:
+
+--The application becomes easier to modify.
+
+Example:
+
+Adding a new feature
+Fixing a bug
+Changing business rules
+
+--becomes easier when responsibilities are clearly separated.
+
+
+2. Scalability:
+
+--The application can handle increasing traffic.
+
+Example:
+
+100 Users
+1000 Users
+10000 Users
+
+--A good architecture should support growth.
+
+
+3. Reliability:
+
+--The application should continue working even when problems occur.
+
+Example:
+
+Temporary Network Issue
+Database Delay
+High Traffic
+
+--Architecture plays a major role in handling such situations.
+
+
+
+4. Security:
+
+--Sensitive information must be protected.
+
+Example:
+
+Passwords
+Bank Details
+Personal Information
+
+--A good architecture makes it easier to enforce security rules.
+
+
+5. Team Collaboration:
+
+--As the number of developers increases:
+
+5 Developers
+20 Developers
+100 Developers
+
+--the architecture helps define ownership and responsibilities.
+
+
+
+Monolithic Architecture:
+------------------------
+
+The word Monolith comes from:
+
+Mono  = One
+Lith  = Stone
+
+Meaning:
+
+One Large Unit
+
+--In software development, a Monolithic Application is an application where all business functionality exists inside a single deployable unit.
+
+
+--A Monolithic Application is a software application in which all modules are developed, deployed, and executed as one application.
+
+Example:
+
+E-Commerce Example
+
+--Suppose we are building an Online Shopping Platform.
+
+Features:
+
+User Management
+Product Management
+Order Management
+Payment Processing
+Inventory Management
+Notifications
+
+--In a Monolithic Architecture, all these modules exist inside a single application.
+
+
+
+Diagram:
+
++------------------------------------------------+
+|                                                |
+|            E-Commerce Application              |
+|                                                |
+|  Users                                         |
+|  Products                                      |
+|  Orders                                        |
+|  Payments                                      |
+|  Inventory                                     |
+|  Notifications                                 |
+|                                                |
++------------------------------------------------+
+
+--Everything is packaged together and deployed together.
+
+
+Typical Spring Boot Monolith:
+-----------------------------
+
+Project Structure:
+
+src
+│
+├── controller
+├── service
+├── repository
+├── entity
+├── dto
+├── config
+└── util
+
+Inside the same project:
+
+UserController
+ProductController
+OrderController
+PaymentController
+
+--All controllers belong to one application.
+
+
+Example Endpoints:
+
+POST /users/register
+POST /users/login
+GET /products
+POST /orders
+POST /payments
+GET /inventory
+
+--All endpoints are served by the same application.
+
+
+Real Life Analogy: General Store
+--------------------------------
+
+Imagine a small town.
+There is only one store.
+
+	Sharma General Store
+
+Inside that store:
+
+Groceries
+Medicines
+Clothes
+Electronics
+Stationery
+
+--Everything is available in one place.
+
+--Customers visit one store for all their needs.
+
+This resembles a Monolithic Application.
+
+
+--Monolithic Architecture dominated software development for many years because:
+
+
+1. Simple Development:
+
+--Only one project.
+
+One Codebase
+One Build
+One Deployment
+
+
+2. Easy Testing
+
+--Developers start one application.
+
+	localhost:8080
+
+--Everything becomes available.
+
+3. Easy Debugging
+
+--A request flows through:
+
+Controller
+    ↓
+Service
+    ↓
+Repository
+    ↓
+Database
+
+--within the same application.
+
+--This makes debugging straightforward.
+
+
+4. Easier Learning Curve:
+
+--Developers only need to understand:
+
+One Application
+One Build Process
+One Deployment Process
+
+--instead of multiple distributed services.
+
+
+Note: When people start learning Microservices, they often develop a misconception:
+
+Monolith = Bad
+Microservices = Good
+
+This is incorrect.
+
+--A Monolithic Architecture is not a bad architecture.
+In fact, many successful applications started as Monoliths.
+
+Examples include:
+
+- Amazon (early days)
+- Netflix (early days)
+- Uber (early days)
+- Facebook (early days)
+
+--The real issue is not whether an architecture is good or bad.
+
+The real question is:
+Is this architecture suitable for the current business requirements?
+
+
+--For many years, Monolithic Architecture was the default choice for software development.
+Because it solved the problems businesses had at that time.
+
+Most companies:
+
+Small Teams
+Limited Budget
+Simple Requirements
+Single Deployment Server
+
+--did not need distributed systems.
+
+--A Monolith was usually the simplest and most effective solution.
+
+
+Real Life Analogy:
+------------------
+
+Imagine opening a small restaurant.
+
+Initially:
+20 Customers Per Day
+
+Would you hire:
+
+10 Chefs
+5 Managers
+3 Accountants
+2 Security Teams
+
+--Probably not.
+
+Instead:
+
+One Chef
+One Cashier
+One Helper
+
+would be enough.
+
+--As the restaurant grows, specialization becomes necessary.
+The same idea applies to software systems.
+
+
+Advantage 1: Simpler Development
+--------------------------------
+
+--One of the biggest benefits of a Monolith is simplicity.
+
+Imagine a Spring Boot project.
+
+Project Structure:
+
+src
+│
+├── controller
+├── service
+├── repository
+├── entity
+└── dto
+
+--Everything exists in one project.
+
+Developers:
+
+Clone Repository
+Run Application
+Start Development
+
+--No need to manage multiple services.
+
+Example:
+
+Suppose we want to add:
+
+	Wishlist Feature
+
+in an E-Commerce Application.
+
+
+Developer workflow:
+
+Open Existing Project
+↓
+Create Entity
+↓
+Create Repository
+↓
+Create Service
+↓
+Create Controller
+↓
+Run Application
+
+Done.
+
+--No communication with other services is required.
+
+
+Advantage 2: Easier Learning Curve
+
+A new developer joins the company.
+
+With a Monolith:
+
+One Repository
+One Application
+One Build Process
+
+--Learning becomes easier.
+
+Example
+
+--A developer joining a Spring Boot team only needs to understand:
+
+Controller
+Service
+Repository
+Database
+
+--This is much easier than learning:
+
+API Gateway
+Service Discovery
+Load Balancing
+Distributed Tracing
+Circuit Breakers
+Message Brokers
+Event Streaming
+
+--which are commonly found in Microservices.
+
+
+Advantage 3: Easy Debugging
+
+--One of the most loved features of Monolithic Architecture is debugging.
+
+Example Request Flow:
+
+User requests:
+
+GET /products
+
+Flow:
+
+Controller
+    ↓
+Service
+    ↓
+Repository
+    ↓
+Database
+
+--Everything happens inside one application.
+
+Debugging Example:
+
+Suppose a bug occurs.
+
+A developer can simply place breakpoints:
+
+ProductController
+ProductService
+ProductRepository
+
+--and follow the entire execution flow.
+
+--No network communication is involved.
+
+
+Real Life Analogy:
+
+--Imagine a manufacturing company operating in one building.
+
+If a problem occurs:
+
+Production Team
+↓
+Packaging Team
+↓
+Shipping Team
+
+--are all in the same building.
+--Investigation becomes easier.
+
+Advantage 4: Easy Testing
+
+--Testing is significantly easier.
+
+Example
+
+A developer starts:
+localhost:8080
+
+--and gets access to:
+
+Users APIs
+Products APIs
+Orders APIs
+Payments APIs
+
+--from one application.
+
+Integration Testing
+
+Example:
+
+Create User
+↓
+Create Product
+↓
+Place Order
+↓
+Make Payment
+
+--All operations execute inside one application.
+--Testing becomes straightforward.
+
+
+
+Advantage 5: Simple Deployment
+
+--This is one of the most important advantages.
+
+Deployment Process:
+
+Suppose we have:
+
+	ecommerce.jar
+
+Deployment process:
+
+Build JAR
+↓
+Copy JAR
+↓
+Run JAR
+
+Done.
+
+Example
+Spring Boot Deployment:
+
+mvn clean package
+java -jar ecommerce.jar
+
+--The entire application becomes available.
+
+Compare This With Microservices
+
+Imagine later having:
+
+User Service
+Product Service
+Order Service
+Payment Service
+Notification Service
+Gateway Service
+
+--Now deployment becomes significantly more complex.
+--We will study that later.
+
+
+Advantage 6: Easier Database Management
+
+Most Monolithic Applications use:
+
+One Application
+One Database
+
+Example:
+
+	ecommerce_db
+
+Tables:
+
+users
+products
+orders
+payments
+inventory
+
+--Everything exists in one database.
+
+Benefits:
+
+Developers can easily perform:
+
+JOIN
+GROUP BY
+SUBQUERY
+TRANSACTIONS
+
+--across multiple tables.
+
+Example
+
+Find:
+
+User Name
+Product Name
+Order Details
+
+--using a single SQL query.
+
+SELECT *
+FROM users u
+JOIN orders o
+ON u.id=o.user_id
+JOIN products p
+ON p.id=o.product_id;
+
+--Simple and efficient.
+
+Advantage 7: Better Performance for Internal Calls
+
+Inside a Monolith:
+
+Module A
+↓
+Module B
+
+--communication happens using:
+
+	Method Calls
+
+Example:
+
+	userService.getUserById(id);
+
+--This executes inside the same JVM.
+Very fast.
+
+No Network Calls:
+
+No need for:
+
+HTTP Requests
+Serialization
+Deserialization
+Network Communication
+
+--This reduces latency.
+
+
+Advantage 8: Lower Infrastructure Cost
+
+A Monolith usually requires:
+
+One Application
+One Database
+One Deployment Server
+
+Example Startup
+
+Initial User Base:
+
+100 Users
+500 Users
+1000 Users
+
+--Microservices may be unnecessary.
+--A Monolith is often more cost-effective.
+
+
+
+
+
+When Should You Choose a Monolith?
+-----------------------------------
+
+--Monolithic Architecture is often a good choice when:
+
+1. Small Team:
+
+Example:
+
+2 Developers
+5 Developers
+10 Developers
+
+2. Startup Stage:
+
+--Business requirements are still changing frequently.
+
+3. MVP Development:
+
+MVP means:
+Minimum Viable Product
+
+Goal:
+
+Build Fast
+Validate Idea
+Get Customer Feedback
+
+4. Limited Budget:
+
+--Microservices introduce additional operational costs.
+
+--A Monolith is usually cheaper initially.
+
+
+Common Misconception:
+----------------------
+
+Many developers believe:
+Microservices are always better.
+
+This is incorrect.
+
+--A poorly designed Microservices architecture can be far more complicated than a well-designed Monolith.
+
+Architecture should be selected based on:
+
+Business Needs
+Team Size
+Traffic Requirements
+Deployment Strategy
+
+--not based on trends.
+
+
+
+Problems with Monolithic Architecture:
+======================================
+
+
+Monoliths work extremely well
+until the application becomes very large.
+
+Most architectural problems do not appear when:
+
+100 Users
+5 Developers
+20 Features
+
+The problems start appearing when:
+
+Millions of Users
+Hundreds of Developers
+Thousands of Features
+
+--Let's understand these problems one by one.
+
+
+
+Problem 1: Large Codebase
+
+--As the business grows, the application grows.
+
+Initially:
+
+E-Commerce Application
+
+Users
+Products
+Orders
+
+After a few years:
+
+Users
+Products
+Orders
+Payments
+Inventory
+Notifications
+Coupons
+Reviews
+Recommendations
+Analytics
+Shipping
+Returns
+
+--The application becomes huge.
+
+
+Example:
+
+Suppose an application initially contains:
+
+	50 Classes
+
+After several years:
+
+	5000+ Classes
+
+Developers now face challenges:
+
+Understanding Existing Code
+Finding Bugs
+Adding New Features
+Refactoring Old Features
+
+Real Life Analogy:
+------------------
+
+Imagine a small library.
+
+Initially:
+500 Books
+
+Finding a book is easy.
+
+Now imagine:
+50 Lakh Books
+
+--Finding the correct book becomes much harder.
+
+The same thing happens with software systems.
+
+
+Impact on Developers:
+
+--A new developer joins the organization.
+
+Questions arise:
+
+Where is the code?
+Which service handles this?
+Who owns this module?
+What will break if I change this?
+
+--The learning curve becomes very steep.
+
+
+
+Problem 2: Tight Coupling
+
+--One of the biggest challenges of Monolithic Applications is:
+
+	Tight Coupling
+
+What is Coupling?
+
+--Coupling refers to the level of dependency between components.
+
+Example
+
+Suppose:
+
+OrderService
+
+directly depends on:
+
+PaymentService
+
+and:
+PaymentService
+
+depends on:
+InventoryService
+
+and:
+InventoryService
+
+depends on:
+NotificationService
+
+Diagram:
+
+OrderService
+      ↓
+PaymentService
+      ↓
+InventoryService
+      ↓
+NotificationService
+
+--Now changing one component may impact many other components.
+
+
+Real Life Analogy:
+
+Imagine electrical wiring in a house.
+
+Suppose every room shares the same wiring.
+
+If one wire is damaged:
+
+Kitchen
+Bedroom
+Living Room
+Bathroom
+
+--may all be affected.
+
+This is similar to tightly coupled software.
+
+Why is Tight Coupling Dangerous?
+
+--Because changes become risky.
+
+A developer changes:
+	
+	PaymentService
+
+and unexpectedly breaks:
+
+	OrderService
+
+--Even though they seem unrelated.
+
+
+
+Problem 3: Scaling Challenges:
+
+--This is one of the most important reasons Microservices became popular.
+
+Understanding Scaling
+
+Scaling means:
+
+Increasing system capacity
+to handle more users.
+
+Example:
+
+Suppose an application receives:
+
+	100 Requests Per Minute
+
+Everything works fine.
+
+Later:
+
+	10000 Requests Per Minute
+
+--The application struggles.
+--We need to scale.
+
+Monolith Scaling Problem
+
+Imagine an E-Commerce Application.
+
+Traffic Distribution:
+
+Products Module
+
+	100000 Requests / Minute
+
+Orders Module
+	
+	2000 Requests / Minute
+
+Payments Module
+
+	500 Requests / Minute
+
+--Only Product Search is heavily used.
+
+What Would We Like?
+
+Ideally:
+
+	Scale Products Module Only
+
+What Actually Happens?
+
+In a Monolith:
+
+	Scale Entire Application
+
+Diagram:
++--------------------------------+
+| Users                          |
+| Products                       |
+| Orders                         |
+| Payments                       |
+| Inventory                      |
++--------------------------------+
+
+--The whole application is replicated.
+
+Why Is This Inefficient?
+
+Because:
+
+	Products Need More Resources
+
+Payments Do Not
+
+	Yet resources are allocated to everything.
+
+This increases:
+
+Infrastructure Cost
+CPU Usage
+Memory Usage
+
+Real Life Analogy
+
+Imagine a shopping mall.
+
+Only one section is crowded:
+
+	Electronics Department
+
+Would you expand:
+
+	Entire Shopping Mall
+
+or only the:
+
+	Electronics Department
+
+--The second option makes more sense.
+
+--Monoliths force us to scale the entire mall.
+
+
+Problem 4: Deployment Challenges
+
+--Deployment becomes difficult as applications grow.
+
+Example Scenario:
+
+--Suppose a developer fixes a typo.
+
+Change:
+
+	Product Page Label
+
+--Very small modification.
+
+What Should Happen?
+
+Ideally:
+
+	Deploy Product Module only
+
+What Happens in Monolith?
+
+Entire application must be:
+
+Built
+Tested
+Packaged
+Deployed
+
+again.
+
+
+Deployment Flow:
+
+Code Change
+    ↓
+Build Entire Application
+    ↓
+Run All Tests
+    ↓
+Deploy Entire Application
+
+--Even for tiny changes.
+
+
+Risk:
+
+If deployment fails:
+
+Users
+Products
+Orders
+Payments
+
+--may all become unavailable.
+
+
+Problem 5: Long Startup Time
+
+--As applications become larger:
+
+More Controllers
+More Services
+More Beans
+More Dependencies
+
+--Spring Boot startup time increases.
+
+Example:
+
+Small Application:
+10 Seconds
+
+Large Application:
+5 Minutes
+
+or more.
+
+Impact:
+
+Developers wait longer during:
+
+Development
+Testing
+Deployment
+
+--which reduces productivity.
+
+
+Problem 6: Single Point of Failure
+
+--This is one of the most dangerous problems.
+
+Example
+
+Suppose:
+Payment Module
+
+--contains a memory leak.
+
+Result
+
+--Memory usage increases continuously.
+
+Eventually:
+Entire Application Crashes
+
+
+Impact
+
+Even though the issue exists only in:
+Payments
+
+users may lose access to:
+
+Products
+Orders
+Accounts
+
+--as well.
+
+
+Real Life Analogy:
+
+Imagine a shopping mall with one main electricity switch.
+
+If the switch fails:
+
+Electronics Section
+Clothing Section
+Food Court
+Parking Area
+
+--all stop functioning.
+
+
+Problem 7: Technology Lock-In
+
+Suppose:
+
+Current Application
+
+is built using:
+Java
+Spring Boot
+
+Now the company wants:
+
+	Recommendation Engine
+
+--using Python Machine Learning libraries.
+
+Challenge:
+
+Everything is tightly integrated.
+Using a different technology becomes difficult.
+
+Monolith Limitation:
+
+Entire application usually follows:
+One Technology Stack
+
+Example:
+Java
+Spring Boot
+MySQL
+
+--for everything.
+
+
+Problem 8: Team Collaboration Issues
+
+As organizations grow:
+
+5 Developers
+→
+50 Developers
+→
+500 Developers
+
+--multiple teams work on the same codebase.
+
+Problems
+
+1. Merge Conflicts
+
+	Developers modify the same files.
+
+2. Build Conflicts
+
+	One team's changes may break another team's work.
+
+3. Dependency Problems
+
+	Teams become dependent on each other.
+
+Real Life Analogy:
+
+--Imagine 100 people editing the same Word document simultaneously.
+--Conflicts become unavoidable.
+
+
+
+Microservices Architecture:
+===========================
+
+Micro = Small
+Service = A business capability
+
+--A Microservice is not simply a small application.
+
+This is one of the most common misunderstandings among beginners.
+
+A Microservice is:
+
+--A small, independently deployable application responsible for a specific business capability.
+
+Notice the phrase:
+
+	Specific Business Capability
+
+--This is extremely important.
+
+Official Definition:
+--------------------
+
+According to the Spring ecosystem:
+
+--A Microservice is a small, autonomous service that works together with other services to form a complete system.
+
+Official Reference:
+
+	https://spring.io/microservices
+
+
+Understanding Business Capability:
+==================================
+
+Let's consider an E-Commerce Platform.
+
+Features:
+
+User Registration
+Product Management
+Order Management
+Payment Processing
+Inventory Management
+Notifications
+
+In a Monolith:
+
+Everything
+Inside
+One Application
+
+In Microservices:
+
+User Service
+Product Service
+Order Service
+Payment Service
+Inventory Service
+Notification Service
+
+--Each service becomes responsible for one business capability.
+
+Real Life Analogy: Shopping Mall
+
+Imagine a huge shopping mall.
+
+Instead of one giant store:
+Everything Store
+
+the mall contains:
+
+Clothing Store
+Electronics Store
+Food Court
+Pharmacy
+Book Store
+
+--Each store specializes in a specific business function.
+
+Yet together they provide a complete shopping experience.
+
+This is exactly how Microservices work.
+
+
+Another Analogy: Hospital
+
+Hospital Departments:
+Reception
+Doctor
+Laboratory
+Pharmacy
+Billing
+
+Each department:
+
+Has Its Own Responsibility
+Has Its Own Team
+Has Its Own Processes
+
+--But all departments work together to provide healthcare.
+
+
+Similarly:
+
+User Service
+Product Service
+Order Service
+Payment Service
+
+--work together to provide an E-Commerce Platform.
+
+
+**Microservices did not appear because developers wanted something new.
+They appeared because businesses needed solutions to real problems.
+
+
+Organizations needed:
+
+Smaller Systems
+Independent Teams
+Independent Deployments
+Independent Scaling
+
+--Microservices helped achieve these goals.
+
+
+The Core Philosophy of Microservices:
+=====================================
+
+Do One Thing Well
+
+--Each Microservice should focus on one business responsibility.
+
+
+Good Example:
+
+User Service
+
+Responsibilities:
+- Registration
+- Login
+- Profile Management
+
+Product Service
+
+Responsibilities:
+- Product Creation
+- Product Updates
+- Product Search
+
+Order Service
+
+Responsibilities:
+- Place Orders
+- View Orders
+- Cancel Orders
+
+--Each service has a clear purpose.
+
+Bad Example:
+
+Imagine:
+
+Product Service
+
+contains:
+
+Create Product
+Delete Product
+Register User
+Login User
+Generate Invoice
+Process Payment
+
+This service is doing too many things.
+This is not a good Microservice.
+
+
+
+Characteristics of a Microservice:
+==================================
+
+
+1. Single Responsibility
+
+--A Microservice should focus on one business capability.
+
+Example:
+
+User Service
+
+--Only User Related Functionality
+
+
+2. Independent Deployment
+
+--A service should be deployable independently.
+
+Example:
+
+Product Service Updated
+
+Ideally:
+
+	Deploy Product Service Only
+
+without redeploying:
+
+User Service
+Order Service
+Payment Service
+
+
+3. Independent Development
+
+--Different teams can work on different services.
+
+Example:
+
+Team A
+	User Service
+
+Team B
+	Product Service
+
+Team C
+	Order Service
+
+--This reduces coordination overhead.
+
+
+4, Independent Scaling:
+
+Suppose:
+
+Product Search
+
+receives:
+	10000 Requests/Minute
+
+while:
+
+Payments
+
+receive:
+	500 Requests/Minute
+
+--Only Product Service needs additional resources.
+
+
+
+5. Fault Isolation
+
+If:
+Notification Service
+
+fails,
+
+--other services may continue functioning.
+
+Example:
+
+Products OK
+Users OK
+Orders OK
+Notifications DOWN
+
+--This is much better than an entire application outage.
+
+
+Monolith vs Microservices:
+==========================
+
+| Feature 	  | Monolith 		| Microservices 	|
+|-----------------|---------------------|-----------------------|
+| Deployment 	  | Single Deployment   | Multiple Deployments 	|
+| Scaling 	  | Entire Application  | Individual Services 	|
+| Team Ownership  | Shared 		| Independent		|
+| Codebase 	  | Large 		| Smaller 		|
+| Failure Impact  | High 		| Reduced 		|
+| Complexity 	  | Lower Initially 	| Higher Initially 	|
+
+
+
+Important Warning for Beginners:
+-------------------------------
+
+Many developers believe:
+
+Microservices
+=
+Modern
+=
+Always Better
+
+--This is incorrect.
+
+--Microservices introduce significant complexity.
+
+Examples:
+
+Network Communication
+Service Discovery
+API Gateway
+Load Balancing
+Circuit Breakers
+Distributed Logging
+Distributed Tracing
+
+--These challenges do not exist in a simple Monolith.
+
+Therefore:
+
+Microservices should solve a business problem.
+They should never be adopted simply because they are popular.
+
+
+Understanding Our Training Project:
+-----------------------------------
+
+--Throughout this module we will build a simplified E-Commerce System.
+
+1. User Service
+
+Responsibilities:
+
+Create User
+View User
+Update User
+
+2. Product Service:
+
+Responsibilities:
+
+Create Product
+View Product
+Update Product
+Delete Product
+
+3. API Gateway
+
+Responsibilities:
+
+Routing
+JWT Validation
+Request Filtering
+Security
+Centralized Entry Point
+
+
+
+
+High-Level Architecture:
+------------------------
+
+
+                    Client
+                       |
+                       |
+                API Gateway
+                       |
+         +-------------+-------------+
+         |                           |
+         |                           |
+   User Service               Product Service
+         |                           |
+         |                           |
+     PostgreSQL                 PostgreSQL
+
+
+
+
+
+
+
+
+Microservices sound more complex than Monoliths.
+Then why would a company choose them?
+
+This is a very important question.
+
+Remember:
+
+	Microservices are not simpler.
+
+In fact:
+	Microservices are usually MORE complex.
+
+--Companies adopt Microservices because the benefits outweigh the additional complexity.
+
+
+Understanding the Trade-Off:
+----------------------------
+
+Imagine a small restaurant.
+
+Would you create:
+
+Separate Team for Billing
+Separate Team for Kitchen
+Separate Team for Cleaning
+Separate Team for Delivery
+
+Probably not.
+
+--It would be unnecessarily complicated.
+
+Now imagine:
+
+McDonald's
+KFC
+Domino's
+Starbucks
+
+serving thousands of customers every day.
+Now specialization becomes necessary.
+
+Microservices follow the same principle.
+
+
+Benefits of Microservices:
+---------------------------
+
+1. Independent Deployment
+
+Business Benefit:
+
+--Faster delivery.
+--Organizations can release features more frequently.
+
+2. Independent Scaling
+
+Increasing capacity
+to handle more traffic.
+
+
+User Service       (1 Instance)
+Product Service    (5 Instances)
+Order Service      (1 Instance)
+Payment Service    (1 Instance)
+
+
+Benefits:
+
+Lower cost.
+Better resource utilization.
+Improved performance.
+
+
+
+3. Team Ownership
+
+--Different teams own different services.
+
+User Team
+      |
+      +-- User Service
+
+Product Team
+      |
+      +-- Product Service
+
+Order Team
+      |
+      +-- Order Service
+
+
+Benefits:
+
+Clear ownership.
+Faster development.
+Reduced conflicts.
+Better accountability.
+
+
+
+4. Fault Isolation:
+
+Suppose:
+
+Payment Service
+
+	fails.
+
+Result:
+
+User Service OK
+Product Service  OK
+Order Service OK
+Payment Service DOWN
+
+--Only one service is affected.
+
+Business Impact
+
+Customers may still:
+
+Browse Products
+View Profiles
+Search Catalog
+
+--even if payment processing is temporarily unavailable.
+
+5. Technology Flexibility:
+
+--Large organizations often need different technologies for different problems.
+
+Example:
+
+User Service
+	Java + Spring Boot
+
+Product Service
+	Java + Spring Boot
+
+Recommendation Service
+	Python
+
+Analytics Service
+	Go
+
+--Each team can choose the most suitable technology.
+
+
+6. Faster Development Cycles:
+
+--Independent teams can work simultaneously.
+
+Example:
+
+Team A
+	Working on User Service
+
+Team B
+	Working on Product Service
+
+Team C
+	Working on Order Service
+
+--No need to wait for each other.
+
+
+Result
+Features reach production faster.
+
+
+7. Better Alignment with Business Domains
+
+--Microservices encourage thinking in terms of:
+
+	Business Capabilities
+
+instead of:
+
+	Technical Layers
+
+Example:
+
+Business Domains:
+
+Users
+Products
+Orders
+Payments
+
+--Each domain becomes a service.
+
+--This aligns software architecture with business architecture.
+
+
+8. Easier Adoption of Cloud Platforms
+
+--Modern cloud platforms are designed around:
+
+Containers
+Services
+Independent Deployments
+
+--Microservices fit naturally into this model.
+
+Examples:
+
+AWS
+Azure
+Google Cloud
+
+
+But Remember...
+
+Every benefit comes with a cost.
+
+Microservices introduce:
+
+Network Calls
+Distributed Systems
+Latency
+Monitoring Challenges
+Debugging Complexity
+Operational Overhead
+
+This is why:
+	Microservices are not free.
+
+
+
+
+
+
+
+Service Boundaries and Bounded Context:
+======================================
+
+Many beginners believe Microservices are simply:
+
+	Many Small Applications
+
+This is only partially correct.
+
+The real challenge is not creating multiple applications.
+
+The real challenge is deciding:
+
+Where should one service end
+and another service begin?
+
+This decision is called:
+
+	Defining Service Boundaries
+
+
+Why Service Boundaries Matter?
+------------------------------
+
+Let's imagine a company decides:
+
+We will build 20 Microservices.
+
+Sounds impressive.
+
+But if the services are designed incorrectly:
+
+Communication increases
+Dependencies increase
+Complexity increases
+Deployment becomes harder
+
+--The company may end up with a system that is worse than the original Monolith.
+
+
+Real Life Analogy: Apartment Building
+-------------------------------------
+
+Imagine an apartment building.
+
+Question:
+
+	Where should walls be placed?
+
+A good design creates:
+
+Living Room
+Bedroom
+Kitchen
+Bathroom
+
+--Each area has a clear purpose.
+
+Bad Design:
+
+Half Kitchen
+Half Bedroom
+Half Bathroom
+Half Living Room
+
+--Everything overlaps.
+
+The apartment becomes difficult to use.
+Microservices face the same challenge.
+
+
+What is a Service Boundary?
+---------------------------
+
+A Service Boundary defines:
+
+	What a Service Owns
+
+	What a Service Does Not Own
+
+--Every service must have clear responsibilities.
+
+
+Example: E-Commerce System:
+---------------------------
+
+
+Business Features:
+
+Users
+Products
+Orders
+Payments
+Inventory
+
+Question:
+
+--Should everything belong to one service?
+
+No.
+
+--We need ownership boundaries.
+
+User Service Boundary:
+---------------------
+
+User Service owns:
+
+User Registration
+Login
+User Profile
+Roles
+Permissions
+
+User Service database:
+
+	users
+
+Product Service Boundary:
+-------------------------
+
+Product Service owns:
+
+Product Creation
+Product Updates
+Pricing
+Categories
+Inventory Quantity
+
+Product Service database:
+
+	products
+
+Very Important Rule:
+--------------------
+
+--The Product Service should NOT own:
+
+User Passwords
+User Login
+User Roles
+
+--Those belong to User Service.
+
+Likewise:
+
+User Service should NOT own:
+
+Product Prices
+Product Categories
+Inventory
+
+--Those belong to Product Service.
+
+
+The Ownership Principle:
+-----------------------
+
+--Every piece of business data should have one owner.
+
+Example:
+
+
+User Data
+      ↓
+User Service
+
+Product Data
+       ↓
+Product Service
+
+--This principle prevents confusion.
+
+
+Common Beginner Mistake: 1
+--------------------------
+
+--Splitting Services by Technical Layer
+
+Some developers create:
+
+Controller Service
+Repository Service
+Database Service
+
+This is incorrect.
+
+Microservices should be split by:
+
+	Business Capability
+
+	not by technical layer.
+
+
+Incorrect Design:
+
+UserController Service
+UserService Service
+UserRepository Service
+
+--This creates unnecessary network communication.
+
+Correct Design:
+
+User Service
+
+Contains:
+
+Controller
+Service
+Repository
+Database
+
+--Everything related to users remains together.
+
+
+Common Beginner Mistake 2
+--------------------------
+
+--Creating Too Many Microservices
+
+Some teams create:
+
+Login Service
+Register Service
+Forgot Password Service
+Profile Service
+
+--for user functionality.
+
+
+Result:
+
+Excessive Communication
+Excessive Complexity
+More Deployments
+
+Better Design:
+
+	User Service
+
+--owns all user-related functionality.
+
+
+Common Beginner Mistake 3
+--------------------------
+
+--Sharing the Same Database
+
+
+Many beginners create:
+
+User Service
+Product Service
+
+but both services access:
+
+	ecommerce_db
+
+directly.
+
+This seems convenient.
+But it creates problems.
+
+Q/- Why Shared Databases Are Dangerous?
+
+Suppose:
+
+	Product Service
+
+directly updates:
+
+users table.
+
+Now:
+	Who Owns User Data?
+
+Nobody knows.
+
+--Ownership becomes unclear.
+
+Good Practice
+
+--Each service owns its own data.
+
+Example:
+
+User Service
+      ↓
+   user_db
+
+Product Service
+      ↓
+product_db
+
+--Even if both databases run on the same PostgreSQL server.
+--Ownership remains clear.
+
+
+
+Bounded Context:
+================
+
+--To understand Bounded Context, we need to understand something called:
+
+	Domain Driven Design (DDD)
+
+Domain Driven Design was introduced by Eric Evans.
+
+Official Reference:
+
+	https://www.domainlanguage.com/ddd/reference/
+
+A central concept of DDD is:
+
+	Bounded Context
+
+
+Definition:
+
+A Bounded Context defines:
+The specific business area
+for which a service is responsible.
+
+
+
+Example:
+
+E-Commerce Domain
+
+Contains:
+
+Users
+Products
+Orders
+Payments
+Inventory
+
+Instead of one giant system:
+
+We divide the domain into smaller contexts.
+
+1. User Context
+
+Contains:
+
+Registration
+Authentication
+Profile Management
+Roles
+
+--Everything inside this context relates to users.
+
+2. Product Context
+
+Contains:
+
+Products
+Categories
+Pricing
+Inventory
+
+--Everything inside this context relates to products.
+
+3. Order Context
+
+Contains:
+
+Place Order
+View Order
+Cancel Order
+Order History
+
+
+Relationship Between Service Boundary and Bounded Context
+---------------------------------------------------------
+
+Bounded Context:
+-----------------
+
+Business Concept.
+
+Answers:
+
+	What business area are we modelling?
+
+Service Boundary:
+-----------------
+
+Implementation Concept.
+
+Answers:
+
+	What functionality belongs inside this service?
+
+Think of it like:
+
+Bounded Context
+      ↓
+Defines Business Boundary
+
+Service Boundary
+      ↓
+Defines Technical Boundary
+
+
+
+
+Designing Our Training Project:
+-------------------------------
+
+Throughout this course we will use:
+
+User Service
+Product Service
+
+
+1. User Service Context:
+
+Responsibilities:
+
+Create User
+Update User
+View User
+
+Database:
+
+	users
+
+
+2. Product Service Context:
+
+Responsibilities:
+
+Create Product
+Update Product
+Delete Product
+View Product
+
+Database:
+
+	products
+
+
+Designing Our E-Commerce Microservices System:
+----------------------------------------------
+
+Many developers immediately start coding.
+
+
+Typical approach:
+
+Create Spring Boot Project
+↓
+Create Controller
+↓
+Create Service
+↓
+Create Repository
+↓
+Create Database
+
+--This approach works for small demos.
+
+However, in real projects, architects first answer:
+
+What are we building?
+Why are we building it?
+Who owns what?
+How will services communicate?
+What data should be stored?
+
+--Only after answering these questions do we start coding.
+
+
+Architect Mindset vs Developer Mindset:
+--------------------------------------
+
+Beginner Developer Mindset:
+
+	Let's create a controller.
+
+Architect Mindset:
+
+What business problem are we solving?
+What APIs are needed?
+What data is required?
+What service owns the data?
+How will the system evolve?
+
+
+Our Project
+
+--Throughout this Microservices module, we will build a simplified E-Commerce Platform.
+
+it contains common business domains:
+
+Users
+Products
+Orders
+Payments
+Inventory
+
+
+Why Not Build Everything?
+-------------------------
+
+Because our objective is:
+
+Learn Microservices
+Learn API Gateway
+Learn Routing
+Learn JWT Propagation
+
+not build Amazon.
+
+Therefore we will focus on:
+
+User Service
+Product Service
+API Gateway
+
+
+Business Requirements:
+---------------------
+
+Let's assume a client approaches us and says:
+
+Requirement 1:
+
+--Users should be able to:
+
+Register
+View Profile
+Update Profile
+
+Requirement 2:
+
+--Administrators should be able to:
+
+Create Product
+Update Product
+Delete Product
+View Product
+
+Requirement 3:
+
+All requests should pass through:
+
+	API Gateway
+
+Requirement 4:
+
+Gateway should:
+
+Validate JWT
+Forward Request
+Add User Information Header
+
+Requirement 5:
+
+Services should use:
+
+PostgreSQL
+Spring Data JPA
+DTO Pattern
+
+Identifying Services:
+---------------------
+
+Now we ask:
+
+What business capabilities exist?
+
+Capability 1:
+
+User Management
+
+Contains:
+
+Registration
+Profile
+Roles
+Authentication
+
+Therefore:
+	User Service
+
+Capability 2
+
+Product Management
+
+Contains:
+
+Products
+Pricing
+Categories
+Inventory
+
+Therefore:
+	Product Service
+
+
+
+Final Service Design:
+---------------------
+
+1. User Service
+
+Responsibilities:
+--------------
+
+User Registration
+User Login
+User Profile Management
+JWT Generation
+User Information Management
+
+
+Example:
+
+public interface UserService {
+
+	UserResponseDto registerUser(UserRequestDto dto);
+
+	UserResponseDto getUserById(Long id);
+
+	List<UserResponseDto> getAllUsers();
+
+	UserResponseDto updateUser(Long id, UserRequestDto dto);
+
+	void deleteUser(Long id);
+	
+	LoginResponseDto login(LoginRequestDto dto);
+
+}
+
+
+2. Product Service
+
+Responsibilities:
+----------------
+
+Create Product
+Update Product
+Delete Product
+View Product
+Manage Inventory Quantity
+
+
+public interface ProductService {
+
+    ProductResponseDto createProduct(ProductRequestDto dto);
+
+    ProductResponseDto getProductById(Long id);
+
+    List<ProductResponseDto> getAllProducts();
+
+    ProductResponseDto updateProduct(Long id, ProductRequestDto dto);
+
+    void deleteProduct(Long id);
+
+    ProductResponseDto addInventory(Long productId, Integer quantity);
+
+    ProductResponseDto reduceInventory(Long productId, Integer quantity);
+
+}
+
+
+
+
+
+
+
+
+3. API Gateway:
+
+Responsibilities
+------------------
+
+Routing Requests
+JWT Validation
+Request Filtering
+Security
+Header Propagation
+Centralized Entry Point
+
+
+
+High Level Architecture:
+------------------------
+
+                    Client
+                       |
+                       |
+                API Gateway
+                       |
+        +--------------+--------------+
+        |                             |
+        |                             |
+   User Service                 Product Service
+        |                             |
+        |                             |
+      userdb                     productdb
+        |                             |
+        +-------------+---------------+
+                      |
+                 PostgreSQL
+
+
+
+Why API Gateway?
+-----------------
+
+Suppose we do not have a gateway.
+
+Client must know:
+
+User Service URL
+Product Service URL
+Order Service URL
+Payment Service URL
+
+Example:
+
+http://localhost:8081/users
+http://localhost:8082/products
+
+Now imagine:
+
+	20 Services
+
+--The client becomes tightly coupled to internal architecture.
+Gateway Solution
+
+Client talks to:
+
+http://localhost:8080
+
+only.
+
+--Gateway handles routing.
+
+
+Diagram:
+
+
+Client
+   |
+   |
+Gateway
+   |
+   +------ User Service
+   |
+   +------ Product Service
+
+
+
+
+Designing User Service:
+------------------------
+
+Before writing code, let's identify the data required by the business.
+
+
+User Information:
+
+--For every user we need:
+
+ID
+Name
+Email
+Password
+Role
+
+
+Database Name: userdb;
+
+Table: users
+
+CREATE TABLE users
+(
+    id BIGSERIAL PRIMARY KEY,
+
+    name VARCHAR(100) NOT NULL,
+
+    email VARCHAR(100) UNIQUE NOT NULL,
+
+    password VARCHAR(100) NOT NULL,
+
+    role VARCHAR(20) NOT NULL
+);
+
+
+
+--Why VARCHAR(100) For Password?
+
+We never store actual passwords.
+
+Example:
+	admin123
+
+--should never be stored directly.
+
+Instead we store:
+$2a$10$Kc3K9uP8......
+
+--which is the BCrypt encrypted password.
+--Therefore the column length must be larger.
+
+
+User Entity class:
+------------------
+
+package com.hdfc.entity;
+
+@Entity
+@Table(name = "users")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class User {
+
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    @Column(unique = true)
+    private String email;
+
+    private String password;
+
+    private String role;
+}
+
+
+
+
+User Registration Request DTO:
+------------------------------
+
+--Used when a new user registers.
+
+UserRequestDto.java:
+
+package com.hdfc.dto;
+
+@Getter
+@Setter
+public class UserRequestDto {
+
+    private String name;
+
+    private String email;
+
+    private String password;
+
+    private String role;
+}
+
+
+
+Sample Request
+{
+    "name":"Raj",
+    "email":"raj@gmail.com",
+    "password":"admin123",
+    "role":"user"
+}
+
+
+User Response DTO:
+-----------------
+
+--Password must never be exposed to clients.
+
+
+package com.hdfc.dto;
+
+@Getter
+@Setter
+@Builder
+public class UserResponseDto {
+
+    private Long id;
+
+    private String name;
+
+    private String email;
+
+    private String role;
+}
+
+
+Sample Response
+{
+    "id":1,
+    "name":"Ratan",
+    "email":"ratan@gmail.com",
+    "role":"USER"
+}
+
+
+
+Notice:
+
+	password 
+
+is not returned.
+
+
+Designing Product Service:
+---------------------------
+
+--Now let's identify the information required for Product Management.
+
+Product Information:
+--------------------
+
+ID
+Name
+Description
+Price
+Category
+Quantity
+
+
+Database Name: productdb;
+
+Table: products
+
+CREATE TABLE products
+(
+    id BIGSERIAL PRIMARY KEY,
+
+    name VARCHAR(100) NOT NULL,
+
+    description VARCHAR(500),
+
+    price NUMERIC(10,2) NOT NULL,
+
+    category VARCHAR(50),
+
+    quantity INT
+);
+
+
+
+Product Entity class:
+----------------------
+
+@Entity
+@Table(name = "products")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    private String description;
+
+    private BigDecimal price;
+
+    private String category;
+
+    private Integer quantity;
+}
+
+
+
+Product Request DTO:
+-------------------
+
+@Getter
+@Setter
+@Builder
+public class ProductRequestDto {
+
+    private String name;
+
+    private String description;
+
+    private BigDecimal price;
+
+    private String category;
+
+    private Integer quantity;
+}
+
+
+Sample Request
+{
+    "name":"iPhone 17",
+    "description":"Apple flagship phone",
+    "price":99999,
+    "category":"Mobile",
+    "quantity":20
+}
+
+
+
+Product Response DTO:
+---------------------
+
+@Getter
+@Setter
+@Builder
+public class ProductResponseDto {
+
+    private Long id;
+
+    private String name;
+
+    private String description;
+
+    private BigDecimal price;
+
+    private String category;
+
+    private Integer quantity;
+}
+
+
+
+Designing API Contracts:
+------------------------
+
+--Before implementation, APIs should be finalized.
+
+--This allows frontend, backend, QA and other teams to work independently.
+
+
+User APIs:
+===========
+
+Register User:
+
+	POST /users/register
+
+Login User:
+
+	POST /users/login
+
+Get User By ID:
+
+	GET /users/{id}
+
+Update User:
+
+	PUT /users/{id}
+
+Get All Users
+
+	GET /users
+
+Delete User By ID:
+
+	DELETE /users/{id}
+
+
+
+Product APIs:
+=============
+
+Create Product:
+
+    POST /products
+
+
+Get Product By ID:
+
+    GET /products/{id}
+
+
+Get All Products:
+
+    GET /products
+
+
+Update Product:
+
+    PUT /products/{id}
+
+
+Delete Product By ID:
+
+    DELETE /products/{id}
+
+
+Add Inventory Quantity:
+
+    PATCH /products/{id}/inventory/add
+
+{
+   "quantity":50
+}
+
+
+Reduce Inventory Quantity:
+
+    PATCH /products/{id}/inventory/reduce
+
+{
+   "quantity":2
+}
+
+
+Recommended Project Structure:
+==============================
+
+1. User Service
+
+user-service
+
+com.hdfc
+├── controller
+├── dto
+├── entity
+├── repository
+├── service
+├── exception
+├── mapper
+├── config
+└── security
+
+2. Product Service
+
+product-service
+
+com.hdfc
+├── controller
+├── dto
+├── entity
+├── repository
+├── service
+├── exception
+├── mapper
+└── config
+
+
+Using Mapper:
+-------------
+
+UserMapper
+ProductMapper
+
+--centralizes object conversion logic.
+
+
+Server Port:
+-------------
+
+For our training project:
+
+User Service      8081
+Product Service   8082
+Gateway           8080
+
+
+
+Building User Service:
+======================
+
+Step 1: Create PostgreSQL Databases
+
+--Before creating Spring Boot applications, let's prepare the databases
+
+
+CREATE DATABASE userdb;
+
+CREATE DATABASE productdb;
+
+Step 2: Create Spring Boot Project with name: user-service
+
+Required Dependencies
+
+Add:
+
+Spring Web
+Spring Data JPA
+PostgreSQL Driver
+Lombok
+Spring Security
+Validation
+Spring Boot DevTools
+
+
+
+and JWT related dependencies: Because JWT token will be generated by the user-service only later API Gateway will validate the token:
+
+	
+		
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-api</artifactId>
+    <version>0.13.0</version>
+    <scope>compile</scope>
+</dependency>
+
+
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-impl</artifactId>
+    <version>0.13.0</version>
+    <scope>runtime</scope>
+</dependency>
+		
+		
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-jackson</artifactId>
+    <version>0.13.0</version>
+    <scope>runtime</scope>
+</dependency>		
+		
+		
+
+
+Step 3: Configure Application Port
+
+
+application.yml
+---------------
+
+server:
+  port: 8081
+
+spring:
+  application:
+    name: user-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/userdb
+    username: postgres
+    password: root
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+    show-sql: true
+
+ 
+
+Building User Service:
+======================
+
+
+refer: shared user-service application
+
+
+For the testing purpose add the following configuration also inside the AppConfig.java:
+
+@Configuration
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http) throws Exception {
+
+        http
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth ->
+                    auth.anyRequest().permitAll());
+
+        return http.build();
+    }
+}
+
+
+Then every endpoint works:
+
+
+POST   /users/register
+POST   /users/login
+GET    /users
+GET    /users/{id}
+PUT    /users/{id}
+DELETE /users/{id}
+
+without JWT.
+
+--Later, when we build the Gateway:
+
+Client
+   |
+ JWT
+   |
+Gateway
+   |
+User Service
+Product Service
+
+--the Gateway becomes responsible for authentication.
+
+
+
+
+
+
+AuthenticationManager & UserDetailsService: Inside our application
+===========================================
+
+--You may notice that our User Service does not use:
+
+- AuthenticationManager
+- UserDetailsService
+- UserDetails
+- DAOAuthenticationProvider
+
+Reason:
+--------
+
+--In this project, we are performing authentication manually inside the service layer.
+
+Current Login Flow:
+
+Client
+   |
+Email + Password
+   |
+UserRepository
+   |
+Database
+   |
+PasswordEncoder.matches()
+   |
+JWT Generation
+   |
+Return Token
+
+Example:
+
+User user = userRepository.findByEmail(dto.getEmail())
+        .orElseThrow(...);
+
+boolean valid = passwordEncoder.matches(
+        			dto.getPassword(),
+        			user.getPassword());
+
+Since we are not using:
+
+	authenticationManager.authenticate(...)
+
+there is no need for:
+
+UserDetailsService
+UserDetails
+DAOAuthenticationProvider
+
+--In enterprise applications, these components are commonly used by Spring Security to authenticate users.
+
+--For this microservices course, we kept the login process simple so that the focus remains on:
+
+- Microservices Architecture
+- JWT
+- API Gateway
+- Routing & Filters
+- Load Balancing
+- Circuit Breaker
+
+
+
+
+
+
+
+
+
+Student task: Develop the product-service application 
+
+
+

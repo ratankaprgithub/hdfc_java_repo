@@ -3851,6 +3851,7 @@ The important point is:
 --For that reason, session-based authentication is normally considered stateful authentication.
 
 
+
 What does "Stateful" mean?
 --------------------------
 
@@ -4364,7 +4365,7 @@ Our current login concept is:
 --and send credentials in the request body:
 
 {
-  "email": "raj@gmail.com",
+  "username": "raj@gmail.com",
   "password": "1234"
 }
 
@@ -5490,6 +5491,7 @@ Example:
 
 
 
+
 package com.hdfc.security;
 
 import java.nio.charset.StandardCharsets;
@@ -5511,8 +5513,6 @@ public class JwtUtil {
 
 	private static final String SECRET_KEY = "myVeryLongSecretKeyForJwtAuthenticationExample123456789";
 
-	
-
 	private SecretKey getSigningKey() {
 
 		SecretKey skey = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
@@ -5520,16 +5520,19 @@ public class JwtUtil {
 	}
 
 	public String generateToken(Authentication authentication) {
+		
+		
 
 		String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
 				.collect(Collectors.joining(","));
+
 
 		return Jwts.builder()
 
 				.issuer("HDFC")
 
-				.subject(authentication.getName())
-
+				.subject(authentication.getName()) // username i.e email
+				
 				.claim("authorities", authorities)
 
 				.issuedAt(new Date())
@@ -5570,14 +5573,15 @@ public class JwtUtil {
 	}
 
 	// Validate Token
-	public boolean validateToken(String token, String username) {
+	public boolean validateToken(String token) {
 
-		String extractedUsername = extractUsername(token);
-
-		return extractedUsername.equals(username) && !isTokenExpired(token);
+		try {
+			return !isTokenExpired(token);
+		} catch (Exception e) {
+			return false;
+		}
 	}
 }
-
 
 
 
@@ -5673,7 +5677,7 @@ GET /customers : to get all customers info : ROLE: ADMIN
 GET /customers/** : get the specific customer info: ROLE ADMIN or USER
 
 
-
+12:30 pm
 
 Modify the AppConfig.java class:
 
