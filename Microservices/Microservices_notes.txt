@@ -3238,7 +3238,3298 @@ DAOAuthenticationProvider
 
 
 
-Student task: Develop the product-service application 
+Student task: Develop the product-service application
+
+
+Solution:
+--------
+
+1. Project Details:
+
+
+Application Name:
+-----------------
+product-service
+
+Port:
+-----
+8082
+
+Database:
+---------
+productdb
+
+
+2. Dependencies:
+
+Spring Web
+Spring Data JPA
+PostgreSQL Driver
+Lombok
+Validation
+Spring Boot DevTools
+
+
+
+3. Package Structure
+
+
+com.hdfc
+├── controller
+├── dto
+├── entity
+├── exception
+├── mapper
+├── repository
+├── service
+├── config
+└── ProductServiceApplication
+
+
+
+4. application.yml:
+
+
+
+server:
+  port: 8082
+
+spring:
+  application:
+    name: product-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/productdb
+    username: postgres
+    password: root
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+    show-sql: true
+
+   
+5. Procut entity class:
+
+
+package com.hdfc.entity;
+
+@Entity
+@Table(name = "products")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(length = 500)
+    private String description;
+
+    @Column(nullable = false)
+    private BigDecimal price;
+
+    @Column(nullable = false)
+    private String category;
+
+    @Column(nullable = false)
+    private Integer quantity;
+}
+
+
+
+Table:
+
+CREATE TABLE products
+(
+    id BIGSERIAL PRIMARY KEY,
+
+    name VARCHAR(100) NOT NULL,
+
+    description VARCHAR(500),
+
+    price NUMERIC(10,2) NOT NULL,
+
+    category VARCHAR(50) NOT NULL,
+
+    quantity INT NOT NULL
+);
+
+
+
+
+6. ProductRequestDto
+
+
+package com.hdfc.dto;
+
+import java.math.BigDecimal;
+
+import jakarta.validation.constraints.*;
+
+import lombok.*;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class ProductRequestDto {
+
+    @NotBlank(
+      message = "Product name is required")
+    private String name;
+
+    @NotBlank(
+      message = "Description is required")
+    private String description;
+
+    @NotNull(
+      message = "Price is required")
+    @Positive(
+      message = "Price must be positive")
+    private BigDecimal price;
+
+    @NotBlank(
+      message = "Category is required")
+    private String category;
+
+    @NotNull(
+      message = "Quantity is required")
+    @Min(
+      value = 0,
+      message = "Quantity cannot be negative")
+    private Integer quantity;
+}
+
+
+
+
+7. ProductResponseDto:
+
+
+package com.hdfc.dto;
+
+import java.math.BigDecimal;
+
+import lombok.*;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class ProductResponseDto {
+
+    private Long id;
+
+    private String name;
+
+    private String description;
+
+    private BigDecimal price;
+
+    private String category;
+
+    private Integer quantity;
+}
+
+
+
+
+8. InventoryRequestDto
+
+Used by:
+
+	PATCH /products/{id}/inventory/add
+
+	PATCH /products/{id}/inventory/reduce
+
+
+
+package com.hdfc.dto;
+
+import jakarta.validation.constraints.*;
+
+import lombok.*;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class InventoryRequestDto {
+
+    @NotNull
+    @Positive
+    private Integer quantity;
+}
+ 
+
+
+refer product-service shared application:
+
+
+run the application: application will start on 8082 port
+
+Create Product:
+
+POST http://localhost:8082/products
+
+Body:
+
+{
+  "name":"iPhone 17",
+
+  "description":"Apple Smartphone",
+
+  "price":99999,
+
+  "category":"Mobile",
+
+  "quantity":100
+}
+
+
+Add Inventory:
+
+PATCH http://localhost:8082/products/1/inventory/add
+
+Body:
+
+{
+   "quantity":50
+}
+
+
+Reduce Inventory
+
+PATCH http://localhost:8082/products/1/inventory/reduce
+
+Body:
+
+{
+   "quantity":20
+}
+
+
+
+
+Current Architecture:
+---------------------
+
+We now have:
+
+
+                    Client
+
+                       |
+         ----------------------------
+         |                          |
+    User Service              Product Service
+
+       8081                      8082
+
+         |                          |
+      userdb                   productdb
+
+
+
+
+Currently Client must remember:
+
+localhost:8081
+localhost:8082
+
+--and call services directly.
+
+This is exactly the problem that:
+
+	Spring Cloud Gateway
+
+is designed to solve.
+
+
+--Client directly communicates with services.
+
+Example:
+
+POST http://localhost:8081/users/register
+
+POST http://localhost:8081/users/login
+
+GET http://localhost:8081/users/1
+
+GET http://localhost:8082/products
+
+POST http://localhost:8082/products
+
+Everything works.
+
+--But is this architecture suitable for enterprise applications?
+
+Answer:
+
+	No.
+
+
+Problems With Direct Service Access:
+------------------------------------
+
+Imagine a company has:
+
+User Service
+Product Service
+Order Service
+Payment Service
+Inventory Service
+Notification Service
+Shipping Service
+
+
+
+Architecture:
+
+Client
+  |
+  +---- User Service
+  |
+  +---- Product Service
+  |
+  +---- Order Service
+  |
+  +---- Payment Service
+  |
+  +---- Inventory Service
+  |
+  +---- Notification Service
+
+
+
+
+Client must know:
+
+Service URLs
+Ports
+Authentication Rules
+Routing Rules
+
+--This becomes difficult to manage.
+
+
+Problem 1: Multiple URLs
+
+--Client must remember:
+
+localhost:8081
+localhost:8082
+localhost:8083
+localhost:8084
+localhost:8085
+
+--As services increase, complexity increases.
+
+
+Problem 2: Authentication Duplication
+
+Without Gateway:
+
+User Service
+    |
+JWT Validation
+
+Product Service
+    |
+JWT Validation
+
+Order Service
+    |
+JWT Validation
+
+Payment Service
+    |
+JWT Validation
+
+--Same logic repeated everywhere.
+
+
+
+Problem 3: Logging Duplication
+
+Every service implements:
+
+Request Logging
+Response Logging
+Error Logging
+
+--Repeated code.
+
+
+Problem 4: Rate Limiting Duplication
+
+Every service implements:
+
+Limit Requests
+Block Abuse
+Throttle Users
+
+--Again duplicated.
+
+
+Problem 5: Routing Complexity
+
+Client must decide:
+
+--Which service should receive this request?
+
+Example:
+
+/users/**
+/products/**
+/orders/**
+
+--Client should not need this knowledge.
+
+Real World Analogy:
+--------------------
+
+--Imagine a hotel.
+
+Without Reception:
+
+Customer
+   |
+   +---- Kitchen
+   |
+   +---- Housekeeping
+   |
+   +---- Laundry
+
+
+--Customer talks to every department.
+
+Confusing.
+
+
+With Reception:
+
+
+Customer
+   |
+Reception Desk
+   |
+   +---- Kitchen
+   |
+   +---- Housekeeping
+   |
+   +---- Laundry
+
+
+--Customer talks to only one place.
+
+--Reception forwards requests.
+
+--API Gateway works exactly like this Reception Desk.
+
+
+
+What Is API Gateway?
+--------------------
+
+--An API Gateway is a single entry point for all client requests in a microservices architecture.
+
+Architecture:
+
+                    Client
+                       |
+                       |
+                  API Gateway
+                       |
+       ---------------------------------
+       |                               |
+  User Service                  Product Service
+       |                               |
+     userdb                        productdb
+
+
+
+Official References:
+
+Spring Cloud Gateway:
+
+	https://spring.io/projects/spring-cloud-gateway
+
+Spring Cloud Documentation:
+
+	https://spring.io/projects/spring-cloud
+
+
+
+Client communicates only with:
+
+	API Gateway
+
+Gateway communicates with services.
+
+
+Benefits:
+
+Simple
+Centralized
+Secure
+Scalable
+
+
+
+Responsibilities Of API Gateway:
+--------------------------------
+
+--API Gateway should not contain business logic.
+
+Wrong:
+
+Create User
+Create Product
+Calculate Order Total
+Process Payment
+
+--Business logic belongs to services.
+
+
+Gateway Responsibilities:
+-------------------------
+
+Routing
+JWT Validation
+Authorization
+Logging
+Monitoring
+Rate Limiting
+Load Balancing
+Request Transformation
+Circuit Breaking
+
+
+
+Cross-Cutting Concerns:
+-----------------------
+
+Features required by multiple services.
+
+Examples:
+
+Authentication
+Logging
+Monitoring
+Rate Limiting
+Tracing
+Security
+
+
+
+Without Gateway:
+
+User Service
+    Authentication
+
+Product Service
+    Authorization
+
+Order Service
+    Authorization
+
+
+--Repeated everywhere.
+
+With Gateway:
+
+Gateway
+   |
+Authentication
+Logging
+Monitoring
+Rate Limiting
+
+--Implemented once.
+
+--Used by all services.
+
+
+
+
+Request Flow In Our Project:
+---------------------------
+
+User Login:
+
+Client
+   |
+POST /users/login
+   |
+User Service
+   |
+Generate JWT
+   |
+Return JWT
+
+
+
+After Login:
+
+
+Client
+   |
+Authorization: Bearer Token
+   |
+API Gateway
+   |
+Validate JWT
+   |
+Route Request
+   |
+User Service / Product Service
+
+
+
+Important Observation:
+
+
+--Authentication happens once:
+
+	Login
+
+--JWT validation happens on every request:
+
+	API Gateway
+
+
+
+
+--Spring Cloud Gateway is built on Spring WebFlux and Project Reactor, 
+making it fully reactive and non-blocking. 
+
+--This enables it to handle a large number of concurrent requests efficiently 
+while consuming fewer system resources.
+
+
+
+Key Features:
+
+- Single entry point for all client requests.
+- Dynamic request routing to microservices.
+- Route matching using Predicates.
+- Request and response modification using Filters.
+- JWT Authorization.
+- Load balancing and Service Discovery integration (Eureka, Consul).
+- Rate Limiting and Circuit Breaker support.
+- Request Logging and Monitoring.
+- Better performance than Netflix Zuul due to its reactive architecture.
+
+
+
+Note: Zuul was the most popular API Gateway in the early Spring Cloud ecosystem, 
+but today Spring Cloud Gateway is the recommended replacement 
+due to its reactive architecture, better performance, and modern features.
+
+
+
+Creating API Gateway Project:
+============================
+
+--Create a new Spring Boot Project.
+
+1. Project Name:
+
+	api-gateway
+
+
+2. Required Dependencies:
+
+
+Add:
+
+Spring Reactive Web
+Spring Cloud Gateway: Reactive gateway
+Spring Boot Actuator
+Lombok
+Devtools
+JWT related 3 dependencies: To validate the token inside the Gateway
+
+
+
+
+
+Note: Here instaed of Spring Web, we use Spring Reactive web
+
+because:
+
+--Because Spring Cloud Gateway is built on:
+
+Spring WebFlux
+
+which is:
+
+Reactive
+Non-Blocking
+Event Driven
+
+
+Note:
+
+User Service and Product Service
+can still be traditional Spring MVC applications.
+
+Only API Gateway is reactive.
+
+A reactive gateway can route requests
+to both reactive and non-reactive services.
+
+
+
+
+
+
+Project Structure
+
+api-gateway
+
+com.hdfc
+├── config
+├── filter
+├── util
+├── application.yml
+└── ApiGatewayApplication
+
+
+application.properties:
+-----------------------
+
+spring.application.name: api-gateway
+
+server.port: 8080
+
+
+Running Gateway:
+-----------------
+
+
+	Start Gateway main application
+
+Console:
+
+Tomcat started on port(s): 8080
+or
+Netty started on port(s): 8080
+
+--depending on Spring Cloud version.
+
+
+For Spring Cloud Gateway,
+you will normally see:
+
+	Netty started on port(s): 8080
+
+Because Gateway runs on WebFlux.
+Tomcat usually appears in MVC applications.
+
+
+
+
+
+What Is Routing?:
+-----------------
+
+Routing means:
+
+	Receive Request
+
+	Identify Destination
+
+	Forward Request
+
+Example:
+
+	GET /users
+
+Gateway decides:
+
+--Forward to User Service
+
+
+
+Configuring user-service related routes:
+-----------------------------------------
+
+modify the application.properties file:
+
+
+spring.application.name: api-gateway
+
+server.port: 8080
+
+spring.cloud.gateway.server.webflux.routes[0].id=user-service-route
+spring.cloud.gateway.server.webflux.routes[0].uri=http://localhost:8081
+spring.cloud.gateway.server.webflux.routes[0].predicates[0]=Path=/users/**
+
+
+
+Corresponding application.yml file:
+
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: user-service-route
+              uri: http://localhost:8081
+              predicates:
+                - Path=/users/**
+
+server:
+  port: 8080
+
+11:05
+
+
+Spring Cloud Gateway internal architecture:
+-------------------------------------------
+
+refer: APIGatewayInternalArchitecture.png
+
+Predicates decide WHERE to send.
+
+Filters decide WHAT to do before
+and after sending.
+
+
+
+
+Understanding Route Configuration
+
+1. Route ID:
+
+	id=user-service-route
+
+Unique route name.
+
+Useful for:
+
+Monitoring
+Actuator
+Debugging
+
+2. URI
+
+	uri=http://localhost:8081
+
+Destination service.
+
+Means:
+
+--Forward request to User Service
+
+
+3. Path Predicate
+
+	Path=/users/**
+
+Meaning:
+
+--If request starts with /users
+
+Examples:
+
+/users
+/users/1
+/users/10
+/users/register
+/users/login
+
+--All match.
+
+
+Request Flow:
+------------
+
+Client:
+
+	GET http://localhost:8080/users
+
+Gateway:
+
+Path matched
+
+	/users/**
+
+Gateway forwards:
+
+	GET http://localhost:8081/users
+
+Response returns to client.
+
+
+Product Service Route:
+----------------------
+
+--Add another route:
+
+inside the application.properties file:
+
+
+spring.application.name: api-gateway
+
+server.port: 8080
+
+
+spring.cloud.gateway.server.webflux.routes[0].id=user-service-route
+spring.cloud.gateway.server.webflux.routes[0].uri=http://localhost:8081
+spring.cloud.gateway.server.webflux.routes[0].predicates[0]=Path=/users/**
+
+
+spring.cloud.gateway.server.webflux.routes[1].id=product-service-route
+spring.cloud.gateway.server.webflux.routes[1].uri=http://localhost:8082
+spring.cloud.gateway.server.webflux.routes[1].predicates[0]=Path=/products/**
+
+
+
+corresponding application.yml file:
+-----------------------------------
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: user-service-route
+              uri: http://localhost:8081
+              predicates:
+                - Path=/users/**
+
+            - id: product-service-route
+              uri: http://localhost:8082
+              predicates:
+                - Path=/products/**
+
+server:
+  port: 8080
+
+
+
+
+Request Flow:
+--------------
+
+
+Request:
+
+	GET /products
+
+Gateway:
+
+	Path=/products/**
+
+Matched.
+
+Forward to:
+
+	http://localhost:8082/products
+
+
+
+Testing Both user-service and product-service Routes:
+-----------------------------------------------------
+
+Launch the user-service
+Launch the product-service
+Launch the api-service
+
+Get the all registered users details
+
+	GET http://localhost:8080/users
+
+Get the all registered products details
+
+	GET http://localhost:8080/products
+
+
+
+
+What Happens If Service Is Down?
+--------------------------------
+
+--Product Service Stopped
+
+Request:
+
+	GET /products
+
+Gateway:
+
+	Route Found
+
+	Destination Unavailable
+
+Returns:
+
+500
+or
+503
+
+--Later we will solve this using:
+
+Circuit Breaker..
+
+
+
+
+What Is A Predicate in Gateway?
+-------------------------------
+
+Before Gateway forwards a request, it must decide:
+
+	Which route should handle this request?
+
+This decision is made using:
+
+	Predicates
+
+--A Predicate is a condition that must evaluate to TRUE for a route to be selected.
+
+
+Real Life Analogy
+------------------
+
+--Suppose a security guard is standing at a building entrance.
+
+Before allowing entry, he checks:
+
+Employee ID
+Department
+Access Card
+
+--Only if all conditions match:
+
+	Access Granted
+
+Similarly, Gateway checks:
+
+Path
+Method
+Header
+Host
+Query Parameters
+
+--before selecting a route.
+
+
+
+Request Processing Flow
+
+
+-----------------------
+Incoming Request
+       |
+       |
+Route Predicate Matching
+       |
+       |
+Route Found ?
+   /        \
+ Yes         No
+  |           |
+Forward      404
+Request    Not Found
+
+
+Types Of Predicates
+--------------------
+
+--Most commonly used predicates:
+
+Path
+Method
+Header
+Host
+Query
+
+
+Path Predicate:
+--------------
+
+Path Predicate matches based on:
+
+URL Path
+
+Example:
+
+/users
+/users/1
+/users/register
+
+
+predicates:        
+ - Path=/users/**
+
+
+That Match
+
+/users
+/users/1
+/users/10
+/users/register
+/users/login
+/users/profile
+
+Result:
+
+	Route Selected
+
+
+Examples That Do Not Match
+
+/products
+/orders
+/payments
+
+Result:
+
+	Route Not Selected
+
+
+Method Predicate:
+-----------------
+
+Method Predicate matches:
+
+HTTP Method
+
+Examples:
+
+GET
+POST
+PUT
+PATCH
+DELETE
+
+
+Suppose:
+
+	GET requests are public
+
+	POST requests require validation
+
+--Gateway can distinguish between them.
+
+
+.yml:
+
+predicates:
+ - Path=/users/**
+ - Method=GET
+
+
+.properties:
+
+
+spring.cloud.gateway.server.webflux.routes[0].predicates[0]=Path=/users/**
+spring.cloud.gateway.server.webflux.routes[0].predicates[1]=Method=GET
+
+
+
+Only:
+
+GET /users
+GET /users/1
+
+will match.
+
+
+For the POST request:
+
+	POST /users/register
+
+Result:
+
+Path Match = TRUE
+Method Match = FALSE
+
+--Route Not Selected
+
+
+Multiple Methods:
+
+.yml:
+
+predicates:
+  - Path=/users/**
+  - Method=GET,POST
+
+.properties:
+
+spring.cloud.gateway.server.webflux.routes[0].predicates[0]=Path=/users/**
+spring.cloud.gateway.server.webflux.routes[0].predicates[1]=Method=GET,POST
+
+
+
+Allowed:
+
+GET
+POST
+
+Blocked:
+
+PUT
+PATCH
+DELETE
+
+
+
+Note: If we don't specify the Method predicte it will allow all types of methods.
+
+Example:
+
+predicates:
+  - Path=/users/**
+
+
+
+
+Header Predicate:
+----------------
+
+Header Predicate matches requests using:
+
+	HTTP Headers
+
+Sometimes we want:
+
+Special Clients
+Internal Applications
+Partner Systems
+
+--to access certain routes.
+
+--Header Predicate can help identify them.
+
+
+Example
+
+.yml:
+
+predicates:
+  - Path=/products/**
+  - Header=X-Client-Type,Mobile
+
+.properties:
+
+spring.cloud.gateway.server.webflux.routes[0].predicates[0]=Path=/products/**
+spring.cloud.gateway.server.webflux.routes[0].predicates[1]=Method=GET,POST
+spring.cloud.gateway.server.webflux.routes[0].predicates[2]=Header=X-Client-Type,Mobile
+
+
+Meaning:
+
+Header Name
+
+	X-Client-Type
+
+must contain:
+
+	Mobile
+
+Non-Matching Request:
+
+	GET /products
+
+	X-Client-Type: Web
+
+Result:
+
+	Route Not Selected
+
+
+Gateway Filters
+================
+
+Predicates answer:
+
+	WHERE should the request go?
+
+Filters answer:
+
+WHAT should happen to the request
+before or after routing?
+
+
+Important Difference:
+---------------------
+
+Predicates:
+
+	Route Selection
+
+Filters:
+
+	Request Processing by the Gateway
+
+
+Example:
+
+Incoming Request
+      |
+      |
+Path Predicate
+      |
+Matched Route
+      |
+Gateway Filter
+      |
+Forward To Service
+
+
+Real Life Analogy
+------------------
+
+Imagine Airport Security.
+
+Predicates:
+
+Do you have a valid ticket?
+Do you have a valid passport?
+
+If yes:
+
+	Entry Allowed
+
+Filters:
+
+Security Check
+Bag Scanning
+Identity Verification
+
+--These actions happen before boarding.
+
+Gateway Filters work similarly.
+
+
+Types Of Filters:
+-----------------
+
+Spring Cloud Gateway provides two types of filters:
+
+GatewayFilter
+GlobalFilter
+
+GatewayFilter:
+
+	Applied to specific routes
+
+GlobalFilter:
+
+	Applied to all routes
+
+
+
+Request Processing Flow:
+------------------------
+
+Client Request
+       |
+Predicates
+       |
+Route Matched
+       |
+Pre Filters
+       |
+Routing Filter
+       |
+Microservice
+       |
+Post Filters
+       |
+Client Response
+
+
+Pre Filters
+------------
+
+Executed:
+
+	Before Request Reaches Service
+
+Examples:
+
+Authentication/Authorization
+Logging
+Header Addition
+Request Transformation
+
+
+Post Filters:
+-------------
+
+Executed:
+
+	After Response Returns
+
+Examples:
+
+Logging
+Metrics
+Response Modification
+
+
+
+AddRequestHeader:
+-----------------
+
+--Adds a new HTTP header before forwarding the request.
+
+
+Suppose Gateway wants to send:
+
+Request Source
+Correlation Id
+User Information
+Roles
+
+--to downstream services.
+
+--Instead of client sending them:
+
+--Gateway can add them.
+
+
+Example:
+
+.yml:
+
+predicates:
+ - Path=/users/**
+
+filters:
+ - AddRequestHeader=X-Source,API-Gateway
+
+.properties:
+
+spring.cloud.gateway.server.webflux.routes[0].predicates[0]=Path=/users/**
+spring.cloud.gateway.server.webflux.routes[0].filters[0]=AddRequestHeader=X-Source,API-Gateway
+
+
+
+
+Client:
+
+	GET /users
+
+Gateway adds: a new Header
+
+	X-Source: API-Gateway
+
+before forwarding.
+
+User Service receives:
+
+GET /users
+X-Source: API-Gateway
+
+
+Real World Usage:
+------------------
+
+Common headers added by Gateway:
+
+X-Request-Id
+X-Correlation-Id
+X-User
+X-Role
+X-Source
+
+Later we will add:
+
+	X-User-Email
+
+after JWT validation.
+
+
+RewritePath:
+============
+
+--It is used to configure the uri path:
+
+--Gateway URL structure can be different from service URL structure.
+
+Suppose client sends:
+
+	GET /api/users
+
+But User Service exposes:
+
+	GET /users
+
+--Paths do not match.
+
+
+Solution:
+
+Use:
+	RewritePath
+
+
+Configuration
+
+.yml:
+
+filters:
+  - RewritePath=/api/users(?<segment>/?.*), /users${segment}
+
+.properties:
+
+spring.cloud.gateway.server.webflux.routes[1].predicates[0]=Path=/api/users/**
+spring.cloud.gateway.server.webflux.routes[1].filters[0]=RewritePath=/api/users(?<segment>/?.*), /users${segment}
+
+
+
+Request Flow:
+-------------
+
+Client:
+
+	GET /api/users
+
+Gateway rewrites:
+
+	GET /users
+
+--Then forwards.
+
+
+Another Example
+
+Client:
+
+	GET /api/users/10
+
+Gateway transforms:
+
+	GET /users/10
+
+
+
+
+StripPrefix:
+============
+
+RewritePath:
+
+	Can completely change URL
+
+Example:
+
+/api/users
+to
+/users
+
+
+OR
+
+
+/customer
+to
+/users
+
+
+StripPrefix:
+
+--It only removes path segments
+
+Example:
+
+/api/users
+to
+/users
+
+
+Example:
+
+.yml:
+
+filters:
+ - StripPrefix=1
+
+.properties:
+
+
+spring.cloud.gateway.server.webflux.routes[1].predicates[0]=Path=/hdfc/products/**
+spring.cloud.gateway.server.webflux.routes[0].filters[0]=StripPrefix=1
+
+
+
+
+Meaning:
+
+Remove
+
+	First Path Segment
+
+--before forwarding.
+
+
+Example:
+
+Incoming Client Request:
+
+	GET /api/users
+
+Path Segments:
+
+	api
+	users
+
+Remove first segment:
+
+	api
+
+Forward:
+
+	GET /users
+
+
+
+For API Gateways:
+
+	StripPrefix
+
+--is used very frequently.
+
+Because public URLs often look like:
+
+/api/users
+/api/products
+/api/orders
+
+--while services expose:
+
+/users
+/products
+/orders
+
+Full configuration:
+---------------------
+
+#user-service configuration
+spring.cloud.gateway.server.webflux.routes[0].id=user-service-route
+spring.cloud.gateway.server.webflux.routes[0].uri=http://localhost:8081
+spring.cloud.gateway.server.webflux.routes[0].predicates[0]=Path=/hdfc/users/**
+spring.cloud.gateway.server.webflux.routes[0].filters[0]=StripPrefix=1
+
+
+#product-service configuration
+spring.cloud.gateway.server.webflux.routes[1].id=product-service-route
+spring.cloud.gateway.server.webflux.routes[1].uri=http://localhost:8082
+spring.cloud.gateway.server.webflux.routes[1].predicates[0]=Path=/hdfc/products/**
+spring.cloud.gateway.server.webflux.routes[1].filters[0]=AddRequestHeader=X-Source,API-Gateway
+spring.cloud.gateway.server.webflux.routes[1].filters[1]=RewritePath=/hdfc/products(?<segment>/?.*), /products${segment}
+
+
+
+
+Actuator:
+---------
+
+
+inside application.properties file: of api-gateway service application
+
+management.endpoints.web.exposure.include=*
+management.endpoint.gateway.access=unrestricted
+
+
+access the actuator endpoint:
+
+http://localhost:8080/actuator
+
+
+
+GlobalFilter:
+==============
+
+Currently our Gateway can:
+
+Match Routes
+Apply Filters for each services
+Forward Requests
+
+But it cannot:
+
+Validate JWT
+Identify User
+Identify Role
+Protect APIs
+
+
+Therefore we need:
+
+GlobalFilter:
+
+--A GlobalFilter is a filter that executes for every request passing through the API Gateway.
+
+Unlike Gateway Filters:
+
+GatewayFilter
+    ↓
+Specific Route Only
+
+GlobalFilter:
+
+GlobalFilter
+    ↓
+All Routes
+
+
+Real Life Analogy
+------------------
+
+
+Imagine a shopping mall.
+
+Before entering:
+
+	Security Guard
+
+--checks everyone.
+
+He does not care:
+
+Which Shop?
+Which Floor?
+Which Department?
+
+--Everyone is checked.
+
+Similarly:
+
+	GlobalFilter
+
+--runs before every request.
+
+
+
+Validating JWT token generated by user-service at Geteway:
+=========================================================
+
+
+Without Gateway:
+
+User Service
+    JWT Validation
+
+Product Service
+    JWT Validation
+
+Order Service
+    JWT Validation
+
+--Same code repeated.
+
+With Gateway:
+
+Gateway
+    JWT Validation
+
+User Service
+    Business Logic
+
+Product Service
+    Business Logic
+
+--Security is centralized.
+
+
+
+Request Flow:
+-------------
+
+Client
+
+Bearer Token
+      |
+API Gateway
+     |
+Validate JWT
+Extract User Info
+      |
+Add Request Headers
+      |
+User Service
+Product Service
+
+
+
+Authentication vs JWT Validation:
+---------------------------------
+
+Authentication:
+
+	Login Process
+
+Example:
+
+POST /users/login
+
+User enters:
+
+	Email
+
+	Password
+
+--User Service verifies credentials.
+
+--JWT is generated by the user-service.
+
+
+
+JWT Validation:
+
+For every Subsequent Request
+
+Example:
+
+GET /products
+
+Gateway verifies:
+
+Token Valid?
+Token Expired?
+Signature Valid?
+
+
+
+Project Structure
+
+api-gateway
+
+com.hdfc
+├── config
+├── filter
+│     └── JwtValidationFilter
+├── util
+│     └── JwtUtil
+└── ApiGatewayApplication
+
+
+STEP 1
+
+JWT Utility Class:
+
+--We need helper methods for:
+
+Extract Username
+Extract Role
+Validate Token
+
+
+JwtUtil.java
+-------------
+
+package com.hdfc.util;
+
+import java.nio.charset.StandardCharsets;
+
+import javax.crypto.SecretKey;
+
+import org.springframework.stereotype.Component;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+
+@Component
+public class JwtUtil {
+
+	private static final String SECRET_KEY = "myVeryLongSecretKeyForJwtAuthenticationExample123456789";
+
+	private final SecretKey signingKey = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+
+	
+	public Claims extractClaims(String token) {
+
+		return Jwts.parser()
+
+				.verifyWith(signingKey)
+
+				.build()
+
+				.parseSignedClaims(token)
+
+				.getPayload();
+	}
+
+	public String extractEmail(String token) {
+
+		return extractClaims(token).getSubject();
+	}
+
+	public String extractRole(String token) {
+
+		return extractClaims(token).get("authorities", String.class);
+	}
+
+	public boolean isTokenValid(String token) {
+
+		try {
+
+			extractClaims(token);
+
+			return true;
+
+		} catch (Exception e) {
+
+			return false;
+		}
+	}
+
+}
+
+
+
+Important Note:
+
+The Gateway and User Service must use
+the same JWT Secret Key.
+
+--Otherwise token validation will fail.
+
+
+
+
+
+
+
+STEP 2:
+
+Create GlobalFilter
+
+
+package com.hdfc.filter;
+
+import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
+
+import reactor.core.publisher.Mono;
+
+@Component
+public class JwtValidationFilter implements GlobalFilter {
+
+	@Override
+	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+		
+	
+		return chain.filter(exchange);
+	}
+
+}
+
+Here,
+
+From the 
+
+	ServerWebExchange
+
+--We can access
+
+Request
+Response
+Headers
+Path
+
+And using: 
+
+	GatewayFilterChain
+
+Next Filter
+Route Forwarding
+
+
+
+
+
+Step 3: Whitelist the URI path:
+
+Skipping Public APIs:
+
+--Should login endpoint require JWT?
+
+Answer:
+
+No.
+
+--These endpoints should remain public:
+
+/users/register
+/users/login
+
+
+String path = exchange.getRequest().getURI().getPath();
+
+		// Public APIs
+		if (path.equals("/users/login") || path.equals("/users/register")) {
+
+			return chain.filter(exchange);
+		}
+
+
+
+--JWT validation skipped.
+
+
+
+
+Step4: 
+
+Read Authorization Header: inside the above filter method
+
+
+String authHeader = exchange
+			.getRequest()
+			.getHeaders()
+			.getFirst("Authorization");
+
+
+
+Expected:
+
+Authorization:
+Bearer eyJhbGci...
+
+
+
+
+
+
+Step5: Validate Header Presence
+
+if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+
+	exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+
+	return exchange.getResponse().setComplete();
+}
+
+
+
+STEP 6
+
+Extract Token
+
+	String token = authHeader.substring(7);
+
+
+Step 7: 
+
+Validate the token:
+
+		if (!jwtUtil.isTokenValid(token)) {
+
+			exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+
+			return exchange.getResponse().setComplete();
+		}
+
+STEP 8
+
+Extract User Information
+
+		String email = jwtUtil.extractEmail(token);
+
+		String role = jwtUtil.extractRole(token);
+
+
+
+STEP 9:
+
+Propagate User Information
+
+Add custom headers.
+
+ServerHttpRequest request = exchange
+				.getRequest()
+				.mutate()
+				.header("X-User-Email", email)
+				.header("X-User-Role", role).build();
+
+		return chain.filter(exchange);
+
+
+
+Why?
+
+Downstream services can know:
+
+	Who is calling?
+
+	What role does user have?
+
+--without re-parsing JWT.
+
+
+Example
+
+	Gateway receives:
+
+Authorization:
+Bearer xyz123...
+
+	Gateway forwards:
+
+X-User-Email:
+raj@gmail.com
+
+X-User-Role:
+ADMIN
+
+
+Step10:
+
+Forward Modified Request
+
+
+		ServerWebExchange modifiedExchange = exchange.mutate()
+				        		     .request(request)
+				        		     .build();
+
+				return chain.filter(modifiedExchange);
+
+
+Complete code:
+---------------
+
+package com.hdfc.filter;
+
+import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
+
+import com.hdfc.util.JwtUtil;
+
+import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Mono;
+
+@Component
+@RequiredArgsConstructor
+public class JwtValidationFilter implements GlobalFilter {
+
+    private final JwtUtil jwtUtil;
+
+    @Override
+    public Mono<Void> filter(
+            ServerWebExchange exchange,
+            GatewayFilterChain chain) {
+
+        String path = exchange
+                .getRequest()
+                .getURI()
+                .getPath();
+
+        // Public APIs
+        if (path.equals("/users/login")
+                || path.equals("/users/register")) {
+
+            return chain.filter(exchange);
+        }
+
+        String authHeader = exchange
+                .getRequest()
+                .getHeaders()
+                .getFirst("Authorization");
+
+        if (authHeader == null
+                || !authHeader.startsWith("Bearer ")) {
+
+            exchange.getResponse()
+                    .setStatusCode(
+                            HttpStatus.UNAUTHORIZED);
+
+            return exchange.getResponse()
+                    .setComplete();
+        }
+
+        String token = authHeader.substring(7);
+
+        if (!jwtUtil.isTokenValid(token)) {
+
+            exchange.getResponse()
+                    .setStatusCode(
+                            HttpStatus.UNAUTHORIZED);
+
+            return exchange.getResponse()
+                    .setComplete();
+        }
+
+        String email =
+                jwtUtil.extractEmail(token);
+
+        String role =
+                jwtUtil.extractRole(token);
+
+        ServerHttpRequest request =
+                exchange.getRequest()
+                        .mutate()
+                        .header(
+                                "X-User-Email",
+                                email)
+                        .header(
+                                "X-User-Role",
+                                role)
+                        .build();
+
+        ServerWebExchange modifiedExchange =
+                exchange.mutate()
+                        .request(request)
+                        .build();
+
+        return chain.filter(modifiedExchange);
+    }
+}
+
+
+
+
+Step 12: Run the application:
+
+Launch the user-service
+Launch the product-service
+Launch the api-gateway
+
+
+
+
+
+
+Register a new User throgh the API gateway:
+
+POST: http://localhost:8080/users/register
+
+{
+    "name": "Ratan",
+   "email": "ratan@gmail.com",
+   "password": "123456",
+   "role": "ADMIN"
+}
+
+
+Perform the Login:
+
+POST http://localhost:8080/users/login
+
+
+{
+ 
+   "email": "ratan@gmail.com",
+   "password": "123456"
+ 
+}
+
+Get the JWT token:
+
+
+Call the Protected API from users or from products
+
+Authorization: Bearer <token>
+
+GET http://localhost:8080/products
+
+
+refer: shared api-gateway application
+
+
+
+
+Load Balanced Routing & Spring Cloud LoadBalancer:
+==================================================
+
+Problem With Current Architecture:
+
+Current Gateway Configuration:
+
+
+spring.cloud.gateway.server.webflux.routes[0].uri=http://localhost:8081
+spring.cloud.gateway.server.webflux.routes[1].uri=http://localhost:8082
+
+
+Current Architecture:
+
+                    API Gateway
+                          |
+            --------------------------
+            |                        |
+            |                        |
+     User Service             Product Service
+       8081                       8082
+
+
+
+Here, Gateway knows:
+
+localhost:8081
+localhost:8082
+
+directly.
+
+This creates:
+
+	Tight Coupling
+
+Suppose tomorrow:
+
+
+User Service
+
+	8081
+
+changes to:
+
+	8091
+
+Now Gateway Configuration breaks.
+
+We must update:
+
+	spring.cloud.gateway.server.webflux.routes[0].uri=http://localhost:8091
+
+--and restart Gateway.
+
+
+Real Production Environment:
+
+We usually run:
+
+User Service Instance 1
+User Service Instance 2
+User Service Instance 3
+
+
+Example:
+
+USER-SERVICE
+
+8081
+8083
+8085
+
+Question:
+
+Which instance should Gateway call?
+
+Solution
+
+	Load Balancer
+
+
+
+What Is Load Balancing?
+=======================
+
+--Distributing requests across multiple instances of the same service.
+
+
+Real Life Analogy
+-----------------
+
+
+Imagine:
+
+	Supermarket
+
+with 5 billing counters.
+
+Customers arrive.
+
+If everyone goes to:
+
+Counter 1
+
+then:
+
+Counter 1 overloaded
+
+Counter 2 idle
+Counter 3 idle
+Counter 4 idle
+Counter 5 idle
+
+Bad utilization.
+
+Instead:
+
+Customer 1 → Counter 1
+
+Customer 2 → Counter 2
+
+Customer 3 → Counter 3
+
+Customer 4 → Counter 4
+
+This is:
+
+	Load Balancing
+
+
+Microservices Example:
+----------------------
+
+Instances:
+
+	USER-SERVICE
+
+Instance 1 → 8081
+
+Instance 2 → 8083
+
+Instance 3 → 8085
+
+Requests:
+
+Request 1 → Instance 1
+
+Request 2 → Instance 2
+
+Request 3 → Instance 3
+
+Request 4 → Instance 1
+
+Benefits:
+
+High Availability
+Scalability
+Fault Tolerance
+Better Performance
+
+
+Types Of Load Balancing:
+-------------------------
+
+1. Server Side Load Balancing
+
+Examples:
+
+NGINX
+AWS ELB
+HAProxy
+
+2. Client Side Load Balancing
+
+Examples:
+
+Ribbon (Old)
+Spring Cloud LoadBalancer
+
+
+
+Client Side Load Balancing:
+--------------------------
+
+The client itself decides:
+
+	Which service instance to call
+
+Example:
+
+Gateway knows:
+
+USER-SERVICE
+
+8081
+8083
+8085
+
+--Gateway chooses one.
+
+
+Earlier Spring Cloud used:
+
+	Netflix Ribbon
+
+Now Ribbon is:
+	
+	Deprecated
+
+Current Recommendation:
+
+	Spring Cloud LoadBalancer
+
+
+Spring Cloud LoadBalancer
+-------------------------
+
+Official Documentation:
+
+https://docs.spring.io/spring-cloud-commons/reference/spring-cloud-commons/loadbalancer.html
+
+
+To activate the load-balancer inside our api-gateway service: Add the following dependency
+
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>
+        spring-cloud-starter-loadbalancer
+    </artifactId>
+</dependency>
+
+
+What Is lb:// URI?
+-------------------
+
+Currently:
+
+	uri=http://localhost:8081
+
+Later:
+
+	uri=lb://USER-SERVICE
+
+
+
+
+Notice:
+
+http://
+↓
+lb://
+
+Meaning Of lb://
+
+	Use Load Balancer
+
+Find Available Instances
+Choose One Instance
+Forward Request
+
+Example:
+
+
+Gateway Route:
+
+
+routes:
+
+
+  - id: user-service-route
+
+    uri: lb://USER-SERVICE
+
+    predicates:
+      - Path=/users/**
+
+
+Request Flow:
+
+Client
+    |
+    |
+Gateway
+    |
+lb://USER-SERVICE
+    |
+    |
+LoadBalancer
+    |
+------------------------
+|          |           |
+8081      8083       8085
+
+
+
+
+Where Does Gateway Get These Instances?
+
+
+Gateway needs:
+
+	Service Discovery
+
+What Is Service Discovery?
+
+
+A central registry containing:
+
+Service Name
+IP Address
+Port
+
+
+Example:
+
+USER-SERVICE
+
+8081
+8083
+8085
+
+PRODUCT-SERVICE
+
+8082
+8084
+
+
+Gateway asks:
+
+Give me USER-SERVICE instances
+
+Registry returns:
+
+8081
+8083
+8085
+
+--LoadBalancer chooses one.
+
+Most Popular Discovery Servers:
+
+Netflix Eureka
+Consul
+Kubernetes Service Registry
+
+
+
+Circuit Breaker & Resilience4j:
+===============================
+
+The Problem We Need To Solve:
+
+
+Current Architecture:
+
+
+                    API Gateway
+                          |
+            --------------------------
+            |                        |
+            |                        |
+     User Service             Product Service
+
+--Everything works fine.
+
+
+Suppose:
+
+
+Product Service
+
+	suddenly crashes.
+
+
+Client Request:
+	
+	GET /products
+
+Gateway tries:
+
+	Forward To Product Service
+
+But Product Service is down.
+
+Response:
+
+	500 Internal Server Error
+or
+	503 Service Unavailable
+
+
+Is This Bad?
+Not really.
+Service failure is normal.
+
+
+The real problem is:
+
+Gateway keeps trying
+
+again
+again
+again
+again
+again
+
+--to call the failed service.
+
+This wastes:
+
+CPU
+Memory
+Threads
+Network Connections
+
+
+
+Real Life Analogy
+------------------
+
+Imagine:
+
+Restaurant
+
+You call:
+
+Table Booking Desk
+
+	Phone line is dead.
+
+What do you do?
+
+Try Once
+
+Try Twice
+
+Try Three Times
+
+Then stop.
+
+
+You don't call:
+
+	1000 times
+
+--in one minute.
+
+Circuit Breaker works exactly like this.
+
+
+
+What Is Circuit Breaker?
+-------------------------
+
+--A Circuit Breaker prevents repeated calls to a failing service.
+
+Instead of:
+
+	Keep Calling Failed Service
+
+it says:
+
+Service Is Down
+Stop Calling It
+
+--for some time.
+
+
+Benefits:
+
+Prevents Cascading Failures
+Improves Stability
+Improves Performance
+Protects Resources
+Provides Graceful Degradation
+
+
+
+What Is Cascading Failure?
+--------------------------
+
+Example:
+
+
+Gateway
+   |
+Order Service
+   |
+Payment Service
+
+	Payment Service crashes.
+
+Order Service waits.
+Gateway waits.
+Client waits.
+Threads accumulate.
+
+
+Soon:
+
+Order Service crashes
+Gateway crashes
+
+--One failure spreads everywhere.
+
+
+This is called:
+Cascading Failure
+
+--Circuit Breaker prevents this.
+
+
+Real Life Analogy:
+------------------
+
+--Electrical Circuit Breaker.
+
+When:
+
+High Current
+
+	Short Circuit
+
+occurs
+
+
+Circuit Breaker opens.
+
+	Power supply stops.
+
+Prevents:
+
+Fire
+Equipment Damage
+
+--Software Circuit Breaker works similarly.
+
+
+
+
+Circuit Breaker States:
+----------------------
+
+--Circuit Breaker has generally 3 states:
+
+Closed
+Open
+Half Open
+
+
+
+STATE 1: CLOSED
+---------------
+
+Normal State:
+
+--Requests are allowed.
+
+Client
+   |
+Gateway
+   |
+Product Service
+
+--Everything works.
+
+
+Request Count:
+
+
+Success
+Success
+Success
+Success
+
+Circuit remains:
+
+	CLOSED
+
+Meaning:
+
+	Allow Requests
+
+
+STATE 2: OPEN
+--------------
+
+Suppose Product Service crashes.
+
+
+Requests:
+
+
+Failure
+Failure
+Failure
+Failure
+
+--Failure threshold reached.
+
+Circuit Breaker opens.
+
+Client
+   |
+Gateway
+   |
+X Product Service
+
+Meaning:
+
+	Stop Calling Product Service
+
+Immediate response returned.
+No unnecessary network calls.
+
+
+State become:
+OPEN
+
+
+
+
+STATE 3: HALF OPEN
+-------------------
+
+After waiting some time:
+
+
+30 seconds
+
+60 seconds
+
+etc.
+
+Circuit Breaker becomes:
+
+	HALF OPEN
+
+Meaning:
+
+	Let's test if service recovered
+
+Allow:
+
+	1 Request
+or
+	Few Requests
+
+If successful:
+Circuit closes again
+
+If failure continues:
+Circuit opens again
+
+
+Most Popular Circuit Breaker Library
+------------------------------------
+
+Earlier:
+	Netflix Hystrix
+
+was popular.
+
+
+Today:
+	Resilience4j
+
+--is recommended.
+
+
+
+Official Website:
+
+	https://resilience4j.readme.io/
+
+
+Dependency:
+
+Add: to the api-gateway service
+
+<dependency>
+    <groupId>
+        org.springframework.cloud
+    </groupId>
+
+    <artifactId>
+        spring-cloud-starter-circuitbreaker-reactor-resilience4j
+    </artifactId>
+</dependency>
+
+
+
+Circuit Breaker At Gateway:
+----------------------------
+
+Current Route:
+
+- id: product-service-route
+
+  uri: http://localhost:8082
+
+  predicates:
+    - Path=/products/**
+
+
+
+Enhanced Route:
+
+.yml:
+
+
+- id: product-service-route
+
+  uri: http://localhost:8082
+
+  predicates:
+    - Path=/products/**
+
+  filters:
+    - name: CircuitBreaker
+      args:
+        name: productServiceCircuitBreaker
+
+
+.properties:
+
+
+spring.cloud.gateway.server.webflux.routes[0].id=product-service-route
+spring.cloud.gateway.server.webflux.routes[0].uri=http://localhost:8082
+
+spring.cloud.gateway.server.webflux.routes[0].predicates[0]=Path=/products/**
+
+spring.cloud.gateway.server.webflux.routes[0].filters[0].name=CircuitBreaker
+spring.cloud.gateway.server.webflux.routes[0].filters[0].args.name=productServiceCircuitBreaker
+
+
+
+
+Meaning:
+
+--Protect Product Service Route
+using:
+Circuit Breaker
+
+
+
+What Does Client Receive?
+-------------------------
+
+Without Circuit Breaker:
+
+Long Wait
+Timeout
+500 Error
+
+With Circuit Breaker:
+
+	Immediate Response
+
+--Much better user experience.
+
+
+
+Fallback Concept in Circuit Breaker:
+===================================
+
+Instead of error,
+can we return something useful?
+
+Answer:
+
+Yes.
+
+Using:
+	Fallback
+
+Example:
+
+Product Service Down.
+
+Instead of:
+{
+   "error":"Service unavailable"
+}
+
+return:
+{
+   "message":"Product Service Temporarily Unavailable"
+}
+
+
+
+This is called:
+
+	Fallback Response
+
+Fallback Flow:
+--------------
+
+Client
+   |
+Gateway
+   |
+Circuit Breaker
+   |
+Product Service Down
+   |
+Fallback Response
+   |
+Client
+
+
+
+Example Route:
+
+.yml:
+
+- id: product-service-route
+
+  uri: http://localhost:8082
+
+  predicates:
+    - Path=/products/**
+
+  filters:
+    - name: CircuitBreaker
+      args:
+        name: productCircuitBreaker
+        fallbackUri: forward:/fallback/products
+
+
+.properties:
+
+spring.cloud.gateway.server.webflux.routes[0].id=product-service-route
+spring.cloud.gateway.server.webflux.routes[0].uri=http://localhost:8082
+
+spring.cloud.gateway.server.webflux.routes[0].predicates[0]=Path=/products/**
+
+spring.cloud.gateway.server.webflux.routes[0].filters[0].name=CircuitBreaker
+spring.cloud.gateway.server.webflux.routes[0].filters[0].args.name=productCircuitBreaker
+spring.cloud.gateway.server.webflux.routes[0].filters[0].args.fallbackUri=forward:/fallback/products
+
+
+
+
+
+
+Meaning
+
+	If Product Service fails:
+
+Forward To
+
+	/fallback/products
+
+
+
+Fallback Controller:
+---------------------
+
+Create:
+
+FallbackController class inside the api-gateway service
+
+
+@RestController
+@RequestMapping("/fallback")
+public class FallbackController {
+
+    @GetMapping("/products")
+    public String productsFallback() {
+
+        return "Product Service Temporarily Unavailable";
+    }
+}
+
+Now if Product Service crashes:
+
+	GET /products
+
+Response:
+
+	Product Service Temporarily Unavailable
+
+instead of:
+
+	500 Error
+
+
+Real World Examples:
+--------------------
+
+Netflix:
+
+	Recommendation Service Down
+
+Show Popular Movies
+
+Amazon:
+
+Review Service Down
+
+	Show Product Details Only
+
+Swiggy:
+
+Restaurant Service Down
+
+	Show Cached Results
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
