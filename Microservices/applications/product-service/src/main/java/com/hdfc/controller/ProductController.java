@@ -2,6 +2,8 @@ package com.hdfc.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +20,6 @@ import com.hdfc.dto.ProductRequestDto;
 import com.hdfc.dto.ProductResponseDto;
 import com.hdfc.service.ProductService;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +29,21 @@ import lombok.RequiredArgsConstructor;
 public class ProductController {
 
 	private final ProductService productService;
+	
+
+
+@Autowired
+private Environment environment;
+
+
+@GetMapping("/instance")
+public String getInstance() {
+
+    return "Running On Port : "
+            + environment.getProperty("server.port");
+}
+
+	
 
 	@PostMapping
 	public ResponseEntity<ProductResponseDto> createProduct(@Valid @RequestBody ProductRequestDto dto) {

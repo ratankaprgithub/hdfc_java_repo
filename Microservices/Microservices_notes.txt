@@ -6480,6 +6480,317 @@ Restaurant Service Down
 
 
 
+Bonus topic:
+
+Service Discovery + Eureka + Client Side Load Balancing:
+-------------------------------------------------------
+
+Why Do We Need Service Discovery?
+--------------------------------
+
+Current Gateway Configuration:
+
+
+spring.cloud.gateway.server.webflux.routes[0].uri=http://localhost:8081
+spring.cloud.gateway.server.webflux.routes[1].uri=http://localhost:8082
+
+Problem:
+
+Hardcoded URLs
+Tight Coupling
+Manual Configuration
+Not Suitable For Production
+
+Real Production Scenario
+
+
+Suppose:
+
+USER-SERVICE
+
+Instance 1 -> 8081
+Instance 2 -> 8083
+Instance 3 -> 8085
+
+Question:
+
+--How will Gateway know all instances?
+
+How will Gateway decide which instance to call?
+
+Solution
+
+Service Discovery
++
+Load Balancer
+
+What Is Service Discovery?
+---------------------------
+
+--A central registry that stores:
+
+Service Name
+Host
+Port
+Status
+
+
+
+Real Life Analogy:
+------------------
+
+Think of:
+
+	College Reception Desk
+
+Student asks:
+
+	Where is Room A?
+
+Reception checks records and replies:
+
+Building 2
+Floor 3
+Room 305
+
+Similarly:
+
+Gateway asks Eureka:
+
+	Where is USER-SERVICE?
+
+Eureka replies:
+
+8081
+8083
+8085
+
+
+Architecture:
+-------------
+
+                     Eureka Server
+                           |
+       ---------------------------------------
+       |                 |                  |
+       |                 |                  |
+ USER-SERVICE      PRODUCT-SERVICE     API-GATEWAY
+     8081               8082
+     8083               8084
+     8085
+
+
+Eureka Components:
+-----------------
+
+Eureka Server:
+
+	Registry
+
+--Stores service information.
+
+Eureka Client:
+
+	Any application registering itself.
+
+Example:
+
+USER-SERVICE
+PRODUCT-SERVICE
+API-GATEWAY
+
+Step 1: Create Eureka Server
+
+Project Name:
+
+discovery-server
+
+Dependencies:
+
+Spring Web
+Eureka Server
+Actuator
+
+Main Class
+@SpringBootApplication
+@EnableEurekaServer
+public class DiscoveryServerApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(
+            DiscoveryServerApplication.class,
+            args);
+    }
+}
+
+
+
+application.properties:
+------------------------
+
+spring.application.name=discovery-server
+
+server.port=8761
+
+eureka.client.register-with-eureka=false
+
+eureka.client.fetch-registry=false
+
+Start application.
+
+
+Open:
+
+http://localhost:8761
+
+	Eureka Dashboard appears.
+
+
+Step 2: Register the client Services
+
+
+Add the client related dependencies inside all the 3 services:
+
+user-service
+product-service
+api-gateway
+
+
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+
+    <artifactId>
+        spring-cloud-starter-netflix-eureka-client
+    </artifactId>
+</dependency>
+
+
+
+
+
+<properties>
+    <java.version>21</java.version>
+
+    <spring-cloud.version>2025.1.3</spring-cloud.version>
+</properties>
+
+
+<dependencyManagement>
+    <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-dependencies</artifactId>
+            <version>${spring-cloud.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+
+    </dependencies>
+</dependencyManagement>
+
+
+
+Configure the following properties inside all the client service related application.properties file:
+
+user-service
+product-service
+api-gateway
+
+
+.properties:
+
+eureka.client.service-url.defaultZone=
+http://localhost:8761/eureka
+
+
+.yml:
+
+eureka:
+ client:
+  service-url:
+   defaultZone: http://localhost:8761/eureka
+   
+
+
+
+Start all the service:
+
+First launch the discovery-server
+then launch all other 3 client services
+
+
+Open the eureka dashboard and observe the registered services.
+
+
+Using Load Balanced Routing:
+============================
+
+Earlier:
+
+	uri=http://localhost:8081
+
+Now:
+
+	uri=lb://USER-SERVICE
+
+Product Route:
+
+	uri=lb://PRODUCT-SERVICE
+
+
+
+Verify Load Balancing:
+---------------------
+
+1. Launch multiple instances of product-service
+
+Running another instances on different port in STS:
+
+--by overring the server.port properties:
+
+STS Steps
+
+Right Click Project
+Run As
+   |
+Run Configurations
+
+Inside:
+
+Arguments
+
+Add:
+--server.port=8084
+
+Run.
+
+--Observe the eurka dashboard.
+
+
+2. Add logging inside Product Controller.
+
+
+ProductController:
+
+
+@Autowired
+private Environment environment;
+
+
+@GetMapping("/instance")
+public String getInstance() {
+
+    return "Running On Port : "
+            + environment.getProperty("server.port");
+}
+
+
+
+Call repeatedly:
+
+GET http://localhost:8080/products/instance
+
 
 
 
