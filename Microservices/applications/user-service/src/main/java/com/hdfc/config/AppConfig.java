@@ -13,7 +13,9 @@ public class AppConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-		
+		 System.out.println(
+			        "Custom SecurityFilterChain Loaded");
+
 		
 		http.
 		csrf(csrf -> csrf.disable())

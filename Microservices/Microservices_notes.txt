@@ -6700,8 +6700,7 @@ api-gateway
 
 .properties:
 
-eureka.client.service-url.defaultZone=
-http://localhost:8761/eureka
+eureka.client.service-url.defaultZone=http://localhost:8761/eureka
 
 
 .yml:
@@ -6710,8 +6709,8 @@ eureka:
  client:
   service-url:
    defaultZone: http://localhost:8761/eureka
-   
-
+ instance:
+  hostname: localhost
 
 
 Start all the service:
@@ -6737,6 +6736,18 @@ Now:
 Product Route:
 
 	uri=lb://PRODUCT-SERVICE
+
+
+
+Example:
+
+earliar configuarion inside api-gateway
+
+	#spring.cloud.gateway.server.webflux.routes[0].uri=http://localhost:8081
+
+current configuration with load-balancing
+
+	spring.cloud.gateway.server.webflux.routes[0].uri=lb://USER-SERVICE
 
 
 

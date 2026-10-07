@@ -1,0 +1,6054 @@
+Introduction to Docker and Containerization:
+============================================
+
+
+Imagine you have built a Spring Boot Microservices application.
+
+
+The project contains:
+
+API Gateway
+User Service
+Product Service
+PostgreSQL
+JWT Authentication
+
+--Everything works perfectly on your laptop.
+
+--You commit the code and share it with another developer.
+
+The next day he calls and says:
+
+	The project is not running.
+
+You ask:
+
+	What error are you getting?
+
+He replies:
+
+	Java version issue.
+
+You fix it.
+
+Then he says:
+
+	Now PostgreSQL connection is failing.
+
+You fix it.
+
+Then:
+	Port 8080 is already in use.
+
+You fix it.
+
+Then:
+	JWT secret key is missing.
+
+You fix it again.
+
+Finally you become frustrated and say:
+
+	But it was working on my machine!
+
+
+--This situation is one of the most common problems in software development.
+
+
+
+The Biggest Problem in Software Development:
+--------------------------------------------
+
+For many years developers faced a common challenge:
+
+	Works on My Machine Problem
+
+The application worked perfectly on the developer's system but failed on:
+
+- QA Server
+- Testing Server
+- Staging Server
+- Production Server
+
+
+Why Does This Happen?
+---------------------
+
+Because an application does not run alone.
+
+A Spring Boot application depends on many things.
+
+Example:
+
+Application
+Java Runtime
+Maven
+PostgreSQL Driver
+Operating System
+Environment Variables
+Configuration Files
+Network Settings
+
+If any one of them changes:
+
+	Application may fail.
+
+
+Real World Analogy:
+-------------------
+
+Imagine a chef prepares a special recipe.
+
+	The recipe works perfectly in his kitchen.
+
+Now he goes to another kitchen.
+
+Problems begin:
+
+Different Gas Stove
+Different Utensils
+Different Ingredients
+Different Temperature
+
+--The same recipe may produce a different result.
+
+--The software world had exactly the same problem.
+
+
+Traditional Deployment Process:
+--------------------------------
+
+Before Docker, deploying software was a long and painful process.
+
+
+
+Example:
+
+Developer Machine:
+
+Windows 11
+Java 21
+Maven 3.9
+PostgreSQL 16
+
+--Application works.
+
+Testing Server:
+
+Linux
+Java 17
+No Maven
+PostgreSQL 14
+
+--Application fails.
+
+Production Server:
+
+Different OS
+Different Java Version
+Different Configuration
+
+--Application fails again.
+
+
+How Companies Solved This Before Docker?:
+-----------------------------------------
+
+The most common solution was:
+Virtual Machines (VMs)
+
+
+--A Virtual Machine behaves like a complete computer running inside another computer.
+
+Example:
+
+Physical Machine
+        |
+        |
+        +---- Virtual Machine 1
+        |          Ubuntu
+        |          Java
+        |          Spring Boot App
+        |
+        +---- Virtual Machine 2
+                   Windows Server
+                   SQL Server
+                   .NET Application
+
+
+Each VM contains:
+
+Operating System
+Libraries
+Runtime
+Application
+
+
+--and behaves like an independent computer.
+
+--It is considered as hardware level virtualization.
+
+
+Benefits of Virtual Machines:
+-----------------------------
+
+Virtual Machines solved many important problems.
+
+
+They provided:
+
+Isolation:
+
+	Applications remain separated from each other.
+
+Security:
+
+	Each VM has its own environment.
+
+Dedicated Operating System:
+
+	Different operating systems can run on the same hardware.
+
+Environment Consistency:
+
+	The same VM can run across multiple servers.
+
+
+
+
+Problems with Virtual Machines:
+-------------------------------
+
+Although VMs were useful, they had serious limitations.
+
+
+Problem 1: Large Size
+
+Each VM contains:
+
+Application
++
+Libraries
++
+Complete Operating System
+
+Example:
+
+Ubuntu OS = 2 GB
+Java Runtime = 300 MB
+Application = 100 MB
+
+	Total ≈ 2.4 GB
+
+--for a single VM
+
+
+Problem 2: High RAM Consumption
+
+--Each VM requires dedicated memory.
+
+Example:
+
+VM 1 = 2 GB RAM
+VM 2 = 2 GB RAM
+VM 3 = 4 GB RAM
+
+--A single server could quickly run out of memory.
+
+
+Problem 3: Slow Startup
+
+--Starting a VM is similar to booting an actual computer.
+
+Like, 
+
+Power On
+Boot Loader
+Kernel Loading
+Services Starting
+Application Starting
+
+Typical startup:
+
+30 Seconds
+1 Minute
+2 Minutes
+Sometimes even longer.
+
+--For modern cloud applications this is too slow.
+
+
+
+Real World Analogy:
+-------------------
+
+Suppose you want to transport a television.
+
+Virtual Machine Approach:
+
+You transport:
+
+Television
+Room
+Furniture
+Walls
+Entire House
+
+--Very heavy.
+
+Better Approach
+
+You transport only:
+
+Television
+Remote
+Power Cable
+
+--Much lighter.
+
+This idea eventually led to containers.
+
+
+Virtualization:
+===============
+
+Hardware level virtualization
+
+--Virtualization is a technology that allows multiple operating systems to run on a single physical machine.
+
+
+
+Instead of purchasing:
+
+1 Server
+1 Operating System
+1 Application
+
+we can run:
+
+1 Physical Server
+Many Operating Systems
+Many Applications
+
+--simultaneously.
+
+
+
+Example:
+
+Physical Server
+      |
+      |
+      +---- Ubuntu VM
+      |
+      +---- Windows VM
+      |
+      +---- CentOS VM
+
+--All running simultaneously.
+
+
+
+Real World Analogy:
+------------------
+
+Imagine you own a large apartment building.
+
+--Instead of giving the entire building to one family, you divide it into:
+
+Flat 101
+Flat 102
+Flat 103
+Flat 104
+
+Each family feels:
+This flat belongs only to us.
+
+--Even though all flats share the same building.
+
+Computers work in a similar way.
+
+--One physical server can be divided into multiple independent virtual environments.
+
+
+This concept is called:
+Virtualization
+
+
+Why Was Virtualization Invented?
+--------------------------------
+
+--Earlier companies purchased powerful servers.
+
+Example:
+
+CPU     : 64 Cores
+RAM     : 128 GB
+Storage : 2 TB
+
+--But a single application might use:
+
+CPU  : 5%
+RAM  : 10%
+
+
+--Remaining resources were wasted.
+
+Solution:
+
+Instead of:
+
+1 Server
+      |
+1 Application
+
+
+Engineers created:
+
+1 Server
+      |
+Many Virtual Machines
+      |
+Many Applications
+
+
+--Now the same hardware could be shared efficiently.
+
+
+
+What is a Virtual Machine (VM)?:
+--------------------------------
+
+--A Virtual Machine (VM) is a software-based computer that behaves like a real physical computer.
+
+A VM has its own:
+
+Kernal
+Drivers
+Operating System
+CPU Allocation
+RAM Allocation
+Storage
+Network Configuration
+
+
+--To the user, a VM looks exactly like a real computer.
+
+--That's why VM's are heavy weight.
+
+--Where as in the the Docker, multiple containers uses a single linux kernel.
+
+
+
+Example
+
+Suppose your laptop has:
+
+Windows 11
+16 GB RAM
+512 GB SSD
+
+You install:
+
+Oracle VirtualBox(One type of Hypervisor) 
+
+Now you create:
+
+Ubuntu VM (Ubuntu OS inside the VM)
+
+and allocate:
+RAM   : 4 GB
+Disk  : 50 GB
+
+
+Inside the Ubuntu OS you can install:
+
+Java
+Maven
+PostgreSQL
+Spring Boot
+
+Ubuntu VM behaves like an entirely separate computer.
+
+
+
+Virtualization Architecture:
+-----------------------------
+
+Applications
+    |
+Operating System (Guest OS)
+    |
+Virtual Machine  -- - -- 
+    |
+Hypervisor (Create and manage VMs)
+    |
+Host Operating System (Optional)
+    |
+Physical Hardware
+
+
+--Using Hypervisor we can create different types of VMs which can host different types of Guest OS(window, linux,etc..)
+
+--The exact architecture depends on the type of hypervisor being used.
+
+
+Hypervisor:
+===========
+
+--A Hypervisor is a software layer responsible for creating, running, and managing multiple Virtual Machines.
+
+--Without a hypervisor, VMs cannot exist.
+
+Simple Definition:
+
+	Hypervisor = VM Manager
+
+--It sits between the hardware and virtual machines and controls all VM resources.
+
+
+Responsibilities of a Hypervisor
+---------------------------------
+
+--The Hypervisor performs many important tasks.
+
+like,
+
+Create VMs
+Allocate CPU
+Allocate RAM
+Allocate Storage
+Start VM
+Stop VM
+Delete VM
+
+--Hypervisor Keeps VMs isolated from each other
+
+--Failure of one VM usually does not affect another VM
+
+
+
+Real World Analogy:
+------------------
+
+Suppose a hotel has:
+
+	100 Rooms
+
+Guests arrive every day.
+
+Hotel Manager decides:
+
+Room Allocation
+Check-In
+Check-Out
+Room Management
+
+Similarly:
+
+	Hypervisor
+
+--manages all Virtual Machines.
+
+
+
+
+Types of Hypervisors
+=====================
+
+Hypervisors are divided into two categories:
+
+
+1. Type-1 Hypervisor (Bare Metal)
+2. Type-2 Hypervisor (Hosted)
+
+
+Type-1 Hypervisor (Bare Metal Hypervisor):
+-----------------------------------------
+
+A Type-1 Hypervisor runs directly on the physical hardware without requiring a host operating system.
+
+--No Host Operating System is required.
+
+
+Architecture:
+
+
+ Applications
+      |
+Guest Operating System
+      |
+-------------------
+ Virtual Machine
+-------------------
+      |
+Type-1 Hypervisor
+      |
+Physical Hardware
+
+
+
+Notice:
+
+	No Host OS
+
+--exists between Hypervisor and Hardware.
+
+
+
+Examples:
+
+VMware ESXi:
+
+	Most popular enterprise hypervisor.
+
+Microsoft Hyper-V:
+
+	Widely used in Windows Server environments.
+
+Xen Hypervisor:
+
+	Used by many cloud providers.
+
+KVM (Kernel-based Virtual Machine):
+
+	Commonly used in Linux-based cloud environments.
+
+
+Advantages:
+
+High Performance:
+
+	No extra operating system layer.
+
+Better Resource Utilization:
+
+	Direct access to hardware.
+
+Better Security:
+
+	Smaller attack surface.
+
+Scalability:
+
+	Can run hundreds of VMs efficiently.
+
+
+Real World Example:
+
+--AWS EC2, Azure VM, GCP, Large cloud providers uses Type-1 Hypervisors extensively.
+
+
+
+Type-2 Hypervisor (Hosted Hypervisor):
+---------------------------------------
+
+--A Type-2 Hypervisor runs on top of an existing operating system.
+
+--The host operating system must be installed first.
+
+
+Architecture:
+
+
+ Applications
+      |
+Guest Operating System
+      |
+-------------------
+ Virtual Machine
+-------------------
+      |
+Type-2 Hypervisor (virtual box)
+      |
+Host Operating System
+      |
+Physical Hardware
+
+
+Notice:
+	Host Operating System is present between Hypervisor and Hardware.
+
+
+--This additional layer introduces some performance overhead.
+
+
+Examples:
+
+Oracle VirtualBox
+
+	Free and commonly used for learning.
+
+VMware Workstation
+
+	Popular desktop virtualization software.
+
+VMware Fusion
+
+	For macOS systems.
+
+Parallels Desktop
+	
+	Used on Mac machines.
+
+
+
+
+
+Example
+
+Your laptop:
+Windows 11 (Host OS)
+
+Install:
+VirtualBox
+
+Create:
+VM1
+
+Install:
+ Ubunto (Guest OS) on this VM1
+
+
+--This is Type-2 Virtualization.
+
+
+
+Refer: virtualization_hypervisor_archi.png
+
+
+
+
+Problem With Virtual Machines:
+------------------------------
+
+Even though VMs solved many issues, they introduced new challenges.
+
+Problem 1: Every VM Contains a Full Operating System
+
+Example:
+
+--Consider two VMs:
+
+VM 1:
+
+Ubuntu
+Java
+Spring Boot
+
+Size:
+2 GB+
+
+VM 2:
+
+Ubuntu
+NodeJS
+MongoDB
+
+Again:
+2 GB+
+
+--Both VMs contain: Complete Operating System
+Again and again.
+
+Result:
+
+	Large Storage Consumption
+	Large Memory Consumption
+
+--A lot of resources are wasted.    
+
+
+Problem 2: Slow Startup
+
+--Starting a VM is similar to starting a real computer.
+
+Power On
+Boot Loader
+Kernel Load
+Services Start
+Application Start
+
+
+Typical startup time:
+
+30 seconds
+1 minute
+2 minutes
+
+--Sometimes longer.
+
+--For modern cloud applications, this is too slow.
+
+
+Real World Analogy:
+
+--Imagine employees travelling to an office.
+
+VM Approach
+
+Each employee gets:
+
+Separate Bus
+Separate Driver
+Separate Fuel
+
+--Expensive and inefficient.
+
+Engineers thought:
+
+	Can we share common resources?
+
+Answer:
+Yes
+
+
+This idea eventually led to:
+Containers
+
+
+Birth of Containers:
+=====================
+
+Engineers asked a very important question:
+
+Do we really need a complete
+Operating System for every application?
+
+Answer:
+NO
+
+Most applications only need:
+
+Application Code
+Dependencies
+Runtime
+Configuration
+
+They do not need a complete operating system. 
+
+
+
+
+What is Containerization?
+-------------------------
+
+Containerization is a technology that packages:
+
+Application
++
+Libraries
++
+Dependencies
++
+Runtime
++
+Configuration
+
+into a single portable unit called:
+Container
+
+
+
+What is a Container?
+---------------------
+
+--A Container is a lightweight package that contains everything required to run an application.
+
+Example:
+
+Spring Boot Application
+Java Runtime
+Required Libraries
+Configuration
+
+--All packed together.
+
+--Because containers share the host OS kernel, 
+they do not require a separate operating system for every application.
+
+
+Container Architecture:
+-----------------------
+
+
+Application  Diff app
+     |        |
+  Runtime   Runtime
+     |       |
+Container   Container
+     |        |
+-------------------------------
+     Container Engine (Docker)
+--------------------------------
+     |       |
+  Host OS Kernel
+       |
+    Hardware
+
+
+Containers share the host kernel.
+No Guest OS required.
+
+
+Why Containers Are Faster?:
+---------------------------
+
+Containers do NOT boot:
+
+Operating System
+Kernel
+System Services
+
+They simply start the application.
+
+Typical startup:
+
+1 Second
+2 Seconds
+5 Seconds
+
+--Much faster than VMs.
+
+
+What is Docker?
+================
+
+
+--Docker is the most popular containerization platform.
+
+Officially:
+
+--Docker is a platform that helps developers build, package, distribute, and run applications inside containers.
+
+
+
+What Docker Gives Us:
+---------------------
+
+1. Consistency
+
+Application behaves the same everywhere.
+
+Developer Machine
+QA Server
+Production Server
+
+--Same behavior.
+
+No more:
+	Works On My Machine
+problem.
+
+
+
+2. Portability
+
+Run the same container on:
+
+
+Windows
+Linux
+Mac
+AWS
+Azure
+GCP
+
+--without changing application code.
+
+
+3. Fast Deployment
+
+--Without Docker:
+
+Install Java
+Install Maven
+Install Dependencies
+Configure Environment
+
+
+With Docker:
+
+	docker run my-application
+
+--Application starts immediately.
+
+
+
+4. Isolation
+
+--Applications do not interfere with each other.
+
+Example:
+
+Container 1
+Java 21
+Port 8080
+
+and
+
+Container 2
+Java 17
+Port 9090
+
+--Both can run on the same machine without conflicts.
+
+
+Why Docker is Important for Microservices?
+-----------------------------------------
+
+Suppose our project contains:
+
+API Gateway
+User Service
+Product Service
+Order Service
+PostgreSQL
+MongoDB
+Redis
+
+Without Docker:
+
+	Install Everything Manually
+
+--Huge effort.
+
+With Docker:
+
+	docker compose up
+
+--Entire system starts automatically.
+
+--This is why Docker became the default deployment mechanism for modern Microservices architectures.
+
+
+Industry Use Cases:
+--------------------
+
+Almost every modern company uses Docker:
+
+- Amazon
+- Netflix
+- Uber
+- Swiggy
+- Zomato
+- Flipkart
+- Razorpay
+- PhonePe
+
+Containers are the foundation of:
+
+Microservices
+Kubernetes
+AWS ECS
+AWS EKS
+Cloud Native Applications
+DevOps
+CI/CD Pipelines
+
+
+--Docker solves the "Works on My Machine" problem 
+by packaging the application and its dependencies into containers 
+that run consistently across different environments.
+
+
+
+Official References:
+
+	https://docs.docker.com/get-started/docker-overview
+
+
+Docker is built on concepts that existed long before Docker.
+
+Virtualization
+
+
+Why Docker Still Needs Virtualization?
+--------------------------------------
+
+To install a docker inside the computer we need to enable the virtualization in BIOS of our system.
+
+Question:
+
+--If Docker is not a VM,
+why do we enable Virtualization in BIOS?
+
+
+Docker Was Originally Built For Linux:
+======================================
+
+Docker depends on Linux Kernel features:
+
+Namespaces
+Control Groups (cgroups)
+Union File System
+
+--These features exist natively in Linux.
+
+--In the Docker, multiple containers uses a single linux kernel.
+
+--That's why containers are light weight.
+
+
+
+
+On Linux:
+----------
+
+	Docker runs directly.
+
+Architecture:
+
+Containers
+      |
+Docker Engine
+      |
+Linux Kernel
+      |
+ Hardware
+
+
+--No additional VM required.
+
+
+On Windows:
+-----------
+
+Problem: Window system does not comes with linux kernel.
+
+--And Docker needs the linux kernel.
+
+--But window has 'NT kernel'.
+
+--So Docker directly can't work on window OS
+
+--Docker cannot directly use Linux kernel features on window.
+
+Therefore Docker Desktop creates:
+
+	Lightweight Linux VM
+
+internally.
+
+Modern Docker Desktop Architecture on Window
+
+
+Docker CLI
+      |
+Docker Desktop
+      |
+WSL2 Linux VM
+      |
+Linux Kernel
+      |
+Containers
+
+
+What is WSL2?:
+--------------
+
+--Microsoft released this software to run the Linux environment on window system.
+
+
+Official Reference
+
+	https://learn.microsoft.com/en-us/windows/wsl/
+
+
+
+
+
+
+
+WSL1: Older version
+
+--Here Linux commands were translated into the window command.
+
+Linux Command
+      |
+Translation
+      |
+  Windows
+
+--Which was slow and limited.
+
+
+WSL2:
+------
+
+--It is used by the docker
+
+WSL2 provides:
+	
+	Real lightweight Linux Kernel
+
+--inside Windows.
+
+This allows Docker containers to run efficiently.
+
+
+Docker on macOS:
+
+--macOS is also not Linux.
+
+--Therefore Docker Desktop also creates:
+
+	Lightweight Linux VM
+
+internally, similar to Windows.
+
+
+
+
+Note: Docker is not the replacement of VM, infact it complement the VM.
+
+--Many companies run the Docker inside the VM like:
+
+AWS EC2(VM): in which we can install the Docker and run the Spring Boot application.
+
+
+
+
+
+Industry Usage:
+--------------
+
+--Today Docker is used by almost every major company:
+
+Amazon
+Netflix
+Uber
+Swiggy
+Zomato
+Flipkart
+Razorpay
+PhonePe
+
+
+Docker is the foundation of:
+
+Microservices
+Kubernetes
+AWS ECS
+AWS EKS
+Cloud Native Applications
+DevOps
+CI/CD Pipelines
+
+
+
+
+Docker Architecture:
+=====================
+
+
+High-Level Docker Architecture:
+------------------------------
+
+           Docker Client
+         (CLI / GUI / IDE)
+                 |
+                 |
+         Docker REST API
+                 |
+                 v
++-----------------------------------+
+|         Docker Engine             |
+|-----------------------------------|
+| Docker Daemon (dockerd)           |
+| Images                            |
+| Containers                        |
+| Networks                          |
+| Volumes                           |
++-----------------------------------+
+                 |
+                 |
+                 v
+    Docker Registry (Docker Hub)
+
+
+
+Main Components of Docker Architecture:
+---------------------------------------
+
+--Docker Architecture consists of three major components:
+
+1. Docker Client
+2. Docker Host (Docker Engine)
+3. Docker Registry
+
+
+1. Docker Client:
+-----------------
+
+--The Docker Client is the interface through which users interact with Docker.
+
+--It accepts commands from users and sends them to Docker Engine.
+
+Examples of Docker Clients:
+
+Docker CLI:
+
+docker run nginx
+docker ps
+docker pull mysql
+
+Docker Desktop:
+	
+	GUI-based Docker client.
+
+VS Code Docker Extension:
+
+	Allows Docker management from VS Code.
+
+IntelliJ Docker Plugin:
+
+	Allows Docker management from IntelliJ IDEA.
+
+
+Responsibilities of Docker Client:
+
+- Accept commands from users
+- Convert commands into REST API requests
+- Send requests to Docker Engine
+- Display results returned by Docker Engine
+
+
+Real World Analogy:
+--------------------
+
+Imagine a restaurant.
+
+
+Customer
+    |
+    |
+Waiter
+    |
+    |
+Kitchen
+
+
+In Docker:
+
+  User
+    |
+Docker Client
+    |
+Docker Engine
+
+
+--Docker Client acts like the waiter.
+
+
+
+
+2. Docker Engine:
+-----------------
+
+--Docker Engine is the core component of Docker.
+
+--It is responsible for creating and managing Docker resources.
+
+
+Docker Engine is the runtime environment that builds, runs and manages containers.
+
+
+Docker Engine Components:
+-------------------------
+
+Docker Engine consists of:
+
+Docker Engine
+│
+├── Docker REST API
+├── Docker Daemon (dockerd)
+├── Images
+├── Containers
+├── Networks
+└── Volumes
+
+
+
+Docker REST API:
+---------------
+
+--Docker REST API acts as a communication layer between clients and Docker Engine.
+
+What Does It Do?
+
+Receives requests from:
+
+Docker CLI
+Docker Desktop
+VS Code
+IntelliJ
+Jenkins
+
+--and forwards them to Docker Daemon.
+
+Example
+
+Command:
+
+	docker ps
+
+--Internally becomes:
+
+	GET /containers/json
+
+--Docker Daemon processes the request and returns the result.
+
+
+Docker Daemon (dockerd):
+------------------------
+
+--Docker Daemon is the brain of Docker.
+
+--It runs as a background service.
+
+Docker Daemon is a background process responsible for managing Docker objects.
+
+
+Responsibilities:
+
+1. Container Management
+
+Create Container
+Start Container
+Stop Container
+Restart Container
+Delete Container
+
+2. Image Management
+
+Pull Images
+Store Images
+Remove Images
+Build Images
+
+3. Network Management
+
+Create Networks
+Manage Networks
+Remove Networks
+
+4. Volume Management
+
+Create Volumes
+Mount Volumes
+Delete Volumes
+
+
+Docker Daemon
+manages all Docker resources.
+
+
+
+
+
+
+
+
+Docker Images:
+--------------
+
+--Docker Image is a read-only blueprint used to create containers.
+
+A Docker Image contains:
+
+Application Code
+Runtime
+Libraries
+Dependencies
+Configuration
+
+--Everything needed to run an application.
+
+Examples:
+
+nginx
+mysql
+postgres
+redis
+openjdk
+node
+python
+
+
+--With a single image we can run many containers.
+
+
+Real World Analogy:
+------------------
+
+Blueprint of a house.
+
+Blueprint
+     |
+Many Houses
+
+Similarly:
+
+Docker Image
+      |
+Many Containers
+
+
+
+Docker Containers
+------------------
+
+--A Container is a running instance of an image.
+
+Example
+
+Image:
+	nginx
+
+Command:
+	docker run nginx
+
+Result:
+	Nginx Container
+
+Multiple Containers:
+
+nginx Image
+      |
+      +--- Container 1
+      +--- Container 2
+      +--- Container 3
+
+--All containers originate from the same image.
+
+Just like with a simple Java class we can create multiple objects.
+
+
+
+3. Docker Registry
+--------------------
+
+--A Docker Registry stores Docker Images.
+
+--A Registry is a centralized repository used for storing and distributing Docker Images.
+
+
+Types of Registries:
+-------------------
+
+1. Public Registry
+
+--Accessible to everyone.
+
+Example:
+	Docker Hub
+
+2. Private Registry:
+
+--Accessible only to authorized users.
+
+Examples:
+
+AWS ECR
+Harbor
+Nexus
+JFrog
+Azure Container Registry
+
+
+
+Docker Hub:
+------------
+
+--Docker Hub is the default public Docker Registry.
+
+--It is like a GitHub or Google playstore
+
+Official website:
+
+	https://hub.docker.com/
+
+
+
+Popular Images Available: At Docker Hub
+----------------------------------------
+
+nginx
+mysql
+postgres
+redis
+mongo
+openjdk
+node
+python
+
+
+refer: complete Docker architechture:
+
+	DockerArchitecture.png
+
+
+
+
+
+
+Complete Docker Workflow:
+------------------------
+
+Suppose we execute:
+
+	docker run nginx
+
+Step 1:
+
+User executes:
+	
+	docker run nginx
+
+Step 2:
+
+--Docker Client receives command.
+
+Docker CLI
+      |
+      v
+Docker REST API
+
+
+Step 3:
+
+--Docker Engine receives request.
+
+	Docker Engine
+
+Step 4:
+
+--Docker Daemon checks:
+
+	Is nginx image available locally?
+
+
+Step 5:
+
+--If image is not available locally:
+
+	Pull nginx image
+
+from Docker Hub and store it locally
+
+Step 6:
+
+--Docker Daemon creates a container.
+
+nginx Image
+       |
+       v
+Nginx Container
+
+
+Step 7:
+
+--Container starts running.
+
+Step 8:
+
+--Response is returned.
+
+	Container Started Successfully
+
+
+One-Line Memory Trick:
+
+Docker Client sends commands → Docker Engine processes them → Docker Daemon executes them → Images create Containers → Registries store Images.
+
+Example:
+
+Need PostgreSQL?
+
+--Instead of installing manually:
+
+	docker pull postgres
+
+Docker downloads image from:
+Docker Hub
+
+Need MongoDB?
+
+	docker pull mongo
+
+--Again downloaded from Docker Hub.
+
+
+To run the image:
+
+	docker run postgres
+
+
+
+
+Docker Installation Guide:
+===========================
+
+refer official docker website:
+
+	https://docs.docker.com/get-started/get-docker/
+
+
+Windows Installation:
+---------------------
+
+Step 1: Verify Virtualization
+
+--Docker Desktop requires virtualization.
+
+Open:
+	Task Manager
+
+Navigate:
+	Performance
+
+Check:
+	Virtualization : Enabled
+
+--If Virtualization is Disabled
+
+Restart machine.
+
+	Enter BIOS.
+
+Enable:
+	Intel VT-x
+or
+	AMD-V
+
+--depending on processor.
+
+--Save and restart.
+
+
+
+Step 2: Verify WSL Support
+
+Open PowerShell as Administrator.
+
+Execute:
+	wsl --status
+
+Expected:
+	Default Version: 2
+
+
+Step 3: Install WSL2
+
+--If not installed:
+
+wsl --install
+
+Restart machine.
+
+Verify again:
+
+wsl --status
+
+
+Note: wsl (Windows Subsystem for Linux Version 2) is like a translator
+
+between 
+
+Linux Language
+and
+Windows Language
+
+
+
+Step 4: Download Docker Desktop
+
+Official Website:
+
+https://www.docker.com/products/docker-desktop/
+
+
+AMD64 (x86_64): It CPU architecture is commonly used for Intel and AMD processors like:
+
+Intel Core i3, i5, i7, i9
+AMD Ryzen 3, 5, 7, 9
+
+
+ARM64: Another CPU architecture for ARM based processors like:
+
+Microsoft Surface Pro X
+Qualcomm Snapdragon X Elite/X Plus laptops
+Some new ARM Windows devices
+
+
+--To check your system CPU architecture:
+
+on CMD:
+
+echo %PROCESSOR_ARCHITECTURE%
+
+
+Step 5: Install Docker Desktop
+
+Double click installer.
+
+Keep default settings:
+
+Enable WSL2 Integration
+checked.
+
+Complete installation.
+
+Restart if prompted.
+
+Step 6: Start Docker Desktop:
+
+Launch:
+Docker Desktop
+
+Wait until:
+Docker Engine Running appears.
+
+Step 7: Verify Installation
+
+Open Terminal:
+
+	docker version
+
+
+Verify Docker Compose:
+
+	docker compose version
+
+Verify Docker Engine:
+
+	docker info
+
+This displays:
+
+Containers
+Images
+CPU
+Memory
+Docker Root Dir
+
+First Docker Command
+
+Run:
+	docker run hello-world
+
+Expected Output:
+
+	Hello from Docker!
+
+
+
+Understanding What Happened:
+--------------------------
+
+When you executed:
+
+	docker run hello-world
+
+Docker:
+Checked Local Image
+        ↓
+Image Not Found
+        ↓
+Downloaded From Docker Hub
+        ↓
+Created Container
+        ↓
+Executed Container
+
+
+
+
+Docker Installation on Mac:
+---------------------------
+
+
+--Mac internally uses XNU Kernel.
+
+--In Mac, Docker desktop automatically creates the Linux VM at the time of its installation using the Apple Virtualization Framework.
+
+
+Step 1:
+
+Download Docker Desktop.
+
+Official Site:
+
+	Docker Desktop for Mac
+
+Step 2:
+
+Select:
+
+	Apple Silicon
+
+for:
+
+M1
+M2
+M3
+
+or
+
+	Intel Chip
+
+for older Macs.
+
+Step 3
+
+Install:
+
+	Docker.app
+
+	inside Applications folder.
+
+Step 4:
+
+Launch Docker Desktop.
+
+	Allow permissions if prompted.
+
+Step 5:
+
+Verify Installation
+
+	docker --version
+
+	docker compose version
+
+	docker info
+
+
+
+
+
+
+
+Docker Image:
+=============
+
+
+---A Docker Image is a read-only template that contains everything required to run an application inside a container.
+
+--A Docker Image acts as a blueprint from which Docker Containers are created.
+
+
+A Docker Image contains:
+
+- Application Code
+- Runtime Environment (Java, NodeJS, Python, etc.)
+- Libraries
+- Dependencies
+- System Tools
+- Configuration Files
+- Environment Settings
+
+
+
+
+--Traditionally, when deploying an application, we need to install:
+
+Operating System
+Java
+Application Server
+Libraries
+Application Code
+Configurations
+
+--This process can be time-consuming and error-prone.
+
+--Docker solves this problem by packaging everything into a single Docker Image.
+
+Docker Image
+      |
+      +-- Application
+      +-- Runtime
+      +-- Libraries
+      +-- Dependencies
+      +-- Configuration
+
+As a result:
+Build Once
+Run Anywhere
+
+
+
+Real-World Analogy:
+-------------------
+
+House Blueprint
+
+Blueprint
+     |
+     +-- House 1
+     +-- House 2
+     +-- House 3
+
+--A blueprint is not a house.
+--A blueprint is a design used to construct houses.
+
+Similarly:
+
+Docker Image
+      |
+      +-- Container 1
+      +-- Container 2
+      +-- Container 3
+
+--A Docker Image is not a running application.
+
+--It is a template used to create running containers.
+
+
+Java Analogy:
+
+Class     → Image
+Object    → Container
+
+From a Java class we can create multiple objects
+Simmilarly 
+From a Docker image we can create multiple containers
+
+
+
+Image Lifecycle:
+-----------------
+
+--A Docker Image typically follows the lifecycle below:
+
+   Docker Registry
+   (Docker Hub)
+        |
+        |
+    docker pull
+        |
+        v
+   Local Image
+        |
+        |
+    docker run
+        |
+        v
+   Container
+
+
+Step 1: Image Stored in Registry:
+
+Example:
+
+Docker Hub
+
+Stores:
+
+nginx
+mysql
+postgres
+redis
+mongo
+node
+python
+openjdk
+
+
+Step 2: Pull Image
+
+Command:
+
+	docker pull nginx
+
+--Docker downloads the image from Docker Hub.
+
+
+Step 3: Store Locally
+
+--Downloaded image is stored in Docker's local image repository.
+
+Check downloaded images:
+
+	docker images
+
+Step 4: Create Container
+
+Command:
+
+	docker run nginx
+
+--Docker creates a container from the image.
+
+
+Where Do Images Come From?
+---------------------------
+
+There are two possibilities.
+
+Option 1: Download Existing Images
+
+From:
+
+	Docker Hub
+
+Examples:
+
+docker pull nginx
+docker pull postgres
+docker pull mongo
+docker pull redis
+
+Option 2: Create Our Own Images
+
+Using:
+
+	Dockerfile
+
+Later we will learn:
+
+Example:
+
+
+FROM amazoncorretto:21
+
+COPY app.jar app.jar
+
+CMD ["java","-jar","app.jar"]
+
+
+--which creates our own Spring Boot image.
+
+
+
+Understanding Image Layers:
+---------------------------
+
+Most students imagine:
+
+
+Image = Single File
+
+	Wrong.
+
+Docker Images are made of:
+	
+	Layers
+
+
+Real World Analogy:
+------------------
+
+Imagine a Burger.
+
+Top Bun
+Cheese
+Patty
+Vegetables
+Bottom Bun
+
+--The burger is composed of layers.
+
+Docker Image is similar.
+
+
+
+Example:
+
+FROM ubuntu
+
+RUN apt update
+
+RUN apt install openjdk-21-jdk
+
+COPY app.jar app.jar
+
+--Docker creates multiple layers.
+
+
+Layer Structure:
+
+Layer 4 -> app.jar
+
+Layer 3 -> Java Installation
+
+Layer 2 -> apt update
+
+Layer 1 -> Ubuntu
+
+Together they form:
+
+	Docker Image
+
+
+Why Layers?
+------------
+
+Because layers provide:
+
+Reuse
+Caching
+Performance
+Storage Optimization
+
+Example
+
+Suppose you have:
+
+FROM ubuntu
+
+RUN apt update
+
+RUN apt install java
+
+--Build image.
+
+Now change only:
+
+	COPY app.jar app.jar
+
+Docker will reuse:
+
+Ubuntu Layer
+apt update Layer
+Java Layer
+
+and rebuild only:
+
+	Application Layer
+
+--This makes builds much faster.
+
+
+
+Image Tags:
+-----------
+
+Every image has:
+
+Repository
+Tag
+
+Example
+
+	docker pull nginx:latest
+
+Repository:
+	nginx
+
+Tag:
+	latest
+
+Another example:
+
+	docker pull postgres:16
+
+Repository:
+	postgres
+
+Tag:
+	16
+
+
+Tags identify versions.
+
+Example
+
+Java Images:
+
+openjdk:17
+openjdk:21
+openjdk:24
+
+--Each represents a different version.
+
+
+The Biggest Myth: latest Tag
+
+Many beginners think:
+
+	latest = newest version
+
+--Not always true.
+
+
+latest
+
+simply means:
+
+	Default Tag
+
+--assigned by image maintainer.
+
+
+Best Practice:
+
+Avoid:
+	FROM postgres:latest
+
+Prefer:
+	FROM postgres:16
+
+or
+	FROM postgres:17
+
+Reason:
+
+--Future updates may break application compatibility.
+
+
+Listing Local Images:
+
+	docker images
+
+Downloading Images
+
+	docker pull nginx
+	
+	docker pull postgres:16
+
+	docker pull mongo:7
+
+
+Remove Image:
+
+	docker rmi nginx
+
+Remove Specific Version:
+
+	docker rmi postgres:16
+
+
+
+
+Image Lifecycle:
+---------------
+
+Docker Hub
+      ↓
+docker pull
+      ↓
+Local Image
+      ↓
+docker run
+      ↓
+Container
+      ↓
+docker stop
+      ↓
+Stopped Container
+      ↓
+docker rm
+      ↓
+Container Removed
+
+--Image still exists.
+
+
+Spring Boot Example:
+--------------------
+
+Suppose we build:
+
+	User Service
+
+Image:
+
+	user-service:v1
+
+From same image:
+
+docker run user-service:v1
+docker run user-service:v1
+docker run user-service:v1
+
+--Three containers can be created.
+
+
+
+
+
+
+
+
+Docker Containers:
+==================
+
+
+--A Docker Container is a running instance of a Docker Image.
+
+--A Docker Image is only a blueprint/template, whereas a Container is the actual running application created from that image.
+
+Example:
+
+Docker Image
+
+    nginx
+      |
+      |
+   docker run
+      |
+      v
+Nginx Container
+
+Command:
+
+	docker run nginx
+
+
+
+Important Point:
+
+--A Container is not a complete Virtual Machine.
+
+--It does not contain its own complete Guest Operating System.
+
+--Instead, containers share the underlying OS kernel.
+
+Therefore Containers are:
+
+Lightweight
+Fast
+Portable
+Isolated
+
+
+
+VM vs Container:
+----------------
+
+Virtual Machine:
+
+Application
+    |
+Libraries
+    |
+Guest OS
+    |
+Hypervisor
+    |
+Hardware
+
+Each VM has its own:
+
+Operating System
+Kernel
+Drivers
+Libraries
+Application
+
+--Therefore VMs are comparatively heavyweight.
+
+
+Container:
+
+Application
+    |
+Libraries / Dependencies
+    |
+Docker Engine
+    |
+Host OS Kernel
+    |
+Hardware
+
+--Containers do not require a separate Guest OS.
+
+Therefore:
+
+Less RAM
+Less Storage
+Faster Startup
+Lower Resource Usage
+
+
+Container Isolation:
+
+--Every container runs in an isolated environment.
+
+For example:
+
+Container 1
+Spring Boot
+Java 21
+
+Container 2
+NodeJS
+Node 22
+
+Container 3
+PostgreSQL
+
+--They can all run on the same machine without interfering with each other.
+
+
+
+Container Has a Main Process:
+-----------------------------
+
+--Normally, a container runs around one main application process.
+
+Examples:
+
+Nginx Container
+
+Main Process:
+	nginx
+
+PostgreSQL Container
+
+Main Process:
+	postgres
+
+
+Spring Boot Container
+
+Main Process:
+	java -jar app.jar
+
+
+
+Important:
+
+If the main process stops
+        ↓
+Container stops
+
+
+
+What Does docker run Actually Do?
+-----------------------------------
+
+Example:
+
+	docker run nginx
+
+
+Internally:
+
+1. Docker checks whether nginx image exists locally
+
+2. If image is missing:
+       Docker pulls it from Docker Hub
+
+3. Docker creates a new container
+
+4. Docker creates an isolated filesystem/network
+
+5. Docker starts the image's configured command
+
+6. Application starts running
+
+So:
+
+	docker run
+
+basically performs:
+
+
+Create Container
+       +
+Start Container
+
+
+Container Lifecycle:
+----------------------
+
+--A container normally moves through the following states:
+
+Created
+   |
+   v
+Running
+   |
+   v
+Stopped
+   |
+   v
+Removed
+
+We may also :
+
+Restart
+Pause
+Unpause
+
+a container.
+
+
+
+1. Run a Container:
+
+	docker run nginx
+
+--This creates and starts the container.
+
+
+2. Check Running Containers:
+
+	docker ps
+or:
+	docker container ls
+
+Example output:
+
+CONTAINER ID   IMAGE   STATUS
+abc123         nginx   Up 2 minutes
+
+--Only running containers are shown.
+
+
+3. Check All Containers:
+
+--To see:
+
+Running
++
+Stopped
+
+containers:
+
+	docker ps -a
+
+Output:
+
+CONTAINER ID   IMAGE    STATUS
+
+abc123         nginx    Up 2 minutes
+
+xyz456         nginx    Exited
+
+
+
+4. Stop a Container:
+
+Syntax:
+	docker stop <container-id>
+
+Example:
+	docker stop abc123
+
+--Docker gracefully stops the main process running inside the container.
+
+After stopping:
+
+	docker ps
+
+will no longer show it.
+
+But:
+	docker ps -a
+
+will show:
+Exited
+
+
+
+5. Start an Existing Container:
+
+--A stopped container does not need to be recreated.
+
+Use:
+	docker start <container-id>
+
+Example:
+	docker start abc123
+
+--The same container starts again.
+
+
+docker run vs docker start:
+----------------------------
+
+	docker run nginx
+
+means:
+Create NEW Container
++
+Start It
+
+
+	docker start abc123
+
+means:
+
+--Start an EXISTING stopped container
+
+
+6. Restart Container:
+
+
+	docker restart <container-id>
+
+Example:
+
+	docker restart abc123
+
+--Equivalent conceptually to:
+
+Stop
+ +
+Start
+
+7. Remove Container:
+
+--Stopping a container does not delete it.
+
+To permanently remove it:
+
+	docker rm <container-id>
+
+Example:
+	docker rm abc123
+
+--Normally, container should be stopped before removing it.
+
+
+Important Concept:
+
+--Deleting a Container does not delete its Image.
+
+
+
+Detached Mode:
+--------------
+
+
+Normally:
+
+	docker run nginx
+
+--attaches the container output to the current terminal.
+
+--For server applications, we normally run containers in the background.
+
+Use:
+
+	docker run -d nginx
+
+Here:
+
+	-d = Detached Mode
+
+Meaning:
+Run Container
+      +
+Run in Background
+
+Example:
+docker run -d nginx
+
+Docker returns:
+	Container ID
+
+Check:
+	docker ps
+
+Real-World Example:
+
+--For a Spring Boot backend, we normally do not want the terminal permanently attached.
+
+So instead of:
+
+	docker run user-service
+
+we normally use:
+	
+	docker run -d user-service
+
+Container Naming:
+-----------------
+
+--Docker automatically gives each container a random name.
+
+Instead, we can provide our own name.
+
+Syntax:
+	docker run --name <container-name> <image>
+
+Example:
+
+	docker run --name my-nginx nginx
+
+Now instead of container ID, we can use:
+
+	my-nginx
+
+Example:
+
+	docker stop my-nginx
+
+	docker start my-nginx
+
+	docker logs my-nginx
+
+	docker rm my-nginx
+
+--This is much easier than remembering Container IDs.
+
+
+Container Logs:
+---------------
+
+--For Spring Boot and other backend applications, logs are extremely important.
+
+View logs:
+	docker logs <container-id>
+
+Example:
+	docker logs my-nginx
+
+For a Spring Boot container:
+
+	docker logs user-service
+
+Follow Logs Continuously:
+
+To watch new logs continuously:
+	
+	docker logs -f <container-id>
+
+Example:
+
+	docker logs -f user-service
+
+Here:
+
+	-f = follow
+
+--This is similar to watching the application console in IntelliJ/STS.
+
+Real-World Analogy:
+
+Normally in IntelliJ:
+
+Run Spring Boot
+       |
+       v
+Console Logs
+
+With Docker:
+
+Spring Boot Container
+       |
+       v
+docker logs -f user-service
+
+
+
+**************************************************
+
+
+
+Execute Command Inside Container:
+---------------------------------
+
+Sometimes we need to enter a running container.
+
+Syntax:
+	docker exec -it <container-name> bash
+
+Example:
+	docker exec -it postgres-container bash
+
+Here:
+	exec = Execute command inside running container
+
+-i    = Interactive input
+
+-t    = Terminal
+
+Together:
+
+	-it = Interactive Terminal
+
+Real-World Analogy:
+
+Suppose a container is a hotel room.
+Normally we manage it from outside.
+
+But:
+
+	docker exec -it container bash
+
+is like:
+
+Opening the room door
+        ↓
+Going inside
+        ↓
+Checking things manually
+
+Example: PostgreSQL Container
+
+Suppose PostgreSQL container is:
+
+	postgres-db
+
+Enter:
+
+	docker exec -it postgres-db bash
+
+--Now we are inside the container's Linux environment.
+
+--We can execute commands there.
+
+
+Inspect Container:
+------------------
+
+To see detailed configuration:
+
+	docker inspect <container-id>
+
+Example:
+	docker inspect user-service
+
+It provides details such as:
+
+Container ID
+State
+Network
+IP Address
+Environment Variables
+Port Configuration
+Image
+
+Spring Boot Example:
+
+Suppose we have:
+	user-service:v1
+
+Run:
+	docker run -d --name user-service user-service:v1
+
+Check:
+	docker ps
+
+Logs:
+
+	docker logs -f user-service
+
+Stop:
+
+	docker stop user-service
+
+Start:
+
+	docker start user-service
+
+Restart:
+
+	docker restart user-service
+
+Remove:
+
+	docker rm user-service
+
+
+
+Important Commands:
+===================
+
+	docker run <image>
+
+Create and start container.
+
+
+	docker run -d <image>
+
+Run in background.
+
+	docker ps
+
+Running containers.
+
+	docker ps -a
+
+All containers.
+
+	docker stop <container>
+
+Stop container.
+
+	docker start <container>
+
+Start stopped container.
+
+	docker restart <container>
+
+Restart container.
+
+	docker rm <container>
+
+Remove container.
+
+	docker logs <container>
+
+View logs.
+
+	docker logs -f <container>
+
+Follow logs.
+
+	docker exec -it <container> bash
+
+Execute command inside container.
+
+	docker inspect <container>
+
+Inspect container configuration.
+
+
+
+
+Port Mapping in Docker:
+=======================
+
+
+Until now we have learned:
+
+Docker Image
+      |
+docker run
+      |
+      v
+Container
+
+--Suppose we start an Nginx container:
+
+	docker run nginx
+
+Container starts successfully.
+
+Check:
+	docker ps
+
+Output:
+CONTAINER ID    IMAGE     STATUS
+abc123          nginx     Up 2 minutes
+
+Everything looks fine.
+
+The Problem:
+
+Now open browser:
+
+	http://localhost
+
+Will it work?
+NO
+
+Why?
+
+Because Docker containers run inside an isolated environment.
+
+
+Real-World Analogy:
+------------------
+
+--Imagine your application is inside a house.
+
+House
+ |
+ +-- Nginx Server
+
+--The house door is closed.
+
+--People outside cannot access the server.
+
+To allow access:
+
+House
+ |
+Door Open
+ |
+Nginx Server
+
+--Similarly, Docker containers keep their ports private by default.
+
+
+What is a Port?
+
+--A Port is a communication endpoint used by applications.
+
+Examples:
+
+80     → HTTP (nginx)
+3306   → MySQL
+5432   → PostgreSQL
+27017  → MongoDB
+8080   → Spring Boot
+
+
+When Spring Boot starts:
+
+	mvn spring-boot:run
+
+
+it usually listens on:
+
+	localhost:8080
+
+Container Network Isolation:
+
+
+Suppose we start nginx:
+
+	docker run nginx
+
+Inside container:
+
+Container
+ |
+ +-- Nginx
+ |
+ +-- Port 80
+
+	Port 80 exists inside the container.
+But:
+
+Laptop
+ |
+ +-- Browser
+
+--cannot directly access that container port.
+
+
+Solution: Port Mapping
+
+
+Docker provides:
+
+	-p
+
+option.
+
+Syntax:
+
+	docker run -p HOST_PORT:CONTAINER_PORT IMAGE
+
+Example:
+
+	docker run -p 8080:80 nginx
+
+Meaning:
+
+Host Port → 8080
+
+Container Port  → 80
+
+Example 1: Nginx
+
+Run:
+
+	docker run -d -p 8080:80 nginx
+
+Check:
+	docker ps
+
+Output:
+
+PORTS
+
+0.0.0.0:8080->80/tcp
+
+Open browser:
+
+	http://localhost:8080
+
+You should see:
+	Welcome to nginx
+
+
+Another example:
+
+	docker run -p 9090:80 nginx
+
+Now access:
+
+	http://localhost:9090
+
+Notice:
+	Container still uses Port 80
+
+Only Host Port changed
+
+Real-World Analogy:
+
+--Suppose a hotel room contains a telephone.
+
+Room 101
+Phone Number 80
+
+--Visitors outside cannot directly call Room 101.
+
+Reception provides a public number:
+
+Reception Number 8080
+      |
+      v
+Room 101
+
+--Port Mapping works similarly.
+
+
+Spring Boot Example:
+
+By default Spring Boot runs on:
+
+	8080
+
+Suppose we create image:
+
+	user-service:v1
+
+Run:
+
+	docker run -p 8080:8080 user-service:v1
+
+Meaning:
+
+Host Port      8080
+Container Port 8080
+
+Browser:
+	http://localhost:8080
+
+Postman:
+	http://localhost:8080/users
+
+--Application becomes accessible.
+
+
+Multiple Spring Boot Applications:
+
+Suppose we have:
+
+User Service
+Product Service
+
+Both run internally on:
+	8080
+
+Can we run both?
+	YES
+
+User Service:
+
+	docker run -p 8081:8080 user-service
+
+Product Service:
+
+	docker run -p 8082:8080 product-service
+
+Result:
+
+Host Port 8081
+      |
+User Service
+
+Container Port 8080
+
+
+Host Port 8082
+      |
+Product Service
+
+Container Port 8080
+
+Access:
+
+	http://localhost:8081/users
+
+	http://localhost:8082/products
+
+Database Example:
+
+PostgreSQL default port:
+
+	5432
+
+Run:
+
+	docker run -p 5432:5432 postgres
+
+Now tools like:
+
+DBeaver
+pgAdmin
+IntelliJ
+Spring Boot
+
+can connect using:
+
+	localhost:5432
+
+MongoDB Example:
+
+MongoDB default port:
+	27017
+
+Run:
+	docker run -p 27017:27017 mongo
+
+Connect:
+	mongodb://localhost:27017
+
+
+For postgres:
+
+docker run -d --name postgres-db -p 5432:5432 -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin123 -e POSTGRES_DB=mydb postgres:16
+
+docker exec -it postgres-db bash
+
+--The command will move inside the Linux bash shell of the postgres container.
+
+To connect with our database:
+
+	psql -U admin -d mydb
+
+or:
+
+docker exec -it postgres-db psql -U admin -d mydb
+
+
+Configuring the postgres image inside docker desktop:
+-----------------------------------------------------
+
+Search PostgreSQL Image
+
+--If PostgreSQL image is not downloaded:
+
+Click:
+Docker Hub Search
+
+Search:
+postgres
+
+Choose:
+postgres:16
+
+and pull/download it.
+
+Or from terminal:
+
+	docker pull postgres:16
+
+After download, refresh Docker Desktop.
+
+Run PostgreSQL Container
+In Images tab:
+Find:
+postgres:16
+
+Click:
+Run
+
+A configuration window will open.
+
+Configure Container:
+
+Container Name:
+postgres-db
+
+Ports:
+Host Port      : 5432
+Container Port : 5432
+
+Environment Variables:
+
+POSTGRES_USER=admin
+POSTGRES_PASSWORD=admin123
+POSTGRES_DB=mydb
+
+This is equivalent to:
+
+
+docker run -d --name postgres-db -p 5432:5432 -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin123 -e POSTGRES_DB=mydb postgres:16
+
+Start Container
+
+Click:
+Run
+
+--Docker Desktop will create and start PostgreSQL.
+
+
+Verify Container:
+
+Go to:
+Containers
+
+You should see:
+postgres-db
+
+Status:
+Running
+
+Green indicator:
+Running
+
+View Logs:
+
+Click on:
+postgres-db
+
+Open:
+Logs
+
+You should see something similar:
+	database system is ready to accept connections
+
+--This confirms PostgreSQL is running.
+
+
+Open Terminal Inside Container:
+
+--Docker Desktop provides a terminal.
+
+Click:
+postgres-db
+      |
+      +--> Exec
+or
+
+Terminal
+
+(depending on Docker Desktop version)
+
+A shell opens:
+root@container-id:/#
+
+Now enter PostgreSQL:
+	
+	psql -U admin -d mydb
+
+You will get:
+	mydb=#
+
+
+
+
+Dockerfile:
+============
+
+
+Until now we have been using ready-made images:
+
+docker pull nginx
+docker pull postgres
+docker pull mongo
+
+--These images were created by someone else and uploaded to Docker Hub.
+
+But in real projects, we need to containerize our own applications.
+
+
+Examples:
+
+User Service
+Product Service
+API Gateway
+Order Service
+Payment Service
+
+The question is:
+
+--How do we create our own Docker Image?
+
+The answer is:
+Dockerfile
+
+
+
+The Problem Before Dockerfile:
+-------------------------------
+
+--Suppose we have a Spring Boot application.
+
+
+Project:
+
+user-service
+├── src
+├── pom.xml
+└── target
+      └── user-service.jar
+
+
+--To run this application traditionally:
+
+Step 1:
+	Install Operating System
+
+Step 2:
+	Install Java
+
+Step 3:
+	Copy Application JAR
+
+Step 4:
+	Configure Environment
+
+Step 5:
+	Run Application
+
+If another developer joins:
+	Repeat Again
+
+If deployed on another machine:
+	Repeat Again
+
+This leads to:
+
+--Works on my machine problem
+
+
+--A Dockerfile is a text file that contains step-by-step instructions for building a Docker Image.
+
+Official Definition:
+
+--A Dockerfile is a text document that contains all commands required to assemble an image.
+
+
+Relationship Between Dockerfile, Image and Container:
+-----------------------------------------------------
+
+Dockerfile
+      |
+docker build
+      |
+      v
+Docker Image
+      |
+docker run
+      |
+      v
+Docker Container
+
+
+
+A Dockerfile typically contains instructions such as:
+
+
+FROM
+RUN
+COPY
+WORKDIR
+EXPOSE
+CMD
+
+
+These instructions tell Docker:
+
+Which base image to use
+
+Which software to install
+
+Which files to copy
+
+Which port to expose
+
+Which command to execute
+
+
+
+--Suppose you are writing a recipe for making tea.
+
+Step 1:
+Take Milk
+
+Step 2:
+Add Sugar
+
+Step 3:
+Add Tea Leaves
+
+Step 4:
+Boil
+
+Step 5:
+Serve
+
+--Similarly Dockerfile contains instructions.
+
+
+
+Example: Spring Boot Application:
+---------------------------------
+
+
+Suppose we have:
+
+
+	user-service.jar
+
+To run it manually:
+
+	java -jar user-service.jar
+
+--Dockerfile can automate this.
+
+
+Example:
+
+FROM amazoncorretto:21
+
+COPY user-service.jar app.jar
+
+CMD ["java","-jar","app.jar"]
+
+Read this like:
+
+Step 1:
+	Use Java 21 Image
+
+Step 2:
+	Copy Application JAR
+
+Step 3:
+	Run Application
+
+
+Each service will have:
+
+Dockerfile
+
+Example:
+
+user-service
+     |
+     +-- Dockerfile
+
+product-service
+     |
+     +-- Dockerfile
+
+api-gateway
+     |
+     +-- Dockerfile
+
+--Then each service can be converted into its own image.
+
+
+Dockerfile Naming Convention:
+-----------------------------
+
+File name must be:
+
+	Dockerfile
+
+Capital D
+No Extension
+
+
+Correct:
+	Dockerfile
+
+Wrong:
+
+	dockerfile
+	DockerFile
+	Dockerfile.txt
+
+
+
+Where is Dockerfile Stored?
+--------------------------
+
+Usually in project root.
+
+
+Example:
+
+user-service
+├── src
+├── target
+├── pom.xml
+└── Dockerfile
+
+--This is the industry standard structure.
+
+
+--Docker provides many instructions few of then are:
+
+FROM
+RUN
+COPY
+WORKDIR
+EXPOSE
+CMD
+
+
+
+Instruction 1 : FROM
+--------------------
+
+--Every Dockerfile normally starts with:
+
+	FROM
+
+--FROM specifies the Base Image on which our image will be built.
+
+Think:
+
+FROM
+    ↓
+Starting Point
+
+
+
+--Suppose you want to build a house.
+
+You first need:
+
+	Land
+
+Without land:
+
+	House cannot be built
+
+Similarly:
+
+	FROM
+
+--provides the foundation.
+
+Example:
+
+Java Application:
+
+
+	FROM amazoncorretto:21
+
+Meaning:
+
+	Use Java 21 Environment
+
+Node Application:
+
+	FROM node:22
+
+Meaning:
+
+	Use NodeJS 22 Environment
+
+Python Application:
+
+	FROM python:3.13
+
+Meaning:
+
+	Use Python Environment
+
+Spring Boot Example
+
+	FROM amazoncorretto:21
+
+
+Because our application requires:
+
+	Java Runtime
+
+--and Amazon Corretto provides:
+
+JDK
+JRE
+Java Tools
+
+--already installed.
+
+
+
+
+Instruction 2 : RUN
+--------------------
+
+RUN executes commands while building the image.
+
+
+RUN command
+
+--performs setup during image creation.
+
+
+Example:
+
+Ubuntu Image:
+
+	FROM ubuntu
+
+	RUN apt update
+
+Meaning:
+
+--Update Package Repository
+
+Another Example:
+
+	FROM ubuntu
+
+	RUN apt update
+
+	RUN apt install openjdk-21-jdk -y
+
+Meaning:
+
+	Install Java 21
+
+
+Important Point:
+
+RUN executes:
+
+	During Image Build
+
+NOT
+
+	During Container Startup
+
+--Many beginners confuse RUN with CMD.
+
+
+
+Instruction 3 : COPY
+---------------------
+
+COPY copies files from host machine into image.
+
+
+Syntax:
+
+	COPY source destination
+
+Real-World Analogy:
+
+--Suppose you are moving into a new house.
+
+You carry:
+
+Books
+Laptop
+Clothes
+
+--from old house to new house.
+
+Similarly:
+
+	COPY
+
+--moves files into Docker Image.
+
+
+
+Example:
+
+	COPY app.jar app.jar
+
+
+Meaning:
+
+
+Host Machine
+      ↓
+    app.jar
+      ↓
+Docker Image
+
+
+
+Spring Boot Example:
+
+Suppose project contains:
+
+target/user-service-1.0.jar
+
+Dockerfile:
+
+	COPY target/user-service-1.0.jar app.jar
+
+Result:
+
+Inside Image
+
+	app.jar
+
+
+
+Instruction 4 : WORKDIR
+-----------------------
+
+WORKDIR sets the working directory.
+
+Syntax:
+
+	WORKDIR /app
+
+
+Suppose you enter:
+
+	C:\Projects\UserService
+
+--All commands execute inside that folder.
+
+Similarly:
+
+	WORKDIR /app
+
+means:
+
+	Current Directory = /app
+
+Example
+
+	WORKDIR /app
+
+	COPY app.jar .
+
+Equivalent to:
+
+	/app/app.jar
+
+inside image.
+
+
+Spring Boot Example
+-------------------
+
+	WORKDIR /app
+
+	COPY target/user-service.jar .
+
+Result:
+
+	/app/user-service.jar
+
+
+
+
+Instruction 5 : EXPOSE
+----------------------
+
+EXPOSE documents which port the application uses.
+
+	EXPOSE 8080
+
+
+indicates:
+
+Application listens on 8080
+
+
+Important Point:
+
+--EXPOSE does NOT publish the port.
+
+
+Many beginners think:
+	
+	EXPOSE 8080
+
+--means browser can access app.
+Wrong.
+
+
+You still need:
+
+	docker run -p 8080:8080
+
+
+Instruction 6 : CMD
+-------------------
+
+CMD specifies what command runs when container starts.
+
+
+Syntax:
+
+	CMD ["command"]
+
+
+--defines what starts when the container starts.
+
+
+Spring Boot Example:
+
+	CMD ["java","-jar","app.jar"]
+
+Meaning:
+
+	Start Java Application
+
+--when container starts.
+
+
+Difference between RUN and CMD:
+-------------------------------
+
+
+	RUN apt install java
+
+Executed:
+
+--During Image Build
+
+	CMD ["java","-jar","app.jar"]
+
+Executed:
+
+--During Container Startup
+
+
+
+
+Now combine everything:
+
+
+FROM amazoncorretto:21
+
+WORKDIR /app
+
+COPY target/user-service.jar app.jar
+
+EXPOSE 8080
+
+CMD ["java","-jar","app.jar"]
+
+Read like a story:
+
+
+Step 1:
+Use Java 21
+
+Step 2:
+Create /app directory
+
+Step 3:
+Copy JAR File
+
+Step 4:
+Application Uses Port 8080
+
+Step 5:
+Run Java Application
+
+
+
+Building Our First Spring Boot Docker Image:
+--------------------------------------------
+
+Step1:
+
+Build our Product Service:
+
+	mvn clean package
+
+After successful build:
+
+product-service
+├── src
+├── pom.xml
+├── Dockerfile
+└── target
+      |
+      +-- product-service-0.0.1-SNAPSHOT.jar
+
+
+
+Step2:
+
+Create Dockerfile inside the root of our product-service application
+
+
+FROM amazoncorretto:21
+
+WORKDIR /app
+
+COPY target/product-service-0.0.1-SNAPSHOT.jar app.jar
+
+EXPOSE 8082
+
+CMD ["java","-jar","app.jar"]
+
+
+
+
+Here,
+
+FROM amazoncorretto:21 → Uses Java 21 runtime.
+WORKDIR /app → Sets /app as the working directory inside the container.
+COPY → Copies the Spring Boot JAR into the container.
+EXPOSE 8082 → Documents that the application is expected to use port 8082.
+CMD → Starts the Spring Boot application.
+
+Note:
+
+--The actual application port is determined by server.port in application.yml.
+
+--If server.port=8082, the application will run on 8082 inside the container, regardless of the EXPOSE value.
+
+--EXPOSE is only metadata/documentation and does not force the application to run on that port.
+
+--To access the application from outside the container, use port mapping while running the container.
+
+Example:
+
+	docker run -p 8082:8082 product-service:v1
+
+
+
+
+Step 3 : Build Docker Image
+---------------------------
+
+Move to project root:
+
+	cd product-service
+
+Build image:
+
+	docker build -t product-service:v1 .
+
+
+
+-t
+
+means:
+
+Tag the Image
+
+	product-service:v1
+
+means:
+
+	Repository = product-service
+
+	Tag = v1
+
+. (dot)
+
+means:
+
+Current Directory
+	
+	Look for Dockerfile here.
+
+
+Note:
+
+--Docker stores the generated image in its local image repository (image cache) managed by the Docker Engine.
+
+--The image is not stored inside the project folder.
+
+--The exact physical location depends on the operating system and Docker installation.
+
+--Users normally interact with images using Docker commands rather than accessing the files directly.
+
+Useful commands:
+
+	docker images
+
+--Lists all locally available images.
+
+	docker image inspect product-service:v1
+
+--Shows detailed information about the image.
+
+
+
+
+Step 4: Running the Product Service Container
+--------------------------------------------
+
+	docker run -p 8082:8082 product-service:v1
+
+
+
+Note: since our product-service uses the configuration of application.yml file as:
+
+server:
+  port: 8082
+
+spring:
+  application:
+    name: product-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/productdb
+    username: postgres
+    password: root
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+    show-sql: true
+
+
+
+--Here localhost:5432 will be considered as the network inside the container, where postgres is not installed.
+
+
+To solve this problem we have 2 options:
+
+
+1. To use the host OS installed postgress change this property as:
+
+
+
+docker run -d -p 8082:8082 -e SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/productdb product-service:v1
+
+
+Assigning the container name:
+
+	docker run -d --name product-service -p 8082:8082 -e SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/productdb product-service:v1
+
+
+
+
+--Using -e or --env we configure the environment variables and can override any properties inside our application.properties or .yml file like:
+
+spring.datasource.username=admin
+spring.datasource.password=admin123
+spring.datasource.url=jdbc:postgresql://localhost:5432/productdb
+
+jwt.secret=my-secret-key
+
+server.port=8080
+
+--we can externalize configuration.
+
+
+Docker Syntax
+
+	docker run -e KEY=VALUE IMAGE
+
+Example:
+
+docker run -e SPRING_DATASOURCE_USERNAME=admin -e SPRING_DATASOURCE_PASSWORD=admin123 product-service:v1
+
+
+
+2. For real microservices deployments, it's usually better to run PostgreSQL in Docker as well and use:
+
+	jdbc:postgresql://postgres-db:5432/productdb
+
+inside the application.yml file
+
+--where postgres-db is the PostgreSQL container name on the same Docker network.
+
+
+
+--To view the logs:
+
+	docker logs product-service
+
+Follow Logs Continuously
+
+	docker logs -f product-service
+
+
+Spring Boot Example:
+
+application.yml:
+----------------
+
+
+server:
+  port: ${SERVER_PORT:8082}
+
+spring:
+  application:
+    name: product-service
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/productdb}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:root}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+
+application.properties:
+-----------------------
+
+# Server Configuration
+server.port=${SERVER_PORT:8082}
+
+# Application Name
+spring.application.name=product-service
+
+# Database Configuration
+spring.datasource.url=${DB_URL:jdbc:postgresql://localhost:5432/productdb}
+spring.datasource.username=${DB_USER:postgres}
+spring.datasource.password=${DB_PASSWORD:root}
+
+# JPA Configuration
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+
+Now:
+
+docker run -d --name product-service -p 8082:8082 -e DB_URL=jdbc:postgresql://host.docker.internal:5432/productdb -e DB_USER=postgres -e DB_PASSWORD=root product-service:v1
+
+
+
+
+
+
+
+
+
+
+.dockerignore file:
+=====================
+
+--It works exactly like:
+
+	.gitignore
+
+for Git.
+
+
+Purpose:
+
+--To tell Docker: 
+
+Which Files/Folders
+
+--Should Be Ignored During Build
+
+
+Example:
+
+.git/
+
+.idea/
+
+*.log
+
+.vscode/
+
+*.tmp
+
+
+Meaning:
+
+
+Ignore .git folder
+Ignore .idea folder
+Ignore all log files
+Ignore .vscode folder
+Ignore all the tmp files
+ 
+
+
+during:
+
+	docker build
+
+
+Project Structure
+
+===================
+
+
+product-service
+├── src
+├── target
+├── .git
+├── .idea
+├── pom.xml
+├── Dockerfile
+└── .dockerignore
+
+
+Dockerfile
+and
+.dockerignore
+
+--are usually kept in project root.
+
+Real Benefit
+
+Without .dockerignore
+
+Build Context
+     500 MB
+
+With .dockerignore
+
+Build Context
+      40 MB
+
+Result:
+
+Faster Builds
+Smaller Transfers
+Better Performance
+
+
+Note:
+
+.dockerignore affects the Docker build context, not the final image contents.
+
+--Only files referenced by COPY or ADD instructions are included in the image.
+
+--Even if a file is not copied into the image, 
+excluding it through .dockerignore can improve build performance 
+by reducing the size of the build context sent to the Docker daemon.
+
+
+Recommended .dockerignore:
+--------------------------
+
+# Git
+.git
+.gitignore
+
+# IDE Files
+.idea
+.vscode
+.settings
+
+# Eclipse
+.classpath
+.project
+.factorypath
+
+# Logs
+*.log
+
+# Temporary Files
+*.tmp
+*.swp
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Documentation (optional)
+README.md
+HELP.md
+
+
+
+
+Docker Compose:
+================
+
+
+Until now we have learned:
+
+docker run
+docker stop
+docker rm
+docker logs
+
+--and we successfully ran:
+
+PostgreSQL Container
+Product Service Container
+
+individually.
+
+
+--This works fine for simple applications.
+--But modern applications usually contain multiple services.
+
+
+Real-World Microservice Architecture:
+------------------------------------
+
+                API Gateway
+                      |
+          -------------------------
+          |                       |
+          |                       |
+     User Service         Product Service
+          |                       |
+          --------PostgreSQL-------
+
+
+
+
+Now imagine starting everything manually.
+
+Without Docker Compose
+========================
+
+
+First start PostgreSQL:
+
+docker run -d \
+--name postgres-db \
+-p 5432:5432 \
+-e POSTGRES_USER=admin \
+-e POSTGRES_PASSWORD=admin123 \
+-e POSTGRES_DB=mydb \
+postgres:16
+
+
+Then start User Service:
+
+docker run -d \
+--name user-service \
+-p 8081:8080 \
+-e DB_URL=jdbc:postgresql://host.docker.internal:5432/mydb \
+user-service:v1
+
+
+Then start Product Service:
+
+docker run -d \
+--name product-service \
+-p 8082:8080 \
+-e DB_URL=jdbc:postgresql://host.docker.internal:5432/mydb \
+product-service:v1
+
+
+
+Then start API Gateway:
+
+docker run -d \
+--name api-gateway \
+-p 8080:8080 \
+api-gateway:v1
+
+
+
+Problems
+==========
+
+Imagine:
+
+Database
+User Service
+Product Service
+API Gateway
+Redis
+Kafka
+MongoDB
+
+--Now every developer must remember:
+
+Container Names
+Ports
+Environment Variables
+Startup Order
+
+--This becomes difficult.
+
+
+Real-World Analogy
+------------------
+
+--Suppose you are organizing a wedding.
+
+Without coordination:
+
+Call Photographer
+Call Caterer
+Call Decoration Team
+Call Music Team
+Call Transport Team
+
+--one by one.
+
+--Lots of manual work.
+
+Instead:
+
+	One Event Manager
+
+--handles everything.
+
+--Docker Compose acts like that Event Manager.
+
+
+What is Docker Compose?
+-----------------------
+
+--Docker Compose is a tool used to define and run multi-container applications.
+
+
+Official idea:
+
+One YAML File
+       ↓
+Multiple Containers
+       ↓
+Single Command
+
+
+
+Without Compose:
+
+docker run postgres
+docker run user-service
+docker run product-service
+docker run api-gateway
+
+--Many commands.
+
+With Compose:
+
+	docker compose up
+
+--Everything starts.
+
+
+
+Compose File
+=============
+
+--Docker Compose uses:
+
+	compose.yaml
+or
+	docker-compose.yml
+
+--to define the entire application.
+
+Example:
+
+services:
+
+ postgres:
+
+ user-service:
+
+ product-service:
+
+ api-gateway:
+
+
+--One file describes everything.
+
+
+Real-World Analogy
+------------------
+
+Think of:
+
+Dockerfile
+       ↓
+Recipe For One Dish
+
+while
+Docker Compose
+       ↓
+Entire Restaurant Menu
+
+Dockerfile:
+	How to build one image
+
+Compose:
+	How multiple containers work together
+
+
+Compose Lifecycle:
+-----------------
+
+compose.yaml
+       |
+docker compose up
+       |
+       v
+
+Container 1
+
+Container 2
+
+Container 3
+
+Container 4
+
+Stop Everything:
+
+	docker compose down
+
+Environment Variables in Compose:
+---------------------------------
+
+Remember: While running a container
+
+-e DB_USER=admin
+-e DB_PASSWORD=admin123
+
+
+In Compose we write:
+
+environment:
+  DB_USER: admin
+  DB_PASSWORD: admin123
+
+Much cleaner.
+
+
+Our First compose.yaml (Spring Boot + PostgreSQL)
+--------------------------------------------------
+
+We want to run:
+
+PostgreSQL
+     ↑
+     |
+Product Service
+
+using a single YAML file.
+
+
+Step 1 : Project Structure
+--------------------------
+
+product-service
+├── src
+├── target
+│    └── product-service-0.0.1-SNAPSHOT.jar
+├── Dockerfile
+├── compose.yaml
+└── pom.xml
+
+Notice:
+
+Dockerfile
+compose.yaml
+
+--are both placed in project root.
+
+
+Our First Compose File
+----------------------
+
+Making use of postgres container instead of our computer installed postgres db
+
+
+compose.yml
+
+services:
+
+  postgres-db:
+    image: postgres:16
+    container_name: postgres-db
+
+    ports:
+      - "5432:5432"
+
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: mydb
+
+  product-service:
+    image: product-service:v1
+    container_name: product-service
+
+    depends_on:
+      - postgres-db
+
+    ports:
+      - "8082:8082"
+
+    environment:
+      DB_URL: jdbc:postgresql://postgres-db:5432/mydb
+      DB_USER: admin
+      DB_PASSWORD: admin123
+
+
+
+
+
+
+
+
+
+
+Here,
+
+services:
+---------
+
+is the root section.
+
+Think:
+
+Company
+   |
+Departments
+
+Similarly:
+
+services:
+
+contains all containers.
+
+Example:
+
+services:
+
+  postgres-db:
+
+  product-service:
+
+means:
+
+Container 1
+PostgreSQL
+
+Container 2
+Product Service
+
+
+image:
+-------
+
+PostgreSQL:
+image: postgres:16
+
+means:
+
+Create Container
+	from postgres:16 image
+
+Product Service:
+image: product-service:v1
+
+means:
+
+Create Container
+from our custom image
+
+
+container_name:
+----------------
+
+container_name: postgres-db
+
+Without this:
+
+Docker creates random names:
+
+happy_bose
+cool_einstein
+
+With:
+
+container_name: postgres-db
+
+Container name becomes:
+
+	postgres-db
+
+
+ports:
+------
+
+ports:
+  - "5432:5432"
+
+Equivalent to:
+
+	docker run -p 5432:5432
+
+Meaning:
+
+Host Port      5432
+
+Container Port 5432
+
+Product Service:
+
+ports:
+  - "8082:8082"
+
+Equivalent to:
+
+	docker run -p 8082:8082
+
+
+environment:
+------------
+
+Previously we used:
+
+docker run -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin123
+
+In Compose:
+
+environment:
+  POSTGRES_USER: admin
+  POSTGRES_PASSWORD: admin123
+
+Same thing.
+
+--Just cleaner.
+
+
+
+depends_on:
+-----------
+
+--The depends_on property is used to define service dependencies in Docker Compose.
+
+This tells Docker Compose to start the postgres-db container before starting the product-service container.
+
+Benefits:
+- Controls container startup order.
+- Useful when one service depends on another service.
+
+Note:
+depends_on only guarantees startup order.
+It does NOT guarantee that the dependent service is fully initialized and ready to accept connections.
+
+
+
+Visual Representation:
+---------------------
+
+compose.yaml
+       |
+       |
+       +-------------------+
+       |                   |
+       v                   v
+postgres-db       product-service
+
+
+--One file controls multiple containers.
+
+
+Run the command:
+----------------
+
+	docker compose up
+
+Compose reads:
+
+	compose.yaml
+
+and starts:
+
+postgres-db
+product-service
+
+
+
+Running in Background
+---------------------
+
+Normally:
+
+	docker compose up
+
+shows logs.
+
+For background execution:
+
+	docker compose up -d
+
+Meaning:
+
+Detached Mode
+
+Equivalent to:
+
+	docker run -d
+
+
+View Running Containers
+
+	docker compose ps
+
+View Logs:
+
+All services:
+
+	docker compose logs
+
+Follow logs:
+
+	docker compose logs -f
+
+For Specific Service:
+
+	docker compose logs product-service
+
+
+Stop Everything
+
+	docker compose down
+
+Compose stops:
+
+postgres-db
+product-service
+
+together.
+
+
+
+Current Limitation
+------------------
+
+Our Product Service still does not know:
+
+- Database Host
+- Database Username
+- Database Password
+
+Although PostgreSQL is running, Product Service cannot connect until these values are provided.
+
+--We can provide these values using environment variables:
+
+environment:
+  DB_URL: jdbc:postgresql://postgres-db:5432/mydb
+  DB_USER: admin
+  DB_PASSWORD: admin123
+
+
+--These environment variables are automatically injected into the Product Service container and override the default values defined in application.yml file.
+
+
+Docker Networks (Container communication)
+===========================================
+
+Docker Compose automatically creates an internal network.
+
+--Containers inside the same network can communicate using:
+
+	Container Name
+or
+	Service Name
+
+--instead of IP addresses.
+
+
+Compose Example:
+----------------
+
+services:
+
+  postgres-db:
+    image: postgres:16
+    container_name: postgres-db
+
+  product-service:
+    image: product-service:v1
+    container_name: product-service
+
+
+--Docker automatically creates:
+
+    Compose Network
+
+Example:
+
+product-service
+        |
+        |
+        |
+   postgres-db
+
+--Both containers join the same network.
+
+
+--As a result, Product Service can connect to PostgreSQL using:
+
+	jdbc:postgresql://postgres-db:5432/mydb
+
+Here:
+
+- postgres-db = service/container name
+- 5432 = PostgreSQL port
+- mydb = database name
+
+--Docker's internal DNS automatically resolves:
+
+    postgres-db
+
+to the IP address of the PostgreSQL container.
+
+Therefore, there is no need to use:
+
+- localhost
+- host.docker.internal
+- Container IP addresses
+
+--when both services are running inside the same Docker Compose application.
+
+
+Internal DNS
+------------
+
+--Docker provides an internal DNS server.
+
+Think:
+
+Google DNS
+
+8.8.8.8
+
+--but running inside the Docker network.
+
+
+When Product Service requests:
+
+	postgres-db
+
+--Docker DNS automatically resolves it to the IP address of the PostgreSQL container.
+
+Example:
+
+postgres-db
+      ↓
+172.20.0.2
+
+--automatically.
+
+--The actual IP address may change whenever containers are recreated, but the service name remains the same.
+
+--This allows containers to communicate using service/container names instead of IP addresses.
+
+
+
+
+Visual Representation
+---------------------
+
+Without Docker DNS:
+
+product-service
+      |
+      |
+172.20.0.2
+
+--Need to know the exact container IP address.
+
+With Docker DNS:
+
+product-service
+      |
+      |
+postgres-db
+
+--Much easier and more reliable.
+
+
+
+
+Recommended JDBC URL:
+
+    jdbc:postgresql://postgres-db:5432/mydb
+
+where:
+
+- postgres-db = PostgreSQL service/container name
+- 5432 = PostgreSQL port
+- mydb = Database name
+
+
+
+Checking Networks
+----------------
+
+List all available Docker networks:
+
+
+	docker network ls
+
+Example:
+
+NETWORK ID      NAME
+
+abcd123         bridge
+
+xyz456          product-service_default
+
+Notice:
+
+	product-service_default
+
+--This network was automatically created by Compose.
+
+--By default, all services defined in the same docker-compose.yml join this network.
+
+
+Inspect Network
+---------------
+
+--View detailed information about a network:
+
+	docker network inspect product-service_default
+
+Output:
+
+Containers:
+    postgres-db
+    product-service
+
+You can see:
+
+- Connected containers
+- Container IP addresses
+- Network configuration
+
+--This confirms that both containers belong to the same network and can communicate using service names.
+
+
+
+
+Real-World Microservice Example:
+--------------------------------
+
+Suppose later you have:
+
+API Gateway
+User Service
+Product Service
+PostgreSQL
+
+Compose:
+
+services:
+
+  api-gateway:
+
+  user-service:
+
+  product-service:
+
+  postgres-db:
+
+Docker creates:
+
+	Single Network
+
+--All services can communicate using:
+
+api-gateway
+user-service
+product-service
+postgres-db
+
+--instead of IP addresses.
+
+
+How API Gateway Talks to Product Service:
+-----------------------------------------
+
+Instead of:
+
+	http://localhost:8082
+
+use:
+	http://product-service:8082
+
+Cleaner and portable.
+
+
+
+Dockerizing our microservices End-to-End:
+=========================================
+
+Create a separate workspace called:
+
+
+hdfc_microservices
+
+
+inside the STS and import all 3 microservices one by one.
+
+user-service
+product-service
+api-gateway
+
+
+--Here we will use the postgres:16 related container instead of locally installed postgres
+
+
+
+Step 1: Configure Spring Boot Properties
+----------------------------------------
+
+user-service
+------------
+
+
+server:
+  port: ${SERVER_PORT:8081}
+
+spring:
+  application:
+    name: user-service
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/userdb}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:root}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+    show-sql: true
+
+product-service
+---------------
+
+
+
+server:
+  port: ${SERVER_PORT:8082}
+
+spring:
+  application:
+    name: product-service
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/productdb}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:root}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+    show-sql: true
+
+
+
+
+api-gateway:
+------------
+
+# Application Configuration
+spring.application.name=api-gateway
+
+server.port=${SERVER_PORT:8080}
+
+# User Service Route
+spring.cloud.gateway.server.webflux.routes[0].id=user-service-route
+# spring.cloud.gateway.server.webflux.routes[0].uri=http://localhost:8081
+spring.cloud.gateway.server.webflux.routes[0].uri=${USER_SERVICE_URL:http://user-service:8081}
+spring.cloud.gateway.server.webflux.routes[0].predicates[0]=Path=/users/**
+
+# Product Service Route
+spring.cloud.gateway.server.webflux.routes[1].id=product-service-route
+# spring.cloud.gateway.server.webflux.routes[1].uri=http://localhost:8082
+spring.cloud.gateway.server.webflux.routes[1].uri=${PRODUCT_SERVICE_URL:http://product-service:8082}
+spring.cloud.gateway.server.webflux.routes[1].predicates[0]=Path=/products/**
+
+# Circuit Breaker (Optional)
+# spring.cloud.gateway.server.webflux.routes[1].filters[0].name=CircuitBreaker
+# spring.cloud.gateway.server.webflux.routes[1].filters[0].args.name=productServiceCircuitBreaker
+# spring.cloud.gateway.server.webflux.routes[1].filters[0].args.fallbackUri=forward:/fallback/products
+
+
+
+
+Step 2: Create Dockerfile for Each Microservice
+
+Inside each microservice root directory:
+
+microservices/
+│
+├── user-service/
+│   ├── Dockerfile
+│   └── pom.xml
+│
+├── product-service/
+│   ├── Dockerfile
+│   └── pom.xml
+│
+└── api-gateway/
+    ├── Dockerfile
+    └── pom.xml
+
+
+
+
+
+
+User Service Dockerfile:
+------------------------
+
+FROM amazoncorretto:21
+
+WORKDIR /app
+
+COPY target/user-service-0.0.1-SNAPSHOT.jar app.jar
+
+EXPOSE 8081
+
+CMD ["java","-jar","app.jar"]
+
+
+Product Service Dockerfile:
+---------------------------
+
+FROM amazoncorretto:21
+
+WORKDIR /app
+
+COPY target/product-service-0.0.1-SNAPSHOT.jar app.jar
+
+EXPOSE 8082
+
+CMD ["java","-jar","app.jar"]
+
+
+
+API Gateway Dockerfile:
+-----------------------
+
+FROM amazoncorretto:21
+
+WORKDIR /app
+
+COPY target/api-gateway-0.0.1-SNAPSHOT.jar app.jar
+
+EXPOSE 8080
+
+CMD ["java","-jar","app.jar"]
+
+
+
+Step 3: Build JAR Files:
+------------------------
+
+Go inside each service.
+
+mvn clean package
+
+Generate:
+
+target/
+   *.jar
+
+--for all services.
+
+
+Step 4: Build Docker Images
+----------------------------
+
+User Service
+
+	docker build -t user-service:v1 .
+
+Product Service
+
+	docker build -t product-service:v1 .
+
+API Gateway
+
+	docker build -t api-gateway:v1 .
+
+
+Step 5: Organize Project Structure
+-----------------------------------
+
+Recommended structure:
+
+microservices/
+│
+├── user-service/
+│
+├── product-service/
+│
+├── api-gateway/
+│
+└── docker-compose.yml
+
+--Where to Keep docker-compose.yml ?
+
+Keep it at the root folder:
+
+
+microservices/
+│
+├── user-service/
+├── product-service/
+├── api-gateway/
+└── docker-compose.yml
+
+Reason:
+
+- Single entry point
+- Easier deployment
+- One command starts everything
+
+
+
+
+
+Step 6: Create docker-compose.yml
+-----------------------------------
+
+services:
+
+  postgres-db:
+    image: postgres:16
+    container_name: postgres-db
+
+    ports:
+      - "5432:5432"
+
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: mydb
+
+  user-service:
+    image: user-service:v1
+    container_name: user-service
+
+    ports:
+      - "8081:8081"
+
+    environment:
+      DB_URL: jdbc:postgresql://postgres-db:5432/mydb
+      DB_USER: admin
+      DB_PASSWORD: admin123
+
+    depends_on:
+      - postgres-db
+
+  product-service:
+    image: product-service:v1
+    container_name: product-service
+
+    ports:
+      - "8082:8082"
+
+    environment:
+      DB_URL: jdbc:postgresql://postgres-db:5432/mydb
+      DB_USER: admin
+      DB_PASSWORD: admin123
+
+    depends_on:
+      - postgres-db
+
+  api-gateway:
+    image: api-gateway:v1
+    container_name: api-gateway
+
+    ports:
+      - "8080:8080"
+
+    depends_on:
+      - user-service
+      - product-service
+
+
+
+Step 7: Start Entire Application
+---------------------------------
+
+Navigate to:
+
+	microservices/
+
+--where docker-compose.yml exists.
+
+Run:
+
+	docker compose up
+
+
+Background mode:
+
+	docker compose up -d
+
+
+Step 8: Verify Containers
+-------------------------
+
+	docker ps
+
+Expected:
+
+postgres-db
+user-service
+product-service
+api-gateway
+
+Step 9: Verify Network
+-----------------------
+
+	docker network ls
+
+Example:
+
+	microservices_default
+
+Inspect:
+
+	docker network inspect microservices_default
+
+You should see:
+
+postgres-db
+user-service
+product-service
+api-gateway
+
+Step 10: Test Application
+
+
+
+POST http://localhost:8080/users/register
+
+{
+ 
+   "name": "Ratan",
+   "email": "ratan@gmail.com",
+   "password": "123456",
+   "role": "ADMIN"
+ 
+}
+
+POST http://localhost:8080/users/login
+
+
+{
+ 
+   "email": "ratan@gmail.com",
+   "password": "123456"
+ 
+}
+
+
+
+POST http://localhost:8080/products/login
+
+
+To check the internal mysql database:
+
+On the docker desktop:
+
+click on ... 3 dot infront of postgres
+
+	open in terminal
+
+type the following command:
+
+	psql -U admin -d mydb
+
+OR
+
+Make use of Gordon AI support..
+
+
+
+
+Docker Volumes
+==============
+
+
+--By default, all PostgreSQL data is stored inside the container.
+
+
+Problem:
+--------
+
+postgres-db container
+        |
+        |
+        +---- Database Files
+
+
+If the container is deleted:
+
+    docker rm -f postgres-db
+
+--all database data will be lost.
+
+
+Solution:
+---------
+
+Use Docker Volumes.
+
+--A Docker Volume stores data outside the container and allows data to survive container deletion.
+
+
+Without Volume
+--------------
+
+postgres-db Container
+        |
+        |
+        +---- productdb
+
+Delete Container
+        |
+        v
+Database Lost 
+
+
+With Volume
+-----------
+
+postgres-db Container
+        |
+        |
+        +---- productdb
+                |
+                |
+                v
+        postgres-data (Volume)
+
+Delete Container
+        |
+        v
+Volume Still Exists
+
+Database Preserved 
+
+
+Step 1: Create a Named Volume
+
+	docker volume create postgres-data
+
+Verify:
+
+	docker volume ls
+
+Step 2: Start PostgreSQL with Volume
+
+docker run -d \
+--name postgres-db \
+-p 5432:5432 \
+-v postgres-data:/var/lib/postgresql/data \
+-e POSTGRES_USER=admin \
+-e POSTGRES_PASSWORD=admin123 \
+-e POSTGRES_DB=mydb \
+postgres:16
+
+Explanation
+
+	-v postgres-data:/var/lib/postgresql/data
+
+Maps:
+
+Docker Volume
+
+postgres-data
+       |
+       |
+       v
+/var/lib/postgresql/data
+
+(PostgreSQL Data Directory)
+
+--All database files are stored in the volume.
+
+
+
+Step 3: Create Some Data
+
+--Connect to PostgreSQL and create:
+
+
+CREATE TABLE users(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+INSERT INTO users(name)
+VALUES ('Ratan');
+
+
+Step 4: Delete Container
+
+	docker rm -f postgres-db
+
+
+Container is deleted.
+
+Volume remains:
+
+	docker volume ls
+
+postgres-data
+
+--still exists.
+
+
+Step 5: Recreate PostgreSQL Container
+
+
+docker run -d \
+--name postgres-db \
+-p 5432:5432 \
+-v postgres-data:/var/lib/postgresql/data \
+-e POSTGRES_USER=admin \
+-e POSTGRES_PASSWORD=admin123 \
+-e POSTGRES_DB=mydb \
+postgres:16
+
+--PostgreSQL automatically loads existing data from the volume.
+
+Verify:
+
+	SELECT * FROM users;
+
+Output:
+
+ id | name
+----+-------
+ 1  | Ratan
+
+--Data is preserved.
+
+
+
+
+Using Volume in Docker Compose:
+-------------------------------
+
+services:
+
+  postgres-db:
+    image: postgres:16
+    container_name: postgres-db
+
+    ports:
+      - "5432:5432"
+
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: mydb
+
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
+
+
+
+Our final compose.yml file to have the volume for our microserices:
+--------------------------------------------------------------------
+
+
+services:
+
+  postgres-db:
+    image: postgres:16
+    container_name: postgres-db
+
+    ports:
+      - "5432:5432"
+
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: mydb
+
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  user-service:
+    image: user-service:v1
+    container_name: user-service
+
+    ports:
+      - "8081:8081"
+
+    environment:
+      DB_URL: jdbc:postgresql://postgres-db:5432/mydb
+      DB_USER: admin
+      DB_PASSWORD: admin123
+
+    depends_on:
+      - postgres-db
+
+  product-service:
+    image: product-service:v1
+    container_name: product-service
+
+    ports:
+      - "8082:8082"
+
+    environment:
+      DB_URL: jdbc:postgresql://postgres-db:5432/mydb
+      DB_USER: admin
+      DB_PASSWORD: admin123
+
+    depends_on:
+      - postgres-db
+
+  api-gateway:
+    image: api-gateway:v1
+    container_name: api-gateway
+
+    ports:
+      - "8080:8080"
+
+    depends_on:
+      - user-service
+      - product-service
+
+volumes:
+  postgres-data:
+
+
+
+Sharing the docker images with the team members:
+================================================
+
+Option 1: Push Images to Docker Hub (Recommended)
+--------------------------------------------------
+
+
+Step 1: Login
+
+	docker login
+
+
+Step 2: Tag Image
+
+docker tag user-service:v1 your-dockerhub-username/user-service:v1
+
+docker tag product-service:v1 your-dockerhub-username/product-service:v1
+
+docker tag api-gateway:v1 your-dockerhub-username/api-gateway:v1
+
+
+Step 3: Push Images
+
+docker push your-dockerhub-username/user-service:v1
+
+docker push your-dockerhub-username/product-service:v1
+
+docker push your-dockerhub-username/api-gateway:v1
+
+Step 4: Team Members Pull Images
+
+docker pull your-dockerhub-username/user-service:v1
+
+docker pull your-dockerhub-username/product-service:v1
+
+docker pull your-dockerhub-username/api-gateway:v1
+
+Then use: compose.yml file
+
+
+services:
+
+  user-service:
+    image: your-dockerhub-username/user-service:v1
+
+  product-service:
+    image: your-dockerhub-username/product-service:v1
+
+  api-gateway:
+    image: your-dockerhub-username/api-gateway:v1
+
+
+
+for our microservices: which include the postgres:
+
+Team members need to create:
+
+compose.yml file:
+-----------------
+
+
+services:
+
+  postgres-db:
+    image: postgres:16
+
+  user-service:
+    image: your-dockerhub-username/user-service:v1
+    depends_on:
+      - postgres-db
+
+  product-service:
+    image: your-dockerhub-username/product-service:v1
+    depends_on:
+      - postgres-db
+
+  api-gateway:
+    image: your-dockerhub-username/api-gateway:v1
+    depends_on:
+      - user-service
+      - product-service
+
+
+
+
+--If they want to create volume also, 
+they need to create volume inside their computer 
+and add that volume details inside the above compose.yml file.
+
+
+
+
+Now Team members only need:
+
+	docker-compose.yml
+
+and run:
+
+	docker compose up -d
+
+--Docker automatically downloads images from Docker Hub.
+
+
+Simmilarly they can push the iamges to the 
+Amazon Elastic Container Registry (ECR) which is a managed Docker image repository provided by AWS.
+
+
+
+
+
+
+Option 2: Export and Share as TAR Files:
+-----------------------------------------
+
+Useful for classroom training or offline sharing.
+
+
+Save Image
+
+docker save -o user-service-v1.tar user-service:v1
+
+docker save -o product-service-v1.tar product-service:v1
+
+docker save -o api-gateway-v1.tar api-gateway:v1
+
+--Share the .tar files via:
+
+- Google Drive
+- OneDrive
+- USB Drive
+- Company Share Drive
+
+Team Member Loads Image
+
+docker load -i user-service-v1.tar
+
+docker load -i product-service-v1.tar
+
+docker load -i api-gateway-v1.tar
+
+--Verify:
+
+docker images
+
+
+
+
+
+

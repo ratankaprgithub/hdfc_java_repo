@@ -2,8 +2,6 @@ package com.hdfc.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,21 +27,6 @@ import lombok.RequiredArgsConstructor;
 public class ProductController {
 
 	private final ProductService productService;
-	
-
-
-@Autowired
-private Environment environment;
-
-
-@GetMapping("/instance")
-public String getInstance() {
-
-    return "Running On Port : "
-            + environment.getProperty("server.port");
-}
-
-	
 
 	@PostMapping
 	public ResponseEntity<ProductResponseDto> createProduct(@Valid @RequestBody ProductRequestDto dto) {
@@ -89,8 +72,7 @@ public String getInstance() {
 	}
 
 	@PatchMapping("/{id}/inventory/reduce")
-	public ResponseEntity<ProductResponseDto> reduceInventory(@PathVariable Long id,
-			@Valid @RequestBody InventoryRequestDto dto) {
+	public ResponseEntity<ProductResponseDto> reduceInventory(@PathVariable Long id, @Valid @RequestBody InventoryRequestDto dto) {
 
 		return ResponseEntity.ok(productService.reduceInventory(id, dto.getQuantity()));
 	}
