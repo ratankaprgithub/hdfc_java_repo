@@ -6091,6 +6091,59 @@ docker load -i api-gateway-v1.tar
 docker images
 
 
+Extra:
+======
+
+
+To create a docker image without the Dockerfile:
+
+
+Add or modify the following entires inside the pom.xml file:
+
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<image>
+						<name>product-service:v2</name>
+					</image>
+
+				</configuration>
+			</plugin>
+
+
+
+Make sure the <name> should be in lower case.
+
+
+
+open the termainal at the location where this pom.xml file is there:
+
+run the following command:
+
+	mvn spring-boot:build-image
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
