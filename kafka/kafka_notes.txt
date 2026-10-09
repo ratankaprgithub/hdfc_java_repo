@@ -1,0 +1,2946 @@
+Event-Driven Architecture with Kafka:
+=====================================
+
+Before learning Kafka, we must first understand what problem Kafka is trying to solve.
+
+--Kafka was created to solve common problems that arise
+ when multiple services need to communicate with each other in a distributed system.
+
+
+A Real-World Example:
+--------------------
+
+Imagine an e-commerce application like Amazon.
+
+A customer clicks:
+
+	Buy Now
+for:
+	iPhone 17 Pro Max
+
+--At first glance, it looks like a simple operation.
+
+But internally, many business processes must be executed.
+
+Create Order
+Process Payment
+Reserve Inventory
+Send Email
+Send SMS
+Generate Invoice
+Update Analytics
+Detect Fraud
+
+--All these operations are handled by different services.
+
+
+Traditional Microservice Communication:
+---------------------------------------
+
+--Suppose our system contains the following microservices:
+
+Order Service
+Payment Service
+Inventory Service
+Notification Service
+Analytics Service
+Fraud Service
+
+--When a customer places an order, the Order Service directly calls all other services.
+
+Customer
+    |
+    v
+Order Service
+    |
+    +------> Payment Service
+    |
+    +------> Inventory Service
+    |
+    +------> Notification Service
+    |
+    +------> Analytics Service
+    |
+    +------> Fraud Service
+
+
+Example:
+
+Order service will call:
+
+	paymentClient.processPayment(order);
+
+	inventoryClient.reserveStock(order);
+
+	notificationClient.sendEmail(order);
+
+	analyticsClient.recordOrder(order);
+
+	fraudClient.checkFraud(order);
+
+--This approach works initially, but as the system grows, several serious problems appear.
+
+
+
+Problem 1: Tight Coupling
+-------------------------
+
+What is Coupling?
+
+--Coupling represents the level of dependency between two services.
+
+--When one service has detailed knowledge about another service, they become tightly coupled.
+
+
+Example
+
+Order Service knows:
+
+Payment Service API
+Inventory Service API
+Notification Service API
+Analytics Service API
+
+--Suppose Notification Service changes its endpoint:
+
+Before:
+
+	/send-email
+After:
+	/send-notification
+
+--Now Order Service must also change its code.
+
+Notification Service Changed
+            |
+            v
+Order Service Must Change
+
+--This dependency creates a maintenance nightmare.
+
+
+Why Tight Coupling Is Bad:
+
+- Difficult to modify services independently
+- More deployments required
+- High maintenance cost
+- Small changes affect multiple teams
+- Reduced flexibility
+
+
+
+Problem 2: Temporal Coupling
+----------------------------
+
+What is Temporal Coupling?
+
+Temporal coupling means:
+
+--Two services must be available at the same time for communication to succeed.
+
+--In synchronous communication, the caller waits for the receiver to respond immediately.
+
+Example
+
+Order Service calls Notification Service.
+
+Order Service
+      |
+      v
+Notification Service
+
+--If Notification Service is down:
+
+Order Service
+      |
+      v
+Notification Service
+      |
+      X  (DOWN)
+
+Result:
+
+	Order Creation Failed
+
+Even though:
+
+	Payment Successful
+	Inventory Available
+
+--the entire request may fail because one dependent service is unavailable.
+
+
+Why Temporal Coupling Is Bad:
+
+- Services become dependent on each other's uptime.
+- Service A works only if Service B is available.
+
+--This reduces system reliability.
+
+Synchronous Communication:
+--------------------------
+
+In synchronous communication:
+
+1. Service A sends a request.
+2. Service A waits.
+3. Service B processes.
+4. Service B returns a response.
+5. Service A continues execution.
+
+
+Real Life Example:
+------------------
+
+Calling a friend on the phone.
+
+You call
+You wait
+Friend answers
+Conversation starts
+
+--You cannot continue until the other person responds.
+
+
+Characteristics:
+
+Request-Response Model
+Blocking Nature
+Immediate Response Expected
+Both Services Must Be Running
+
+Examples:
+
+REST API
+HTTP Calls
+gRPC Calls
+
+
+
+Problem 3: Slow Response Time
+------------------------------
+
+--Suppose each service takes some time.
+
+Payment Service       = 2 sec
+Inventory Service     = 2 sec
+Notification Service  = 1 sec
+
+Total waiting time:
+
+	2 + 2 + 1 = 5 seconds
+
+Flow:
+
+Customer
+    |
+    v
+Order Service
+    |
+    +--> Payment (2 sec)
+    |
+    +--> Inventory (2 sec)
+    |
+    +--> Notification (1 sec)
+
+Customer waits:
+
+	5 seconds
+
+Result:
+
+- Poor user experience
+- Increased latency
+- Reduced throughput
+
+
+
+Problem 4: Growing Business Requirements:
+
+--Businesses continuously evolve.
+
+Management may request:
+
+Add WhatsApp Notifications
+Add Fraud Detection
+Add Recommendation Engine
+Add Analytics Tracking
+
+Now Order Service becomes:
+
+Order Service
+      |
+      +------ Payment
+      |
+      +------ Inventory
+      |
+      +------ Email
+      |
+      +------ WhatsApp
+      |
+      +------ Fraud
+      |
+      +------ Analytics
+      |
+      +------ Recommendation
+
+--Every new requirement forces modifications inside Order Service.
+
+The service gradually becomes:
+
+Large
+Complex
+Hard to Maintain
+Hard to Test
+
+
+Q/- What Solution Can Eliminate These Problems?
+
+--Instead of directly calling every service:
+
+Order Service
+      |
+      +--> Payment
+      +--> Inventory
+      +--> Notification
+
+--What if Order Service simply announces:
+
+	"An order has been created."
+
+--and interested services react to that information independently?
+
+--This idea leads us to Event-Driven Architecture, which is the foundation of Kafka.
+
+
+Now let's understand how Event-Driven Architecture solves these problems 
+and where Kafka fits into the picture.
+
+
+Event-Driven Architecture:
+-------------------------
+
+--Instead of directly calling multiple services, 
+a service simply publishes an event whenever something important happens.
+
+--Other interested services listen to that event and perform their own work independently.
+
+
+Event-Driven Approach:
+---------------------
+
+Order Service
+      |
+      v
+ORDER_CREATED Event
+      |
+      v
+   Kafka
+      |
+      +------> Inventory Service
+      |
+      +------> Notification Service
+      |
+      +------> Analytics Service
+      |
+      +------> Fraud Service
+
+--The Order Service no longer needs to know who will consume the event.
+
+
+What is an Event?
+-----------------
+
+--An Event is a record of something important that has already happened in the system.
+
+Think of an event as:
+
+	"A business fact that occurred."
+
+Examples:
+
+User Registered
+Order Created
+Payment Completed
+Product Added
+Order Cancelled
+Invoice Generated
+Password Changed
+
+
+--Events describe the past.
+
+Examples:
+
+	User Registered
+
+means
+
+	A user has already registered.
+
+
+Example: Order Created Event
+
+Customer purchases:
+
+	iPhone 17 Pro Max
+
+--The Order Service creates an order.
+
+--Instead of calling every service, it publishes an event.
+
+{
+  "orderId": 101,
+  "customerId": 5001,
+  "product": "iPhone 17 Pro Max",
+  "quantity": 1,
+  "amount": 159999
+}
+
+Meaning:
+
+	Order 101 has been created.
+
+--Any interested service can now react.
+
+
+Producer:
+---------
+
+--The application or service which creates and sends events is called a Producer.
+
+Definition:
+
+	A Producer is an application that publishes messages/events to Kafka.
+
+
+Example:
+
+	Order Service
+
+creates
+
+	ORDER_CREATED
+
+Therefore:
+
+	Order Service = Producer
+
+
+Order Service
+      |
+      | Produces Event
+      v
+      Kafka
+
+
+Consumer:
+---------
+
+--A Consumer is an application that receives and processes events from Kafka.
+
+
+Example:
+
+Inventory Service
+Notification Service
+Analytics Service
+Fraud Service
+
+--All consume the same event.
+
+
+             Inventory Service
+                    ^
+                    |
+                    |
+Kafka --------------+
+                    |
+                    v
+          Notification Service
+
+                    |
+                    v
+             Analytics Service
+
+                    |
+                    v
+               Fraud Service
+
+
+
+
+Producer and Consumer Together:
+------------------------------
+
+Producer
+   |
+   | Event
+   v
+ Kafka
+   |
+   +------> Consumer 1
+   |
+   +------> Consumer 2
+   |
+   +------> Consumer 3
+
+
+Real Example:
+
+Order Service
+     |
+     | ORDER_CREATED
+     v
+   Kafka
+     |
+     +------> Inventory Service
+     |
+     +------> Notification Service
+     |
+     +------> Analytics Service
+
+
+Asynchronous Communication:
+---------------------------
+
+--Kafka uses asynchronous communication.
+
+In asynchronous communication:
+
+1. Service sends a message.
+2. Service immediately continues its work.
+3. Receiver processes later.
+4. Sender does not wait for an immediate response.
+
+Example:
+
+
+Service A
+    |
+    | Send Message
+    v
+Kafka
+    |
+    | Message Stored
+    |
+Service A Continues
+
+
+Receiver processes later:
+
+Kafka
+   |
+   v
+Service B
+
+
+
+
+Real-Life Example:
+------------------
+
+Email
+
+--When you send an email:
+
+	Send Email
+
+--Do you wait until the receiver reads it?
+No.
+
+The email server stores it.
+
+Receiver may read:
+
+After 5 minutes
+After 5 hours
+After 5 days
+
+This is asynchronous communication.
+Kafka works similarly.
+
+
+WhatsApp Group Analogy:
+----------------------
+
+Imagine a WhatsApp group:
+
+	Java Training Batch
+
+Members:
+
+Student A
+Student B
+Student C
+Student D
+
+Trainer sends:
+
+	Tomorrow's class starts at 10 AM
+
+--Trainer sends the message only once.
+
+Trainer
+    |
+    v
+ WhatsApp Group
+
+--Everyone receives it.
+
+Student A
+Student B
+Student C
+Student D
+
+--Trainer doesn't individually call each student.
+
+--Kafka works in a very similar way.
+
+
+Synchronous vs Asynchronous Communication:
+------------------------------------------
+
+| Synchronous 			    | Asynchronous                         |
+|-----------------------------------|--------------------------------------|
+| Sender waits 			    | Sender doesn't wait                  |
+| Immediate response                | Response can come later              |
+| Temporal coupling exists          | Temporal coupling removed            |
+| Higher latency                    | Faster response                      |
+| Services must be online together  | Services can be temporarily offline  |
+| REST APIs                         | Kafka Messaging                      |
+
+
+
+
+
+Q/- How does Order Service publish events?
+
+Answer:
+	Kafka
+
+--Kafka acts as a central messaging platform.
+
+Kafka:
+
+- Receives messages
+- Stores messages
+- Delivers messages
+- Handles failures
+- Supports large-scale event processing
+
+
+Official Definition of Kafka:
+-----------------------------
+
+--Apache Kafka is a distributed event streaming platform used to publish, store, and process streams of events in real time.
+
+In simple words:
+
+--Kafka allows applications to exchange messages asynchronously in a scalable, reliable, and fault-tolerant manner.
+
+
+Real Companies Using Kafka
+--------------------------
+
+- LinkedIn (Creator of Kafka)
+- Netflix
+- Uber
+- Airbnb
+- Amazon
+- Walmart
+- PayPal
+
+--These companies process millions of events every second using Kafka.
+
+
+
+Official website:
+
+	https://kafka.apache.org/intro
+
+
+
+
+History of Kafka:
+-----------------
+
+--Kafka was originally developed at LinkedIn around 2010 to handle large volumes of real-time event
+ and log data generated by LinkedIn's platform
+
+
+--LinkedIn open-sourced Kafka in 2011 and submitted it to the Apache Software Foundation.
+
+--Today, Kafka is developed and governed by the Apache community 
+under the Apache Software Foundation, not by LinkedIn alone.
+
+--Kafka was created by engineers at LinkedIn, including:
+
+- Jay Kreps
+- Neha Narkhede
+- Jun Rao
+
+--These engineers later co-founded Confluent, a company focused on the Kafka ecosystem.
+
+
+
+
+
+Kafka Architecture & Core Concepts:
+===================================
+
+--Before we start writing Kafka code, we must understand the core building blocks of Kafka.
+
+--Everything in Kafka revolves around a few concepts:
+
+Producer
+Broker
+Topic
+Message
+Offset
+Consumer
+Consumer Group
+
+--Let's understand them one by one.
+
+
+A Real-World Example:
+---------------------
+
+Suppose a customer purchases:
+
+	iPhone 17 Pro Max
+
+--The Order Service creates an event:
+
+{
+  "orderId": 101,
+  "product": "iPhone 17 Pro Max",
+  "quantity": 1
+}
+
+
+
+Now the question is:
+Where does this event go?
+
+Answer:
+
+	Kafka
+
+--But Kafka is not magic.
+
+--Kafka needs a place to store events.
+
+That place is called a:
+
+	TOPIC
+
+
+--A Topic is a logical category or stream where Kafka stores messages.
+
+Think of a Topic as:
+
+	A folder for related events
+or
+
+	A WhatsApp group for a particular subject
+or
+
+	A Notice Board for a specific category
+
+
+College Notice Board Analogy
+----------------------------
+
+Imagine a college.
+
+	There are different notice boards:
+
+Placement Notice Board
+Exam Notice Board
+Sports Notice Board
+Hostel Notice Board
+
+--Students visit only the boards they care about.
+
+--Similarly, Kafka contains multiple topics.
+
+order-topic
+payment-topic
+user-topic
+notification-topic
+inventory-topic
+
+
+--Each topic stores messages related to its own category.
+
+Example:
+
+Order Service creates: An Event called orderEvent
+
+{
+  "orderId": 101,
+  "product": "iPhone"
+}
+
+
+
+and publishes it to:
+
+	order-topic
+
+
+Order Service
+      |
+      |
+      v
++------------------+
+|   order-topic    |
++------------------+
+
+
+
+Think of a WhatsApp group.
+
+Java Group
+Spring Boot Group
+Placement Group
+
+--Each group contains messages related to a specific topic.
+
+
+Similarly:
+
+Order Events
+      |
+      v
+order-topic
+
+
+
+
+Broker:
+=======
+
+--The TOPIC actucally stored inside a Broker.
+
+A Broker is:
+
+	A Kafka Server.
+
+
+
+
++--------------------------------+
+|          Kafka Broker          |
+|                                |
+|      order-topic               |
+|      payment-topic             |
+|      user-topic                |
+|      inventory-topic           |
+|                                |
++--------------------------------+
+
+Think of:
+
+	Gmail Server
+
+--which stores emails.
+
+Similarly:
+	
+	Kafka Broker
+
+--stores topics and messages.
+
+
+--Producer send messages to Kafka Message Broker
+
+Example:
+
+Order Service 
+
+creates: OrderEvent
+
+{
+  "orderId":101
+}
+
+--and sends/publish it to:
+
+	order-topic
+
+
+Example: Order-service call:
+
+kafkaTemplate.send(
+        "order-topic",
+        orderEvent
+);
+
+
+
+
+--Consumer applications reads messages from Kafka.
+
+Example:
+
+	Inventory Service
+
+reads from:
+
+	order-topic
+
+--and processes incoming orders.
+
+
+
+Real World Analogy:
+-------------------
+
+Teacher writes notice:
+
+	Tomorrow Exam
+
+--on notice board.
+
+Student reads it.
+
+Here,
+
+Teacher = Producer
+Notice Board = Topic
+Student = Consumer
+
+
+
+Important Question:
+
+Q/- When Consumer reads a message:
+
+	Does Kafka delete it?
+
+Answer:
+NO
+
+--This is one of Kafka's most powerful features.
+
+--Kafka does not immediately delete messages after consumption.
+
+
+Why Doesn't Kafka Delete Messages?
+
+
+Suppose:
+
+	Inventory Service
+
+--already read message.
+
+Tomorrow:
+
+	Analytics Service
+
+--also wants to process the same order.
+
+If Kafka had deleted the message:
+
+	Analytics Service would miss it.
+
+--Therefore Kafka keeps messages for a configurable retention period.
+
+Example:
+
+7 Days
+30 Days
+90 Days
+
+--depending on configuration.
+
+
+Offset:
+=======
+
+--Kafka stores messages sequentially.
+
+--Every message gets a unique number.
+
+That number is called:
+
+	Offset
+
+Example:
+
+Messages inside order-topic:
+
+Offset      Message
+
+0           Order-101
+
+1           Order-102
+
+2           Order-103
+
+3           Order-104
+
+4           Order-105
+
+
+order-topic
+
++----------------------+
+| 0 -> Order-101       |
+| 1 -> Order-102       |
+| 2 -> Order-103       |
+| 3 -> Order-104       |
+| 4 -> Order-105       |
++----------------------+
+
+Why Does Kafka Need Offsets?
+-----------------------------
+
+Kafka must remember:
+
+--Which messages were already processed by the consumer?
+
+Example:
+
+Inventory Service processed:
+
+Offset 0
+Offset 1
+Offset 2
+
+Current position:
+
+	Offset 3
+
+--Kafka stores the committed offset
+for each consumer group.
+
+When a consumer restarts,
+
+--it retrieves the last committed offset
+
+from Kafka and resumes processing
+from the next offset.
+
+Consumer Group:
+================
+
+
+--Consumer Groups are what allow Kafka to process millions of messages efficiently.
+
+Suppose an e-commerce website receives:
+
+
+10 lakh orders/day
+
+Producer: 
+
+	Order service
+
+
+Topic:
+
+	order-topic
+
+Consumer:
+
+	Inventory Service
+
+
+--With only one consumer instance:
+
+order-topic
+      |
+      v
+Inventory Consumer
+
+--all messages must be processed by a single instance.
+
+
+Problems:
+
+- Slow processing
+- Higher backlog
+- Poor scalability
+- Single point of failure
+
+
+Scaling the Consumer:
+
+--Instead of one instance:
+
+Inventory-1
+Inventory-2
+Inventory-3
+
+Can all three process messages together?
+
+Answer:
+YES
+
+--This is exactly why Consumer Groups exist.
+
+
+--A Consumer Group is a collection of consumer instances working together to process messages from a topic.
+
+Example:
+
+Consumer Group:
+
+	inventory-group
+
+Members:
+
+Inventory-1
+Inventory-2
+Inventory-3
+
+
+--Think of them as employees working in the same department.
+
+
+--Consumer groups are created to share the workload.
+
+
+Without Consumer Group:
+
+	1000 Messages
+
+	One Consumer
+
+--Processing may take:
+
+	100 seconds
+
+With Consumer Group:
+
+	1000 Messages
+
+	3 Consumers
+
+--Messages distributed.
+
+--Processing becomes faster.
+
+
+Important Rule:
+
+--Consumers inside the SAME group share the workload.
+
+--Messages are distributed among group members.
+
+--Each message is processed by only one consumer within that group.
+
+
+
+
+Example
+
+Topic contains:
+
+Order1
+Order2
+Order3
+Order4
+Order5
+Order6
+
+Consumer Group:
+
+	inventory-group
+
+Members:
+
+Inventory-1
+Inventory-2
+Inventory-3
+
+Possible distribution:
+
+Inventory-1
+    Order1
+    Order4
+
+Inventory-2
+    Order2
+    Order5
+
+Inventory-3
+    Order3
+    Order6
+
+
+Notice:
+
+	Order1
+
+was processed only once.
+
+--Not by all three consumers.
+
+What Happens Without a Consumer Group?
+--------------------------------------
+
+--Suppose all consumers use different group IDs.
+
+Inventory-1 --> group-A
+
+Inventory-2 --> group-B
+
+Inventory-3 --> group-C
+
+--Now Kafka treats them as independent consumers.
+
+Result:
+
+	Order1
+
+is delivered to:
+
+Inventory-1
+Inventory-2
+Inventory-3
+
+--All receive the same message.
+
+--This is usually not desired for inventory updates.
+
+--Imagine reducing stock three times for the same order!
+
+
+
+Same Group vs Different Group:
+------------------------------
+
+Case 1: Same Consumer Group
+
+Topic:
+
+	order-topic
+
+Consumers:
+
+Inventory-1
+Inventory-2
+Inventory-3
+
+Group:
+
+	inventory-group
+
+
+order-topic
+      |
+      v
+inventory-group
+
+   Inventory-1
+   Inventory-2
+   Inventory-3
+
+Result:
+
+Messages are shared among the instances
+of the Inventory Service.
+
+--Each message is assigned to only one instance of the consumer group.
+
+--Each message is processed once.
+
+
+
+Case 2: Different Consumer Groups
+
+Topic:
+
+	order-topic
+
+Groups:
+
+inventory-group
+
+analytics-group
+
+notification-group
+
+fraud-group
+
+
+
+                 order-topic
+                      |
+     --------------------------------
+     |         |          |         |
+     v         v          v         v
+
+ inventory  analytics  notification fraud
+   group      group       group      group
+
+
+Result:
+
+	Every group receives every message.
+
+
+
+
+Consumer Group Offsets:
+----------------------
+
+As we discussed earlier, Offsets track reading progress.
+
+--Offsets belong to the Consumer Group.
+
+--Not to individual consumer instances.
+
+
+Example:
+
+	inventory-group
+
+Kafka stores:
+
+	Last Committed Offset = 2500
+
+If:
+
+Inventory-2 crashes
+
+--another consumer in the same group can continue from the group's committed offset.
+This provides fault tolerance.
+
+
+
+
+Partition: The Secret Behind Kafka Scalability
+===========
+
+We learned that Kafka uses Consumer Groups to distribute work among multiple consumers.
+
+A natural question arises:
+
+--If millions of messages are arriving every day, how can a single topic handle all that traffic efficiently?
+
+Kafka's answer is:
+Partitions
+
+
+--Partitions are one of the most important concepts in Kafka.
+
+Without partitions:
+
+No Parallel Processing
+No High Throughput
+No Scalability
+
+
+Why Do We Need Partitions?
+-------------------------
+
+Suppose Amazon receives:
+
+	10 Orders Per Day
+
+--A single topic can easily handle that.
+
+Now imagine:
+
+	10 Lakh Orders Per Day
+or
+	Millions of Orders Per Day
+
+--A single stream of messages becomes difficult to process efficiently.
+
+--Kafka solves this problem by splitting a topic into multiple smaller parts.
+
+These smaller parts are called:
+
+	Partitions
+
+Example:
+
+	order-topic
+
+--can be divided into:
+
+Partition-0
+Partition-1
+Partition-2
+
+
+Real-World Analog:
+------------------
+
+Imagine a huge library.
+
+--Suppose all books are kept in a single rack.
+
+	Rack-1
+
+--Finding books becomes slow.
+
+A better approach:
+
+Rack-1
+Rack-2
+Rack-3
+Rack-4
+
+--Books are distributed across multiple racks.
+
+Benefits:
+
+Faster Search
+Better Organization
+More Parallel Access
+
+--Kafka follows the same principle.
+
+--Instead of storing all messages in one place, it distributes them across partitions.
+
+
+Messages Inside Partitions:
+---------------------------
+
+Suppose a producer sends:
+
+Order-101
+Order-102
+Order-103
+Order-104
+Order-105
+Order-106
+
+Kafka may distribute them like this:
+
+
+Partition-0
+
+	Order-101
+	Order-104
+
+Partition-1
+
+	Order-102
+	Order-105
+
+Partition-2
+
+	Order-103
+	Order-106
+
+
+Notice:
+
+Messages are distributed
+across partitions.
+
+
+
+Offsets are Per Partition:
+--------------------------
+
+--Many beginners assume offsets are global.
+
+That is incorrect.
+
+Important Rule:
+
+--Offsets belong to a partition, not to a topic.
+
+--Each partition maintains its own offset sequence.
+
+Example:
+
+Partition-0
+
+	Offset 0 -> Order-101
+	Offset 1 -> Order-104
+
+Partition-1
+
+	Offset 0 -> Order-102
+	Offset 1 -> Order-105
+
+Partition-2
+
+	Offset 0 -> Order-103
+	Offset 1 -> Order-106
+
+
+Notice:
+
+Offset 0
+
+exists in:
+
+Partition-0
+Partition-1
+Partition-2
+
+Therefore:
+
+--Offset alone is not unique.
+
+Partition + Offset
+forms a unique message location.
+
+
+Partitions mainly solve two problems:
+-------------------------------------
+
+1. Ordering
+2. Parallel Processing
+
+
+Ordering:
+--------
+
+--Some business operations must happen in the exact order they were created.
+
+Banking Example:
+
+Account:
+	ACC1001
+
+Operations:
+
+Deposit 1000
+Withdraw 200
+Withdraw 300
+
+--Correct execution order:
+
+Deposit 1000
+Withdraw 200
+Withdraw 300
+
+Final Balance:
+
+	500
+
+What if Order Changes?
+
+--Suppose messages are processed randomly:
+
+Withdraw 300
+Withdraw 200
+Deposit 1000
+
+--Business logic may become incorrect.
+
+--The resulting balance may not represent what actually happened.
+
+--Therefore ordering is extremely important.
+
+
+Kafka's Ordering Guarantee:
+----------------------------
+
+Kafka guarantees:
+
+	Ordering Within A Partition
+
+Example:
+
+Partition-0
+
+	Offset 0 -> Order-101
+
+	Offset 1 -> Order-102
+
+	Offset 2 -> Order-103
+
+	Offset 3 -> Order-104
+
+Consumer reads:
+
+Order-101
+Order-102
+Order-103
+Order-104
+
+--Exactly in the same sequence.
+
+--Kafka never changes the order inside a partition.
+
+
+Kafka guarantees:
+
+	Ordering Within A Partition
+
+--Kafka does NOT guarantee:
+
+	Ordering Across Partitions
+
+
+Ordering Across Partitions:
+---------------------------
+
+Suppose:
+
+Partition-0
+
+	Order-101
+	Order-104
+
+Partition-1
+
+	Order-102
+	Order-105
+
+Partition-2
+
+	Order-103
+	Order-106
+
+--A consumer group may process them in the following sequence:
+
+Order-101
+Order-102
+Order-103
+Order-105
+Order-104
+Order-106
+
+--This is completely valid.
+
+--Kafka is not concerned about ordering between partitions.
+
+--Its guarantee applies only inside an individual partition.
+
+
+Golden Rule:
+
+--Kafka guarantees message ordering only within a partition.
+
+or
+
+Same Partition
+
+	Order Guaranteed
+
+Different Partitions
+
+	Order Not Guaranteed
+
+--This ordering guarantee is one of the main reasons why choosing the 
+correct partitioning strategy is so important in real-world Kafka applications.
+
+
+
+Parallelism:
+=============
+
+--This is why Kafka is fast.
+
+Suppose:
+
+10000 Orders
+
+One consumer:
+
+	Consumer-1
+
+Processing:
+
+	10000 messages
+
+--Very slow.
+
+
+Multiple Consumers
+
+
+	Consumer-1
+
+	Consumer-2
+
+	Consumer-3
+
+--Now workload is divided.
+
+
+But How Does Kafka Divide Work?
+
+Answer:
+
+	Using Partitions only
+
+
+--Each consumer gets partitions.
+
+Example
+
+Topic:
+
+	order-topic
+
+Partitions:
+
+	P0
+	P1
+	P2
+
+Consumer Group:
+
+	C1
+	C2
+	C3
+
+Assignment:
+
+	P0 --> C1
+	P1 --> C2
+	P2 --> C3
+
+
+
+Partition 0 --> Consumer 1
+Partition 1 --> Consumer 2
+Partition 2 --> Consumer 3
+
+--All consumers work simultaneously.
+
+
+Important Rule:
+
+One Partition
+	→ One Consumer
+
+--Inside Same Consumer Group
+
+
+What If Consumers > Partitions?
+-------------------------------
+
+Topic:
+
+	3 Partitions
+
+Consumers:
+
+	5 Consumers
+
+Kafka can assign only:
+
+	P0 -> C1
+
+	P1 -> C2
+
+	P2 -> C3
+
+Remaining:
+
+C4 Idle
+
+C5 Idle
+
+
+What If Partitions > Consumers?
+-------------------------------
+
+Partitions:
+
+	6
+
+Consumers:
+
+	3
+
+Assignment:
+
+	Consumer1 -> P0,P1
+
+	Consumer2 -> P2,P3
+
+	Consumer3 -> P4,P5
+
+--Consumers handle multiple partitions.
+
+
+
+Partition Key:
+--------------
+
+Suppose:
+
+	Order101
+
+belongs to customer:
+
+	Customer-A
+
+--We want all events of Customer-A to remain ordered.
+
+--Kafka allows sending a key.
+
+Example:
+
+kafkaTemplate.send(
+        "order-topic",
+        "Customer-A",
+        event
+);
+
+--Kafka hashes the key and chooses partition.
+
+Result:
+
+Customer-A events
+
+	always go to same partition.
+
+
+
+
+
+Kafka Cluster:
+==============
+
+--A Kafka Cluster is a collection of one or more Kafka Brokers working together to store, manage, and deliver messages reliably.
+
+--Instead of storing all data on a single Kafka server, 
+Kafka distributes data across multiple brokers to 
+achieve scalability, fault tolerance, and high availability.
+
+
+
+Why Do We Need a Kafka Cluster?
+
+A single broker can become:
+
+- A performance bottleneck
+- A single point of failure
+- Difficult to scale as message volume grows
+
+--Kafka solves this by using multiple brokers in a cluster.
+
+
+How It Works:
+--------------
+
+Suppose a topic:
+
+	order-topic
+
+has 3 partitions:
+
+	Partition-0
+	Partition-1
+	Partition-2
+
+--Kafka may distribute them across brokers:
+
+	Broker-1 -> Partition-0
+	Broker-2 -> Partition-1
+	Broker-3 -> Partition-2
+
+--This allows multiple brokers to share storage and processing responsibilities.
+
+
+Fault Tolerance:
+-----------------
+
+If one broker goes down:
+
+	Broker-2  DOWN
+
+--Kafka can continue serving data from replicas stored on other brokers.
+
+--This ensures that messages are not lost and applications continue to function.
+
+
+
+Kafka Installation & Setup:
+============================
+
+--Before we can use Kafka in our applications, we need a Kafka server running somewhere.
+
+--For learning and development, Kafka is usually run on a local machine using Docker.
+
+
+We install Kafka to:
+
+- Create and manage Topics
+- Store and distribute messages/events
+- Allow producers to publish events
+- Allow consumers to consume events
+- Enable asynchronous communication between applications
+
+
+
+refer quickstart guide from official kafka website:
+
+	https://kafka.apache.org/quickstart/
+
+
+
+Example:
+
+Spring Boot Producer
+        |
+        v
+      Kafka
+        |
+        v
+Spring Boot Consumer
+
+--Kafka acts as the central messaging platform between applications.
+
+
+
+Earlier Kafka Architecture:
+---------------------------
+
+--In older versions, Kafka could not run by itself.
+
+It required:
+
+Kafka
+   +
+ZooKeeper
+
+
+--ZooKeeper was used to manage Kafka cluster metadata such as:
+
+- Topics
+- Partitions
+- Broker Information
+- Cluster Configuration
+
+
+Problem with ZooKeeper:
+
+--Running Kafka required managing two separate systems:
+
+Kafka
++
+ZooKeeper
+
+--This made setup and maintenance more complex.
+
+
+Modern Kafka Architecture (KRaft Mode):
+---------------------------------------
+
+--Newer versions of Kafka no longer require ZooKeeper.
+
+Kafka now uses:
+
+	KRaft
+
+KRaft = Kafka Raft Metadata Mode
+
+--In KRaft mode, Kafka manages its own metadata internally.
+
+
+Architecture:
+
++----------------+
+| Kafka Broker   |
+|   (KRaft)      |
++----------------+
+
+--No ZooKeeper is required.
+
+
+Kafka Installation using Docker:
+-------------------------------
+
+Step1:
+
+	Verify Docker is Running
+
+Start Docker Desktop.
+
+Check:
+	docker ps
+
+
+Step2:  Pull Kafka Image
+
+	docker pull apache/kafka:4.3.1
+
+--This downloads the official Apache Kafka Docker image.
+
+--The Apache Kafka image comes preconfigured for local development.
+
+
+Step 3: Start Kafka Container:
+
+	docker run -d --name kafka -p 9092:9092 apache/kafka:4.3.1
+
+Verify:
+
+	docker ps -a
+
+
+Step 4: Check Logs
+
+	docker logs kafka
+
+You should see a very big Kafka startup messages.
+
+
+
+After this lets,
+
+	Create Topic
+
+	View Topic
+
+	Send Message
+
+	Read Message
+
+
+
+Step 5: Enter inside the kafka Container
+
+	docker exec -it kafka bash
+
+
+Step 6: Move inside the folder where Kafka CLI commands are available:
+
+Like:
+
+kafka-topics.sh
+kafka-console-producer.sh
+kafka-console-consumer.sh
+
+
+	 cd /opt/kafka/bin
+
+	 pwd
+
+	 ls
+
+
+Step 7: Create a Topic inside the kafka broker using kafka CLI
+
+order-topic
+
+
+		./kafka-topics.sh --create --topic order-topic --bootstrap-server localhost:9092
+
+
+Here,
+
+--bootstrap-server
+
+is the
+
+Address of Kafka Broker.
+
+localhost:9092
+
+means:
+
+Connect to Kafka Broker
+running on port 9092
+
+
+
+Step 8: List Topics inside the kafka broker
+
+		./kafka-topics.sh --list --bootstrap-server localhost:9092
+
+
+
+
+Step 9: Describe Topic
+
+
+		./kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic order-topic
+
+
+
+Output similar to:
+
+Topic: order-topic
+PartitionCount: 1
+ReplicationFactor: 1
+
+
+
+Step 10: Start Producer inside the kafka
+
+On Terminal 1:
+
+	
+		./kafka-console-producer.sh --topic order-topic --bootstrap-server localhost:9092
+
+
+--Producer is now waiting for user input.
+
+--Every line entered and submitted becomes a Kafka message.
+
+
+Send messages:
+
+Order-101
+Order-102
+Order-103
+
+
+
+Step 11: Start Consumer
+
+On Terminal 2:
+
+docker exec -it kafka bash
+
+cd /opt/kafka/bin
+
+
+	./kafka-console-consumer.sh --topic order-topic --from-beginning --bootstrap-server localhost:9092
+
+
+--from-beginning
+
+means:
+
+Read all existing messages from offset 0.
+
+
+Output:
+
+Order-101
+Order-102
+Order-103
+
+
+Note: 
+
+Kafka is NOT like traditional queues.
+
+--Messages are not immediately deleted.
+
+--Kafka stores messages for a configurable retention period
+(e.g. hours, days, or weeks) even after they are consumed.
+
+Consumers can re-read.
+
+
+Real World Analogy:
+
+Think Netflix.
+
+You watched:
+
+	Episode 1
+	Episode 2
+
+--Netflix doesn't delete them.
+
+--You can replay anytime.
+
+Kafka behaves similarly.
+
+
+
+
+
+
+
+
+Create Topic With Multiple Partitions:
+=====================================
+
+
+Create another topic:
+
+	./kafka-topics.sh --bootstrap-server localhost:9092 --create --topic payment-topic --partitions 3
+
+Describe:
+
+	./kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic payment-topic
+
+Output:
+
+Partition: 0
+Partition: 1
+Partition: 2
+
+
+Why Multiple Partitions?
+
+Answer:
+
+	Parallel Processing
+
+	Scalability
+
+
+Question:
+
+Suppose:
+
+	payment-topic
+
+contains:
+
+	3 partitions
+
+And Consumer Group contains:
+
+	3 consumers
+
+--How many consumers can actively process?
+
+Answer:
+	All 3
+
+--One partition each.
+
+
+
+
+
+Spring Boot Kafka Producer using KafkaTemplate
+==============================================
+
+
+--Until now, we have been sending messages to Kafka using the Kafka CLI.
+
+
+Example:
+
+Producer
+    |
+    v
+order-topic
+
+using:
+
+	kafka-console-producer.sh
+
+--This is useful for learning Kafka, but in real-world applications, messages are typically produced by a Spring Boot application.
+
+
+--Suppose a customer places an order.
+
+API Request
+
+POST /orders
+
+Request Body:
+{
+  "product": "iPhone 17",
+  "quantity": 1
+}
+
+The Order Service should:
+
+	Step 1: Accept the request
+
+	Step 2: Create an Order Event
+
+	Step 3: Publish the event to Kafka
+
+
+
+Architecture:
+-------------
+
+
+Customer
+    |
+    v
+Order Service
+    |
+    v
+KafkaTemplate
+    |
+    v
+order-topic
+
+Here:
+
+	Order Service = Producer
+
+	Kafka = Message Broker
+
+	order-topic = Destination Topic
+
+
+Step1:
+
+Create Spring Boot Project:
+
+Project Name:
+
+	order-service
+
+Dependencies:
+
+Spring Web
+Spring for Apache Kafka
+Lombok
+
+
+
+KafkaTemplate:
+==============
+
+--KafkaTemplate is a Spring Boot helper class used to send messages to Kafka topics.
+
+
+	kafkaTemplate.send(...)
+
+communicates with:
+
+	Kafka Broker
+
+
+Step 2:
+
+Configure Kafka Connection
+
+application.properties file
+
+
+
+	spring.kafka.bootstrap-servers=localhost:9092
+
+Step 3:
+
+Verify Kafka is Running
+
+--Before starting Spring Boot, verify Kafka is running.
+
+	docker ps
+
+--container in running state.
+
+and order-topic is created inside the kafka server
+
+
+
+Step 4:
+
+Create Event Class
+
+--In real projects, we usually send events rather than plain strings.
+
+OrderCreatedEvent.java
+----------------------
+
+package com.hdfc.event;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class OrderCreatedEvent {
+
+    private Long orderId;
+
+    private String product;
+
+    private Integer quantity;
+
+  }
+
+
+
+We created this class for instead of sending:
+
+	Hello Kafka
+or
+	Order Created
+
+--we can send meaningful business data:
+
+
+{
+  "orderId": 101,
+  "product": "iPhone 17",
+  "quantity": 1
+}
+
+
+--This represents an actual business event.
+
+
+
+Step5: 
+
+Create Producer Service
+
+OrderProducer.java:
+--------------------
+
+
+package com.hdfc.service;
+
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class OrderProducer {
+
+	private final KafkaTemplate<String, String> kafkaTemplate;
+
+	public void sendMessage(String message) {
+
+		kafkaTemplate.send("order-topic", message);
+
+		System.out.println("Message Sent : " + message);
+	}
+}
+
+
+
+Here, 
+
+kafkaTemplate.send("order-topic", message);
+
+Meaning:
+
+	Send the message
+to
+
+	order-topic
+
+--Exactly the same thing we did earlier using:
+
+	kafka-console-producer.sh
+
+The only difference is:
+
+Earlier:
+
+	CLI Producer
+
+Now:
+
+	Spring Boot Producer
+
+
+
+Note: 
+
+KafkaTemplate.send() is asynchronous.
+
+--The producer sends the message and does not wait for the consumer to process it.
+
+--This is one reason Kafka-based systems scale well.
+
+--This introduces asynchronous communication naturally.
+
+
+Step 6: 
+
+Create REST Controller
+
+OrderController.java:
+----------------------
+
+
+package com.hdfc.controller;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.hdfc.service.OrderProducer;
+
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequestMapping("/orders")
+@RequiredArgsConstructor
+public class OrderController {
+
+	private final OrderProducer producer;
+
+	@PostMapping
+	public String createOrder() {
+
+		producer.sendMessage("Order Created");
+
+		return "Order Event Published";
+	}
+}
+
+
+
+
+Step 7: Run the application:
+
+Test API:
+
+Call:
+
+	POST http://localhost:8080/orders
+
+Response: on the console
+
+	Order Event Published
+
+
+Verify Message Reached Kafka
+
+Open another terminal:
+
+
+	docker exec -it kafka bash
+
+	cd /opt/kafka/bin
+
+Start Consumer:
+
+	./kafka-console-consumer.sh --topic order-topic --from-beginning --bootstrap-server localhost:9092
+
+Output:
+
+	Order Created
+
+Success!
+
+--The message has been published to Kafka.
+
+
+
+Sending JSON Events to Kafka:
+=============================
+
+
+Instead of sending simple String data to the kafka 
+
+Send complete business data:
+
+{
+  "orderId": 101,
+  "product": "iPhone 17 Pro Max",
+  "quantity": 1
+}
+
+--Now every consumer has all required information.
+
+
+
+Step1: 
+
+Modify the OrderProducer.java class:
+
+
+
+@Service
+@RequiredArgsConstructor
+public class OrderProducer {
+
+	private final KafkaTemplate<String, OrderCreatedEvent> kafkaTemplate;
+
+	public void publishOrderEvent(OrderCreatedEvent event) {
+
+		kafkaTemplate.send("order-topic", event);
+
+		System.out.println("Message Sent : " + event.getOrderId());
+	}
+}
+
+
+
+
+
+Step 2: 
+
+Configure the JSON serializer for kafka inside the application.properties file:
+
+
+spring.application.name=order-service
+
+spring.kafka.bootstrap-servers=localhost:9092
+
+spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer
+
+spring.kafka.producer.value-serializer=org.springframework.kafka.support.serializer.JacksonJsonSerializer
+
+
+
+Note: 
+
+--Kafka can only send bytes internally.
+
+--When we send a Java object, Kafka must convert it into JSON.
+
+--This conversion is done by JacksonJsonSerializer.
+
+
+
+
+
+Step 3:
+
+Modify the controller class:
+
+
+package com.hdfc.controller;
+
+@RestController
+@RequestMapping("/orders")
+@RequiredArgsConstructor
+public class OrderController {
+
+	private final OrderProducer producer;
+
+	@PostMapping
+	public String createOrder(@RequestBody OrderCreatedEvent event) {
+
+		producer.publishOrderEvent(event);
+
+		return "Order Event Published";
+	}
+}
+
+
+
+Step 4: Run the server 
+
+Test API
+
+POST http://localhost:8080/orders
+
+{
+  "orderId": 101,
+  "product": "iPhone 17 Pro Max",
+  "quantity": 1
+}
+
+
+
+Verify Message Reached Kafka
+
+Open Consumer:
+
+	docker exec -it kafka bash
+
+Move to Kafka bin directory:
+
+	cd /opt/kafka/bin
+
+Start Consumer:
+
+	./kafka-console-consumer.sh --topic order-topic --from-beginning --bootstrap-server localhost:9092
+
+Output:
+
+	{"orderId":101,"product":"iPhone 17 Pro Max","quantity":1}
+
+
+
+
+Spring Boot Kafka Consumer using @KafkaListener:
+================================================
+
+--Now we need another microservice that can receive those messages.
+
+
+Order Service
+     |
+     v
+order-topic
+     |
+     v
+Inventory Service
+
+
+--When an order is created:
+
+{
+  "orderId":101,
+  "product":"iPhone 17 Pro Max",
+  "quantity":1
+}
+
+--Inventory Service should automatically receive it.
+
+
+Real World Scenario:
+---------------------
+
+Customer places order.
+
+Order Service publishes:
+
+{
+  "orderId":101,
+  "product":"iPhone 17 Pro Max",
+  "quantity":1
+}
+
+--Inventory Service receives it and reserves stock.
+
+
+Producer vs Consumer:
+--------------------
+
+Producer:
+
+	kafkaTemplate.send(...)
+
+Consumer:
+
+	@KafkaListener(...)
+
+--Easy way to remember:
+
+	Producer -> SEND
+
+	Consumer -> LISTEN
+
+
+
+Step 1:
+
+--Create New Spring Boot Project
+
+Project Name:
+
+	inventory-service
+
+Dependencies:
+
+Spring Web
+Spring for Apache Kafka
+Lombok
+
+
+
+
+Step 2: Configure Kafka Connection: application.properties
+
+
+spring.application.name=inventory-service
+
+spring.kafka.bootstrap-servers=localhost:9092
+
+spring.kafka.consumer.group-id=inventory-group
+
+spring.kafka.consumer.auto-offset-reset=earliest
+
+server.port=8088
+
+
+group-id:
+---------
+
+	spring.kafka.consumer.group-id=inventory-group
+
+
+--A consumer must belong to a consumer group.
+
+Example:
+
+Inventory Service
+        |
+        v
+inventory-group
+        |
+        v
+order-topic
+
+
+--Kafka tracks which messages have already been consumed for each group.
+
+auto-offset-reset
+-----------------
+
+	spring.kafka.consumer.auto-offset-reset=earliest
+
+Meaning:
+
+--If no previous offset exists, start reading from the beginning of the topic.
+
+
+Possible values:
+
+earliest: Read all existing messages
+latest  : Read only new messages
+none	: Throw exception if no offset exists
+
+
+--For learning and testing:
+
+	earliest
+
+--is usually preferred.
+
+
+
+Step 3: Create Event Class
+
+--The consumer must understand the JSON structure being received.
+
+Create:
+
+OrderCreatedEvent.java
+-----------------------
+
+package com.hdfc.event;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class OrderCreatedEvent {
+
+    private Long orderId;
+
+    private String product;
+
+    private Integer quantity;
+}
+
+
+
+Why?
+
+Producer sends:
+
+{
+  "orderId": 101,
+  "product": "iPhone 17 Pro Max",
+  "quantity": 1
+}
+
+--Consumer needs the same structure to deserialize JSON into a Java object.
+
+
+Step 4: Configure JSON Deserialization
+
+--When Kafka receives a message, it arrives as bytes.
+
+--The consumer must convert JSON back into a Java object.
+
+Add the following properties:
+
+
+spring.kafka.consumer.key-deserializer=org.apache.kafka.common.serialization.StringDeserializer
+
+spring.kafka.consumer.value-deserializer=org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+
+spring.kafka.consumer.properties.spring.json.trusted.packages=*
+
+
+
+Here,
+
+spring.kafka.consumer.properties.spring.json.trusted.packages=*
+
+For security reasons,
+JacksonJsonDeserializer only trusts specified packages.
+
+* means trust all packages.
+
+For learning purposes this is acceptable.
+
+In production, specify the actual package name.
+
+Example:
+
+	spring.kafka.consumer.properties.spring.json.trusted.packages=com.hdfc.event
+
+
+Step 5: Create Consumer Service
+
+Create:
+
+InventoryConsumer.java
+----------------------
+
+package com.hdfc.service;
+
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Service;
+
+import com.hdfc.event.OrderCreatedEvent;
+
+@Service
+public class InventoryConsumer {
+
+    // @KafkaListener(topics = "order-topic", groupId = "inventory-group")
+    @KafkaListener(topics = "order-topic")
+    public void consume(OrderCreatedEvent event) {
+
+        System.out.println("Order Received");
+
+        System.out.println("Order Id : " + event.getOrderId());
+
+        System.out.println("Product  : " + event.getProduct());
+
+
+    }
+}
+
+
+@KafkaListener
+--------------
+
+@KafkaListener(
+    topics = "order-topic",
+    groupId = "inventory-group"
+)
+
+Meaning:
+
+Listen continuously to:
+
+	order-topic
+
+as part of:
+
+	inventory-group
+
+--Whenever a new message arrives:
+
+consume(...)
+
+--is automatically executed.
+
+
+Since we have already configured the groupId inside the application.properties
+inside @KafkaListener mentioning it optional
+
+Here,
+
+--No REST endpoint is required.
+
+As soon as the application starts,
+the Kafka listener starts automatically
+and waits for messages.
+
+
+
+
+
+--Run the application and observe the console..
+
+
+
+ratankapr22@gmail.com
+
+
+
+
+

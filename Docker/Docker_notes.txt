@@ -1927,6 +1927,31 @@ Verify Installation
 
 
 
+--Docker Image: 
+  : - how to make use of already created and published images
+  : - How to create our own images
+  : - variaous command related to images
+
+--Docker Container: 
+
+  : - How to manage or play with the containers
+
+
+--Docker compose: 
+
+  : -- How to manage mulitple containers
+
+--Docker volumne: 
+
+  : --How to persist or survive our Container related data.
+
+--Sharing Images
+
+  : -How to share the docker images with the peer developrs.
+
+
+
+
 
 
 
@@ -2893,6 +2918,9 @@ Enter:
 --Now we are inside the container's Linux environment.
 
 --We can execute commands there.
+
+11:05 
+
 
 
 Inspect Container:
@@ -3905,11 +3933,11 @@ Example
 
 	WORKDIR /app
 
-	COPY app.jar .
+	COPY app.jar app1.jar
 
 Equivalent to:
 
-	/app/app.jar
+	/app/app1.jar
 
 inside image.
 
@@ -4111,6 +4139,8 @@ Build image:
 
 	docker build -t product-service:v1 .
 
+	docker build -t product-service:v1 d:/doc/Dockerfile
+
 
 
 -t
@@ -4203,7 +4233,7 @@ docker run -d -p 8082:8082 -e SPRING_DATASOURCE_URL=jdbc:postgresql://host.docke
 
 Assigning the container name:
 
-	docker run -d --name product-service -p 8082:8082 -e SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/productdb product-service:v1
+	docker run -d --name product-service -p 8082:8082 -e SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/productdb -e SPRING_DATASOURCE_USERNAME=postgres -e SPRING_DATASOURCE_PASSWORD=root product-service:v1
 
 
 
@@ -4227,7 +4257,7 @@ Docker Syntax
 
 Example:
 
-docker run -e SPRING_DATASOURCE_USERNAME=admin -e SPRING_DATASOURCE_PASSWORD=admin123 product-service:v1
+docker run -e SPRING_DATASOURCE_USERNAME=postgres -e SPRING_DATASOURCE_PASSWORD=root product-service:v1
 
 
 
@@ -4235,9 +4265,26 @@ docker run -e SPRING_DATASOURCE_USERNAME=admin -e SPRING_DATASOURCE_PASSWORD=adm
 
 	jdbc:postgresql://postgres-db:5432/productdb
 
-inside the application.yml file
 
---where postgres-db is the PostgreSQL container name on the same Docker network.
+pull the postgress image from the docker hub configure the 
+
+and configure using:
+
+container name: postgres-db
+
+POSTGRES_USER=admin
+POSTGRES_PASSWORD=admin123
+POSTGRES_DB=productdb
+
+
+and then run the product-service:v1 container..
+
+
+docker run -d --name product-service -p 8082:8082 -e SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/productdb -e SPRING_DATASOURCE_USERNAME=admin -e SPRING_DATASOURCE_PASSWORD=admin123 product-service:v1
+
+
+
+
 
 
 
@@ -4296,10 +4343,6 @@ spring.jpa.show-sql=true
 Now:
 
 docker run -d --name product-service -p 8082:8082 -e DB_URL=jdbc:postgresql://host.docker.internal:5432/productdb -e DB_USER=postgres -e DB_PASSWORD=root product-service:v1
-
-
-
-
 
 
 
@@ -5464,7 +5507,7 @@ microservices/
 │
 ├── api-gateway/
 │
-└── docker-compose.yml
+└── compose.yml
 
 --Where to Keep docker-compose.yml ?
 
@@ -5476,7 +5519,7 @@ microservices/
 ├── user-service/
 ├── product-service/
 ├── api-gateway/
-└── docker-compose.yml
+└── compose.yml
 
 Reason:
 
@@ -5488,8 +5531,8 @@ Reason:
 
 
 
-Step 6: Create docker-compose.yml
------------------------------------
+Step 6: Create compose.yml
+----------------------------
 
 services:
 
@@ -5555,7 +5598,7 @@ Navigate to:
 
 	microservices/
 
---where docker-compose.yml exists.
+--where compose.yml exists.
 
 Run:
 
@@ -5629,7 +5672,7 @@ POST http://localhost:8080/users/login
 POST http://localhost:8080/products/login
 
 
-To check the internal mysql database:
+To check the internal postgres database:
 
 On the docker desktop:
 
@@ -5721,7 +5764,7 @@ Verify:
 
 	docker volume ls
 
-Step 2: Start PostgreSQL with Volume
+Step 2: Start PostgreSQL container with Volume
 
 docker run -d \
 --name postgres-db \
