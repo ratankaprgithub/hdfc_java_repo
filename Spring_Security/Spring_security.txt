@@ -1515,7 +1515,7 @@ Security Filter Chain
 Authentication Filter  (Authentication ) isAutheticated = false ,Principle = null
    |
    v
-AuthenticationManager
+AuthenticationManager     Authenticate authenticate(Authentication auth);
    |
    v
 AuthenticationProvider (Default : DAO Authentication Provider)
@@ -4501,7 +4501,7 @@ Validate Token
      |
      | Extract Username
      v
-UserDetailsService
+UserDetailsService(optional)
      |
      v
 Create Authentication Object
